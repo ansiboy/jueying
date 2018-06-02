@@ -8,11 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var pdesigner;
 (function (pdesigner) {
-    let customEditors = {};
+    let customEditorTypes = {};
     class Editor extends React.Component {
         constructor(props) {
             super(props);
-            console.assert(this.props.control.state != null);
+            console.assert(this.props.control.props != null);
             this.state = this.props.control.props;
             this.originalRender = this.render;
             this.render = () => {
@@ -29,22 +29,28 @@ var pdesigner;
             }
             return super.setState(state, callback);
         }
+        static register(controlTypeName, editorType) {
+            customEditorTypes[controlTypeName] = editorType;
+        }
         static create(control) {
             return __awaiter(this, void 0, void 0, function* () {
                 let controlName = control.constructor.name;
                 let name = controlName.endsWith('Control') ?
                     controlName.substr(0, controlName.length - 'Control'.length) :
                     controlName;
-                let editorPath = `${pdesigner.componentsDir}/${name}/editor`;
+                let editorPath = `${pdesigner.Control.componentsDir}/${name}/editor`;
                 //TODO: 缓存 editorType
-                let editorType = yield new Promise((resolve, reject) => {
-                    requirejs([editorPath], (exports2) => {
-                        let editor = exports2['default'];
-                        if (editor == null)
-                            throw new Error(`Default export of file '${editorPath}' is null.`);
-                        resolve(editor);
-                    }, (err) => reject(err));
-                });
+                let editorType = customEditorTypes[controlName];
+                if (!editorType) {
+                    editorType = yield new Promise((resolve, reject) => {
+                        requirejs([editorPath], (exports2) => {
+                            let editor = exports2['default'];
+                            if (editor == null)
+                                throw new Error(`Default export of file '${editorPath}' is null.`);
+                            resolve(editor);
+                        }, (err) => reject(err));
+                    });
+                }
                 let editorProps = { control, key: control.id };
                 let editorElement = React.createElement(editorType, editorProps);
                 return editorElement;
@@ -57,39 +63,16 @@ var pdesigner;
 (function (pdesigner) {
     let h = React.createElement;
     let customControlTypes = {};
-    pdesigner.componentsDir = 'components';
     class Control extends React.Component {
         constructor(props) {
             super(props);
-            // private _state: S;
             this.hasCSS = false;
             this.children = new Array();
             console.assert(this.props.id != null);
             this.originalRender = this.render;
-            this.render = function () {
-                let self = this;
-                if (typeof self.originalRender != 'function')
-                    return null;
-                return h(pdesigner.DesignerContext.Consumer, null, context => {
-                    self._designer = context.designer;
-                    let result = context.designer != null ?
-                        self.originalRender(createDesignTimeElement) :
-                        self.originalRender(React.createElement);
-                    return result;
-                });
-            };
+            this.render = Control.render;
             this.originalComponentDidMount = this.componentDidMount;
-            this.componentDidMount = function () {
-                let self = this;
-                if (self.originalComponentDidMount)
-                    self.originalComponentDidMount();
-                self.element.onclick = function (e) {
-                    e.stopPropagation();
-                    e.cancelBubble = true;
-                    self._designer.controlSelected.fire(self._designer, self);
-                };
-                self._designer.controlComponentDidMount.fire(self._designer, self);
-            };
+            this.componentDidMount = Control.componentDidMount;
         }
         get id() {
             let id = this.props.id;
@@ -98,6 +81,37 @@ var pdesigner;
         }
         get hasEditor() {
             return true;
+        }
+        static componentDidMount() {
+            let self = this;
+            if (self.originalComponentDidMount)
+                self.originalComponentDidMount();
+            self.element.onclick = function (e) {
+                if (!self.hasEditor) {
+                    return;
+                }
+                let className = self.element.className;
+                if (className.indexOf(Control.selectedClassName) < 0) {
+                    className = `${className} ${Control.selectedClassName}`;
+                    self.element.className = className;
+                }
+                e.stopPropagation();
+                e.cancelBubble = true;
+                self._designer.controlSelected.fire(self._designer, self);
+            };
+            self._designer.controlComponentDidMount.fire(self._designer, self);
+        }
+        static render() {
+            let self = this;
+            if (typeof self.originalRender != 'function')
+                return null;
+            return h(pdesigner.DesignerContext.Consumer, null, context => {
+                self._designer = context.designer;
+                let result = context.designer != null ?
+                    self.originalRender(createDesignTimeElement) :
+                    self.originalRender(React.createElement);
+                return result;
+            });
         }
         static create(description) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -110,7 +124,7 @@ var pdesigner;
                     let name = controlName.endsWith('Control') ?
                         controlName.substr(0, controlName.length - 'Control'.length) :
                         controlName;
-                    let controlPath = `${pdesigner.componentsDir}/${name}/control`;
+                    let controlPath = `${Control.componentsDir}/${name}/control`;
                     controlType = yield new Promise((resolve, reject) => {
                         requirejs([controlPath], (exports2) => {
                             let controlType = exports2['default'];
@@ -154,13 +168,9 @@ var pdesigner;
             return controlDescription;
         }
     }
+    Control.componentsDir = 'components';
+    Control.selectedClassName = 'selected';
     pdesigner.Control = Control;
-    // interface ControlProps<T> extends React.Props<T> {
-    //     mobilePage: any
-    // }
-    // interface ControlConstructor {
-    //     new(props): Control<any, any>
-    // }
     function createDesignTimeElement(type, props, ...children) {
         props = props || {};
         if (typeof type == 'string')
@@ -202,7 +212,6 @@ var pdesigner;
     class PageDesigner extends React.Component {
         constructor(props) {
             super(props);
-            // private componentDefines: { [key: string]: ComponentDefine } = {};
             this.controlSelected = chitu.Callbacks();
             this.controlComponentDidMount = chitu.Callbacks();
             this.state = { pageData: this.props.pageData };
@@ -233,9 +242,6 @@ var pdesigner;
                 this.setState(this.state);
             });
         }
-        // addComponentDefine(item: ComponentDefine) {
-        //     this.componentDefines[item.name] = item;
-        // }
         findControl(controlId) {
             let pageData = this.state.pageData;
             let stack = new Array();
@@ -253,29 +259,12 @@ var pdesigner;
                 controlSelected: chitu.Callbacks(),
                 designer: this
             };
-            // let emptyElement = <div style={{ paddingTop: 26, textAlign: 'center' }}>
-            //     请从工具栏拖拉控件到这里
-            // </div>
             let designer = this;
             return h("div", { className: "pdesigner", ref: (e) => this.element = e || this.element },
                 h(pdesigner.DesignerContext.Provider, { value: { designer } }, this.props.children));
         }
     }
     pdesigner.PageDesigner = PageDesigner;
-    // class TestControl extends Control<any, any> {
-    //     element: HTMLElement;
-    //     get persistentMembers(): string[] {
-    //         return []
-    //     }
-    //     render(h?: any) {
-    //         let { text } = this.state;
-    //         text = text || "FFFF"
-    //         return <div ref={(e: HTMLElement) => this.element = e || this.element}>
-    //             {text}
-    //         </div>
-    //     }
-    // }
-    // PageDesigner.registerControl(TestControl);
 })(pdesigner || (pdesigner = {}));
 /// <reference path="page-control.tsx"/>
 /// <reference path="page-designer.tsx"/>
@@ -286,6 +275,7 @@ var pdesigner;
             super(props);
             this.state = { controls: [] };
         }
+        get hasEditor() { return false; }
         get persistentMembers() {
             return [];
         }
@@ -310,16 +300,7 @@ var pdesigner;
                     let target = ui.item.attr('data-target');
                     console.assert(componentName != null);
                     ui.helper.remove();
-                    // let children = element.children;
-                    // let controlIndex = previousControlId ? controls.map((o, i) => ({ id: o.id, index: i }))
-                    //     .filter(o => o.id == previousControlId)
-                    //     .map(o => o.index)[0] + 1 : 0;
                     let ctrl = { name: componentName, id: pdesigner.guid(), data: {} };
-                    // if (controlIndex == controls.length)
-                    //     controls.push(ctrl);
-                    // else
-                    //     controls.splice(controlIndex, 0, ctrl);
-                    // this.setState(this.state);
                     this.designer.appendControl(this.id, ctrl, previousControlId);
                 },
                 update: (event, ui) => {
@@ -343,76 +324,6 @@ var pdesigner;
                     // let header_controls = pageData.controls.filter(o => o.position == 'header');
                     // pageData.controls = [...header_controls, ...footer_controls, ...view_controls];
                 }
-            });
-        }
-        renderControls(controls, pageView) {
-            console.assert(pageView);
-            return h(pdesigner.DesignerContext.Consumer, null, context => context.designer != null ?
-                this.renderDesigntimeControls(controls, pageView) :
-                this.renderRuntimeControls(controls, pageView));
-        }
-        renderDesigntimeControls(controls, pageView) {
-            controls = controls || [];
-            return h(pdesigner.DesignerContext.Consumer, null, context => {
-                return controls.map((o, i) => h("div", { id: o.id, key: o.id, ref: (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (!e)
-                            return;
-                        var c = yield this.createControlInstance(o, e, pageView);
-                        var componet = Object.assign(c.control, { id: o.id, name: o.name });
-                        this.controls.push(componet);
-                        if (o.selected != 'disabled') {
-                            e.onclick = (event) => {
-                                controls.filter(o => o.selected == true).forEach(o => o.selected = false);
-                                // this.props.designTime.controlSelected(c.control, c.controlType);
-                                if (context.designer.controlSelected) {
-                                    // context.controlSelected.fire(this, c.control, c.controlType);
-                                }
-                                event.preventDefault();
-                            };
-                        }
-                        // if (o.selected == true) {
-                        //     this.selecteControl = c;
-                        // }
-                        // if (this.props.controlCreated)
-                        //     this.props.controlCreated(componet);
-                    }) }));
-            });
-        }
-        renderRuntimeControls(controls, pageView) {
-            return controls.map((o, i) => h("div", { id: o.id, key: o.id, ref: (e) => __awaiter(this, void 0, void 0, function* () {
-                    if (!e)
-                        return;
-                    var c = yield this.createControlInstance(o, e, pageView);
-                    var componet = Object.assign(c.control, { id: o.id, name: o.name });
-                    this.controls.push(componet);
-                    // if (this.props.controlCreated)
-                    //     this.props.controlCreated(componet);
-                }) }));
-        }
-        /**
-         * 创建控件
-         * @param controlData 描述控件的数据
-         * @param element 承载控件的 HTML 元素
-         */
-        createControlInstance(controlData, element, pageView) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let { id, name, data } = controlData;
-                let types = yield pdesigner.PageView.getControlType(name);
-                let props = Object.assign({}, data || {});
-                // props.mobilePage = this;
-                let control = yield new Promise((resolve, reject) => {
-                    try {
-                        let reactElement = React.createElement(types.Control, props, { ref: (e) => resolve(e) });
-                        ReactDOM.render(h(pdesigner.PageViewContext.Provider, { value: { pageView } }, reactElement), element);
-                    }
-                    catch (e) {
-                        reject(e);
-                    }
-                });
-                element.className = `${name}-control`;
-                // control.id = id;
-                let result = { control, controlType: types.Control };
-                return result;
             });
         }
         componentDidMount() {
@@ -476,6 +387,10 @@ var pdesigner;
         }
         componentDidMount() {
             this.designer.controlSelected.add((designer, control) => __awaiter(this, void 0, void 0, function* () {
+                if (!control.hasEditor) {
+                    console.log(`Control ${control.constructor.name} has none editor.`);
+                    return;
+                }
                 let editor = yield pdesigner.Editor.create(control);
                 this.setState({ editor });
             }));
@@ -510,117 +425,16 @@ var pdesigner;
     class PageView extends pdesigner.Control {
         constructor(props) {
             super(props);
-            this.headerControlsCount = 0;
-            this.footerControlsCount = 0;
-            this.viewControlsCount = 0;
-            this.createdControlCount = 0;
-            this.state = {};
-            this.controls = [];
         }
-        static getInstanceByElement(element) {
-            return element.mobilePage;
+        get hasEditor() {
+            return this._hasEditor;
         }
-        /**
-         * 创建控件
-         * @param controlData 描述控件的数据
-         * @param element 承载控件的 HTML 元素
-         */
-        createControlInstance(controlData, element) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let { name, data, selected } = controlData;
-                // let id = data.id;
-                console.assert(data != null);
-                let types = yield PageView.getControlType(name);
-                let props = Object.assign({}, data);
-                let control = yield new Promise((resolve, reject) => {
-                    let reactElement = React.createElement(types.Control, props, { ref: (e) => resolve(e) });
-                    ReactDOM.render(h(pdesigner.PageViewContext.Provider, { value: { pageView: this } }, reactElement), element);
-                });
-                element.className = `${name}-control`;
-                // control.id = id;
-                let result = { control, controlType: types.Control };
-                return result;
-            });
-        }
-        /**
-         * 获取控件在类型
-         * @param controlName 控件的名称
-         */
-        static getControlType(controlName) {
-            let arr = controlName.split(':');
-            let fileName = arr[0];
-            let name = arr[1] || 'default';
-            let filePath = `${pdesigner.componentsDir}/${fileName}/control`;
-            return new Promise((resolve, reject) => {
-                requirejs([filePath], function (exports) {
-                    resolve({ Control: exports[name], Props: exports.Props });
-                });
-            });
-        }
-        componentDidMount() {
-            return __awaiter(this, void 0, void 0, function* () {
-            });
-        }
-        renderRuntimeControls(controls) {
-            controls = controls || [];
-            return controls.map((o, i) => h("div", { id: o.id, key: o.id, ref: (e) => __awaiter(this, void 0, void 0, function* () {
-                    if (!e)
-                        return;
-                    var c = yield this.createControlInstance(o, e);
-                    var componet = Object.assign(c.control, { controlId: o.id, controlName: o.name });
-                    this.controls.push(componet);
-                    // if (this.props.controlCreated)
-                    //     this.props.controlCreated(componet);
-                }) }));
-        }
-        merge(pageData, productTemplate) {
-            console.assert(productTemplate != null);
-            console.assert(pageData != null);
-            pageData.controls = pageData.controls.filter(o => o.save != false);
-            //===========================================================
-            // 复制一份数据，不要在源数据上修改
-            productTemplate = JSON.parse(JSON.stringify(productTemplate));
-            // pageData = JSON.parse(JSON.stringify(pageData));
-            //===========================================================
-            // 模板里面的控件，不需要保存
-            productTemplate.controls.forEach(o => o.save = false);
-            for (let i = 0; i < pageData.controls.length; i++) {
-                let sourceControl = pageData.controls[i];
-                // let templateControlId = templateControlIds[sourceControl.controlName];
-                let controlIndex;
-                // if (templateControlId != null) {
-                //     for (let i = 0; i < productTemplate.controls.length; i++) {
-                //         if (productTemplate.controls[i].controlId == templateControlId) {
-                //             controlIndex = i;
-                //             break;
-                //         }
-                //     }
-                // }
-                let existsControl = productTemplate.controls.filter(o => o.id == sourceControl.id)[0];
-                if (existsControl) {
-                    continue;
-                }
-                if (controlIndex != null) {
-                    let i = controlIndex;
-                    productTemplate.controls[i] = sourceControl;
-                }
-                else {
-                }
-            }
-            // productTemplate.controls = productTemplate.controls.filter(o => o.controlId != templateControlIds.other);
-            pageData.controls = productTemplate.controls;
-            //Object.assign(pageData, productTemplate);
-            // return productTemplate;
+        set hasEditor(value) {
+            this._hasEditor = value;
         }
         render() {
             let children = React.Children.toArray(this.props.children) || [];
-            // let { pageData, template } = this.props;
             let pageData = { controls: [] };
-            // if (template) {
-            //     this.merge(pageData, template);
-            // }
-            this.viewControlsCount = 0;
-            this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
             let pageView = this;
             return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }),
                 h(pdesigner.PageViewContext.Provider, { value: { pageView } }, this.props.children));

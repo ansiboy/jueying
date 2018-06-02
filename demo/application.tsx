@@ -1,6 +1,6 @@
 /// <reference path="../out/pdesigner.d.ts"/>
 
-import { ControlToolbar, PageDesigner, ControlDescription, guid, Control, DesignerContext, EditorPanel } from "pdesigner";
+import { ControlToolbar, PageDesigner, ControlDescription, guid, Control, DesignerContext, EditorPanel, Editor, PageView } from "pdesigner";
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
 
@@ -14,8 +14,9 @@ let controlDescription: ControlDescription = {
     data: {
         className: 'page-view',
         style: {},
-        ref(c: Control<any, any>) {
-            var data = c.export()
+        ref(c: PageView) {
+            var data = c.export();
+            c.hasEditor = true;
         }
     },
     children: [
@@ -47,6 +48,18 @@ let controlDescription: ControlDescription = {
         },
     ],
 }
+
+class PageViewEditor extends Editor<any, any> {
+    element: HTMLElement;
+    render() {
+        return <div ref={(e: HTMLElement) => this.element = e || this.element}>
+            PageView Editor
+        </div>
+    }
+}
+
+Editor.register('PageView', PageViewEditor);
+
 
 let pageViewElement: HTMLElement;
 let designer: PageDesigner;

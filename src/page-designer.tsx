@@ -13,10 +13,6 @@
 
 namespace pdesigner {
 
-
-
-
-
     export const DesignerContext = React.createContext({
         designer: null as PageDesigner
     })
@@ -33,10 +29,9 @@ namespace pdesigner {
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
 
         private element: HTMLElement;
-        // private componentDefines: { [key: string]: ComponentDefine } = {};
         controlSelected = chitu.Callbacks<PageDesigner, Control<any, any>>();
         controlComponentDidMount = chitu.Callbacks<PageDesigner, Control<any, any>>();
-
+        
         constructor(props) {
             super(props);
             this.state = { pageData: this.props.pageData };
@@ -73,9 +68,6 @@ namespace pdesigner {
             this.setState(this.state);
         }
 
-        // addComponentDefine(item: ComponentDefine) {
-        //     this.componentDefines[item.name] = item;
-        // }
         findControl(controlId: string) {
             let pageData = this.state.pageData;
             let stack = new Array<ControlDescription>();
@@ -96,9 +88,6 @@ namespace pdesigner {
                 controlSelected: chitu.Callbacks<PageView, Control<any, any>, React.ComponentClass<any>>(),
                 designer: this
             }
-            // let emptyElement = <div style={{ paddingTop: 26, textAlign: 'center' }}>
-            //     请从工具栏拖拉控件到这里
-            // </div>
 
             let designer = this;
             return <div className="pdesigner" ref={(e: HTMLElement) => this.element = e || this.element}>
@@ -108,20 +97,4 @@ namespace pdesigner {
             </div >;
         }
     }
-
-    // class TestControl extends Control<any, any> {
-    //     element: HTMLElement;
-    //     get persistentMembers(): string[] {
-    //         return []
-    //     }
-    //     render(h?: any) {
-    //         let { text } = this.state;
-    //         text = text || "FFFF"
-    //         return <div ref={(e: HTMLElement) => this.element = e || this.element}>
-    //             {text}
-    //         </div>
-    //     }
-    // }
-
-    // PageDesigner.registerControl(TestControl);
 }

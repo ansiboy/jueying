@@ -13,25 +13,28 @@ declare namespace pdesigner {
         abstract element: HTMLElement;
         constructor(props: any);
         setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
-        static create(control: Control<any, any>): Promise<React.ComponentElement<{}, React.Component<{}, React.ComponentState, any>>>;
+        static register(controlTypeName: any, editorType: React.ComponentClass<any>): void;
+        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
     }
 }
 declare namespace pdesigner {
     interface ControlProps<T> extends React.Props<T> {
     }
-    const componentsDir = "components";
     abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private _designer;
         private originalComponentDidMount;
         private originalRender;
+        static componentsDir: string;
+        static selectedClassName: string;
         protected hasCSS: boolean;
-        name: string;
         children: Control<any, any>[];
         abstract element: HTMLElement;
         constructor(props: any);
         readonly abstract persistentMembers: (keyof S)[];
         readonly id: string;
         readonly hasEditor: boolean;
+        private static componentDidMount();
+        private static render();
         static create(description: ControlDescription): Promise<React.ReactElement<any>>;
         static register(controlType: React.ComponentClass<any>): void;
         export(): ControlDescription;
@@ -84,17 +87,9 @@ declare namespace pdesigner {
         private controls;
         element: HTMLElement;
         constructor(props: any);
+        readonly hasEditor: boolean;
         readonly persistentMembers: any[];
         private sortableElement(element, designer);
-        renderControls(controls: ControlDescription[], pageView: PageView): JSX.Element;
-        renderDesigntimeControls(controls: ControlDescription[], pageView: PageView): JSX.Element;
-        renderRuntimeControls(controls: ControlDescription[], pageView: PageView): JSX.Element[];
-        /**
-         * 创建控件
-         * @param controlData 描述控件的数据
-         * @param element 承载控件的 HTML 元素
-         */
-        createControlInstance(controlData: ControlDescription, element: HTMLElement, pageView: PageView): Promise<ControlPair>;
         componentDidMount(): void;
         render(h?: any): JSX.Element;
     }
@@ -202,41 +197,11 @@ declare namespace pdesigner {
      * 移动端页面，将 PageData 渲染为移动端页面。
      */
     class PageView extends Control<Props, State> {
-        private screenElement;
-        private selecteControl;
-        private headerControlsCount;
-        private footerControlsCount;
-        private viewControlsCount;
-        private createdControlCount;
-        private footerElement;
-        private headerElement;
-        controls: (Control<any, any> & {
-            controlId: string;
-            controlName: string;
-        })[];
+        private _hasEditor;
         element: HTMLElement;
         constructor(props: any);
+        hasEditor: boolean;
         persistentMembers: never[];
-        static getInstanceByElement(element: HTMLElement): PageView;
-        /**
-         * 创建控件
-         * @param controlData 描述控件的数据
-         * @param element 承载控件的 HTML 元素
-         */
-        createControlInstance(controlData: ControlDescription, element: HTMLElement): Promise<ControlPair>;
-        /**
-         * 获取控件在类型
-         * @param controlName 控件的名称
-         */
-        static getControlType(controlName: string): Promise<{
-            Control: React.ComponentClass<any>;
-            Props: {
-                new ();
-            };
-        }>;
-        componentDidMount(): Promise<void>;
-        renderRuntimeControls(controls: ControlDescription[]): JSX.Element[];
-        merge(pageData: PageData, productTemplate: PageData): void;
         render(): JSX.Element;
     }
 }

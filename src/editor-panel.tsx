@@ -19,6 +19,11 @@ namespace pdesigner {
         }
         componentDidMount() {
             this.designer.controlSelected.add(async (designer, control) => {
+                if (!control.hasEditor) {
+                    console.log(`Control ${control.constructor.name} has none editor.`);
+                    return;
+                }
+
                 let editor = await Editor.create(control);
                 this.setState({ editor });
             })

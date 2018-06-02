@@ -5,17 +5,18 @@ namespace pdesigner {
     }
 
     let customControlTypes: { [key: string]: React.ComponentClass<any> } = {}
-    export const componentsDir = 'components';
+
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
         private originalRender: () => React.ReactNode;
-        // private _state: S;
+
+        static componentsDir = 'components';
+        static selectedClassName = 'selected';
 
         protected hasCSS = false;
 
-        name: string;
         children = new Array<Control<any, any>>();
 
         abstract element: HTMLElement;
@@ -26,37 +27,10 @@ namespace pdesigner {
             console.assert((this.props as any).id != null);
 
             this.originalRender = this.render;
-            this.render = function () {
-                let self = this as Control<any, any>;
-                if (typeof self.originalRender != 'function')
-                    return null;
-
-                return <DesignerContext.Consumer>
-                    {context => {
-                        self._designer = context.designer;
-                        let result = context.designer != null ?
-                            (self.originalRender as Function)(createDesignTimeElement) :
-                            (self.originalRender as Function)(React.createElement);
-
-                        return result;
-                    }}
-                </DesignerContext.Consumer>
-            }
+            this.render = Control.render;
 
             this.originalComponentDidMount = this.componentDidMount;
-            this.componentDidMount = function () {
-
-                let self = this as Control<any, any>;
-                if (self.originalComponentDidMount)
-                    self.originalComponentDidMount();
-
-                self.element.onclick = function (e) {
-                    e.stopPropagation();
-                    e.cancelBubble = true;
-                    self._designer.controlSelected.fire(self._designer, self)
-                }
-                self._designer.controlComponentDidMount.fire(self._designer, self);
-            }
+            this.componentDidMount = Control.componentDidMount;
         }
 
         abstract get persistentMembers(): (keyof S)[];
@@ -71,6 +45,46 @@ namespace pdesigner {
             return true;
         }
 
+        private static componentDidMount() {
+            let self = this as any as Control<any, any>;
+            if (self.originalComponentDidMount)
+                self.originalComponentDidMount();
+
+            self.element.onclick = function (e) {
+                if (!self.hasEditor) {
+                    return;
+                }
+
+                let className = self.element.className;
+                if (className.indexOf(Control.selectedClassName) < 0) {
+                    className = `${className} ${Control.selectedClassName}`;
+                    self.element.className = className;
+                }
+                e.stopPropagation();
+                e.cancelBubble = true;
+                self._designer.controlSelected.fire(self._designer, self)
+            }
+
+            self._designer.controlComponentDidMount.fire(self._designer, self);
+        }
+
+        private static render() {
+            let self = this as any as Control<any, any>;
+            if (typeof self.originalRender != 'function')
+                return null;
+
+            return <DesignerContext.Consumer>
+                {context => {
+                    self._designer = context.designer;
+                    let result = context.designer != null ?
+                        (self.originalRender as Function)(createDesignTimeElement) :
+                        (self.originalRender as Function)(React.createElement);
+
+                    return result;
+                }}
+            </DesignerContext.Consumer>
+        }
+
         static async create(description: ControlDescription) {
             let controlName = description.name;
             let children = description.children || [];
@@ -83,7 +97,7 @@ namespace pdesigner {
                     controlName.substr(0, controlName.length - 'Control'.length) :
                     controlName;
 
-                let controlPath = `${componentsDir}/${name}/control`;
+                let controlPath = `${Control.componentsDir}/${name}/control`;
                 controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
                     requirejs([controlPath],
                         (exports2) => {
@@ -142,25 +156,11 @@ namespace pdesigner {
         }
     }
 
-    // const pageClassName = 'mobile-page';
-
-    // interface IMobilePageDesigner {
-    //     selecteControl(control: Control<any, any>, controlType: React.ComponentClass<any>);
-    //     // isDesignMode?: boolean;
-    // }
-
-    // //==============================================================    
+    //==============================================================    
     interface ComponentProp<T> extends React.Props<T> {
         onClick?: (event: MouseEvent, control: T) => void,
         createElement?: (type, props, ...children) => JSX.Element,
     }
-    // interface ControlProps<T> extends React.Props<T> {
-    //     mobilePage: any
-    // }
-    // interface ControlConstructor {
-    //     new(props): Control<any, any>
-    // }
-
 
     function createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
         props = props || {};

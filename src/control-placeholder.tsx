@@ -21,6 +21,8 @@ namespace pdesigner {
             this.state = { controls: [] };
         }
 
+        get hasEditor() { return false }
+
         get persistentMembers() {
             return [];
         }
@@ -48,18 +50,7 @@ namespace pdesigner {
                     console.assert(componentName != null);
                     ui.helper.remove();
 
-                    // let children = element.children;
-                    // let controlIndex = previousControlId ? controls.map((o, i) => ({ id: o.id, index: i }))
-                    //     .filter(o => o.id == previousControlId)
-                    //     .map(o => o.index)[0] + 1 : 0;
-
                     let ctrl = { name: componentName, id: guid(), data: {} };
-                    // if (controlIndex == controls.length)
-                    //     controls.push(ctrl);
-                    // else
-                    //     controls.splice(controlIndex, 0, ctrl);
-
-                    // this.setState(this.state);
                     this.designer.appendControl(this.id, ctrl, previousControlId);
                 },
                 update: (event, ui) => {
@@ -85,100 +76,6 @@ namespace pdesigner {
                 }
             })
         }
-
-        renderControls(controls: ControlDescription[], pageView: PageView) {
-            console.assert(pageView);
-            return <DesignerContext.Consumer>
-                {context => context.designer != null ?
-                    this.renderDesigntimeControls(controls, pageView) :
-                    this.renderRuntimeControls(controls, pageView)
-                }
-            </DesignerContext.Consumer>
-        }
-
-        renderDesigntimeControls(controls: ControlDescription[], pageView: PageView) {
-            controls = controls || [];
-
-            return <DesignerContext.Consumer>
-                {context => {
-                    return controls.map((o, i) =>
-                        <div id={o.id} key={o.id}
-                            ref={async (e: HTMLElement) => {
-                                if (!e) return;
-
-                                var c = await this.createControlInstance(o, e, pageView);
-                                var componet = Object.assign(c.control, { id: o.id, name: o.name });
-                                this.controls.push(componet);
-                                if (o.selected != 'disabled') {
-                                    e.onclick = (event) => {
-                                        controls.filter(o => o.selected == true).forEach(o => o.selected = false);
-                                        // this.props.designTime.controlSelected(c.control, c.controlType);
-                                        if (context.designer.controlSelected) {
-                                            // context.controlSelected.fire(this, c.control, c.controlType);
-                                        }
-                                        event.preventDefault();
-                                    }
-                                }
-
-                                // if (o.selected == true) {
-                                //     this.selecteControl = c;
-                                // }
-
-                                // if (this.props.controlCreated)
-                                //     this.props.controlCreated(componet);
-
-                            }} />
-                    )
-                }}
-            </DesignerContext.Consumer>
-        }
-
-        renderRuntimeControls(controls: ControlDescription[], pageView: PageView) {
-            return controls.map((o, i) =>
-                <div id={o.id} key={o.id}
-                    ref={async (e: HTMLElement) => {
-                        if (!e) return;
-                        var c = await this.createControlInstance(o, e, pageView);
-                        var componet = Object.assign(c.control, { id: o.id, name: o.name });
-                        this.controls.push(componet);
-                        // if (this.props.controlCreated)
-                        //     this.props.controlCreated(componet);
-                    }} />
-            );
-        }
-
-        /**
-         * 创建控件
-         * @param controlData 描述控件的数据
-         * @param element 承载控件的 HTML 元素
-         */
-        async createControlInstance(controlData: ControlDescription, element: HTMLElement, pageView: PageView): Promise<ControlPair> {
-            let { id, name, data } = controlData;
-            let types = await PageView.getControlType(name);
-
-            let props: ControlProps<any> = Object.assign({}, data || {});
-            // props.mobilePage = this;
-
-            let control: Control<any, any> = await new Promise<Control<any, any>>((resolve, reject) => {
-                try {
-                    let reactElement = React.createElement(types.Control, props,
-                        { ref: (e) => resolve(e) });
-                    ReactDOM.render(
-                        <PageViewContext.Provider value={{ pageView }}>
-                            {reactElement}
-                        </PageViewContext.Provider>
-                        , element);
-                }
-                catch (e) {
-                    reject(e);
-                }
-            })
-            element.className = `${name}-control`;
-            // control.id = id;
-            let result: ControlPair = { control, controlType: types.Control };
-            return result;
-        }
-
 
         componentDidMount() {
             if (this.designer) {

@@ -19,6 +19,7 @@ define(["require", "exports", "pdesigner", "react-dom", "./components/componenDe
             style: {},
             ref(c) {
                 var data = c.export();
+                c.hasEditor = true;
             }
         },
         children: [
@@ -50,6 +51,12 @@ define(["require", "exports", "pdesigner", "react-dom", "./components/componenDe
             },
         ],
     };
+    class PageViewEditor extends pdesigner_1.Editor {
+        render() {
+            return h("div", { ref: (e) => this.element = e || this.element }, "PageView Editor");
+        }
+    }
+    pdesigner_1.Editor.register('PageView', PageViewEditor);
     let pageViewElement;
     let designer;
     function renderPageData(pageData) {

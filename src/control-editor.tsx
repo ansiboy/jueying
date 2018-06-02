@@ -1,6 +1,6 @@
 namespace pdesigner {
 
-    let customEditors: { [key: string]: React.ComponentClass<any> } = {}
+    let customEditorTypes: { [key: string]: React.ComponentClass<any> } = {}
 
     export interface EditorProps extends React.Props<Editor<any, any>> {
         control: Control<any, any>,
@@ -19,7 +19,8 @@ namespace pdesigner {
 
         constructor(props) {
             super(props);
-            console.assert(this.props.control.state != null);
+            
+            console.assert(this.props.control.props != null);
             this.state = this.props.control.props as any;
 
             this.originalRender = this.render;
@@ -46,26 +47,33 @@ namespace pdesigner {
             return super.setState(state, callback);
         }
 
+        static register(controlTypeName, editorType: React.ComponentClass<any>) {
+            customEditorTypes[controlTypeName] = editorType;
+        }
+
         static async create(control: Control<any, any>) {
             let controlName = control.constructor.name;
             let name = controlName.endsWith('Control') ?
                 controlName.substr(0, controlName.length - 'Control'.length) :
                 controlName;
-            let editorPath = `${componentsDir}/${name}/editor`;
+            let editorPath = `${Control.componentsDir}/${name}/editor`;
             //TODO: 缓存 editorType
-            let editorType = await new Promise<React.ComponentClass>((resolve, reject) => {
-                requirejs([editorPath],
-                    (exports2) => {
+            let editorType = customEditorTypes[controlName];
+            if (!editorType) {
+                editorType = await new Promise<React.ComponentClass>((resolve, reject) => {
+                    requirejs([editorPath],
+                        (exports2) => {
 
-                        let editor: React.ComponentClass = exports2['default'];
-                        if (editor == null)
-                            throw new Error(`Default export of file '${editorPath}' is null.`)
+                            let editor: React.ComponentClass = exports2['default'];
+                            if (editor == null)
+                                throw new Error(`Default export of file '${editorPath}' is null.`)
 
-                        resolve(editor);
-                    },
-                    (err) => reject(err)
-                )
-            })
+                            resolve(editor);
+                        },
+                        (err) => reject(err)
+                    )
+                })
+            }
 
             let editorProps: EditorProps = { control, key: control.id };
             let editorElement = React.createElement(editorType, editorProps);
