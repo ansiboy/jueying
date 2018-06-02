@@ -28,10 +28,11 @@ namespace pdesigner {
 
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
 
+
         private element: HTMLElement;
         controlSelected = chitu.Callbacks<PageDesigner, Control<any, any>>();
         controlComponentDidMount = chitu.Callbacks<PageDesigner, Control<any, any>>();
-        
+
         constructor(props) {
             super(props);
             this.state = { pageData: this.props.pageData };
@@ -50,22 +51,41 @@ namespace pdesigner {
             this.setState(this.state);
         }
 
-        async appendControl(parentId: string, childControl: ControlDescription, beforeControlId?: string) {
+        sortControlChildren(controlId: string, childIds: string[]): any {
+            let c = this.findControl(controlId);
+            c.children = childIds.map(o => c.children.filter(a => a.id == o)[0]).filter(o => o != null);
+            this.setState(this.state);
+        }
+
+        async sortChildren(parentId: string, childIds: string[]) {
+            if (!parentId) throw Errors.argumentNull('parentId');
+            if (!childIds) throw Errors.argumentNull('childIds');
+
             let pageData = this.state.pageData;
             let parentControl = this.findControl(parentId);
             console.assert(parentControl != null);
-            let controls = parentControl.children = parentControl.children || [];
-
-            let controlIndex = beforeControlId ? parentControl.children.map((o, i) => ({ id: o.id, index: i }))
-                .filter(o => o.id == beforeControlId)
-                .map(o => o.index)[0] + 1 : 0;
-
-            if (controlIndex == controls.length)
-                controls.push(childControl);
-            else
-                controls.splice(controlIndex, 0, childControl);
+            console.assert(parentControl.children != null);
+            console.assert(parentControl.children.length == childIds.length);
+            
+            parentControl.children = childIds.map(o => {
+                let child = parentControl.children.filter(a => a.id == o)[0];
+                console.assert(child != null, `child ${o} is null`);
+                return child;
+            });
 
             this.setState(this.state);
+        }
+        async appendControl(parentId: string, childControl: ControlDescription, childIds: string[]) {
+            if (!parentId) throw Errors.argumentNull('parentId');
+            if (!childControl) throw Errors.argumentNull('childControl');
+            if (!childIds) throw Errors.argumentNull('childIds');
+
+            let parentControl = this.findControl(parentId);
+            console.assert(parentControl != null);
+            parentControl.children = parentControl.children || [];
+            parentControl.children.push(childControl);
+
+            this.sortChildren(parentId, childIds);
         }
 
         findControl(controlId: string) {

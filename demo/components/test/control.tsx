@@ -15,12 +15,12 @@ export default class TestControl extends Control<Props, State> {
         super(props);
         this.state = { text: '' }
     }
- 
+
     static defaultProps: Props = ({ text: 'HelloWorld' });
 
     render(h?: any) {
         let { text } = this.props;
-        return <div ref={(e: HTMLElement) => this.element = e || this.element}>
+        return <div {...this.props} ref={(e: HTMLElement) => this.element = e || this.element}>
             {text}
         </div>
     }

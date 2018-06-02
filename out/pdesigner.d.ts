@@ -27,12 +27,12 @@ declare namespace pdesigner {
         static componentsDir: string;
         static selectedClassName: string;
         protected hasCSS: boolean;
+        hasEditor: boolean;
         children: Control<any, any>[];
         abstract element: HTMLElement;
         constructor(props: any);
         readonly abstract persistentMembers: (keyof S)[];
         readonly id: string;
-        readonly hasEditor: boolean;
         private static componentDidMount();
         private static render();
         static create(description: ControlDescription): Promise<React.ReactElement<any>>;
@@ -69,7 +69,9 @@ declare namespace pdesigner {
         controlComponentDidMount: chitu.Callback1<PageDesigner, Control<any, any>>;
         constructor(props: any);
         updateControlProps(controlId: string, props: any): any;
-        appendControl(parentId: string, childControl: ControlDescription, beforeControlId?: string): Promise<void>;
+        sortControlChildren(controlId: string, childIds: string[]): any;
+        sortChildren(parentId: string, childIds: string[]): Promise<void>;
+        appendControl(parentId: string, childControl: ControlDescription, childIds: string[]): Promise<void>;
         findControl(controlId: string): ControlDescription;
         render(): JSX.Element;
     }
@@ -87,7 +89,6 @@ declare namespace pdesigner {
         private controls;
         element: HTMLElement;
         constructor(props: any);
-        readonly hasEditor: boolean;
         readonly persistentMembers: any[];
         private sortableElement(element, designer);
         componentDidMount(): void;
@@ -127,6 +128,11 @@ declare namespace pdesigner {
         constructor(props: any);
         componentDidMount(): void;
         render(): JSX.Element;
+    }
+}
+declare namespace pdesigner {
+    class Errors {
+        static argumentNull(argumentName: string): Error;
     }
 }
 declare namespace pdesigner {

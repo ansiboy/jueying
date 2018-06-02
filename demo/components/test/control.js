@@ -8,7 +8,7 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
         }
         render(h) {
             let { text } = this.props;
-            return h("div", { ref: (e) => this.element = e || this.element }, text);
+            return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }), text);
         }
     }
     TestControl.defaultProps = ({ text: 'HelloWorld' });

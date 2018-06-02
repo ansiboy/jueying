@@ -16,6 +16,7 @@ namespace pdesigner {
         static selectedClassName = 'selected';
 
         protected hasCSS = false;
+        public hasEditor = true;
 
         children = new Array<Control<any, any>>();
 
@@ -39,10 +40,6 @@ namespace pdesigner {
             let id = (this.props as any).id;
             console.assert(id);
             return id;
-        }
-
-        get hasEditor() {
-            return true;
         }
 
         private static componentDidMount() {
@@ -123,6 +120,7 @@ namespace pdesigner {
             if (children.length)
                 childElements = await Promise.all(children.map(o => this.create(o)));
 
+            console.assert(data.id != null);
             let controlElement = React.createElement(
                 controlType ? controlType : controlName,
                 data, childElements

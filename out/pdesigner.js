@@ -67,6 +67,7 @@ var pdesigner;
         constructor(props) {
             super(props);
             this.hasCSS = false;
+            this.hasEditor = true;
             this.children = new Array();
             console.assert(this.props.id != null);
             this.originalRender = this.render;
@@ -78,9 +79,6 @@ var pdesigner;
             let id = this.props.id;
             console.assert(id);
             return id;
-        }
-        get hasEditor() {
-            return true;
         }
         static componentDidMount() {
             let self = this;
@@ -143,6 +141,7 @@ var pdesigner;
                 let childElements;
                 if (children.length)
                     childElements = yield Promise.all(children.map(o => this.create(o)));
+                console.assert(data.id != null);
                 let controlElement = React.createElement(controlType ? controlType : controlName, data, childElements);
                 return controlElement;
             });
@@ -226,20 +225,43 @@ var pdesigner;
             }
             this.setState(this.state);
         }
-        appendControl(parentId, childControl, beforeControlId) {
+        sortControlChildren(controlId, childIds) {
+            let c = this.findControl(controlId);
+            c.children = childIds.map(o => c.children.filter(a => a.id == o)[0]).filter(o => o != null);
+            this.setState(this.state);
+        }
+        sortChildren(parentId, childIds) {
             return __awaiter(this, void 0, void 0, function* () {
+                if (!parentId)
+                    throw pdesigner.Errors.argumentNull('parentId');
+                if (!childIds)
+                    throw pdesigner.Errors.argumentNull('childIds');
                 let pageData = this.state.pageData;
                 let parentControl = this.findControl(parentId);
                 console.assert(parentControl != null);
-                let controls = parentControl.children = parentControl.children || [];
-                let controlIndex = beforeControlId ? parentControl.children.map((o, i) => ({ id: o.id, index: i }))
-                    .filter(o => o.id == beforeControlId)
-                    .map(o => o.index)[0] + 1 : 0;
-                if (controlIndex == controls.length)
-                    controls.push(childControl);
-                else
-                    controls.splice(controlIndex, 0, childControl);
+                console.assert(parentControl.children != null);
+                console.assert(parentControl.children.length == childIds.length);
+                parentControl.children = childIds.map(o => {
+                    let child = parentControl.children.filter(a => a.id == o)[0];
+                    console.assert(child != null, `child ${o} is null`);
+                    return child;
+                });
                 this.setState(this.state);
+            });
+        }
+        appendControl(parentId, childControl, childIds) {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (!parentId)
+                    throw pdesigner.Errors.argumentNull('parentId');
+                if (!childControl)
+                    throw pdesigner.Errors.argumentNull('childControl');
+                if (!childIds)
+                    throw pdesigner.Errors.argumentNull('childIds');
+                let parentControl = this.findControl(parentId);
+                console.assert(parentControl != null);
+                parentControl.children = parentControl.children || [];
+                parentControl.children.push(childControl);
+                this.sortChildren(parentId, childIds);
             });
         }
         findControl(controlId) {
@@ -274,55 +296,51 @@ var pdesigner;
         constructor(props) {
             super(props);
             this.state = { controls: [] };
+            this.hasEditor = false;
         }
-        get hasEditor() { return false; }
         get persistentMembers() {
             return [];
         }
         sortableElement(element, designer) {
             let controls = this.state.controls;
-            let previousControlId = null;
+            let ctrl = null;
+            let childIds;
             $(element).sortable({
                 axis: "y",
                 change: () => {
-                    for (let i = 0; i < element.children.length; i++) {
-                        if (!element.children.item(i).id) {
-                            let previewElement = element.children.item(i - 1);
-                            previousControlId = previewElement ? previewElement.id : null;
-                            break;
-                        }
-                    }
+                    // for (let i = 0; i < element.children.length; i++) {
+                    //     if (!element.children.item(i).id) {
+                    //         let previewElement = element.children.item(i - 1);
+                    //         previousControlId = previewElement ? previewElement.id : null;
+                    //         break;
+                    //     }
+                    // }
                 },
                 receive: (event, ui) => {
+                    let componentName = ui.item.attr('data-control-name');
+                    ctrl = { id: pdesigner.guid(), name: componentName, data: {} };
+                    ui.helper[0].setAttribute('id', ctrl.id);
+                    childIds = new Array();
+                    for (let i = 0; i < element.children.length; i++) {
+                        if (!element.children.item(i).id)
+                            continue;
+                        childIds.push(element.children.item(i).id);
+                    }
                     let helper = ui.helper[0];
                     helper.removeAttribute('style');
-                    let componentName = ui.item.attr('data-control-name');
-                    let target = ui.item.attr('data-target');
-                    console.assert(componentName != null);
                     ui.helper.remove();
-                    let ctrl = { name: componentName, id: pdesigner.guid(), data: {} };
-                    this.designer.appendControl(this.id, ctrl, previousControlId);
                 },
                 update: (event, ui) => {
-                    let view_controls = [];
-                    let footer_controls = [];
-                    //===================================================
-                    // 排序 view controls
-                    // for (let i = 0; i < element.children.length; i++) {
-                    //     let child = element.children[i] as HTMLElement;
-                    //     let control = controls.filter(o => o.id == child.id)[0];
-                    //     console.assert(control != null);
-                    //     view_controls[i] = control;
-                    // }
-                    //===================================================
-                    // for (let i = 0; i < this.footerElement.children.length; i++) {
-                    //     let child = this.footerElement.children[i] as HTMLElement;
-                    //     let control = pageData.controls.filter(o => o.controlId == child.id && o.position == 'footer')[0];
-                    //     footer_controls[i] = control;
-                    // }
-                    // //===================================================
-                    // let header_controls = pageData.controls.filter(o => o.position == 'header');
-                    // pageData.controls = [...header_controls, ...footer_controls, ...view_controls];
+                    if (ctrl) {
+                        this.designer.appendControl(this.id, ctrl, childIds);
+                        ctrl = null;
+                    }
+                    else {
+                        let childIds = new Array();
+                        for (let i = 0; i < element.children.length; i++)
+                            childIds.push(element.children.item(i).id);
+                        this.designer.sortChildren(this.id, childIds);
+                    }
                 }
             });
         }
@@ -338,7 +356,7 @@ var pdesigner;
             let self = this;
             return h(pdesigner.DesignerContext.Consumer, null, c => h(pdesigner.PageViewContext.Consumer, null, context => {
                 self.designer = c.designer;
-                return h("div", { className: `place-holder ${pdesigner.ControlToolbar.connectorElementClassName}`, style: this.props.style, ref: (e) => this.element = e || this.element }, controls.length == 0 ? emptyElement : controls);
+                return h("div", Object.assign({}, this.props, { className: `place-holder ${pdesigner.ControlToolbar.connectorElementClassName}`, style: this.props.style, ref: (e) => this.element = e || this.element }), controls.length == 0 ? emptyElement : controls);
             }));
         }
     }
@@ -403,6 +421,15 @@ var pdesigner;
         }
     }
     pdesigner.EditorPanel = EditorPanel;
+})(pdesigner || (pdesigner = {}));
+var pdesigner;
+(function (pdesigner) {
+    class Errors {
+        static argumentNull(argumentName) {
+            return new Error(`Argument ${argumentName} is null or empty.`);
+        }
+    }
+    pdesigner.Errors = Errors;
 })(pdesigner || (pdesigner = {}));
 var pdesigner;
 (function (pdesigner) {
