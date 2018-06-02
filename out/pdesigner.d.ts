@@ -1,4 +1,6 @@
 /// <reference types="react" />
+/// <reference types="jquery" />
+/// <reference types="jqueryui" />
 declare namespace pdesigner {
     interface EditorProps extends React.Props<Editor<any, any>> {
         control: Control<any, any>;
@@ -60,13 +62,11 @@ declare namespace pdesigner {
     }
     class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
         private element;
-        private componentDefines;
         controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
-        controlElementCreated: chitu.Callback1<PageDesigner, HTMLElement>;
+        controlComponentDidMount: chitu.Callback1<PageDesigner, Control<any, any>>;
         constructor(props: any);
         updateControlProps(controlId: string, props: any): any;
         appendControl(parentId: string, childControl: ControlDescription, beforeControlId?: string): Promise<void>;
-        addComponentDefine(item: ComponentDefine): void;
         findControl(controlId: string): ControlDescription;
         render(): JSX.Element;
     }
@@ -112,6 +112,7 @@ declare namespace pdesigner {
         private toolbarElement;
         static connectorElementClassName: string;
         componentDidMount(): void;
+        draggable(selector: JQuery): void;
         render(): JSX.Element;
     }
 }

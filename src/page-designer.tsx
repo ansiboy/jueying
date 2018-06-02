@@ -33,9 +33,9 @@ namespace pdesigner {
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
 
         private element: HTMLElement;
-        private componentDefines: { [key: string]: ComponentDefine } = {};
+        // private componentDefines: { [key: string]: ComponentDefine } = {};
         controlSelected = chitu.Callbacks<PageDesigner, Control<any, any>>();
-        controlElementCreated = chitu.Callbacks<PageDesigner, HTMLElement>();
+        controlComponentDidMount = chitu.Callbacks<PageDesigner, Control<any, any>>();
 
         constructor(props) {
             super(props);
@@ -73,9 +73,9 @@ namespace pdesigner {
             this.setState(this.state);
         }
 
-        addComponentDefine(item: ComponentDefine) {
-            this.componentDefines[item.name] = item;
-        }
+        // addComponentDefine(item: ComponentDefine) {
+        //     this.componentDefines[item.name] = item;
+        // }
         findControl(controlId: string) {
             let pageData = this.state.pageData;
             let stack = new Array<ControlDescription>();

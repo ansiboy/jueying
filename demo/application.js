@@ -56,12 +56,11 @@ define(["require", "exports", "pdesigner", "react-dom", "./components/componenDe
         return h("div", { ref: (e) => __awaiter(this, void 0, void 0, function* () {
                 pageViewElement = e || pageViewElement;
                 let element = yield pdesigner_1.Control.create(pageData);
-                ReactDOM.render(h(pdesigner_1.DesignerContext.Provider, { value: { designer } },
-                    element,
-                    h(pdesigner_1.ControlToolbar, { className: "toolbar", componets: componenDefines_1.componets })), pageViewElement);
+                ReactDOM.render(h(pdesigner_1.DesignerContext.Provider, { value: { designer } }, element), pageViewElement);
             }) });
     }
     let designerElement = h(pdesigner_1.PageDesigner, { pageData: controlDescription },
+        h(pdesigner_1.ControlToolbar, { className: "toolbar", componets: componenDefines_1.componets }),
         h("div", { className: "clearfix" }),
         h(pdesigner_1.DesignerContext.Consumer, null, context => {
             designer = context.designer;

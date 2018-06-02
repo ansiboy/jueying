@@ -55,6 +55,7 @@ namespace pdesigner {
                     e.cancelBubble = true;
                     self._designer.controlSelected.fire(self._designer, self)
                 }
+                self._designer.controlComponentDidMount.fire(self._designer, self);
             }
         }
 
@@ -69,8 +70,6 @@ namespace pdesigner {
         get hasEditor() {
             return true;
         }
-
-
 
         static async create(description: ControlDescription) {
             let controlName = description.name;

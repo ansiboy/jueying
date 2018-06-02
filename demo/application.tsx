@@ -58,7 +58,6 @@ function renderPageData(pageData: ControlDescription) {
         let element = await Control.create(pageData);
         ReactDOM.render(<DesignerContext.Provider value={{ designer }}>
             {element}
-            <ControlToolbar className="toolbar" componets={componets} />
         </DesignerContext.Provider>, pageViewElement)
 
     }}>
@@ -67,6 +66,7 @@ function renderPageData(pageData: ControlDescription) {
 
 
 let designerElement = <PageDesigner pageData={controlDescription} >
+    <ControlToolbar className="toolbar" componets={componets} />
     <div className="clearfix" />
     <DesignerContext.Consumer>
         {context => {

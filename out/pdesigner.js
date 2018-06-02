@@ -88,6 +88,7 @@ var pdesigner;
                     e.cancelBubble = true;
                     self._designer.controlSelected.fire(self._designer, self);
                 };
+                self._designer.controlComponentDidMount.fire(self._designer, self);
             };
         }
         get id() {
@@ -201,9 +202,9 @@ var pdesigner;
     class PageDesigner extends React.Component {
         constructor(props) {
             super(props);
-            this.componentDefines = {};
+            // private componentDefines: { [key: string]: ComponentDefine } = {};
             this.controlSelected = chitu.Callbacks();
-            this.controlElementCreated = chitu.Callbacks();
+            this.controlComponentDidMount = chitu.Callbacks();
             this.state = { pageData: this.props.pageData };
         }
         updateControlProps(controlId, props) {
@@ -232,9 +233,9 @@ var pdesigner;
                 this.setState(this.state);
             });
         }
-        addComponentDefine(item) {
-            this.componentDefines[item.name] = item;
-        }
+        // addComponentDefine(item: ComponentDefine) {
+        //     this.componentDefines[item.name] = item;
+        // }
         findControl(controlId) {
             let pageData = this.state.pageData;
             let stack = new Array();
@@ -437,12 +438,19 @@ var pdesigner;
 (function (pdesigner) {
     class ControlToolbar extends React.Component {
         componentDidMount() {
+            this.draggable($(`.${ControlToolbar.connectorElementClassName}`));
+            this.designer.controlComponentDidMount.add((sender, control) => {
+                console.assert(control.element != null);
+                this.draggable($(control.element));
+            });
+        }
+        draggable(selector) {
             $(this.toolbarElement).find('li').draggable({
                 connectToSortable: $(`section, .${ControlToolbar.connectorElementClassName}`),
                 helper: "clone",
                 revert: "invalid"
             });
-            this.props.componets.forEach(o => this.designer.addComponentDefine(o));
+            // this.props.componets.forEach(o => this.designer.addComponentDefine(o));
         }
         render() {
             let props = this.props;
