@@ -41,6 +41,20 @@ namespace pdesigner {
             super(props);
             this.state = { pageData: this.props.pageData };
         }
+
+        updateControlProps(controlId: string, props: any): any {
+            let controlDescription = this.findControl(controlId);
+            console.assert(controlDescription != null);
+            console.assert(props != null, 'props is null');
+
+            controlDescription.data = controlDescription.data || {};
+            for (let key in props) {
+                controlDescription.data[key] = props[key];
+            }
+
+            this.setState(this.state);
+        }
+
         async appendControl(parentId: string, childControl: ControlDescription, beforeControlId?: string) {
             let pageData = this.state.pageData;
             let parentControl = this.findControl(parentId);
@@ -57,29 +71,6 @@ namespace pdesigner {
                 controls.splice(controlIndex, 0, childControl);
 
             this.setState(this.state);
-        }
-        registerEditor(componentName: string): any {
-            let c = this.componentDefines[componentName];
-            if (c == null)
-                throw new Error(`Componet define of '${componentName}' is not exists`);
-
-            let editorPath = c.editorPath;
-            if (!editorPath)
-                throw Error(`Editor path of ${componentName} is null`);
-            return new Promise((resolve, reject) => {
-                requirejs([c.editorPath],
-                    (exports2) => {
-
-                        let editor = exports2['default'];
-                        if (editor == null)
-                            throw new Error(`File of '${c.editorPath}' export default is null.`);
-
-                        Editor.register(componentName, editor);
-                        resolve();
-                    },
-                    (err) => reject(err)
-                )
-            })
         }
 
         addComponentDefine(item: ComponentDefine) {
@@ -128,38 +119,7 @@ namespace pdesigner {
         //     })
         // }
 
-        async createEditorElement(control: Control<any, any>) {
-            let controlTypeName = control.constructor.name;
-            let c = this.componentDefines[controlTypeName];
-            if (c == null) {
-                console.log(`Componet define of ${controlTypeName} is not exists.`);
-                return null;
-            }
 
-            if (c.editorPath == null)
-                throw new Error(`Editor path of '${controlTypeName}' is null.`);
-
-            //TODO: 缓存 editorType
-            let editorType = await new Promise<React.ComponentClass>((resolve, reject) => {
-                requirejs([c.editorPath],
-                    (exports2) => {
-
-                        let editor: React.ComponentClass = exports2['default'];
-                        if (editor == null)
-                            throw new Error(`Default export of file '${c.editorPath}' is null.`)
-
-                        Editor.register(control.name, editor);
-                        resolve(editor);
-                    },
-                    (err) => reject(err)
-                )
-            })
-
-            let editorProps: EditorProps = { control, key: control.id };
-            let editorElement = React.createElement(editorType, editorProps);
-
-            return editorElement;
-        }
         render() {
             let context = {
                 controlSelected: chitu.Callbacks<PageView, Control<any, any>, React.ComponentClass<any>>(),

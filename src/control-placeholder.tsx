@@ -114,7 +114,6 @@ namespace pdesigner {
                                         controls.filter(o => o.selected == true).forEach(o => o.selected = false);
                                         // this.props.designTime.controlSelected(c.control, c.controlType);
                                         if (context.designer.controlSelected) {
-                                            debugger;
                                             // context.controlSelected.fire(this, c.control, c.controlType);
                                         }
                                         event.preventDefault();
@@ -183,7 +182,6 @@ namespace pdesigner {
 
         componentDidMount() {
             if (this.designer) {
-                debugger;
                 this.sortableElement(this.element, this.designer);
             }
         }

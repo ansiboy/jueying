@@ -1,21 +1,25 @@
 import * as React from 'react';
-import { Control, ControlProps, PageDesigner } from 'pdesigner';
+import { Control, ControlProps, PageDesigner, guid } from 'pdesigner';
 
 interface State {
+}
+
+export interface Props extends React.Props<TestControl> {
     text: string
 }
 
-interface Props extends ControlProps<TestControl> {
-}
-
 export default class TestControl extends Control<Props, State> {
+    persistentMembers: never[];
     element: HTMLElement;
-    get persistentMembers(): (keyof State)[] {
-        return ['text']
+    constructor(props) {
+        super(props);
+        this.state = { text: '' }
     }
+ 
+    static defaultProps: Props = ({ text: 'HelloWorld' });
+
     render(h?: any) {
-        let { text } = this.state;
-        text = text || "FFFF"
+        let { text } = this.props;
         return <div ref={(e: HTMLElement) => this.element = e || this.element}>
             {text}
         </div>

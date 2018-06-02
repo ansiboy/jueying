@@ -25,7 +25,7 @@ namespace pdesigner {
                 let editors = this.state.editors;
                 let editor = editors[control.id];
                 if (!editor) {
-                    editor = await designer.createEditorElement(control);
+                    editor = await Editor.create(control);
                     if (editor)
                         editors[control.id] = editor;
                 }

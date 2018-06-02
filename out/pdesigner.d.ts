@@ -4,26 +4,24 @@ declare namespace pdesigner {
         control: Control<any, any>;
     }
     abstract class Editor<P extends EditorProps, S> extends React.Component<P, S> {
+        private designer;
+        private originalRender;
         private controlType;
-        private _state;
         validate: () => Promise<boolean>;
         abstract element: HTMLElement;
         constructor(props: any);
-        componentDidUpdate(): void;
-        static register(controlTypeName: string, editorType: React.ComponentClass<any>): void;
-        static isRegister(controlTypeName: string): boolean;
+        setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
+        static create(control: Control<any, any>): Promise<React.ComponentElement<{}, React.Component<{}, React.ComponentState, any>>>;
     }
 }
 declare namespace pdesigner {
     interface ControlProps<T> extends React.Props<T> {
-        id: string;
     }
     const componentsDir = "components";
     abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private _designer;
         private originalComponentDidMount;
         private originalRender;
-        private _state;
         protected hasCSS: boolean;
         name: string;
         children: Control<any, any>[];
@@ -31,14 +29,9 @@ declare namespace pdesigner {
         constructor(props: any);
         readonly abstract persistentMembers: (keyof S)[];
         readonly id: string;
-        /**
-         * 重写 set state， 在第一次赋值，将 props 的持久化成员赋值过来。
-         */
-        state: S;
         readonly hasEditor: boolean;
         static create(description: ControlDescription): Promise<React.ReactElement<any>>;
         static register(controlType: React.ComponentClass<any>): void;
-        static isRegister(controlTypeName: string): boolean;
         export(): ControlDescription;
     }
 }
@@ -70,11 +63,10 @@ declare namespace pdesigner {
         controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
         private componentDefines;
         constructor(props: any);
+        updateControlProps(controlId: string, props: any): any;
         appendControl(parentId: string, childControl: ControlDescription, beforeControlId?: string): Promise<void>;
-        registerEditor(componentName: string): any;
         addComponentDefine(item: ComponentDefine): void;
         findControl(controlId: string): ControlDescription;
-        createEditorElement(control: Control<any, any>): Promise<React.ComponentElement<{}, React.Component<{}, React.ComponentState, any>>>;
         render(): JSX.Element;
     }
 }
@@ -197,7 +189,7 @@ declare namespace pdesigner {
     interface ControlDescription {
         name: string;
         id: string;
-        data: any;
+        data?: any;
         selected?: boolean | 'disabled';
         children?: ControlDescription[];
     }

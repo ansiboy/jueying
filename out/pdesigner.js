@@ -1,31 +1,3 @@
-var pdesigner;
-(function (pdesigner) {
-    let customEditors = {};
-    class Editor extends React.Component {
-        constructor(props) {
-            super(props);
-            console.assert(this.props.control.state != null);
-        }
-        componentDidUpdate() {
-            let control = this.props.control;
-            console.assert(control != null);
-            let controlState = control.state;
-            let keys = control.persistentMembers;
-            for (let i = 0; i < keys.length; i++) {
-                let key = keys[i];
-                controlState[key] = this.state[key];
-            }
-            control.setState(controlState);
-        }
-        static register(controlTypeName, editorType) {
-            customEditors[controlTypeName] = editorType;
-        }
-        static isRegister(controlTypeName) {
-            return customEditors[controlTypeName] != null;
-        }
-    }
-    pdesigner.Editor = Editor;
-})(pdesigner || (pdesigner = {}));
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -36,14 +8,63 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var pdesigner;
 (function (pdesigner) {
+    let customEditors = {};
+    class Editor extends React.Component {
+        constructor(props) {
+            super(props);
+            console.assert(this.props.control.state != null);
+            this.state = this.props.control.props;
+            this.originalRender = this.render;
+            this.render = () => {
+                return h(pdesigner.DesignerContext.Consumer, null, context => {
+                    this.designer = context.designer;
+                    return this.originalRender ? this.originalRender() : null;
+                });
+            };
+        }
+        setState(state, callback) {
+            console.assert(state != null);
+            if (this.designer) {
+                this.designer.updateControlProps(this.props.control.id, state);
+            }
+            return super.setState(state, callback);
+        }
+        static create(control) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let controlName = control.constructor.name;
+                let name = controlName.endsWith('Control') ?
+                    controlName.substr(0, controlName.length - 'Control'.length) :
+                    controlName;
+                let editorPath = `${pdesigner.componentsDir}/${name}/editor`;
+                //TODO: 缓存 editorType
+                let editorType = yield new Promise((resolve, reject) => {
+                    requirejs([editorPath], (exports2) => {
+                        let editor = exports2['default'];
+                        if (editor == null)
+                            throw new Error(`Default export of file '${editorPath}' is null.`);
+                        resolve(editor);
+                    }, (err) => reject(err));
+                });
+                let editorProps = { control, key: control.id };
+                let editorElement = React.createElement(editorType, editorProps);
+                return editorElement;
+            });
+        }
+    }
+    pdesigner.Editor = Editor;
+})(pdesigner || (pdesigner = {}));
+var pdesigner;
+(function (pdesigner) {
     let h = React.createElement;
     let customControlTypes = {};
     pdesigner.componentsDir = 'components';
     class Control extends React.Component {
         constructor(props) {
             super(props);
+            // private _state: S;
             this.hasCSS = false;
             this.children = new Array();
+            console.assert(this.props.id != null);
             this.originalRender = this.render;
             this.render = function () {
                 let self = this;
@@ -70,44 +91,24 @@ var pdesigner;
             };
         }
         get id() {
-            return this.props.id;
-        }
-        get state() {
-            return this._state;
-        }
-        /**
-         * 重写 set state， 在第一次赋值，将 props 的持久化成员赋值过来。
-         */
-        set state(value) {
-            value = value || {};
-            if (this._state != null) {
-                this._state = value;
-                return;
-            }
-            var state = {};
-            let keys = this.persistentMembers || [];
-            for (let i = 0; i < keys.length; i++) {
-                var prop = this.props[keys[i]];
-                if (prop !== undefined)
-                    state[keys[i]] = prop;
-            }
-            this._state = Object.assign(value, state);
-            ;
+            let id = this.props.id;
+            console.assert(id);
+            return id;
         }
         get hasEditor() {
             return true;
         }
         static create(description) {
             return __awaiter(this, void 0, void 0, function* () {
-                let componentName = description.name;
+                let controlName = description.name;
                 let children = description.children || [];
                 let data = description.data || {};
                 data.id = description.id;
-                let controlType = customControlTypes[componentName];
-                if (controlType == null && componentName[0].toUpperCase() == componentName[0]) {
-                    let name = componentName.endsWith('Control') ?
-                        componentName.substr(0, componentName.length - 'Control'.length) :
-                        componentName;
+                let controlType = customControlTypes[controlName];
+                if (controlType == null && controlName[0].toUpperCase() == controlName[0]) {
+                    let name = controlName.endsWith('Control') ?
+                        controlName.substr(0, controlName.length - 'Control'.length) :
+                        controlName;
                     let controlPath = `${pdesigner.componentsDir}/${name}/control`;
                     controlType = yield new Promise((resolve, reject) => {
                         requirejs([controlPath], (exports2) => {
@@ -120,25 +121,25 @@ var pdesigner;
                     console.assert(controlType != null);
                     Control.register(controlType);
                 }
-                children.forEach(o => o.data.key = o.id);
+                children.forEach(o => {
+                    o.data.key = o.id;
+                    o.data.id = o.id;
+                });
                 let childElements;
                 if (children.length)
                     childElements = yield Promise.all(children.map(o => this.create(o)));
-                let controlElement = React.createElement(controlType ? controlType : componentName, data, childElements);
+                let controlElement = React.createElement(controlType ? controlType : controlName, data, childElements);
                 return controlElement;
             });
         }
         static register(controlType) {
             customControlTypes[controlType.name] = controlType;
         }
-        static isRegister(controlTypeName) {
-            return customControlTypes[controlTypeName] != null;
-        }
         export() {
             let children = this.children || [];
             let members = this.persistentMembers || [];
             let state = this.state || {};
-            let data = { id: this.props.id };
+            let data = {};
             for (let key in state) {
                 if (members.indexOf(key) >= 0)
                     data[key] = state[key];
@@ -205,6 +206,16 @@ var pdesigner;
             this.componentDefines = {};
             this.state = { pageData: this.props.pageData };
         }
+        updateControlProps(controlId, props) {
+            let controlDescription = this.findControl(controlId);
+            console.assert(controlDescription != null);
+            console.assert(props != null, 'props is null');
+            controlDescription.data = controlDescription.data || {};
+            for (let key in props) {
+                controlDescription.data[key] = props[key];
+            }
+            this.setState(this.state);
+        }
         appendControl(parentId, childControl, beforeControlId) {
             return __awaiter(this, void 0, void 0, function* () {
                 let pageData = this.state.pageData;
@@ -219,23 +230,6 @@ var pdesigner;
                 else
                     controls.splice(controlIndex, 0, childControl);
                 this.setState(this.state);
-            });
-        }
-        registerEditor(componentName) {
-            let c = this.componentDefines[componentName];
-            if (c == null)
-                throw new Error(`Componet define of '${componentName}' is not exists`);
-            let editorPath = c.editorPath;
-            if (!editorPath)
-                throw Error(`Editor path of ${componentName} is null`);
-            return new Promise((resolve, reject) => {
-                requirejs([c.editorPath], (exports2) => {
-                    let editor = exports2['default'];
-                    if (editor == null)
-                        throw new Error(`File of '${c.editorPath}' export default is null.`);
-                    pdesigner.Editor.register(componentName, editor);
-                    resolve();
-                }, (err) => reject(err));
             });
         }
         addComponentDefine(item) {
@@ -276,31 +270,6 @@ var pdesigner;
         //         )
         //     })
         // }
-        createEditorElement(control) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let controlTypeName = control.constructor.name;
-                let c = this.componentDefines[controlTypeName];
-                if (c == null) {
-                    console.log(`Componet define of ${controlTypeName} is not exists.`);
-                    return null;
-                }
-                if (c.editorPath == null)
-                    throw new Error(`Editor path of '${controlTypeName}' is null.`);
-                //TODO: 缓存 editorType
-                let editorType = yield new Promise((resolve, reject) => {
-                    requirejs([c.editorPath], (exports2) => {
-                        let editor = exports2['default'];
-                        if (editor == null)
-                            throw new Error(`Default export of file '${c.editorPath}' is null.`);
-                        pdesigner.Editor.register(control.name, editor);
-                        resolve(editor);
-                    }, (err) => reject(err));
-                });
-                let editorProps = { control, key: control.id };
-                let editorElement = React.createElement(editorType, editorProps);
-                return editorElement;
-            });
-        }
         render() {
             let context = {
                 controlSelected: chitu.Callbacks(),
@@ -418,7 +387,6 @@ var pdesigner;
                                 controls.filter(o => o.selected == true).forEach(o => o.selected = false);
                                 // this.props.designTime.controlSelected(c.control, c.controlType);
                                 if (context.designer.controlSelected) {
-                                    debugger;
                                     // context.controlSelected.fire(this, c.control, c.controlType);
                                 }
                                 event.preventDefault();
@@ -471,7 +439,6 @@ var pdesigner;
         }
         componentDidMount() {
             if (this.designer) {
-                debugger;
                 this.sortableElement(this.element, this.designer);
             }
         }
@@ -528,7 +495,7 @@ var pdesigner;
                 let editors = this.state.editors;
                 let editor = editors[control.id];
                 if (!editor) {
-                    editor = yield designer.createEditorElement(control);
+                    editor = yield pdesigner.Editor.create(control);
                     if (editor)
                         editors[control.id] = editor;
                 }

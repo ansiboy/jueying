@@ -2,7 +2,6 @@ namespace pdesigner {
     let h = React.createElement;
 
     export interface ControlProps<T> extends React.Props<T> {
-        id: string,
     }
 
     let customControlTypes: { [key: string]: React.ComponentClass<any> } = {}
@@ -12,7 +11,7 @@ namespace pdesigner {
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
         private originalRender: () => React.ReactNode;
-        private _state: S;
+        // private _state: S;
 
         protected hasCSS = false;
 
@@ -23,6 +22,9 @@ namespace pdesigner {
 
         constructor(props) {
             super(props);
+
+            console.assert((this.props as any).id != null);
+
             this.originalRender = this.render;
             this.render = function () {
                 let self = this as Control<any, any>;
@@ -59,49 +61,28 @@ namespace pdesigner {
         abstract get persistentMembers(): (keyof S)[];
 
         get id(): string {
-            return this.props.id;
-        }
-
-        get state(): S {
-            return this._state;
-        }
-
-        /**
-         * 重写 set state， 在第一次赋值，将 props 的持久化成员赋值过来。 
-         */
-        set state(value: S) {
-            value = value || {} as S;
-            if (this._state != null) {
-                this._state = value;
-                return;
-            }
-
-            var state = {} as any;
-            let keys = this.persistentMembers || [];
-            for (let i = 0; i < keys.length; i++) {
-                var prop = (this.props as any)[keys[i]];
-                if (prop !== undefined)
-                    state[keys[i]] = prop;
-            }
-
-            this._state = Object.assign(value, state);;
+            let id = (this.props as any).id;
+            console.assert(id);
+            return id;
         }
 
         get hasEditor() {
             return true;
         }
 
+
+
         static async create(description: ControlDescription) {
-            let componentName = description.name;
+            let controlName = description.name;
             let children = description.children || [];
             let data = description.data || {};
             data.id = description.id;
 
-            let controlType = customControlTypes[componentName];
-            if (controlType == null && componentName[0].toUpperCase() == componentName[0]) {
-                let name = componentName.endsWith('Control') ?
-                    componentName.substr(0, componentName.length - 'Control'.length) :
-                    componentName;
+            let controlType = customControlTypes[controlName];
+            if (controlType == null && controlName[0].toUpperCase() == controlName[0]) {
+                let name = controlName.endsWith('Control') ?
+                    controlName.substr(0, controlName.length - 'Control'.length) :
+                    controlName;
 
                 let controlPath = `${componentsDir}/${name}/control`;
                 controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
@@ -121,13 +102,16 @@ namespace pdesigner {
                 Control.register(controlType);
             }
 
-            children.forEach(o => o.data.key = o.id);
+            children.forEach(o => {
+                o.data.key = o.id;
+                o.data.id = o.id;
+            });
             let childElements: React.ReactElement<any>[];
             if (children.length)
                 childElements = await Promise.all(children.map(o => this.create(o)));
 
             let controlElement = React.createElement(
-                controlType ? controlType : componentName,
+                controlType ? controlType : controlName,
                 data, childElements
             )
 
@@ -138,15 +122,11 @@ namespace pdesigner {
             customControlTypes[controlType.name] = controlType;
         }
 
-        static isRegister(controlTypeName: string) {
-            return customControlTypes[controlTypeName] != null;
-        }
-
         export(): ControlDescription {
             let children = this.children || [];
             let members = this.persistentMembers || [];
             let state = this.state || {};
-            let data = { id: this.props.id };
+            let data = {};
 
             for (let key in state) {
                 if (members.indexOf(key as keyof S) >= 0)

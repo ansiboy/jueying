@@ -11,7 +11,7 @@ namespace pdesigner {
     export interface ControlDescription {
         name: string;
         id: string;
-        data: any;
+        data?: any;
         selected?: boolean | 'disabled';
         children?: ControlDescription[],
     }
