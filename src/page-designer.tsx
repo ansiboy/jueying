@@ -18,7 +18,6 @@ namespace pdesigner {
 
 
     export const DesignerContext = React.createContext({
-        // controlSelected: null as chitu.Callback2<PageView, Control<any, any>, React.ComponentClass<any>>,
         designer: null as PageDesigner
     })
 
@@ -34,8 +33,9 @@ namespace pdesigner {
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
 
         private element: HTMLElement;
-        controlSelected = chitu.Callbacks<PageDesigner, Control<any, any>>();
         private componentDefines: { [key: string]: ComponentDefine } = {};
+        controlSelected = chitu.Callbacks<PageDesigner, Control<any, any>>();
+        controlElementCreated = chitu.Callbacks<PageDesigner, HTMLElement>();
 
         constructor(props) {
             super(props);
@@ -90,35 +90,6 @@ namespace pdesigner {
 
             return null;
         }
-
-        // private async loadControlType(componentName: string) {
-        //     let c = this.componentDefines[componentName];
-        //     if (c == null) {
-        //         console.log(`Componet define of ${componentName} is not exists.`);
-        //         return null;
-        //     }
-
-        //     if (c.controlPath == null)
-        //         throw new Error(`Control path of '${componentName}' is null.`);
-
-        //     let dir = this.props.componentsDirectory;
-        //     let controlPath = dir ? `${dir}/${componentName}` : componentName;
-        //     //TODO: 缓存 controlType
-        //     let controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
-        //         requirejs([c.controlPath],
-        //             (exports2) => {
-
-        //                 let controlType: React.ComponentClass = exports2['default'];
-        //                 if (controlType == null)
-        //                     throw new Error(`Default export of file '${c.controlPath}' is null.`)
-
-        //                 resolve(controlType);
-        //             },
-        //             (err) => reject(err)
-        //         )
-        //     })
-        // }
-
 
         render() {
             let context = {

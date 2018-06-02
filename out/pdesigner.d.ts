@@ -60,8 +60,9 @@ declare namespace pdesigner {
     }
     class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
         private element;
-        controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
         private componentDefines;
+        controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
+        controlElementCreated: chitu.Callback1<PageDesigner, HTMLElement>;
         constructor(props: any);
         updateControlProps(controlId: string, props: any): any;
         appendControl(parentId: string, childControl: ControlDescription, beforeControlId?: string): Promise<void>;
@@ -118,10 +119,7 @@ declare namespace pdesigner {
 }
 declare namespace pdesigner {
     interface EditorPanelState {
-        activeControlId: string;
-        editors: {
-            [key: string]: React.ReactElement<any>;
-        };
+        editor: React.ReactElement<any>;
     }
     interface EditorPanelProps {
         className?: string;

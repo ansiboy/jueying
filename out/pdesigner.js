@@ -196,14 +196,14 @@ var pdesigner;
 var pdesigner;
 (function (pdesigner) {
     pdesigner.DesignerContext = React.createContext({
-        // controlSelected: null as chitu.Callback2<PageView, Control<any, any>, React.ComponentClass<any>>,
         designer: null
     });
     class PageDesigner extends React.Component {
         constructor(props) {
             super(props);
-            this.controlSelected = chitu.Callbacks();
             this.componentDefines = {};
+            this.controlSelected = chitu.Callbacks();
+            this.controlElementCreated = chitu.Callbacks();
             this.state = { pageData: this.props.pageData };
         }
         updateControlProps(controlId, props) {
@@ -247,29 +247,6 @@ var pdesigner;
             }
             return null;
         }
-        // private async loadControlType(componentName: string) {
-        //     let c = this.componentDefines[componentName];
-        //     if (c == null) {
-        //         console.log(`Componet define of ${componentName} is not exists.`);
-        //         return null;
-        //     }
-        //     if (c.controlPath == null)
-        //         throw new Error(`Control path of '${componentName}' is null.`);
-        //     let dir = this.props.componentsDirectory;
-        //     let controlPath = dir ? `${dir}/${componentName}` : componentName;
-        //     //TODO: 缓存 controlType
-        //     let controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
-        //         requirejs([c.controlPath],
-        //             (exports2) => {
-        //                 let controlType: React.ComponentClass = exports2['default'];
-        //                 if (controlType == null)
-        //                     throw new Error(`Default export of file '${c.controlPath}' is null.`)
-        //                 resolve(controlType);
-        //             },
-        //             (err) => reject(err)
-        //         )
-        //     })
-        // }
         render() {
             let context = {
                 controlSelected: chitu.Callbacks(),
@@ -487,31 +464,18 @@ var pdesigner;
     class EditorPanel extends React.Component {
         constructor(props) {
             super(props);
-            this.state = { activeControlId: '', editors: {} };
+            this.state = { editor: null };
         }
         componentDidMount() {
             this.designer.controlSelected.add((designer, control) => __awaiter(this, void 0, void 0, function* () {
-                let controlTypeName = control.constructor.name;
-                let editors = this.state.editors;
-                let editor = editors[control.id];
-                if (!editor) {
-                    editor = yield pdesigner.Editor.create(control);
-                    if (editor)
-                        editors[control.id] = editor;
-                }
-                this.setState({ activeControlId: control.id });
+                let editor = yield pdesigner.Editor.create(control);
+                this.setState({ editor });
             }));
         }
         render() {
-            let editors = [];
-            for (let key in this.state.editors) {
-                let editor = this.state.editors[key];
-                console.assert(editor != null);
-                editors.push(editor);
-            }
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }), editors);
+                return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }), this.state.editor);
             });
         }
     }
