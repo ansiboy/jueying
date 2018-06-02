@@ -520,31 +520,31 @@ var pdesigner;
     class EditorPanel extends React.Component {
         constructor(props) {
             super(props);
-            this.state = { activeControlId: '', editors: {} };
+            this.state = { editor: null };
         }
         componentDidMount() {
             this.designer.controlSelected.add((designer, control) => __awaiter(this, void 0, void 0, function* () {
-                let controlTypeName = control.constructor.name;
-                let editors = this.state.editors;
-                let editor = editors[control.id];
-                if (!editor) {
-                    editor = yield designer.createEditorElement(control);
-                    if (editor)
-                        editors[control.id] = editor;
-                }
-                this.setState({ activeControlId: control.id });
+                // let controlTypeName = control.constructor.name;
+                // let editors = this.state.editors;
+                // let editor = editors[control.id];
+                // if (!editor) {
+                let editor = yield designer.createEditorElement(control);
+                //     if (editor)
+                //         editors[control.id] = editor;
+                // }
+                this.setState({ editor });
             }));
         }
         render() {
-            let editors = [];
-            for (let key in this.state.editors) {
-                let editor = this.state.editors[key];
-                console.assert(editor != null);
-                editors.push(editor);
-            }
+            // let editors = [];
+            // for (let key in this.state.editors) {
+            //     let editor = this.state.editors[key];
+            //     console.assert(editor != null);
+            //     editors.push(editor);
+            // }
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }), editors);
+                return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }), this.state.editor);
             });
         }
     }

@@ -1,7 +1,7 @@
 namespace pdesigner {
     export interface EditorPanelState {
-        activeControlId: string,
-        editors: { [key: string]: React.ReactElement<any> },
+        editor: React.ReactElement<any>,
+        // editors: { [key: string]: React.ReactElement<any> },
     }
 
     export interface EditorPanelProps {
@@ -15,38 +15,38 @@ namespace pdesigner {
 
         constructor(props) {
             super(props);
-            this.state = { activeControlId: '', editors: {} };
+            this.state = { editor: null };
         }
         componentDidMount() {
             this.designer.controlSelected.add(async (designer, control) => {
 
-                let controlTypeName = control.constructor.name;
+                // let controlTypeName = control.constructor.name;
 
-                let editors = this.state.editors;
-                let editor = editors[control.id];
-                if (!editor) {
-                    editor = await designer.createEditorElement(control);
-                    if (editor)
-                        editors[control.id] = editor;
-                }
+                // let editors = this.state.editors;
+                // let editor = editors[control.id];
+                // if (!editor) {
+                let editor = await designer.createEditorElement(control);
+                //     if (editor)
+                //         editors[control.id] = editor;
+                // }
 
-                this.setState({ activeControlId: control.id });
+                this.setState({ editor });
             })
         }
         render() {
-            let editors = [];
-            for (let key in this.state.editors) {
-                let editor = this.state.editors[key];
-                console.assert(editor != null);
+            // let editors = [];
+            // for (let key in this.state.editors) {
+            //     let editor = this.state.editors[key];
+            //     console.assert(editor != null);
 
-                editors.push(editor);
-            }
-            
+            //     editors.push(editor);
+            // }
+
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
                     return <div {...this.props} ref={(e: HTMLElement) => this.element = e || this.element}>
-                        {editors}
+                        {this.state.editor}
                     </div>
                 }}
             </DesignerContext.Consumer>

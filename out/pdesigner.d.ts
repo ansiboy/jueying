@@ -74,7 +74,7 @@ declare namespace pdesigner {
         registerEditor(componentName: string): any;
         addComponentDefine(item: ComponentDefine): void;
         findControl(controlId: string): ControlDescription;
-        createEditorElement(control: Control<any, any>): Promise<React.ComponentElement<{}, React.Component<{}, React.ComponentState, any>>>;
+        createEditorElement(control: Control<any, any>): Promise<React.ReactElement<{}>>;
         render(): JSX.Element;
     }
 }
@@ -126,10 +126,7 @@ declare namespace pdesigner {
 }
 declare namespace pdesigner {
     interface EditorPanelState {
-        activeControlId: string;
-        editors: {
-            [key: string]: React.ReactElement<any>;
-        };
+        editor: React.ReactElement<any>;
     }
     interface EditorPanelProps {
         className?: string;
