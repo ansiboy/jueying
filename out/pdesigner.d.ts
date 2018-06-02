@@ -9,19 +9,8 @@ declare namespace pdesigner {
         validate: () => Promise<boolean>;
         abstract element: HTMLElement;
         constructor(props: any);
-        /**
-         * 重写 set state， 在第一次赋值，将控件中 state 的持久化成员赋值过来。
-         */
-        state: S;
         componentDidUpdate(): void;
-        static path(controlName: string): string;
-        protected loadEditorCSS(): void;
-        bindInputElement(e: HTMLInputElement | HTMLSelectElement, fieldName: keyof S): any;
-        bindInputElement<T>(e: HTMLInputElement | HTMLSelectElement, obj: T, fieldName?: keyof T, fieldType?: 'number' | 'string'): any;
-        bindCheckElement(e: HTMLInputElement | HTMLSelectElement, fieldName: keyof S, fieldType: 'number' | 'string' | 'boolean'): any;
-        bindCheckElement<T>(e: HTMLInputElement | HTMLSelectElement, obj: T, fieldName: keyof T, fieldType: 'number' | 'string' | 'boolean'): any;
         static register(controlTypeName: string, editorType: React.ComponentClass<any>): void;
-        static createEditorElement(control: Control<any, any>): React.ComponentElement<any, React.Component<any, React.ComponentState, any>>;
         static isRegister(controlTypeName: string): boolean;
     }
 }
@@ -29,6 +18,7 @@ declare namespace pdesigner {
     interface ControlProps<T> extends React.Props<T> {
         id: string;
     }
+    const componentsDir = "components";
     abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private _designer;
         private originalComponentDidMount;
@@ -46,16 +36,47 @@ declare namespace pdesigner {
          */
         state: S;
         readonly hasEditor: boolean;
+        static create(description: ControlDescription): Promise<React.ReactElement<any>>;
         static register(controlType: React.ComponentClass<any>): void;
-        static isRegister(name: string): boolean;
-        private setStateTimes;
-        setState(f: (prevState: S, props: P) => S, callback?: () => any): void;
-        setState(state: S, callback?: () => any): void;
-        componentWillReceiveProps(): void;
-        static createElement(description: ControlDescription): any;
+        static isRegister(controlTypeName: string): boolean;
         export(): ControlDescription;
     }
-    const componentsDir = "components";
+}
+/*******************************************************************************
+ * Copyright (C) maishu All rights reserved.
+ *
+ * HTML 页面设计器
+ *
+ * 作者: 寒烟
+ * 日期: 2018/5/30
+ *
+ * 个人博客：   http://www.cnblogs.com/ansiboy/
+ * GITHUB:     http://github.com/ansiboy
+ *
+ ********************************************************************************/
+declare namespace pdesigner {
+    const DesignerContext: React.Context<{
+        designer: PageDesigner;
+    }>;
+    interface PageDesignerProps extends React.Props<PageDesigner> {
+        pageData: ControlDescription;
+        componentsDirectory?: string;
+    }
+    interface PageDesignerState {
+        pageData: ControlDescription;
+    }
+    class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
+        private element;
+        controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
+        private componentDefines;
+        constructor(props: any);
+        appendControl(parentId: string, childControl: ControlDescription, beforeControlId?: string): Promise<void>;
+        registerEditor(componentName: string): any;
+        addComponentDefine(item: ComponentDefine): void;
+        findControl(controlId: string): ControlDescription;
+        createEditorElement(control: Control<any, any>): Promise<React.ComponentElement<{}, React.Component<{}, React.ComponentState, any>>>;
+        render(): JSX.Element;
+    }
 }
 declare namespace pdesigner {
     interface ControlPlaceholderState {
@@ -163,42 +184,6 @@ declare namespace pdesigner {
         visible?: boolean;
         controlPath: string;
         editorPath: string;
-    }
-}
-/*******************************************************************************
- * Copyright (C) maishu All rights reserved.
- *
- * HTML 页面设计器
- *
- * 作者: 寒烟
- * 日期: 2018/5/30
- *
- * 个人博客：   http://www.cnblogs.com/ansiboy/
- * GITHUB:     http://github.com/ansiboy
- *
- ********************************************************************************/
-declare namespace pdesigner {
-    const DesignerContext: React.Context<{
-        designer: PageDesigner;
-    }>;
-    interface PageDesignerProps extends React.Props<PageDesigner> {
-        pageData: ControlDescription;
-    }
-    interface PageDesignerState {
-        pageData: ControlDescription;
-    }
-    class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
-        private element;
-        controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
-        private componentDefines;
-        constructor(props: any);
-        appendControl(parentId: string, childControl: ControlDescription, beforeControlId?: string): Promise<void>;
-        registerEditor(componentName: string): any;
-        private loadComponent(componentName);
-        addComponentDefine(item: ComponentDefine): void;
-        findControl(controlId: string): ControlDescription;
-        createEditorElement(control: Control<any, any>): Promise<React.ReactElement<{}>>;
-        render(): JSX.Element;
     }
 }
 declare namespace pdesigner {

@@ -30,7 +30,7 @@ namespace pdesigner {
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
-                    return <ul className={props.className} style={props.style}
+                    return <ul {...this.props}
                         ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
                         {componets.map((c, i) => <li key={i} data-control-name={c.name}>
                             <div className="btn-link">

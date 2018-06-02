@@ -5,9 +5,8 @@ namespace pdesigner {
         id: string,
     }
 
-    let customControls: { [key: string]: React.ComponentClass<any> } = {
-
-    }
+    let customControlTypes: { [key: string]: React.ComponentClass<any> } = {}
+    export const componentsDir = 'components';
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private _designer: PageDesigner;
@@ -32,12 +31,6 @@ namespace pdesigner {
 
                 return <DesignerContext.Consumer>
                     {context => {
-                        // if (context.designer) {
-                        //     console.assert(self.element != null);
-                        //     self.element.onclick = function () {
-                        //         context.designer.controlSelected.fire(context.designer, self)
-                        //     }
-                        // }
                         self._designer = context.designer;
                         let result = context.designer != null ?
                             (self.originalRender as Function)(createDesignTimeElement) :
@@ -47,6 +40,7 @@ namespace pdesigner {
                     }}
                 </DesignerContext.Consumer>
             }
+
             this.originalComponentDidMount = this.componentDidMount;
             this.componentDidMount = function () {
 
@@ -97,52 +91,55 @@ namespace pdesigner {
             return true;
         }
 
-        static register(controlType: React.ComponentClass<any>) {
-            customControls[controlType.name] = controlType;
-        }
-
-        static isRegister(name: string) {
-            return customControls[name] != null;
-        }
-
-        private setStateTimes = 0;
-        setState(f: (prevState: S, props: P) => S, callback?: () => any): void;
-        setState(state: S, callback?: () => any): void;
-        setState(state: any, callback?: () => any) {
-            // //=====================================================
-            // // 忽略第一次设置，把第一次设置作为初始化
-            // if (this.setStateTimes > 0)
-            //     this.stateChanged.fire(this, state);
-            // //=====================================================
-
-            // this.setStateTimes = this.setStateTimes + 1;
-            return super.setState(state, callback);
-        }
-
-        componentWillReceiveProps() {
-            // debugger;
-            let keys = this.persistentMembers || [];
-            for (let i = 0; i < keys.length; i++) {
-                var prop = (this.props as any)[keys[i]];
-                if (prop !== undefined)
-                    this.state[keys[i]] = prop;
-            }
-        }
-
-        static createElement(description: ControlDescription) {
-            let controlType = customControls[description.name];
+        static async create(description: ControlDescription) {
+            let componentName = description.name;
             let children = description.children || [];
             let data = description.data || {};
             data.id = description.id;
-            let element = React.createElement(
-                controlType ? controlType : description.name,
-                data,
-                children.length > 0 ? children.map(o => {
-                    o.data.key = o.id;
-                    return Control.createElement(o);
-                }) : null
+
+            let controlType = customControlTypes[componentName];
+            if (controlType == null && componentName[0].toUpperCase() == componentName[0]) {
+                let name = componentName.endsWith('Control') ?
+                    componentName.substr(0, componentName.length - 'Control'.length) :
+                    componentName;
+
+                let controlPath = `${componentsDir}/${name}/control`;
+                controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
+                    requirejs([controlPath],
+                        (exports2) => {
+
+                            let controlType: React.ComponentClass = exports2['default'];
+                            if (controlType == null)
+                                throw new Error(`Default export of file '${controlPath}' is null.`)
+
+                            resolve(controlType);
+                        },
+                        (err) => reject(err)
+                    )
+                })
+                console.assert(controlType != null);
+                Control.register(controlType);
+            }
+
+            children.forEach(o => o.data.key = o.id);
+            let childElements: React.ReactElement<any>[];
+            if (children.length)
+                childElements = await Promise.all(children.map(o => this.create(o)));
+
+            let controlElement = React.createElement(
+                controlType ? controlType : componentName,
+                data, childElements
             )
-            return element;
+
+            return controlElement;
+        }
+
+        static register(controlType: React.ComponentClass<any>) {
+            customControlTypes[controlType.name] = controlType;
+        }
+
+        static isRegister(controlTypeName: string) {
+            return customControlTypes[controlTypeName] != null;
         }
 
         export(): ControlDescription {
@@ -166,17 +163,6 @@ namespace pdesigner {
         }
     }
 
-    // export class GenericControl extends Control<any, any> {
-    //     get persistentMembers() {
-    //         return [];
-    //     };
-    //     render() {
-    //         React.createElement("input")
-    //         return <div></div>;
-    //     }
-    // }
-
-    export const componentsDir = 'components';
     // const pageClassName = 'mobile-page';
 
     // interface IMobilePageDesigner {
@@ -219,20 +205,7 @@ namespace pdesigner {
         return React.createElement.apply(React, args);
     }
 
-    // let components: { [key: string]: React.ComponentClass<any> } = {};
-    // function component(name: string) {
-    //     return function (constructor: React.ComponentClass<any>) {
-    //         components[name] = constructor;
-    //     }
-    // }
 
-    // export interface ComponentClass<T> extends React.ComponentClass<T> {
-    //     attributes: { editorPath?: string, editorExport?: string }
-    // }
-
-    // export interface ControlState {
-    //     persistentMembers: (keyof this)[];
-    // }
 
 
 }

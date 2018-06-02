@@ -12,4 +12,5 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
         }
     }
     exports.default = TestControl;
+    pdesigner_1.Control.register(TestControl);
 });

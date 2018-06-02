@@ -181,7 +181,7 @@ namespace pdesigner {
             this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
 
             let pageView = this;
-            return <div className={this.props.className} style={this.props.style}
+            return <div {...this.props}
                 ref={(e: HTMLElement) => this.element = e || this.element}>
                 <PageViewContext.Provider value={{ pageView }}>
                     {this.props.children}

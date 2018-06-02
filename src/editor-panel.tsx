@@ -41,12 +41,11 @@ namespace pdesigner {
 
                 editors.push(editor);
             }
-            let { className, style } = this.props;
-            debugger;
+            
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
-                    return <div {...{ className, style }} ref={(e: HTMLElement) => this.element = e || this.element}>
+                    return <div {...this.props} ref={(e: HTMLElement) => this.element = e || this.element}>
                         {editors}
                     </div>
                 }}

@@ -1,4 +1,5 @@
 /// <reference path="page-control.tsx"/>
+/// <reference path="page-designer.tsx"/>
 
 namespace pdesigner {
     export interface ControlPlaceholderState {
@@ -13,7 +14,7 @@ namespace pdesigner {
         private controls: (Control<any, any> & { id: string, name: string })[];
 
         element: HTMLElement;
-        
+
         constructor(props) {
             super(props)
 
@@ -181,8 +182,10 @@ namespace pdesigner {
 
 
         componentDidMount() {
-            this.sortableElement(this.element, this.designer);
-
+            if (this.designer) {
+                debugger;
+                this.sortableElement(this.element, this.designer);
+            }
         }
         render(h?: any) {
             let { emptyElement } = this.props;

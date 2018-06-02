@@ -6,32 +6,6 @@ var pdesigner;
             super(props);
             console.assert(this.props.control.state != null);
         }
-        get state() {
-            return this._state;
-        }
-        /**
-         * 重写 set state， 在第一次赋值，将控件中 state 的持久化成员赋值过来。
-         */
-        set state(value) {
-            value = value || {};
-            if (this._state != null) {
-                this._state = value;
-                return;
-            }
-            var state = {};
-            let keys = this.props.control.persistentMembers || [];
-            let controlState = this.props.control.state;
-            for (let i = 0; i < keys.length; i++) {
-                var prop = controlState[keys[i]];
-                if (prop !== undefined)
-                    state[keys[i]] = prop;
-            }
-            this._state = Object.assign(value, state);
-            ;
-        }
-        // get elementPage() {
-        //     return this.props.elementPage;
-        // }
         componentDidUpdate() {
             let control = this.props.control;
             console.assert(control != null);
@@ -43,77 +17,8 @@ var pdesigner;
             }
             control.setState(controlState);
         }
-        static path(controlName) {
-            return `${pdesigner.componentsDir}/${controlName}/editor`;
-        }
-        loadEditorCSS() {
-            var typeName = this.constructor.name;
-            typeName = typeName.replace('Editor', '');
-            typeName = typeName[0].toLowerCase() + typeName.substr(1);
-            requirejs([`less!${pdesigner.componentsDir}/${typeName}/editor`]);
-        }
-        bindInputElement(e, obj, fieldName, fieldType) {
-            if (!e)
-                return;
-            if (typeof obj == 'string') {
-                fieldName = obj;
-                obj = this.state;
-            }
-            e.value = `${obj[fieldName] || ''}`;
-            e.onchange = () => {
-                if (fieldType == 'number') {
-                    obj[fieldName] = Number.parseFloat(e.value);
-                }
-                else {
-                    obj[fieldName] = e.value;
-                }
-                this.setState(this.state);
-            };
-        }
-        bindCheckElement(e, obj, fieldName, fieldType) {
-            if (!e)
-                return;
-            if (arguments.length == 3) {
-                fieldName = arguments[1];
-                fieldType = arguments[2];
-                obj = this.state;
-            }
-            let parseValue = (text) => {
-                let value;
-                if (fieldType == 'number') {
-                    value = text.indexOf('.') > 0 ? Number.parseFloat(text) : Number.parseInt(text);
-                }
-                else if (fieldType == 'boolean') {
-                    value = text == 'false' ? false : text == 'true' ? true : null;
-                }
-                else {
-                    value = text;
-                }
-                return value;
-            };
-            let sourceValue = obj[fieldName];
-            let targetValue = parseValue(e.value);
-            e.checked = sourceValue == targetValue;
-            e.onchange = () => {
-                let value = parseValue(e.value);
-                obj[fieldName] = value;
-                this.setState(this.state);
-            };
-        }
         static register(controlTypeName, editorType) {
             customEditors[controlTypeName] = editorType;
-        }
-        static createEditorElement(control) {
-            let controlTypeName = control.constructor.name;
-            let editorType = customEditors[controlTypeName];
-            if (editorType == null)
-                return null;
-            // if (!Editor.isRegister(controlTypeName)) {
-            // await this.designer.registerEditor(controlTypeName);
-            // }
-            debugger;
-            let props = { control, key: control.id };
-            return React.createElement(editorType, props);
         }
         static isRegister(controlTypeName) {
             return customEditors[controlTypeName] != null;
@@ -121,28 +26,30 @@ var pdesigner;
     }
     pdesigner.Editor = Editor;
 })(pdesigner || (pdesigner = {}));
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var pdesigner;
 (function (pdesigner) {
     let h = React.createElement;
-    let customControls = {};
+    let customControlTypes = {};
+    pdesigner.componentsDir = 'components';
     class Control extends React.Component {
         constructor(props) {
             super(props);
             this.hasCSS = false;
             this.children = new Array();
-            this.setStateTimes = 0;
             this.originalRender = this.render;
             this.render = function () {
                 let self = this;
                 if (typeof self.originalRender != 'function')
                     return null;
                 return h(pdesigner.DesignerContext.Consumer, null, context => {
-                    // if (context.designer) {
-                    //     console.assert(self.element != null);
-                    //     self.element.onclick = function () {
-                    //         context.designer.controlSelected.fire(context.designer, self)
-                    //     }
-                    // }
                     self._designer = context.designer;
                     let result = context.designer != null ?
                         self.originalRender(createDesignTimeElement) :
@@ -190,40 +97,42 @@ var pdesigner;
         get hasEditor() {
             return true;
         }
+        static create(description) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let componentName = description.name;
+                let children = description.children || [];
+                let data = description.data || {};
+                data.id = description.id;
+                let controlType = customControlTypes[componentName];
+                if (controlType == null && componentName[0].toUpperCase() == componentName[0]) {
+                    let name = componentName.endsWith('Control') ?
+                        componentName.substr(0, componentName.length - 'Control'.length) :
+                        componentName;
+                    let controlPath = `${pdesigner.componentsDir}/${name}/control`;
+                    controlType = yield new Promise((resolve, reject) => {
+                        requirejs([controlPath], (exports2) => {
+                            let controlType = exports2['default'];
+                            if (controlType == null)
+                                throw new Error(`Default export of file '${controlPath}' is null.`);
+                            resolve(controlType);
+                        }, (err) => reject(err));
+                    });
+                    console.assert(controlType != null);
+                    Control.register(controlType);
+                }
+                children.forEach(o => o.data.key = o.id);
+                let childElements;
+                if (children.length)
+                    childElements = yield Promise.all(children.map(o => this.create(o)));
+                let controlElement = React.createElement(controlType ? controlType : componentName, data, childElements);
+                return controlElement;
+            });
+        }
         static register(controlType) {
-            customControls[controlType.name] = controlType;
+            customControlTypes[controlType.name] = controlType;
         }
-        static isRegister(name) {
-            return customControls[name] != null;
-        }
-        setState(state, callback) {
-            // //=====================================================
-            // // 忽略第一次设置，把第一次设置作为初始化
-            // if (this.setStateTimes > 0)
-            //     this.stateChanged.fire(this, state);
-            // //=====================================================
-            // this.setStateTimes = this.setStateTimes + 1;
-            return super.setState(state, callback);
-        }
-        componentWillReceiveProps() {
-            // debugger;
-            let keys = this.persistentMembers || [];
-            for (let i = 0; i < keys.length; i++) {
-                var prop = this.props[keys[i]];
-                if (prop !== undefined)
-                    this.state[keys[i]] = prop;
-            }
-        }
-        static createElement(description) {
-            let controlType = customControls[description.name];
-            let children = description.children || [];
-            let data = description.data || {};
-            data.id = description.id;
-            let element = React.createElement(controlType ? controlType : description.name, data, children.length > 0 ? children.map(o => {
-                o.data.key = o.id;
-                return Control.createElement(o);
-            }) : null);
-            return element;
+        static isRegister(controlTypeName) {
+            return customControlTypes[controlTypeName] != null;
         }
         export() {
             let children = this.children || [];
@@ -244,16 +153,6 @@ var pdesigner;
         }
     }
     pdesigner.Control = Control;
-    // export class GenericControl extends Control<any, any> {
-    //     get persistentMembers() {
-    //         return [];
-    //     };
-    //     render() {
-    //         React.createElement("input")
-    //         return <div></div>;
-    //     }
-    // }
-    pdesigner.componentsDir = 'components';
     // interface ControlProps<T> extends React.Props<T> {
     //     mobilePage: any
     // }
@@ -280,28 +179,159 @@ var pdesigner;
         }
         return React.createElement.apply(React, args);
     }
-    // let components: { [key: string]: React.ComponentClass<any> } = {};
-    // function component(name: string) {
-    //     return function (constructor: React.ComponentClass<any>) {
-    //         components[name] = constructor;
+})(pdesigner || (pdesigner = {}));
+/*******************************************************************************
+ * Copyright (C) maishu All rights reserved.
+ *
+ * HTML 页面设计器
+ *
+ * 作者: 寒烟
+ * 日期: 2018/5/30
+ *
+ * 个人博客：   http://www.cnblogs.com/ansiboy/
+ * GITHUB:     http://github.com/ansiboy
+ *
+ ********************************************************************************/
+var pdesigner;
+(function (pdesigner) {
+    pdesigner.DesignerContext = React.createContext({
+        // controlSelected: null as chitu.Callback2<PageView, Control<any, any>, React.ComponentClass<any>>,
+        designer: null
+    });
+    class PageDesigner extends React.Component {
+        constructor(props) {
+            super(props);
+            this.controlSelected = chitu.Callbacks();
+            this.componentDefines = {};
+            this.state = { pageData: this.props.pageData };
+        }
+        appendControl(parentId, childControl, beforeControlId) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let pageData = this.state.pageData;
+                let parentControl = this.findControl(parentId);
+                console.assert(parentControl != null);
+                let controls = parentControl.children = parentControl.children || [];
+                let controlIndex = beforeControlId ? parentControl.children.map((o, i) => ({ id: o.id, index: i }))
+                    .filter(o => o.id == beforeControlId)
+                    .map(o => o.index)[0] + 1 : 0;
+                if (controlIndex == controls.length)
+                    controls.push(childControl);
+                else
+                    controls.splice(controlIndex, 0, childControl);
+                this.setState(this.state);
+            });
+        }
+        registerEditor(componentName) {
+            let c = this.componentDefines[componentName];
+            if (c == null)
+                throw new Error(`Componet define of '${componentName}' is not exists`);
+            let editorPath = c.editorPath;
+            if (!editorPath)
+                throw Error(`Editor path of ${componentName} is null`);
+            return new Promise((resolve, reject) => {
+                requirejs([c.editorPath], (exports2) => {
+                    let editor = exports2['default'];
+                    if (editor == null)
+                        throw new Error(`File of '${c.editorPath}' export default is null.`);
+                    pdesigner.Editor.register(componentName, editor);
+                    resolve();
+                }, (err) => reject(err));
+            });
+        }
+        addComponentDefine(item) {
+            this.componentDefines[item.name] = item;
+        }
+        findControl(controlId) {
+            let pageData = this.state.pageData;
+            let stack = new Array();
+            stack.push(pageData);
+            while (stack.length > 0) {
+                let item = stack.pop();
+                if (item.id == controlId)
+                    return item;
+                stack.push(...(item.children || []));
+            }
+            return null;
+        }
+        // private async loadControlType(componentName: string) {
+        //     let c = this.componentDefines[componentName];
+        //     if (c == null) {
+        //         console.log(`Componet define of ${componentName} is not exists.`);
+        //         return null;
+        //     }
+        //     if (c.controlPath == null)
+        //         throw new Error(`Control path of '${componentName}' is null.`);
+        //     let dir = this.props.componentsDirectory;
+        //     let controlPath = dir ? `${dir}/${componentName}` : componentName;
+        //     //TODO: 缓存 controlType
+        //     let controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
+        //         requirejs([c.controlPath],
+        //             (exports2) => {
+        //                 let controlType: React.ComponentClass = exports2['default'];
+        //                 if (controlType == null)
+        //                     throw new Error(`Default export of file '${c.controlPath}' is null.`)
+        //                 resolve(controlType);
+        //             },
+        //             (err) => reject(err)
+        //         )
+        //     })
+        // }
+        createEditorElement(control) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let controlTypeName = control.constructor.name;
+                let c = this.componentDefines[controlTypeName];
+                if (c == null) {
+                    console.log(`Componet define of ${controlTypeName} is not exists.`);
+                    return null;
+                }
+                if (c.editorPath == null)
+                    throw new Error(`Editor path of '${controlTypeName}' is null.`);
+                //TODO: 缓存 editorType
+                let editorType = yield new Promise((resolve, reject) => {
+                    requirejs([c.editorPath], (exports2) => {
+                        let editor = exports2['default'];
+                        if (editor == null)
+                            throw new Error(`Default export of file '${c.editorPath}' is null.`);
+                        pdesigner.Editor.register(control.name, editor);
+                        resolve(editor);
+                    }, (err) => reject(err));
+                });
+                let editorProps = { control, key: control.id };
+                let editorElement = React.createElement(editorType, editorProps);
+                return editorElement;
+            });
+        }
+        render() {
+            let context = {
+                controlSelected: chitu.Callbacks(),
+                designer: this
+            };
+            // let emptyElement = <div style={{ paddingTop: 26, textAlign: 'center' }}>
+            //     请从工具栏拖拉控件到这里
+            // </div>
+            let designer = this;
+            return h("div", { className: "pdesigner", ref: (e) => this.element = e || this.element },
+                h(pdesigner.DesignerContext.Provider, { value: { designer } }, this.props.children));
+        }
+    }
+    pdesigner.PageDesigner = PageDesigner;
+    // class TestControl extends Control<any, any> {
+    //     element: HTMLElement;
+    //     get persistentMembers(): string[] {
+    //         return []
+    //     }
+    //     render(h?: any) {
+    //         let { text } = this.state;
+    //         text = text || "FFFF"
+    //         return <div ref={(e: HTMLElement) => this.element = e || this.element}>
+    //             {text}
+    //         </div>
     //     }
     // }
-    // export interface ComponentClass<T> extends React.ComponentClass<T> {
-    //     attributes: { editorPath?: string, editorExport?: string }
-    // }
-    // export interface ControlState {
-    //     persistentMembers: (keyof this)[];
-    // }
+    // PageDesigner.registerControl(TestControl);
 })(pdesigner || (pdesigner = {}));
 /// <reference path="page-control.tsx"/>
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+/// <reference path="page-designer.tsx"/>
 var pdesigner;
 (function (pdesigner) {
     class ControlPlaceholder extends pdesigner.Control {
@@ -440,7 +470,10 @@ var pdesigner;
             });
         }
         componentDidMount() {
-            this.sortableElement(this.element, this.designer);
+            if (this.designer) {
+                debugger;
+                this.sortableElement(this.element, this.designer);
+            }
         }
         render(h) {
             let { emptyElement } = this.props;
@@ -472,7 +505,7 @@ var pdesigner;
             let componets = this.props.componets;
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return h("ul", { className: props.className, style: props.style, ref: (e) => this.toolbarElement = this.toolbarElement || e }, componets.map((c, i) => h("li", { key: i, "data-control-name": c.name },
+                return h("ul", Object.assign({}, this.props, { ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.map((c, i) => h("li", { key: i, "data-control-name": c.name },
                     h("div", { className: "btn-link" },
                         h("i", { className: c.icon, style: { fontSize: 44, color: 'black' } })),
                     h("div", null, c.displayName))));
@@ -509,158 +542,13 @@ var pdesigner;
                 console.assert(editor != null);
                 editors.push(editor);
             }
-            let { className, style } = this.props;
-            debugger;
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return h("div", Object.assign({}, { className, style }, { ref: (e) => this.element = e || this.element }), editors);
+                return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }), editors);
             });
         }
     }
     pdesigner.EditorPanel = EditorPanel;
-})(pdesigner || (pdesigner = {}));
-/*******************************************************************************
- * Copyright (C) maishu All rights reserved.
- *
- * HTML 页面设计器
- *
- * 作者: 寒烟
- * 日期: 2018/5/30
- *
- * 个人博客：   http://www.cnblogs.com/ansiboy/
- * GITHUB:     http://github.com/ansiboy
- *
- ********************************************************************************/
-var pdesigner;
-(function (pdesigner) {
-    class TestControl extends pdesigner.Control {
-        get persistentMembers() {
-            return [];
-        }
-        render(h) {
-            let { text } = this.state;
-            text = text || "FFFF";
-            return h("div", { ref: (e) => this.element = e || this.element }, text);
-        }
-    }
-    pdesigner.Control.register(TestControl);
-    pdesigner.DesignerContext = React.createContext({
-        // controlSelected: null as chitu.Callback2<PageView, Control<any, any>, React.ComponentClass<any>>,
-        designer: null
-    });
-    class PageDesigner extends React.Component {
-        constructor(props) {
-            super(props);
-            this.controlSelected = chitu.Callbacks();
-            this.componentDefines = {};
-            this.state = { pageData: this.props.pageData };
-        }
-        appendControl(parentId, childControl, beforeControlId) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let pageData = this.state.pageData;
-                let parentControl = this.findControl(parentId);
-                console.assert(parentControl != null);
-                let controls = parentControl.children = parentControl.children || [];
-                let controlIndex = beforeControlId ? parentControl.children.map((o, i) => ({ id: o.id, index: i }))
-                    .filter(o => o.id == beforeControlId)
-                    .map(o => o.index)[0] + 1 : 0;
-                if (controlIndex == controls.length)
-                    controls.push(childControl);
-                else
-                    controls.splice(controlIndex, 0, childControl);
-                debugger;
-                if (!pdesigner.Control.isRegister(name) || !pdesigner.Editor.isRegister(name))
-                    yield this.loadComponent(childControl.name);
-                this.setState(this.state);
-            });
-        }
-        registerEditor(componentName) {
-            let c = this.componentDefines[componentName];
-            if (c == null)
-                throw new Error(`Componet define of '${componentName}' is not exists`);
-            let editorPath = c.editorPath;
-            if (!editorPath)
-                throw Error(`Editor path of ${componentName} is null`);
-            return new Promise((resolve, reject) => {
-                requirejs([c.editorPath], (exports2) => {
-                    let editor = exports2['default'];
-                    if (editor == null)
-                        throw new Error(`File of '${c.editorPath}' export default is null.`);
-                    pdesigner.Editor.register(componentName, editor);
-                    resolve();
-                }, (err) => reject(err));
-            });
-        }
-        loadComponent(componentName) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let c = this.componentDefines[componentName];
-                if (c == null)
-                    throw new Error(`Componet define is not exists`);
-                return new Promise((resolve, reject) => {
-                    requirejs([c.controlPath, c.editorPath], (exports1, exports2) => {
-                        let control = exports1['default'];
-                        let editor = exports2['default'];
-                        console.assert(control != null);
-                        console.assert(editor != null);
-                        pdesigner.Control.register(control);
-                        pdesigner.Editor.register(control.name, editor);
-                        resolve();
-                    }, (err) => reject(err));
-                });
-            });
-        }
-        addComponentDefine(item) {
-            this.componentDefines[item.name] = item;
-        }
-        findControl(controlId) {
-            let pageData = this.state.pageData;
-            let stack = new Array();
-            stack.push(pageData);
-            while (stack.length > 0) {
-                let item = stack.pop();
-                if (item.id == controlId)
-                    return item;
-                stack.push(...(item.children || []));
-            }
-            return null;
-        }
-        createEditorElement(control) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let controlTypeName = control.constructor.name;
-                let c = this.componentDefines[controlTypeName];
-                if (c == null) {
-                    console.log(`Componet define of ${controlTypeName} is not exists.`);
-                    return null;
-                }
-                if (c.editorPath == null)
-                    throw new Error(`Editor path of '${controlTypeName}' is null.`);
-                //TODO: 缓存 editorType
-                let editorType = yield new Promise((resolve, reject) => {
-                    requirejs([c.editorPath], (exports2) => {
-                        let editor = exports2['default'];
-                        if (editor == null)
-                            throw new Error(`Default export of file '${c.editorPath}' is null.`);
-                        pdesigner.Editor.register(control.name, editor);
-                        resolve(editor);
-                    }, (err) => reject(err));
-                });
-                let editorProps = { control, key: control.id };
-                let editorElement = React.createElement(editorType, editorProps);
-                return editorElement;
-            });
-        }
-        render() {
-            let context = {
-                controlSelected: chitu.Callbacks(),
-                designer: this
-            };
-            let emptyElement = h("div", { style: { paddingTop: 26, textAlign: 'center' } }, "\u8BF7\u4ECE\u5DE5\u5177\u680F\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
-            let designer = this;
-            return h("div", { className: "pdesigner", ref: (e) => this.element = e || this.element },
-                h(pdesigner.DesignerContext.Provider, { value: { designer } }, this.props.children));
-        }
-    }
-    pdesigner.PageDesigner = PageDesigner;
 })(pdesigner || (pdesigner = {}));
 var pdesigner;
 (function (pdesigner) {
@@ -795,7 +683,7 @@ var pdesigner;
             this.viewControlsCount = 0;
             this.viewControlsCount = pageData.controls.filter(o => o.position == 'view').length; //this.viewControlsCount + (pageData.view.controls || []).length;
             let pageView = this;
-            return h("div", { className: this.props.className, style: this.props.style, ref: (e) => this.element = e || this.element },
+            return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }),
                 h(pdesigner.PageViewContext.Provider, { value: { pageView } }, this.props.children));
         }
     }

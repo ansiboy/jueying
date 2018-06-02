@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Control, ControlProps } from 'pdesigner';
+import { Control, ControlProps, PageDesigner } from 'pdesigner';
 
 interface State {
     text: string
@@ -21,3 +21,5 @@ export default class TestControl extends Control<Props, State> {
         </div>
     }
 }
+
+Control.register(TestControl);

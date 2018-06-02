@@ -2,6 +2,8 @@
 
 import { ControlToolbar, PageDesigner, ControlDescription, guid, Control, DesignerContext, EditorPanel } from "pdesigner";
 import * as ReactDOM from 'react-dom';
+import * as React from 'react';
+
 import { componets } from "./components/componenDefines";
 
 let container = document.getElementById('container');
@@ -44,20 +46,37 @@ let controlDescription: ControlDescription = {
             ]
         },
     ],
-
 }
 
-let designer = <PageDesigner pageData={controlDescription} >
-    <ControlToolbar className="toolbar" componets={componets} />
+let pageViewElement: HTMLElement;
+let designer: PageDesigner;
+
+function renderPageData(pageData: ControlDescription) {
+    return <div ref={async (e: HTMLElement) => {
+        pageViewElement = e || pageViewElement;
+
+        let element = await Control.create(pageData);
+        ReactDOM.render(<DesignerContext.Provider value={{ designer }}>
+            {element}
+            <ControlToolbar className="toolbar" componets={componets} />
+        </DesignerContext.Provider>, pageViewElement)
+
+    }}>
+    </div>
+}
+
+
+let designerElement = <PageDesigner pageData={controlDescription} >
     <div className="clearfix" />
     <DesignerContext.Consumer>
-        {context =>
-            Control.createElement(context.designer.state.pageData)
-        }
+        {context => {
+            designer = context.designer;
+            return renderPageData(context.designer.state.pageData)
+        }}
     </DesignerContext.Consumer>
     <EditorPanel className="editor-panel" />
 </PageDesigner>
 
 
 
-ReactDOM.render(designer, container);
+ReactDOM.render(designerElement, container);

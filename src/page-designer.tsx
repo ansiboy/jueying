@@ -12,21 +12,10 @@
  ********************************************************************************/
 
 namespace pdesigner {
-    class TestControl extends Control<any, any> {
-        element: HTMLElement;
-        get persistentMembers(): string[] {
-            return []
-        }
-        render(h?: any) {
-            let { text } = this.state;
-            text = text || "FFFF"
-            return <div ref={(e: HTMLElement) => this.element = e || this.element}>
-                {text}
-            </div>
-        }
-    }
 
-    Control.register(TestControl);
+
+
+
 
     export const DesignerContext = React.createContext({
         // controlSelected: null as chitu.Callback2<PageView, Control<any, any>, React.ComponentClass<any>>,
@@ -35,6 +24,7 @@ namespace pdesigner {
 
     export interface PageDesignerProps extends React.Props<PageDesigner> {
         pageData: ControlDescription,
+        componentsDirectory?: string,
     }
 
     export interface PageDesignerState {
@@ -66,10 +56,6 @@ namespace pdesigner {
             else
                 controls.splice(controlIndex, 0, childControl);
 
-            debugger;
-            if (!Control.isRegister(name) || !Editor.isRegister(name))
-                await this.loadComponent(childControl.name);
-
             this.setState(this.state);
         }
         registerEditor(componentName: string): any {
@@ -95,27 +81,7 @@ namespace pdesigner {
                 )
             })
         }
-        private async loadComponent(componentName: string) {
-            let c = this.componentDefines[componentName];
-            if (c == null)
-                throw new Error(`Componet define is not exists`);
 
-            return new Promise((resolve, reject) => {
-                requirejs([c.controlPath, c.editorPath],
-                    (exports1, exports2) => {
-                        let control = exports1['default'] as React.ClassicComponentClass;
-                        let editor = exports2['default'];
-                        console.assert(control != null);
-                        console.assert(editor != null);
-
-                        Control.register(control);
-                        Editor.register(control.name, editor);
-                        resolve();
-                    },
-                    (err) => reject(err)
-                )
-            })
-        }
         addComponentDefine(item: ComponentDefine) {
             this.componentDefines[item.name] = item;
         }
@@ -133,6 +99,35 @@ namespace pdesigner {
 
             return null;
         }
+
+        // private async loadControlType(componentName: string) {
+        //     let c = this.componentDefines[componentName];
+        //     if (c == null) {
+        //         console.log(`Componet define of ${componentName} is not exists.`);
+        //         return null;
+        //     }
+
+        //     if (c.controlPath == null)
+        //         throw new Error(`Control path of '${componentName}' is null.`);
+
+        //     let dir = this.props.componentsDirectory;
+        //     let controlPath = dir ? `${dir}/${componentName}` : componentName;
+        //     //TODO: 缓存 controlType
+        //     let controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
+        //         requirejs([c.controlPath],
+        //             (exports2) => {
+
+        //                 let controlType: React.ComponentClass = exports2['default'];
+        //                 if (controlType == null)
+        //                     throw new Error(`Default export of file '${c.controlPath}' is null.`)
+
+        //                 resolve(controlType);
+        //             },
+        //             (err) => reject(err)
+        //         )
+        //     })
+        // }
+
         async createEditorElement(control: Control<any, any>) {
             let controlTypeName = control.constructor.name;
             let c = this.componentDefines[controlTypeName];
@@ -170,9 +165,9 @@ namespace pdesigner {
                 controlSelected: chitu.Callbacks<PageView, Control<any, any>, React.ComponentClass<any>>(),
                 designer: this
             }
-            let emptyElement = <div style={{ paddingTop: 26, textAlign: 'center' }}>
-                请从工具栏拖拉控件到这里
-            </div>
+            // let emptyElement = <div style={{ paddingTop: 26, textAlign: 'center' }}>
+            //     请从工具栏拖拉控件到这里
+            // </div>
 
             let designer = this;
             return <div className="pdesigner" ref={(e: HTMLElement) => this.element = e || this.element}>
@@ -182,4 +177,20 @@ namespace pdesigner {
             </div >;
         }
     }
+
+    // class TestControl extends Control<any, any> {
+    //     element: HTMLElement;
+    //     get persistentMembers(): string[] {
+    //         return []
+    //     }
+    //     render(h?: any) {
+    //         let { text } = this.state;
+    //         text = text || "FFFF"
+    //         return <div ref={(e: HTMLElement) => this.element = e || this.element}>
+    //             {text}
+    //         </div>
+    //     }
+    // }
+
+    // PageDesigner.registerControl(TestControl);
 }

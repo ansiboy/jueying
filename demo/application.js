@@ -1,4 +1,12 @@
 /// <reference path="../out/pdesigner.d.ts"/>
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 define(["require", "exports", "pdesigner", "react-dom", "./components/componenDefines"], function (require, exports, pdesigner_1, ReactDOM, componenDefines_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -42,10 +50,23 @@ define(["require", "exports", "pdesigner", "react-dom", "./components/componenDe
             },
         ],
     };
-    let designer = h(pdesigner_1.PageDesigner, { pageData: controlDescription },
-        h(pdesigner_1.ControlToolbar, { className: "toolbar", componets: componenDefines_1.componets }),
+    let pageViewElement;
+    let designer;
+    function renderPageData(pageData) {
+        return h("div", { ref: (e) => __awaiter(this, void 0, void 0, function* () {
+                pageViewElement = e || pageViewElement;
+                let element = yield pdesigner_1.Control.create(pageData);
+                ReactDOM.render(h(pdesigner_1.DesignerContext.Provider, { value: { designer } },
+                    element,
+                    h(pdesigner_1.ControlToolbar, { className: "toolbar", componets: componenDefines_1.componets })), pageViewElement);
+            }) });
+    }
+    let designerElement = h(pdesigner_1.PageDesigner, { pageData: controlDescription },
         h("div", { className: "clearfix" }),
-        h(pdesigner_1.DesignerContext.Consumer, null, context => pdesigner_1.Control.createElement(context.designer.state.pageData)),
+        h(pdesigner_1.DesignerContext.Consumer, null, context => {
+            designer = context.designer;
+            return renderPageData(context.designer.state.pageData);
+        }),
         h(pdesigner_1.EditorPanel, { className: "editor-panel" }));
-    ReactDOM.render(designer, container);
+    ReactDOM.render(designerElement, container);
 });
