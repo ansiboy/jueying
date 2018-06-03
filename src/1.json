@@ -1,0 +1,81 @@
+{
+    "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+    "name": "PageView",
+    "data": {
+        "className": "page-view",
+        "style": {}
+    },
+    "children": [
+        {
+            "id": "dabb6966-8ca9-2fea-c60d-cc3ff0d77f22",
+            "name": "header",
+            "children": [
+                {
+                    "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
+                    "name": "ControlPlaceholder",
+                    "data": {
+                        "style": {
+                            "minHeight": 80,
+                            "border": "dotted 3px #ccc"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": "31d0cfcf-a4a2-a7f6-65b6-95a9e0678ff3",
+            "name": "section",
+            "data": {
+                "style": {
+                    "margin": "8px 0 8px 0"
+                }
+            },
+            "children": [
+                {
+                    "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                    "name": "ControlPlaceholder",
+                    "data": {
+                        "style": {
+                            "minHeight": 200,
+                            "border": "dotted 3px #ccc"
+                        }
+                    },
+                    "children": [
+                        {
+                            "id": "8b018486-69de-f595-eabf-909bad85e97a",
+                            "name": "test",
+                            "data": {
+                                "label": "未命名"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "5b4d1783-8a85-e8a7-7712-0446519c59d4",
+            "name": "footer",
+            "children": [
+                {
+                    "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
+                    "name": "ControlPlaceholder",
+                    "data": {
+                        "style": {
+                            "minHeight": 80,
+                            "border": "dotted 3px #ccc"
+                        }
+                    },
+                    "children": [
+                        {
+                            "id": "2df4fb2e-d54f-517f-fac5-423b1ef23e0e",
+                            "name": "test",
+                            "data": {
+                                "label": "未命名"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

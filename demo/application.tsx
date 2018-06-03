@@ -110,14 +110,22 @@ let designer: PageDesigner;
 const MyDesignerContext = PageDesigner.createContext({ designer, page: null })
 
 function renderPageData(pageData: ControlDescription) {
-    return <div ref={async (e: HTMLElement) => {
-        pageViewElement = e || pageViewElement;
+    return <div className="main-panel">
+        <ul className="nav nav-tabs">
+            <li role="presentation" className="bg-primary"><a href="#">页面一</a></li>
+            <li role="presentation"><a href="#">页面二</a></li>
+            <li role="presentation"><a href="#">页面三</a></li>
+        </ul>
+        <div style={{ padding: 0 }}>
+            <div ref={async (e: HTMLElement) => {
+                pageViewElement = e || pageViewElement;
 
-        let element = await Control.create(pageData);
-        ReactDOM.render(<DesignerContext.Provider value={{ designer }}>
-            {element}
-        </DesignerContext.Provider>, pageViewElement)
-    }}>
+                let element = await Control.create(pageData);
+                ReactDOM.render(<DesignerContext.Provider value={{ designer }}>
+                    {element}
+                </DesignerContext.Provider>, pageViewElement)
+            }}></div>
+        </div>
     </div>
 }
 
@@ -141,25 +149,34 @@ class MainPage extends React.Component<any, any>{
         return <PageDesigner pageData={controlDescription}
             ref={(e) => this.pageDesigner = e || this.pageDesigner} >
             <ul>
-                <li className="pull-right">
-                    <button className="btn btn-primary">预览</button>
+                <li className="pull-left">
+                    <h3 style={{ margin: 0, padding: '0 0 0 10px' }}>好易页面设计器</h3>
                 </li>
                 <li className="pull-right">
                     <button className="btn btn-primary"
-                        onClick={(e) => this.save()}>保存</button>
+                        onClick={(e) => this.save()}>
+                        <i className="icon-save" />
+                        <span style={{ paddingLeft: 4 }}>保存</span>
+                    </button>
+                </li>
+                <li className="pull-right">
+                    <button className="btn btn-primary">
+                        <i className="icon-eye-open" />
+                        <span style={{ paddingLeft: 4 }}>预览</span>
+                    </button>
                 </li>
             </ul>
             <div className="clearfix" />
             <hr style={{ margin: 0, borderWidth: 4 }} />
 
             <ComponentToolbar className="component-panel" componets={componets} />
+            <EditorPanel className="editor-panel" />
             <DesignerContext.Consumer>
                 {context => {
                     designer = context.designer;
                     return renderPageData(context.designer.state.pageData)
                 }}
             </DesignerContext.Consumer>
-            <EditorPanel className="editor-panel" />
         </PageDesigner>
     }
 }

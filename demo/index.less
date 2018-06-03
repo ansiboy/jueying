@@ -2,30 +2,34 @@ body {
     background: whitesmoke;
 }
 
+@component-panel-width:90px;
 .component-panel {
     position: absolute;
     background: white;
     margin-right: 10px;
     height: ~'calc(100% - 50px)';
-    padding-top: 8px;
-
-    
+    width: @component-panel-width;
+    .panel-heading {
+        text-align: center;
+    }
+    ul {
+        li {
+            /* float: left; */
+            width: 64px;
+            text-align: center;
+        }
+    }
 }
 
-.component-panel li {
-    /* float: left; */
-    width: 64px;
-    text-align: center;
-}
-
+@editor-panel-widht: 300px;
 .editor-panel {
     position: absolute;
     right: 0;
-    width: 300px;
+    width: @editor-panel-widht;
     height: ~'calc(100% - 50px)';
-    border: solid 1px black;
+    // border: solid 1px black;
     background: white;
-    padding: 10px;
+    // padding: 10px;
 
     label {
         width: 80px;
@@ -37,11 +41,15 @@ body {
     }
 }
 
+.main-panel {
+    margin-left: @component-panel-width + 6px;
+    margin-right: @editor-panel-widht + 6px;
+}
+
 .page-view {
     width: 400px;
     float: left;
     background: white;
-    margin-left: 70px;
     list-style: none;
 }
 

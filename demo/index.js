@@ -3,6 +3,9 @@ requirejs.config({
         'application': {
             deps: ['pdesigner']
         },
+        bootstrap: {
+            deps: ['jquery']
+        },
         'jquery-ui': {
             exports: 'window["$"]',
             deps: [
@@ -20,6 +23,7 @@ requirejs.config({
         less: 'lib/require-less-0.1.5/less',
         lessc: 'lib/require-less-0.1.5/lessc',
         normalize: 'lib/require-less-0.1.5/normalize',
+        bootstrap: 'lib/bootstrap',
         'chitu': 'lib/chitu',
         'jquery': 'lib/jquery-2.1.3',
         'jquery-ui': 'lib/jquery-ui',

@@ -32,8 +32,11 @@ namespace pdesigner {
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
-                    return <div {...this.props} ref={(e: HTMLElement) => this.element = e || this.element}>
-                        {this.state.editor}
+                    return <div {...this.props} className="editor-panel panel panel-primary" ref={(e: HTMLElement) => this.element = e || this.element}>
+                        <div className="panel-heading">控件属性</div>
+                        <div className="panel-body">
+                            {this.state.editor}
+                        </div>
                     </div>
                 }}
             </DesignerContext.Consumer>

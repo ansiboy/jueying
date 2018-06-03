@@ -496,10 +496,13 @@ var pdesigner;
             let componets = this.props.componets;
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return h("ul", Object.assign({}, props, { ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.map((c, i) => h("li", { key: i, "data-control-name": c.name },
-                    h("div", { className: "btn-link" },
-                        h("i", { className: c.icon, style: { fontSize: 44, color: 'black' } })),
-                    h("div", null, c.displayName))));
+                return h("div", Object.assign({}, props, { className: "component-panel panel panel-primary" }),
+                    h("div", { className: "panel-heading" }, "\u5DE5\u5177\u680F"),
+                    h("div", { className: "panel-body" },
+                        h("ul", { ref: (e) => this.toolbarElement = this.toolbarElement || e }, componets.map((c, i) => h("li", { key: i, "data-control-name": c.name },
+                            h("div", { className: "btn-link" },
+                                h("i", { className: c.icon, style: { fontSize: 44, color: 'black' } })),
+                            h("div", null, c.displayName))))));
             });
         }
     }
@@ -526,7 +529,9 @@ var pdesigner;
         render() {
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }), this.state.editor);
+                return h("div", Object.assign({}, this.props, { className: "editor-panel panel panel-primary", ref: (e) => this.element = e || this.element }),
+                    h("div", { className: "panel-heading" }, "\u63A7\u4EF6\u5C5E\u6027"),
+                    h("div", { className: "panel-body" }, this.state.editor));
             });
         }
     }

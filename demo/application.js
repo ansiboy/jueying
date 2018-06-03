@@ -105,11 +105,20 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
     let designer;
     const MyDesignerContext = pdesigner_1.PageDesigner.createContext({ designer, page: null });
     function renderPageData(pageData) {
-        return h("div", { ref: (e) => __awaiter(this, void 0, void 0, function* () {
-                pageViewElement = e || pageViewElement;
-                let element = yield pdesigner_1.Control.create(pageData);
-                ReactDOM.render(h(pdesigner_1.DesignerContext.Provider, { value: { designer } }, element), pageViewElement);
-            }) });
+        return h("div", { className: "main-panel" },
+            h("ul", { className: "nav nav-tabs" },
+                h("li", { role: "presentation", className: "bg-primary" },
+                    h("a", { href: "#" }, "\u9875\u9762\u4E00")),
+                h("li", { role: "presentation" },
+                    h("a", { href: "#" }, "\u9875\u9762\u4E8C")),
+                h("li", { role: "presentation" },
+                    h("a", { href: "#" }, "\u9875\u9762\u4E09"))),
+            h("div", { style: { padding: 0 } },
+                h("div", { ref: (e) => __awaiter(this, void 0, void 0, function* () {
+                        pageViewElement = e || pageViewElement;
+                        let element = yield pdesigner_1.Control.create(pageData);
+                        ReactDOM.render(h(pdesigner_1.DesignerContext.Provider, { value: { designer } }, element), pageViewElement);
+                    }) })));
     }
     class MainPage extends React.Component {
         constructor(props) {
@@ -127,18 +136,24 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
         render() {
             return h(pdesigner_1.PageDesigner, { pageData: controlDescription, ref: (e) => this.pageDesigner = e || this.pageDesigner },
                 h("ul", null,
+                    h("li", { className: "pull-left" },
+                        h("h3", { style: { margin: 0, padding: '0 0 0 10px' } }, "\u597D\u6613\u9875\u9762\u8BBE\u8BA1\u5668")),
                     h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary" }, "\u9884\u89C8")),
+                        h("button", { className: "btn btn-primary", onClick: (e) => this.save() },
+                            h("i", { className: "icon-save" }),
+                            h("span", { style: { paddingLeft: 4 } }, "\u4FDD\u5B58"))),
                     h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary", onClick: (e) => this.save() }, "\u4FDD\u5B58"))),
+                        h("button", { className: "btn btn-primary" },
+                            h("i", { className: "icon-eye-open" }),
+                            h("span", { style: { paddingLeft: 4 } }, "\u9884\u89C8")))),
                 h("div", { className: "clearfix" }),
                 h("hr", { style: { margin: 0, borderWidth: 4 } }),
                 h(pdesigner_1.ComponentToolbar, { className: "component-panel", componets: componenDefines_1.componets }),
+                h(pdesigner_1.EditorPanel, { className: "editor-panel" }),
                 h(pdesigner_1.DesignerContext.Consumer, null, context => {
                     designer = context.designer;
                     return renderPageData(context.designer.state.pageData);
-                }),
-                h(pdesigner_1.EditorPanel, { className: "editor-panel" }));
+                }));
         }
     }
     ReactDOM.render(h(MainPage, null), container);

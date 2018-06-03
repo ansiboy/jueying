@@ -46,17 +46,21 @@ namespace pdesigner {
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
-                    return <ul {...props}
-                        ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
-                        {componets.map((c, i) => <li key={i} data-control-name={c.name}>
-                            <div className="btn-link">
-                                <i className={c.icon} style={{ fontSize: 44, color: 'black' }} />
-                            </div>
-                            <div>
-                                {c.displayName}
-                            </div>
-                        </li>)}
-                    </ul>
+                    return <div {...props} className="component-panel panel panel-primary">
+                        <div className="panel-heading">工具栏</div>
+                        <div className="panel-body">
+                            <ul ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
+                                {componets.map((c, i) => <li key={i} data-control-name={c.name}>
+                                    <div className="btn-link">
+                                        <i className={c.icon} style={{ fontSize: 44, color: 'black' }} />
+                                    </div>
+                                    <div>
+                                        {c.displayName}
+                                    </div>
+                                </li>)}
+                            </ul>
+                        </div>
+                    </div>
                 }}
             </DesignerContext.Consumer>
         }
