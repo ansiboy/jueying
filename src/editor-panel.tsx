@@ -7,6 +7,7 @@ namespace pdesigner {
     export interface EditorPanelProps {
         className?: string;
         style?: React.CSSProperties;
+        emptyText?: string
     }
 
     export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
@@ -29,14 +30,18 @@ namespace pdesigner {
             })
         }
         render() {
+            let { editor } = this.state;
+            let { emptyText } = this.props;
+            emptyText = emptyText || '';
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
                     return <div {...this.props} className="editor-panel panel panel-primary" ref={(e: HTMLElement) => this.element = e || this.element}>
                         <div className="panel-heading">控件属性</div>
                         <div className="panel-body">
-                            {this.state.editor}
+                            {editor ? editor : <div className="empty">{emptyText}</div>}
                         </div>
+
                     </div>
                 }}
             </DesignerContext.Consumer>
