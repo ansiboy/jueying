@@ -16,7 +16,9 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
         "name": "PageView",
         "data": {
             "className": "page-view",
-            "style": {}
+            "style": {},
+            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+            "componentName": "PageView"
         },
         "children": [
             {
@@ -27,14 +29,32 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                         "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
                         "name": "ControlPlaceholder",
                         "data": {
-                            emptyText: '页面头部，可以从工具栏拖拉控件到这里',
+                            "emptyText": "页面顶部，可以从工具栏拖拉控件到这里",
                             "style": {
                                 "minHeight": 80,
                                 "border": "dotted 3px #ccc"
+                            },
+                            "key": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
+                            "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
+                            "componentName": "ControlPlaceholder"
+                        },
+                        "children": [
+                            {
+                                "id": "688ae0ca-8044-89f9-e4d4-224769a2e0f5",
+                                "name": "test",
+                                "data": {
+                                    "key": "688ae0ca-8044-89f9-e4d4-224769a2e0f5",
+                                    "id": "688ae0ca-8044-89f9-e4d4-224769a2e0f5",
+                                    "componentName": "test"
+                                }
                             }
-                        }
+                        ]
                     }
-                ]
+                ],
+                "data": {
+                    "key": "dabb6966-8ca9-2fea-c60d-cc3ff0d77f22",
+                    "id": "dabb6966-8ca9-2fea-c60d-cc3ff0d77f22"
+                }
             },
             {
                 "id": "31d0cfcf-a4a2-a7f6-65b6-95a9e0678ff3",
@@ -42,17 +62,23 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                 "data": {
                     "style": {
                         "margin": "8px 0 8px 0"
-                    }
+                    },
+                    "key": "31d0cfcf-a4a2-a7f6-65b6-95a9e0678ff3",
+                    "id": "31d0cfcf-a4a2-a7f6-65b6-95a9e0678ff3"
                 },
                 "children": [
                     {
                         "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
                         "name": "ControlPlaceholder",
                         "data": {
+                            "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
                             "style": {
                                 "minHeight": 200,
                                 "border": "dotted 3px #ccc"
-                            }
+                            },
+                            "key": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                            "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                            "componentName": "ControlPlaceholder"
                         }
                     }
                 ]
@@ -65,14 +91,32 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                         "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
                         "name": "ControlPlaceholder",
                         "data": {
-                            emptyText: '页面底部，可以从工具栏拖拉控件到这里',
+                            "emptyText": "页面底部，可以从工具栏拖拉控件到这里",
                             "style": {
                                 "minHeight": 80,
                                 "border": "dotted 3px #ccc"
+                            },
+                            "key": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
+                            "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
+                            "componentName": "ControlPlaceholder"
+                        },
+                        "children": [
+                            {
+                                "id": "0bc7d57c-12ca-ae5c-b9c8-e742bd931f17",
+                                "name": "test",
+                                "data": {
+                                    "key": "0bc7d57c-12ca-ae5c-b9c8-e742bd931f17",
+                                    "id": "0bc7d57c-12ca-ae5c-b9c8-e742bd931f17",
+                                    "componentName": "test"
+                                }
                             }
-                        }
+                        ]
                     }
-                ]
+                ],
+                "data": {
+                    "key": "5b4d1783-8a85-e8a7-7712-0446519c59d4",
+                    "id": "5b4d1783-8a85-e8a7-7712-0446519c59d4"
+                }
             }
         ]
     };
@@ -142,7 +186,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                 h("div", { className: "clearfix" }),
                 h("hr", { style: { margin: 0, borderWidth: 4 } }),
                 h(pdesigner_1.ComponentToolbar, { className: "component-panel", componets: componenDefines_1.componets }),
-                h(pdesigner_1.EditorPanel, { emptyText: "点击页面控件，可以编辑控件的属性" }),
+                h(pdesigner_1.EditorPanel, { emptyText: "未选中控件，点击页面控件，可以编辑选中控件的属性" }),
                 h(pdesigner_1.DesignerContext.Consumer, null, context => {
                     designer = context.designer;
                     return renderPageData(context.designer.state.pageData);

@@ -24,6 +24,7 @@ namespace pdesigner {
 
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
 
+
         private element: HTMLElement;
         private undoStack = new Array<ControlDescription>();
         private redoStack = new Array<ControlDescription>();
@@ -226,6 +227,16 @@ namespace pdesigner {
                 this.setState({ pageData });
                 this.selectControl(null);
             }
+        }
+
+        moveControl(controlId: string, parentId: string, childIds: string[]) {
+            let control = this.findControl(controlId);
+            console.assert(control != null, `Cannt find control by id ${controlId}`);
+
+            let pageData = this.state.pageData;
+            console.assert(pageData.children);
+            this.removeControlFrom(controlId, pageData.children);
+            this.appendControl(parentId, control, childIds);
         }
 
         private removeControlFrom(controlId: string, collection: ControlDescription[]): boolean {

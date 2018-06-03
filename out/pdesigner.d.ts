@@ -14,7 +14,7 @@ declare namespace pdesigner {
         constructor(props: any);
         setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
         static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
-        static create(control: Control<any, any>): Promise<React.ReactElement<any>>;
+        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
     }
 }
 /*******************************************************************************
@@ -44,6 +44,7 @@ declare namespace pdesigner {
         private originalRender;
         static componentsDir: string;
         static selectedClassName: string;
+        static connectorElementClassName: string;
         protected hasCSS: boolean;
         hasEditor: boolean;
         abstract element: HTMLElement;
@@ -113,6 +114,7 @@ declare namespace pdesigner {
          */
         selectControl(control: Control<any, any>): void;
         private removeControl(controlId);
+        moveControl(controlId: string, parentId: string, childIds: string[]): void;
         private removeControlFrom(controlId, collection);
         private findSelectedElement();
         private findControl(controlId);
@@ -139,6 +141,7 @@ declare namespace pdesigner {
         constructor(props: any);
         readonly persistentMembers: any[];
         private sortableElement(element, designer);
+        private childrenIds(element);
         componentDidMount(): void;
         render(h?: any): JSX.Element;
     }
@@ -154,7 +157,6 @@ declare namespace pdesigner {
     class ComponentToolbar extends React.Component<ComponentToolbarProps, ComponentToolbarState> {
         designer: PageDesigner;
         private toolbarElement;
-        static connectorElementClassName: string;
         componentDidMount(): void;
         draggable(selector: JQuery): void;
         render(): JSX.Element;

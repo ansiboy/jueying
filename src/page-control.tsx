@@ -33,6 +33,7 @@ namespace pdesigner {
         private originalRender: () => React.ReactNode;
         static componentsDir = 'components';
         static selectedClassName = 'control-selected';
+        static connectorElementClassName = 'control-container';
 
         protected hasCSS = false;
         public hasEditor = true;

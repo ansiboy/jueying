@@ -30,44 +30,59 @@ namespace pdesigner {
             type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
             let controls = this.state.controls;
 
-            let ctrl: ControlDescription = null;
-            let childIds: string[];
             $(element).sortable({
                 axis: "y",
-                change: () => {
-                },
-                receive: (event: Event, ui: UI) => {
-
-                    let componentName = ui.item.attr('data-control-name');
-                    ctrl = { id: guid(), name: componentName, data: {} };
-                    ui.helper[0].setAttribute('id', ctrl.id);
-
-                    childIds = new Array<string>();
-                    for (let i = 0; i < element.children.length; i++) {
-                        if (!element.children.item(i).id)
-                            continue;
-
-                        childIds.push(element.children.item(i).id);
-                    }
-
-                    let helper = ui.helper[0] as HTMLElement;
-                    helper.removeAttribute('style');
-                    ui.helper.remove();
+                connectWith: `.${Control.connectorElementClassName}`,
+                receive(event, ui) {
                 },
                 update: (event, ui) => {
-                    if (ctrl) {
-                        this.designer.appendControl(this.id, ctrl, childIds);
-                        ctrl = null;
-                    }
-                    else {
-                        let childIds = new Array<string>();
-                        for (let i = 0; i < element.children.length; i++)
-                            childIds.push(element.children.item(i).id);
+                    let element = event.target as HTMLElement;
+                    if (ui.item && !ui.item[0].id) {    // 添加操作
+                        console.assert(ui.item.length == 1);
+                        let componentName = ui.item.attr('data-control-name');
+                        console.assert(componentName);
 
-                        this.designer.sortChildren(this.id, childIds);
+                        let ctrl = { id: guid(), name: componentName, data: {} };
+                        ui.item[0].setAttribute('id', ctrl.id);
+                        //==================================================
+                        // 将所有 id 子元素找出来，用于排序
+                        let childIds = this.childrenIds(element);
+                        //==================================================
+                        // 需要 setTimout 才能删除
+                        setTimeout(() => {
+                            ui.item.remove();
+                        })
+                        //==================================================
+                        this.designer.appendControl(element.id, ctrl, childIds);
                     }
+                    else if (ui.item && ui.item[0].id) {    // 更新操作
+                        console.assert(ui.item.length == 1);
+                        let childIds = this.childrenIds(element);
+                        if (childIds.indexOf(ui.item[0].id) >= 0) {
+                            this.designer.moveControl(ui.item[0].id, element.id, childIds);
+                        }
+                    }
+                },
+                stop() {
+                    // ===============================================
+                    // jquery ui 取消操作，让 react 更新 dom
+                    // https://stackoverflow.com/questions/29725136/jquery-ui-sortable-with-react-js-buggy
+                    $(element).sortable('cancel');
+                    // ===============================================
                 }
+
             })
+        }
+
+        private childrenIds(element: HTMLElement) {
+            let childIds = new Array<string>();
+            for (let i = 0; i < element.children.length; i++) {
+                if (!element.children.item(i).id)
+                    continue;
+
+                childIds.push(element.children.item(i).id);
+            }
+            return childIds;
         }
 
         componentDidMount() {
@@ -85,7 +100,7 @@ namespace pdesigner {
                     <PageViewContext.Consumer>
                         {context => {
                             self.designer = c.designer;
-                            return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${ComponentToolbar.connectorElementClassName}`}
+                            return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
                                 style={this.props.style}
                                 ref={(e: HTMLElement) => this.element = e || this.element}>
                                 {controls.length == 0 ? emptyElement : controls}

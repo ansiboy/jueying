@@ -273,6 +273,7 @@ var pdesigner;
     }
     Control.componentsDir = 'components';
     Control.selectedClassName = 'control-selected';
+    Control.connectorElementClassName = 'control-container';
     pdesigner.Control = Control;
     function createDesignTimeElement(type, props, ...children) {
         props = props || {};
@@ -485,6 +486,14 @@ var pdesigner;
                 this.selectControl(null);
             }
         }
+        moveControl(controlId, parentId, childIds) {
+            let control = this.findControl(controlId);
+            console.assert(control != null, `Cannt find control by id ${controlId}`);
+            let pageData = this.state.pageData;
+            console.assert(pageData.children);
+            this.removeControlFrom(controlId, pageData.children);
+            this.appendControl(parentId, control, childIds);
+        }
         removeControlFrom(controlId, collection) {
             let controlIndex;
             for (let i = 0; i < collection.length; i++) {
@@ -571,39 +580,55 @@ var pdesigner;
         }
         sortableElement(element, designer) {
             let controls = this.state.controls;
-            let ctrl = null;
-            let childIds;
             $(element).sortable({
                 axis: "y",
-                change: () => {
-                },
-                receive: (event, ui) => {
-                    let componentName = ui.item.attr('data-control-name');
-                    ctrl = { id: pdesigner.guid(), name: componentName, data: {} };
-                    ui.helper[0].setAttribute('id', ctrl.id);
-                    childIds = new Array();
-                    for (let i = 0; i < element.children.length; i++) {
-                        if (!element.children.item(i).id)
-                            continue;
-                        childIds.push(element.children.item(i).id);
-                    }
-                    let helper = ui.helper[0];
-                    helper.removeAttribute('style');
-                    ui.helper.remove();
+                connectWith: `.${pdesigner.Control.connectorElementClassName}`,
+                receive(event, ui) {
                 },
                 update: (event, ui) => {
-                    if (ctrl) {
-                        this.designer.appendControl(this.id, ctrl, childIds);
-                        ctrl = null;
+                    let element = event.target;
+                    if (ui.item && !ui.item[0].id) {
+                        console.assert(ui.item.length == 1);
+                        let componentName = ui.item.attr('data-control-name');
+                        console.assert(componentName);
+                        let ctrl = { id: pdesigner.guid(), name: componentName, data: {} };
+                        ui.item[0].setAttribute('id', ctrl.id);
+                        //==================================================
+                        // 将所有 id 子元素找出来，用于排序
+                        let childIds = this.childrenIds(element);
+                        //==================================================
+                        // 需要 setTimout 才能删除
+                        setTimeout(() => {
+                            ui.item.remove();
+                        });
+                        //==================================================
+                        this.designer.appendControl(element.id, ctrl, childIds);
                     }
-                    else {
-                        let childIds = new Array();
-                        for (let i = 0; i < element.children.length; i++)
-                            childIds.push(element.children.item(i).id);
-                        this.designer.sortChildren(this.id, childIds);
+                    else if (ui.item && ui.item[0].id) {
+                        console.assert(ui.item.length == 1);
+                        let childIds = this.childrenIds(element);
+                        if (childIds.indexOf(ui.item[0].id) >= 0) {
+                            this.designer.moveControl(ui.item[0].id, element.id, childIds);
+                        }
                     }
+                },
+                stop() {
+                    // ===============================================
+                    // jquery ui 取消操作，让 react 更新 dom
+                    // https://stackoverflow.com/questions/29725136/jquery-ui-sortable-with-react-js-buggy
+                    $(element).sortable('cancel');
+                    // ===============================================
                 }
             });
+        }
+        childrenIds(element) {
+            let childIds = new Array();
+            for (let i = 0; i < element.children.length; i++) {
+                if (!element.children.item(i).id)
+                    continue;
+                childIds.push(element.children.item(i).id);
+            }
+            return childIds;
         }
         componentDidMount() {
             if (this.designer) {
@@ -617,7 +642,7 @@ var pdesigner;
             let self = this;
             return h(pdesigner.DesignerContext.Consumer, null, c => h(pdesigner.PageViewContext.Consumer, null, context => {
                 self.designer = c.designer;
-                return h("div", Object.assign({}, pdesigner.Control.htmlDOMProps(this.props), { className: `place-holder ${pdesigner.ComponentToolbar.connectorElementClassName}`, style: this.props.style, ref: (e) => this.element = e || this.element }), controls.length == 0 ? emptyElement : controls);
+                return h("div", Object.assign({}, pdesigner.Control.htmlDOMProps(this.props), { className: `place-holder ${pdesigner.Control.connectorElementClassName}`, style: this.props.style, ref: (e) => this.element = e || this.element }), controls.length == 0 ? emptyElement : controls);
             }));
         }
     }
@@ -628,7 +653,7 @@ var pdesigner;
 (function (pdesigner) {
     class ComponentToolbar extends React.Component {
         componentDidMount() {
-            this.draggable($(`.${ComponentToolbar.connectorElementClassName}`));
+            this.draggable($(`.${pdesigner.Control.connectorElementClassName}`));
             this.designer.controlComponentDidMount.add((sender, control) => {
                 console.assert(control.element != null);
                 this.draggable($(control.element));
@@ -636,9 +661,9 @@ var pdesigner;
         }
         draggable(selector) {
             $(this.toolbarElement).find('li').draggable({
-                connectToSortable: $(`section, .${ComponentToolbar.connectorElementClassName}`),
+                connectToSortable: $(`section, .${pdesigner.Control.connectorElementClassName}`),
                 helper: "clone",
-                revert: "invalid"
+                revert: "invalid",
             });
             // this.props.componets.forEach(o => this.designer.addComponentDefine(o));
         }
@@ -662,7 +687,6 @@ var pdesigner;
             });
         }
     }
-    ComponentToolbar.connectorElementClassName = 'control-container';
     pdesigner.ComponentToolbar = ComponentToolbar;
 })(pdesigner || (pdesigner = {}));
 var pdesigner;

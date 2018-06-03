@@ -12,10 +12,9 @@ namespace pdesigner {
         designer: PageDesigner;
         private toolbarElement: HTMLElement;
 
-        static connectorElementClassName = 'control-container';
 
         componentDidMount() {
-            this.draggable($(`.${ComponentToolbar.connectorElementClassName}`));
+            this.draggable($(`.${Control.connectorElementClassName}`));
             this.designer.controlComponentDidMount.add((sender, control) => {
                 console.assert(control.element != null);
                 this.draggable($(control.element));
@@ -24,9 +23,9 @@ namespace pdesigner {
 
         draggable(selector: JQuery) {
             $(this.toolbarElement).find('li').draggable({
-                connectToSortable: $(`section, .${ComponentToolbar.connectorElementClassName}`),
+                connectToSortable: $(`section, .${Control.connectorElementClassName}`),
                 helper: "clone",
-                revert: "invalid"
+                revert: "invalid",
             })
 
             // this.props.componets.forEach(o => this.designer.addComponentDefine(o));
