@@ -7,7 +7,7 @@ namespace pdesigner {
     }
     export interface ControlPlaceholderProps extends ControlProps<ControlPlaceholder> {
         style?: React.CSSProperties,
-        emptyElement?: JSX.Element,
+        emptyText?: string,
     }
     export class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
         private designer: PageDesigner;
@@ -76,8 +76,8 @@ namespace pdesigner {
             }
         }
         render(h?: any) {
-            let { emptyElement } = this.props;
-            emptyElement = emptyElement || <div></div>;
+            let { emptyText } = this.props;
+            let emptyElement = <div className="empty">{emptyText || ''}</div>;
             let controls = this.props.children as JSX.Element[] || [];
             let self = this;
             return <DesignerContext.Consumer>
@@ -88,10 +88,7 @@ namespace pdesigner {
                             return <div {...this.htmlProps()} className={`place-holder ${ComponentToolbar.connectorElementClassName}`}
                                 style={this.props.style}
                                 ref={(e: HTMLElement) => this.element = e || this.element}>
-
-
                                 {controls.length == 0 ? emptyElement : controls}
-
                             </div>
                         }}
                     </PageViewContext.Consumer>
