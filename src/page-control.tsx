@@ -67,15 +67,18 @@ namespace pdesigner {
             return this._componentName;
         }
 
-        protected htmlProps() {
-            let props = {}
+        static htmlDOMProps(props: any) {
+            let result = {};
+            if (!props) {
+                return result;
+            }
             let keys = ['id', 'style', 'className'];
-            for (let key in this.props) {
+            for (let key in props) {
                 if (keys.indexOf(key) >= 0) {
-                    props[key] = this.props[key];
+                    result[key] = props[key];
                 }
             }
-            return props;
+            return result;
         }
 
         protected async loadControlCSS() {
@@ -98,21 +101,12 @@ namespace pdesigner {
                     return;
                 }
 
-                let pageViwe = self instanceof PageView ? self : self._pageView;
-                console.assert(pageViwe != null);
-                let previousSelected = pageViwe.element.querySelector(`.${Control.selectedClassName}`) || pageViwe.element;
-                previousSelected.className = previousSelected.className.replace(Control.selectedClassName, '');
-
-                let className = self.element.className;
-                if (className.indexOf(Control.selectedClassName) < 0) {
-                    className = `${className} ${Control.selectedClassName}`;
-                    self.element.className = className;
-                }
 
                 e.stopPropagation();
                 e.cancelBubble = true;
-                self._designer.controlSelected.fire(self._designer, self)
+                self._designer.selectControl(self);
             }
+
 
             self._designer.controlComponentDidMount.fire(self._designer, self);
 
@@ -294,37 +288,6 @@ namespace pdesigner {
             let names = Object.getOwnPropertyNames(obj);
             return names.length == 0;
         }
-
-        // private translateControl(control: React.ReactElement<any>): ControlDescription {
-        //     if (control instanceof Control) {
-        //         return control.export();
-        //     }
-
-        //     var str = `<test/>`;
-        //     var data = {}
-
-        //     let skipFields = ['id', 'componentName', 'key'];
-        //     for (let key in control.props) {
-        //         let isSkipField = skipFields.indexOf(key) >= 0;
-        //         if (key[0] == '_' || typeof (data[key] == 'function') || isSkipField) {
-        //             continue;
-        //         }
-        //         data[key] = control.props[key];
-        //     }
-
-        //     // delete data.id;
-        //     // delete data.componentName;
-        //     // delete data.key;
-
-        //     debugger;
-        //     let result: ControlDescription = {
-        //         id: control.props.id,
-        //         name: control.type as string,
-        //         data
-        //     };
-
-        //     return result;
-        // }
     }
 
     //==============================================================    
@@ -346,6 +309,10 @@ namespace pdesigner {
         }
         if (type == 'a' && (props as any).href) {
             (props as any).href = 'javascript:';
+        }
+        else if (type == 'input') {
+            delete props.onClick;
+            (props as any).readOnly = true;
         }
 
         let args = [type, props];

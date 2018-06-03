@@ -2,12 +2,13 @@ body {
     background: whitesmoke;
 }
 
+@panel-height: ~'calc(100% - 50px)';
 @component-panel-width:90px;
 .component-panel {
     position: absolute;
     background: white;
     margin-right: 10px;
-    height: ~'calc(100% - 50px)';
+    height: @panel-height;
     width: @component-panel-width;
     .panel-heading {
         text-align: center;
@@ -21,15 +22,13 @@ body {
     }
 }
 
-@editor-panel-widht: 300px;
+@editor-panel-width: 300px;
 .editor-panel {
     position: absolute;
     right: 0;
-    width: @editor-panel-widht;
-    height: ~'calc(100% - 50px)';
-    // border: solid 1px black;
+    width: @editor-panel-width;
+    height: @panel-height;
     background: white;
-    // padding: 10px;
 
     label {
         width: 80px;
@@ -39,11 +38,20 @@ body {
     .control {
         padding-left: 90px;
     }
+    .empty {
+        padding-top: 200px;
+        text-align: center;
+    }
 }
 
 .main-panel {
-    margin-left: @component-panel-width + 6px;
-    margin-right: @editor-panel-widht + 6px;
+    @margin-left :@component-panel-width + 6px;
+    @margin-right: @editor-panel-width + 6px;
+    position: absolute;
+    left: @margin-left;
+    // margin-right:  @margin-right;
+    height: @panel-height;
+    width: ~"calc(100% -  @{margin-left} - @{margin-right})";
 }
 
 .page-view {
@@ -51,6 +59,15 @@ body {
     float: left;
     background: white;
     list-style: none;
+
+    header {
+    }
+    .control-container {
+        .empty {
+            text-align: center;
+            padding-top: 30px;
+        }
+    }
 }
 
 .control-selected {

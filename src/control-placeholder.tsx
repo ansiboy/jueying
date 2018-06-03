@@ -85,7 +85,7 @@ namespace pdesigner {
                     <PageViewContext.Consumer>
                         {context => {
                             self.designer = c.designer;
-                            return <div {...this.htmlProps()} className={`place-holder ${ComponentToolbar.connectorElementClassName}`}
+                            return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${ComponentToolbar.connectorElementClassName}`}
                                 style={this.props.style}
                                 ref={(e: HTMLElement) => this.element = e || this.element}>
                                 {controls.length == 0 ? emptyElement : controls}

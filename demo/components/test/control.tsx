@@ -21,7 +21,7 @@ export default class TestControl extends Control<Props, State> {
 
     render(h?: any) {
         let { label } = this.props;
-        return <div {...this.htmlProps()} className="test-control form-group" ref={(e: HTMLElement) => this.element = e || this.element}>
+        return <div {...Control.htmlDOMProps(this.props)} className="test-control form-group" ref={(e: HTMLElement) => this.element = e || this.element}>
             <label>{label}</label>
             <div className="control">
                 <input className="form-control" />

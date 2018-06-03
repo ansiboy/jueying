@@ -55,7 +55,7 @@ namespace pdesigner {
             let pageData = { controls: [] };
 
             let pageView = this;
-            return <div {...this.htmlProps()}
+            return <div {...Control.htmlDOMProps(this.props)}
                 ref={(e: HTMLElement) => this.element = e || this.element}>
                 <PageViewContext.Provider value={{ pageView }}>
                     {this.props.children}

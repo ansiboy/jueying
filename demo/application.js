@@ -27,6 +27,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                         "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
                         "name": "ControlPlaceholder",
                         "data": {
+                            emptyText: '页面头部，可以从工具栏拖拉控件到这里',
                             "style": {
                                 "minHeight": 80,
                                 "border": "dotted 3px #ccc"
@@ -73,6 +74,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                         "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
                         "name": "ControlPlaceholder",
                         "data": {
+                            emptyText: '页面底部，可以从工具栏拖拉控件到这里',
                             "style": {
                                 "minHeight": 80,
                                 "border": "dotted 3px #ccc"
@@ -105,7 +107,9 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
     let designer;
     const MyDesignerContext = pdesigner_1.PageDesigner.createContext({ designer, page: null });
     function renderPageData(pageData) {
-        return h("div", { className: "main-panel" },
+        return h("div", { className: "main-panel", onClick: (e) => {
+                designer.selectControl(null);
+            } },
             h("ul", { className: "nav nav-tabs" },
                 h("li", { role: "presentation", className: "bg-primary" },
                     h("a", { href: "#" }, "\u9875\u9762\u4E00")),
@@ -113,12 +117,11 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                     h("a", { href: "#" }, "\u9875\u9762\u4E8C")),
                 h("li", { role: "presentation" },
                     h("a", { href: "#" }, "\u9875\u9762\u4E09"))),
-            h("div", { style: { padding: 0 } },
-                h("div", { ref: (e) => __awaiter(this, void 0, void 0, function* () {
-                        pageViewElement = e || pageViewElement;
-                        let element = yield pdesigner_1.Control.create(pageData);
-                        ReactDOM.render(h(pdesigner_1.DesignerContext.Provider, { value: { designer } }, element), pageViewElement);
-                    }) })));
+            h("div", { ref: (e) => __awaiter(this, void 0, void 0, function* () {
+                    pageViewElement = e || pageViewElement;
+                    let element = yield pdesigner_1.Control.create(pageData);
+                    ReactDOM.render(h(pdesigner_1.DesignerContext.Provider, { value: { designer } }, element), pageViewElement);
+                }) }));
     }
     class MainPage extends React.Component {
         constructor(props) {
@@ -149,7 +152,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                 h("div", { className: "clearfix" }),
                 h("hr", { style: { margin: 0, borderWidth: 4 } }),
                 h(pdesigner_1.ComponentToolbar, { className: "component-panel", componets: componenDefines_1.componets }),
-                h(pdesigner_1.EditorPanel, { className: "editor-panel" }),
+                h(pdesigner_1.EditorPanel, { emptyText: "点击页面控件，可以编辑控件的属性" }),
                 h(pdesigner_1.DesignerContext.Consumer, null, context => {
                     designer = context.designer;
                     return renderPageData(context.designer.state.pageData);

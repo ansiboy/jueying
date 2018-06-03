@@ -97,15 +97,18 @@ var pdesigner;
             console.assert(this._componentName);
             return this._componentName;
         }
-        htmlProps() {
-            let props = {};
+        static htmlDOMProps(props) {
+            let result = {};
+            if (!props) {
+                return result;
+            }
             let keys = ['id', 'style', 'className'];
-            for (let key in this.props) {
+            for (let key in props) {
                 if (keys.indexOf(key) >= 0) {
-                    props[key] = this.props[key];
+                    result[key] = props[key];
                 }
             }
-            return props;
+            return result;
         }
         loadControlCSS() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -126,18 +129,9 @@ var pdesigner;
                         console.log(`Control ${self.constructor.name} has none editor.`);
                     return;
                 }
-                let pageViwe = self instanceof pdesigner.PageView ? self : self._pageView;
-                console.assert(pageViwe != null);
-                let previousSelected = pageViwe.element.querySelector(`.${Control.selectedClassName}`) || pageViwe.element;
-                previousSelected.className = previousSelected.className.replace(Control.selectedClassName, '');
-                let className = self.element.className;
-                if (className.indexOf(Control.selectedClassName) < 0) {
-                    className = `${className} ${Control.selectedClassName}`;
-                    self.element.className = className;
-                }
                 e.stopPropagation();
                 e.cancelBubble = true;
-                self._designer.controlSelected.fire(self._designer, self);
+                self._designer.selectControl(self);
             };
             self._designer.controlComponentDidMount.fire(self._designer, self);
             if (self.hasCSS) {
@@ -294,6 +288,10 @@ var pdesigner;
         if (type == 'a' && props.href) {
             props.href = 'javascript:';
         }
+        else if (type == 'input') {
+            delete props.onClick;
+            props.readOnly = true;
+        }
         let args = [type, props];
         for (let i = 2; i < arguments.length; i++) {
             args[i] = arguments[i];
@@ -321,15 +319,23 @@ var pdesigner;
             this.controlSelected = chitu.Callbacks();
             this.controlComponentDidMount = chitu.Callbacks();
             this.state = { pageData: this.props.pageData };
+            this.controlSelected.add((sender, control) => {
+                let previousSelected = this.findSelectedElement(); // || pageViwe.element;
+                if (previousSelected) {
+                    previousSelected.className = previousSelected.className.replace(pdesigner.Control.selectedClassName, '');
+                }
+                if (control) {
+                    let className = control.element.className;
+                    if (className.indexOf(pdesigner.Control.selectedClassName) < 0) {
+                        className = `${className} ${pdesigner.Control.selectedClassName}`;
+                        control.element.className = className;
+                    }
+                }
+            });
         }
         static createContext(value) {
             return React.createContext(value);
         }
-        // selectControl(controlId: string): any {
-        //     let c = this.findControl(controlId);
-        //     console.assert(c != null);
-        //     this.setState({ selectedControlId: c.id });
-        // }
         updateControlProps(controlId, props) {
             let controlDescription = this.findControl(controlId);
             console.assert(controlDescription != null);
@@ -379,6 +385,57 @@ var pdesigner;
                 this.sortChildren(parentId, childIds);
             });
         }
+        /**
+         * 选择指定的控件
+         * @param control 指定的控件，可以为空，为空表示清空选择。
+         */
+        selectControl(control) {
+            this.controlSelected.fire(this, control);
+        }
+        removeControl(controlId) {
+            let pageData = this.state.pageData;
+            if (!pageData || !pageData.children || pageData.children.length == 0)
+                return;
+            let isRemoved = this.removeControlFrom(controlId, pageData.children);
+            if (isRemoved) {
+                this.setState({ pageData });
+                this.selectControl(null);
+            }
+        }
+        removeControlFrom(controlId, collection) {
+            let controlIndex;
+            for (let i = 0; i < collection.length; i++) {
+                if (controlId == collection[i].id) {
+                    controlIndex = i;
+                    break;
+                }
+            }
+            if (controlIndex == null) {
+                for (let i = 0; i < collection.length; i++) {
+                    let o = collection[i];
+                    if (o.children && o.children.length > 0) {
+                        let isRemoved = this.removeControlFrom(controlId, o.children);
+                        if (isRemoved) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            if (controlIndex == 0) {
+                collection.shift();
+            }
+            else if (controlIndex == collection.length - 1) {
+                collection.pop();
+            }
+            else {
+                collection.splice(controlIndex, 1);
+            }
+            return true;
+        }
+        findSelectedElement() {
+            return this.element.querySelector(`.${pdesigner.Control.selectedClassName}`); // || pageViwe.element;
+        }
         findControl(controlId) {
             let pageData = this.state.pageData;
             let stack = new Array();
@@ -391,9 +448,20 @@ var pdesigner;
             }
             return null;
         }
+        onKeyDown(e) {
+            const DELETE_KEY_CODE = 46;
+            if (e.keyCode == DELETE_KEY_CODE) {
+                let element = this.findSelectedElement();
+                if (element == null) {
+                    return;
+                }
+                console.assert(element.id);
+                this.removeControl(element.id);
+            }
+        }
         render() {
             let designer = this;
-            return h("div", { className: "pdesigner", ref: (e) => this.element = e || this.element },
+            return h("div", { className: "pdesigner", ref: (e) => this.element = e || this.element, onKeyDown: (e) => this.onKeyDown(e) },
                 h(pdesigner.DesignerContext.Provider, { value: { designer } }, this.props.children));
         }
     }
@@ -455,13 +523,13 @@ var pdesigner;
             }
         }
         render(h) {
-            let { emptyElement } = this.props;
-            emptyElement = emptyElement || h("div", null);
+            let { emptyText } = this.props;
+            let emptyElement = h("div", { className: "empty" }, emptyText || '');
             let controls = this.props.children || [];
             let self = this;
             return h(pdesigner.DesignerContext.Consumer, null, c => h(pdesigner.PageViewContext.Consumer, null, context => {
                 self.designer = c.designer;
-                return h("div", Object.assign({}, this.htmlProps(), { className: `place-holder ${pdesigner.ComponentToolbar.connectorElementClassName}`, style: this.props.style, ref: (e) => this.element = e || this.element }), controls.length == 0 ? emptyElement : controls);
+                return h("div", Object.assign({}, pdesigner.Control.htmlDOMProps(this.props), { className: `place-holder ${pdesigner.ComponentToolbar.connectorElementClassName}`, style: this.props.style, ref: (e) => this.element = e || this.element }), controls.length == 0 ? emptyElement : controls);
             }));
         }
     }
@@ -518,6 +586,10 @@ var pdesigner;
         }
         componentDidMount() {
             this.designer.controlSelected.add((designer, control) => __awaiter(this, void 0, void 0, function* () {
+                if (control == null) {
+                    this.setState({ editor: null });
+                    return;
+                }
                 if (!control.hasEditor) {
                     console.log(`Control ${control.constructor.name} has none editor.`);
                     return;
@@ -527,11 +599,14 @@ var pdesigner;
             }));
         }
         render() {
+            let { editor } = this.state;
+            let { emptyText } = this.props;
+            emptyText = emptyText || '';
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return h("div", Object.assign({}, this.props, { className: "editor-panel panel panel-primary", ref: (e) => this.element = e || this.element }),
+                return h("div", Object.assign({}, pdesigner.Control.htmlDOMProps(this.props), { className: "editor-panel panel panel-primary", ref: (e) => this.element = e || this.element }),
                     h("div", { className: "panel-heading" }, "\u63A7\u4EF6\u5C5E\u6027"),
-                    h("div", { className: "panel-body" }, this.state.editor));
+                    h("div", { className: "panel-body" }, editor ? editor : h("div", { className: "empty" }, emptyText)));
             });
         }
     }
@@ -576,7 +651,7 @@ var pdesigner;
             let children = React.Children.toArray(this.props.children) || [];
             let pageData = { controls: [] };
             let pageView = this;
-            return h("div", Object.assign({}, this.htmlProps(), { ref: (e) => this.element = e || this.element }),
+            return h("div", Object.assign({}, pdesigner.Control.htmlDOMProps(this.props), { ref: (e) => this.element = e || this.element }),
                 h(pdesigner.PageViewContext.Provider, { value: { pageView } }, this.props.children));
         }
     }

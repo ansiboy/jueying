@@ -25,6 +25,7 @@ namespace pdesigner {
 
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
 
+
         private element: HTMLElement;
         controlSelected = chitu.Callbacks<PageDesigner, Control<any, any>>();
         controlComponentDidMount = chitu.Callbacks<PageDesigner, Control<any, any>>();
@@ -32,17 +33,27 @@ namespace pdesigner {
         constructor(props) {
             super(props);
             this.state = { pageData: this.props.pageData };
+
+            this.controlSelected.add((sender, control) => {
+                let previousSelected = this.findSelectedElement();// || pageViwe.element;
+                if (previousSelected) {
+                    previousSelected.className = previousSelected.className.replace(Control.selectedClassName, '');
+                }
+
+                if (control) {
+                    let className = control.element.className;
+                    if (className.indexOf(Control.selectedClassName) < 0) {
+                        className = `${className} ${Control.selectedClassName}`;
+                        control.element.className = className;
+                    }
+                }
+            })
+
         }
 
         static createContext<T extends { designer: PageDesigner }>(value: T) {
             return React.createContext(value)
         }
-
-        // selectControl(controlId: string): any {
-        //     let c = this.findControl(controlId);
-        //     console.assert(c != null);
-        //     this.setState({ selectedControlId: c.id });
-        // }
 
         updateControlProps(controlId: string, props: any): any {
             let controlDescription = this.findControl(controlId);
@@ -94,7 +105,67 @@ namespace pdesigner {
             this.sortChildren(parentId, childIds);
         }
 
-        findControl(controlId: string) {
+        /**
+         * 选择指定的控件
+         * @param control 指定的控件，可以为空，为空表示清空选择。
+         */
+        selectControl(control: Control<any, any>): void {
+            this.controlSelected.fire(this, control)
+        }
+
+        private removeControl(controlId: string) {
+            let pageData = this.state.pageData;
+            if (!pageData || !pageData.children || pageData.children.length == 0)
+                return;
+
+            let isRemoved = this.removeControlFrom(controlId, pageData.children);
+            if (isRemoved) {
+                this.setState({ pageData });
+                this.selectControl(null);
+            }
+        }
+
+        private removeControlFrom(controlId: string, collection: ControlDescription[]): boolean {
+            let controlIndex: number;
+            for (let i = 0; i < collection.length; i++) {
+                if (controlId == collection[i].id) {
+                    controlIndex = i;
+                    break;
+                }
+            }
+
+            if (controlIndex == null) {
+                for (let i = 0; i < collection.length; i++) {
+                    let o = collection[i];
+                    if (o.children && o.children.length > 0) {
+                        let isRemoved = this.removeControlFrom(controlId, o.children)
+                        if (isRemoved) {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            if (controlIndex == 0) {
+                collection.shift();
+            }
+            else if (controlIndex == collection.length - 1) {
+                collection.pop();
+            }
+            else {
+                collection.splice(controlIndex, 1);
+            }
+
+            return true;
+        }
+
+        private findSelectedElement(): HTMLElement {
+            return this.element.querySelector(`.${Control.selectedClassName}`);// || pageViwe.element;
+        }
+
+        private findControl(controlId: string) {
             let pageData = this.state.pageData;
             let stack = new Array<ControlDescription>();
             stack.push(pageData);
@@ -109,9 +180,23 @@ namespace pdesigner {
             return null;
         }
 
+        private onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+            const DELETE_KEY_CODE = 46;
+            if (e.keyCode == DELETE_KEY_CODE) {
+                let element = this.findSelectedElement();
+                if (element == null) {
+                    return;
+                }
+
+                console.assert(element.id);
+                this.removeControl(element.id);
+            }
+        }
+
         render() {
             let designer = this;
-            return <div className="pdesigner" ref={(e: HTMLElement) => this.element = e || this.element}>
+            return <div className="pdesigner" ref={(e: HTMLElement) => this.element = e || this.element}
+                onKeyDown={(e) => this.onKeyDown(e)}>
                 <DesignerContext.Provider value={{ designer }}>
                     {this.props.children}
                 </DesignerContext.Provider>

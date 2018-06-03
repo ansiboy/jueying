@@ -51,7 +51,7 @@ declare namespace pdesigner {
         readonly abstract persistentMembers: (keyof S)[];
         readonly id: string;
         readonly componentName: string;
-        protected htmlProps(): {};
+        static htmlDOMProps(props: any): {};
         protected loadControlCSS(): Promise<void>;
         private static componentDidMount();
         private static render();
@@ -99,7 +99,16 @@ declare namespace pdesigner {
         sortControlChildren(controlId: string, childIds: string[]): any;
         sortChildren(parentId: string, childIds: string[]): Promise<void>;
         appendControl(parentId: string, childControl: ControlDescription, childIds: string[]): Promise<void>;
-        findControl(controlId: string): ControlDescription;
+        /**
+         * 选择指定的控件
+         * @param control 指定的控件，可以为空，为空表示清空选择。
+         */
+        selectControl(control: Control<any, any>): void;
+        private removeControl(controlId);
+        private removeControlFrom(controlId, collection);
+        private findSelectedElement();
+        private findControl(controlId);
+        private onKeyDown(e);
         render(): JSX.Element;
     }
     const DesignerContext: React.Context<{
@@ -112,7 +121,7 @@ declare namespace pdesigner {
     }
     interface ControlPlaceholderProps extends ControlProps<ControlPlaceholder> {
         style?: React.CSSProperties;
-        emptyElement?: JSX.Element;
+        emptyText?: string;
     }
     class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
         private designer;
@@ -149,6 +158,7 @@ declare namespace pdesigner {
     interface EditorPanelProps {
         className?: string;
         style?: React.CSSProperties;
+        emptyText?: string;
     }
     class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
         private designer;

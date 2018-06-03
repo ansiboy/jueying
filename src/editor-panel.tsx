@@ -20,6 +20,10 @@ namespace pdesigner {
         }
         componentDidMount() {
             this.designer.controlSelected.add(async (designer, control) => {
+                if (control == null) {
+                    this.setState({ editor: null });
+                    return;
+                }
                 if (!control.hasEditor) {
                     console.log(`Control ${control.constructor.name} has none editor.`);
                     return;
@@ -36,7 +40,7 @@ namespace pdesigner {
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
-                    return <div {...this.props} className="editor-panel panel panel-primary" ref={(e: HTMLElement) => this.element = e || this.element}>
+                    return <div {...Control.htmlDOMProps(this.props)} className="editor-panel panel panel-primary" ref={(e: HTMLElement) => this.element = e || this.element}>
                         <div className="panel-heading">控件属性</div>
                         <div className="panel-body">
                             {editor ? editor : <div className="empty">{emptyText}</div>}

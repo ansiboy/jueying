@@ -8,7 +8,7 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
         }
         render(h) {
             let { label } = this.props;
-            return h("div", Object.assign({}, this.htmlProps(), { className: "test-control form-group", ref: (e) => this.element = e || this.element }),
+            return h("div", Object.assign({}, pdesigner_1.Control.htmlDOMProps(this.props), { className: "test-control form-group", ref: (e) => this.element = e || this.element }),
                 h("label", null, label),
                 h("div", { className: "control" },
                     h("input", { className: "form-control" })));

@@ -3,7 +3,7 @@ define(["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.componets = [
         {
-            name: "Test",
+            name: "test",
             displayName: "商品列表",
             icon: "icon-list",
             introduce: "",

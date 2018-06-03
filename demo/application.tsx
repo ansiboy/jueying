@@ -24,6 +24,7 @@ let controlDescription: ControlDescription = {
                     "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
                     "name": "ControlPlaceholder",
                     "data": {
+                        emptyText: '页面头部，可以从工具栏拖拉控件到这里',
                         "style": {
                             "minHeight": 80,
                             "border": "dotted 3px #ccc"
@@ -70,6 +71,7 @@ let controlDescription: ControlDescription = {
                     "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
                     "name": "ControlPlaceholder",
                     "data": {
+                        emptyText: '页面底部，可以从工具栏拖拉控件到这里',
                         "style": {
                             "minHeight": 80,
                             "border": "dotted 3px #ccc"
@@ -110,22 +112,23 @@ let designer: PageDesigner;
 const MyDesignerContext = PageDesigner.createContext({ designer, page: null })
 
 function renderPageData(pageData: ControlDescription) {
-    return <div className="main-panel">
+    return <div className="main-panel"
+        onClick={(e) => {
+            designer.selectControl(null);
+        }}>
         <ul className="nav nav-tabs">
             <li role="presentation" className="bg-primary"><a href="#">页面一</a></li>
             <li role="presentation"><a href="#">页面二</a></li>
             <li role="presentation"><a href="#">页面三</a></li>
         </ul>
-        <div style={{ padding: 0 }}>
-            <div ref={async (e: HTMLElement) => {
-                pageViewElement = e || pageViewElement;
+        <div ref={async (e: HTMLElement) => {
+            pageViewElement = e || pageViewElement;
 
-                let element = await Control.create(pageData);
-                ReactDOM.render(<DesignerContext.Provider value={{ designer }}>
-                    {element}
-                </DesignerContext.Provider>, pageViewElement)
-            }}></div>
-        </div>
+            let element = await Control.create(pageData);
+            ReactDOM.render(<DesignerContext.Provider value={{ designer }}>
+                {element}
+            </DesignerContext.Provider>, pageViewElement)
+        }}></div>
     </div>
 }
 
@@ -170,7 +173,7 @@ class MainPage extends React.Component<any, any>{
             <hr style={{ margin: 0, borderWidth: 4 }} />
 
             <ComponentToolbar className="component-panel" componets={componets} />
-            <EditorPanel className="editor-panel" />
+            <EditorPanel emptyText={"点击页面控件，可以编辑控件的属性"} />
             <DesignerContext.Consumer>
                 {context => {
                     designer = context.designer;
