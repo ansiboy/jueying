@@ -13,31 +13,8 @@ declare namespace pdesigner {
         abstract element: HTMLElement;
         constructor(props: any);
         setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
-        static register(controlTypeName: any, editorType: React.ComponentClass<any>): void;
+        static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
         static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
-    }
-}
-declare namespace pdesigner {
-    interface ControlProps<T> extends React.Props<T> {
-    }
-    abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
-        private _designer;
-        private originalComponentDidMount;
-        private originalRender;
-        static componentsDir: string;
-        static selectedClassName: string;
-        protected hasCSS: boolean;
-        hasEditor: boolean;
-        children: Control<any, any>[];
-        abstract element: HTMLElement;
-        constructor(props: any);
-        readonly abstract persistentMembers: (keyof S)[];
-        readonly id: string;
-        private static componentDidMount();
-        private static render();
-        static create(description: ControlDescription): Promise<React.ReactElement<any>>;
-        static register(controlType: React.ComponentClass<any>): void;
-        export(): ControlDescription;
     }
 }
 /*******************************************************************************
@@ -53,21 +30,71 @@ declare namespace pdesigner {
  *
  ********************************************************************************/
 declare namespace pdesigner {
-    const DesignerContext: React.Context<{
-        designer: PageDesigner;
-    }>;
+    interface ControlProps<T> extends React.Props<T> {
+        componentName?: string;
+    }
+    interface ControlState {
+        selected: boolean;
+    }
+    abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
+        private _componentName;
+        private _pageView;
+        private _designer;
+        private originalComponentDidMount;
+        private originalRender;
+        static componentsDir: string;
+        static selectedClassName: string;
+        protected hasCSS: boolean;
+        hasEditor: boolean;
+        abstract element: HTMLElement;
+        constructor(props: any);
+        readonly abstract persistentMembers: (keyof S)[];
+        readonly id: string;
+        readonly componentName: string;
+        protected htmlProps(): {};
+        protected loadControlCSS(): Promise<void>;
+        private static componentDidMount();
+        private static render();
+        static create(description: ControlDescription): Promise<React.ReactElement<any>>;
+        static register(controlType: React.ComponentClass<any>): any;
+        static register(controlName: string, controlType: React.ComponentClass<any>): any;
+        static register(controlName: string, controlPath: string): any;
+        private static getComponentNameByType(type);
+        static export(control: Control<ControlProps<any>, any>): ControlDescription;
+        private static exportElement(element);
+        private static trimProps(props);
+        private static isEmptyObject(obj);
+    }
+}
+/*******************************************************************************
+ * Copyright (C) maishu All rights reserved.
+ *
+ * HTML 页面设计器
+ *
+ * 作者: 寒烟
+ * 日期: 2018/5/30
+ *
+ * 个人博客：   http://www.cnblogs.com/ansiboy/
+ * GITHUB:     http://github.com/ansiboy
+ *
+ ********************************************************************************/
+declare namespace pdesigner {
     interface PageDesignerProps extends React.Props<PageDesigner> {
         pageData: ControlDescription;
         componentsDirectory?: string;
     }
     interface PageDesignerState {
         pageData: ControlDescription;
+        selectedControlId?: string;
     }
     class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
         private element;
         controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
         controlComponentDidMount: chitu.Callback1<PageDesigner, Control<any, any>>;
         constructor(props: any);
+        static createContext<T extends {
+            designer: PageDesigner;
+        }>(value: T): React.Context<T>;
         updateControlProps(controlId: string, props: any): any;
         sortControlChildren(controlId: string, childIds: string[]): any;
         sortChildren(parentId: string, childIds: string[]): Promise<void>;
@@ -75,6 +102,9 @@ declare namespace pdesigner {
         findControl(controlId: string): ControlDescription;
         render(): JSX.Element;
     }
+    const DesignerContext: React.Context<{
+        designer: any;
+    }>;
 }
 declare namespace pdesigner {
     interface ControlPlaceholderState {
@@ -96,14 +126,14 @@ declare namespace pdesigner {
     }
 }
 declare namespace pdesigner {
-    interface ControlToolbarProps extends React.Props<ControlToolbar> {
+    interface ComponentToolbarProps extends React.Props<ComponentToolbar> {
         componets: ComponentDefine[];
         style?: React.CSSProperties;
         className?: string;
     }
-    interface ControlToolbarState {
+    interface ComponentToolbarState {
     }
-    class ControlToolbar extends React.Component<ControlToolbarProps, ControlToolbarState> {
+    class ComponentToolbar extends React.Component<ComponentToolbarProps, ComponentToolbarState> {
         designer: PageDesigner;
         private toolbarElement;
         static connectorElementClassName: string;
@@ -111,8 +141,6 @@ declare namespace pdesigner {
         draggable(selector: JQuery): void;
         render(): JSX.Element;
     }
-}
-declare namespace pdesigner {
 }
 declare namespace pdesigner {
     interface EditorPanelState {
@@ -184,13 +212,13 @@ declare namespace pdesigner {
         className?: string;
     }
     const PageViewContext: React.Context<{
-        pageView: PageView;
+        pageView: any;
     }>;
     interface ControlDescription {
         name: string;
         id: string;
         data?: any;
-        selected?: boolean | 'disabled';
+        disabled?: boolean;
         children?: ControlDescription[];
     }
     type ControlPair = {

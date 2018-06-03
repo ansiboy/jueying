@@ -1,21 +1,21 @@
 
 namespace pdesigner {
-    export interface ControlToolbarProps extends React.Props<ControlToolbar> {
+    export interface ComponentToolbarProps extends React.Props<ComponentToolbar> {
         componets: ComponentDefine[],
         style?: React.CSSProperties,
         className?: string,
     }
-    export interface ControlToolbarState {
+    export interface ComponentToolbarState {
 
     }
-    export class ControlToolbar extends React.Component<ControlToolbarProps, ControlToolbarState> {
+    export class ComponentToolbar extends React.Component<ComponentToolbarProps, ComponentToolbarState> {
         designer: PageDesigner;
         private toolbarElement: HTMLElement;
 
         static connectorElementClassName = 'control-container';
 
         componentDidMount() {
-            this.draggable($(`.${ControlToolbar.connectorElementClassName}`));
+            this.draggable($(`.${ComponentToolbar.connectorElementClassName}`));
             this.designer.controlComponentDidMount.add((sender, control) => {
                 console.assert(control.element != null);
                 this.draggable($(control.element));
@@ -24,7 +24,7 @@ namespace pdesigner {
 
         draggable(selector: JQuery) {
             $(this.toolbarElement).find('li').draggable({
-                connectToSortable: $(`section, .${ControlToolbar.connectorElementClassName}`),
+                connectToSortable: $(`section, .${ComponentToolbar.connectorElementClassName}`),
                 helper: "clone",
                 revert: "invalid"
             })
@@ -33,12 +33,20 @@ namespace pdesigner {
         }
 
         render() {
-            let props = this.props;
+            let props = {};
+
+            for (let k in this.props) {
+                if (k == 'componets')
+                    continue;
+
+                props[k] = this.props[k];
+            }
+
             let componets = this.props.componets;
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
-                    return <ul {...this.props}
+                    return <ul {...props}
                         ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
                         {componets.map((c, i) => <li key={i} data-control-name={c.name}>
                             <div className="btn-link">

@@ -16,7 +16,11 @@ requirejs.config({
         }
     },
     paths: {
-        'css': 'lib/css',
+        css: 'lib/css',
+        less: 'lib/require-less-0.1.5/less',
+        lessc: 'lib/require-less-0.1.5/lessc',
+        normalize: 'lib/require-less-0.1.5/normalize',
+        
         'chitu': 'lib/chitu',
         'jquery': 'lib/jquery-2.1.3',
         'jquery-ui': 'lib/jquery-ui',

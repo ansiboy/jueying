@@ -7,49 +7,90 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "pdesigner", "react-dom", "./components/componenDefines"], function (require, exports, pdesigner_1, ReactDOM, componenDefines_1) {
+define(["require", "exports", "pdesigner", "react-dom", "react", "./components/componenDefines", "less!index"], function (require, exports, pdesigner_1, ReactDOM, React, componenDefines_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let container = document.getElementById('container');
     let controlDescription = {
-        id: pdesigner_1.guid(),
-        name: 'PageView',
-        data: {
-            className: 'page-view',
-            style: {},
-            ref(c) {
-                var data = c.export();
-                c.hasEditor = true;
-            }
+        "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+        "name": "PageView",
+        "data": {
+            "className": "page-view",
+            "style": {}
         },
-        children: [
+        "children": [
             {
-                id: pdesigner_1.guid(),
-                name: 'header', data: {},
-                children: [
-                    { id: pdesigner_1.guid(), name: 'ControlPlaceholder', data: { style: { minHeight: 80, border: 'dotted 3px #ccc' } } }
-                ]
-            },
-            {
-                id: pdesigner_1.guid(),
-                name: 'section', data: { id: pdesigner_1.guid(), style: { margin: '8px 0 8px 0' } },
-                children: [
-                    { id: pdesigner_1.guid(), name: 'ControlPlaceholder', data: { style: { minHeight: 200, border: 'dotted 3px #ccc' } } }
-                ]
-            },
-            {
-                id: pdesigner_1.guid(),
-                name: 'footer', data: { id: pdesigner_1.guid() },
-                children: [
+                "id": "dabb6966-8ca9-2fea-c60d-cc3ff0d77f22",
+                "name": "header",
+                "children": [
                     {
-                        id: pdesigner_1.guid(), name: 'ControlPlaceholder', data: { style: { minHeight: 80, border: 'dotted 3px #ccc' } },
-                        children: [
-                            { id: pdesigner_1.guid(), name: 'TestControl', data: {} }
-                        ]
-                    },
+                        "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
+                        "name": "ControlPlaceholder",
+                        "data": {
+                            "style": {
+                                "minHeight": 80,
+                                "border": "dotted 3px #ccc"
+                            }
+                        }
+                    }
                 ]
             },
-        ],
+            {
+                "id": "31d0cfcf-a4a2-a7f6-65b6-95a9e0678ff3",
+                "name": "section",
+                "data": {
+                    "style": {
+                        "margin": "8px 0 8px 0"
+                    }
+                },
+                "children": [
+                    {
+                        "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                        "name": "ControlPlaceholder",
+                        "data": {
+                            "style": {
+                                "minHeight": 200,
+                                "border": "dotted 3px #ccc"
+                            }
+                        },
+                        "children": [
+                            {
+                                "id": "8b018486-69de-f595-eabf-909bad85e97a",
+                                "name": "test",
+                                "data": {
+                                    "label": "未命名"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "5b4d1783-8a85-e8a7-7712-0446519c59d4",
+                "name": "footer",
+                "children": [
+                    {
+                        "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
+                        "name": "ControlPlaceholder",
+                        "data": {
+                            "style": {
+                                "minHeight": 80,
+                                "border": "dotted 3px #ccc"
+                            }
+                        },
+                        "children": [
+                            {
+                                "id": "2df4fb2e-d54f-517f-fac5-423b1ef23e0e",
+                                "name": "test",
+                                "data": {
+                                    "label": "未命名"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     };
     class PageViewEditor extends pdesigner_1.Editor {
         render() {
@@ -57,8 +98,12 @@ define(["require", "exports", "pdesigner", "react-dom", "./components/componenDe
         }
     }
     pdesigner_1.Editor.register('PageView', PageViewEditor);
+    // Control.register('Test', '')
+    pdesigner_1.Control.register('test', 'components/Test/control');
+    pdesigner_1.Editor.register('test', 'components/Test/editor');
     let pageViewElement;
     let designer;
+    const MyDesignerContext = pdesigner_1.PageDesigner.createContext({ designer, page: null });
     function renderPageData(pageData) {
         return h("div", { ref: (e) => __awaiter(this, void 0, void 0, function* () {
                 pageViewElement = e || pageViewElement;
@@ -66,13 +111,35 @@ define(["require", "exports", "pdesigner", "react-dom", "./components/componenDe
                 ReactDOM.render(h(pdesigner_1.DesignerContext.Provider, { value: { designer } }, element), pageViewElement);
             }) });
     }
-    let designerElement = h(pdesigner_1.PageDesigner, { pageData: controlDescription },
-        h(pdesigner_1.ControlToolbar, { className: "toolbar", componets: componenDefines_1.componets }),
-        h("div", { className: "clearfix" }),
-        h(pdesigner_1.DesignerContext.Consumer, null, context => {
-            designer = context.designer;
-            return renderPageData(context.designer.state.pageData);
-        }),
-        h(pdesigner_1.EditorPanel, { className: "editor-panel" }));
-    ReactDOM.render(designerElement, container);
+    class MainPage extends React.Component {
+        constructor(props) {
+            super(props);
+            controlDescription.data.ref = (c) => {
+                if (!c)
+                    return;
+                this.pageView = c;
+            };
+        }
+        save() {
+            let pageData = pdesigner_1.Control.export(this.pageView);
+            alert(JSON.stringify(pageData));
+        }
+        render() {
+            return h(pdesigner_1.PageDesigner, { pageData: controlDescription, ref: (e) => this.pageDesigner = e || this.pageDesigner },
+                h("ul", null,
+                    h("li", { className: "pull-right" },
+                        h("button", { className: "btn btn-primary" }, "\u9884\u89C8")),
+                    h("li", { className: "pull-right" },
+                        h("button", { className: "btn btn-primary", onClick: (e) => this.save() }, "\u4FDD\u5B58"))),
+                h("div", { className: "clearfix" }),
+                h("hr", { style: { margin: 0, borderWidth: 4 } }),
+                h(pdesigner_1.ComponentToolbar, { className: "component-panel", componets: componenDefines_1.componets }),
+                h(pdesigner_1.DesignerContext.Consumer, null, context => {
+                    designer = context.designer;
+                    return renderPageData(context.designer.state.pageData);
+                }),
+                h(pdesigner_1.EditorPanel, { className: "editor-panel" }));
+        }
+    }
+    ReactDOM.render(h(MainPage, null), container);
 });

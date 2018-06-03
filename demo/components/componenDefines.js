@@ -1,12 +1,9 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    // type T = { [propName:string]: Array<ComponentDefine> };
-    // let a: T;
-    // let b = a['a']
     exports.componets = [
         {
-            name: "TestControl",
+            name: "Test",
             displayName: "商品列表",
             icon: "icon-list",
             introduce: "",

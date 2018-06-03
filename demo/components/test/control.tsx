@@ -5,7 +5,7 @@ interface State {
 }
 
 export interface Props extends React.Props<TestControl> {
-    text: string
+    label: string,
 }
 
 export default class TestControl extends Control<Props, State> {
@@ -13,15 +13,19 @@ export default class TestControl extends Control<Props, State> {
     element: HTMLElement;
     constructor(props) {
         super(props);
-        this.state = { text: '' }
+
+        this.hasCSS = true;
     }
 
-    static defaultProps: Props = ({ text: 'HelloWorld' });
+    static defaultProps: Props = ({ label: '未命名' });
 
     render(h?: any) {
-        let { text } = this.props;
-        return <div {...this.props} ref={(e: HTMLElement) => this.element = e || this.element}>
-            {text}
+        let { label } = this.props;
+        return <div {...this.htmlProps()} className="test-control form-group" ref={(e: HTMLElement) => this.element = e || this.element}>
+            <label>{label}</label>
+            <div className="control">
+                <input className="form-control" />
+            </div>
         </div>
     }
 }

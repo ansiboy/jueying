@@ -13,10 +13,6 @@
 
 namespace pdesigner {
 
-    export const DesignerContext = React.createContext({
-        designer: null as PageDesigner
-    })
-
     export interface PageDesignerProps extends React.Props<PageDesigner> {
         pageData: ControlDescription,
         componentsDirectory?: string,
@@ -24,10 +20,10 @@ namespace pdesigner {
 
     export interface PageDesignerState {
         pageData: ControlDescription,
+        selectedControlId?: string,
     }
 
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
-
 
         private element: HTMLElement;
         controlSelected = chitu.Callbacks<PageDesigner, Control<any, any>>();
@@ -37,6 +33,16 @@ namespace pdesigner {
             super(props);
             this.state = { pageData: this.props.pageData };
         }
+
+        static createContext<T extends { designer: PageDesigner }>(value: T) {
+            return React.createContext(value)
+        }
+
+        // selectControl(controlId: string): any {
+        //     let c = this.findControl(controlId);
+        //     console.assert(c != null);
+        //     this.setState({ selectedControlId: c.id });
+        // }
 
         updateControlProps(controlId: string, props: any): any {
             let controlDescription = this.findControl(controlId);
@@ -66,7 +72,7 @@ namespace pdesigner {
             console.assert(parentControl != null);
             console.assert(parentControl.children != null);
             console.assert(parentControl.children.length == childIds.length);
-            
+
             parentControl.children = childIds.map(o => {
                 let child = parentControl.children.filter(a => a.id == o)[0];
                 console.assert(child != null, `child ${o} is null`);
@@ -104,11 +110,6 @@ namespace pdesigner {
         }
 
         render() {
-            let context = {
-                controlSelected: chitu.Callbacks<PageView, Control<any, any>, React.ComponentClass<any>>(),
-                designer: this
-            }
-
             let designer = this;
             return <div className="pdesigner" ref={(e: HTMLElement) => this.element = e || this.element}>
                 <DesignerContext.Provider value={{ designer }}>
@@ -117,4 +118,6 @@ namespace pdesigner {
             </div >;
         }
     }
+
+    export const DesignerContext = PageDesigner.createContext({ designer: null });
 }

@@ -4,15 +4,13 @@ namespace pdesigner {
         className?: string,
     }
 
-    export const PageViewContext = React.createContext({
-        pageView: null as PageView
-    })
+    export const PageViewContext = React.createContext({ pageView: null })
 
     export interface ControlDescription {
         name: string;
         id: string;
         data?: any;
-        selected?: boolean | 'disabled';
+        disabled?: boolean;
         children?: ControlDescription[],
     }
 
@@ -36,7 +34,7 @@ namespace pdesigner {
     export class PageView extends Control<Props, State>{
 
         private _hasEditor: boolean;
-        
+
         element: HTMLElement;
 
         constructor(props) {
@@ -57,7 +55,7 @@ namespace pdesigner {
             let pageData = { controls: [] };
 
             let pageView = this;
-            return <div {...this.props}
+            return <div {...this.htmlProps()}
                 ref={(e: HTMLElement) => this.element = e || this.element}>
                 <PageViewContext.Provider value={{ pageView }}>
                     {this.props.children}
@@ -67,6 +65,5 @@ namespace pdesigner {
     }
 
     Control.register(PageView);
-
 }
 

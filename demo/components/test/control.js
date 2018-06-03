@@ -4,14 +4,17 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
     class TestControl extends pdesigner_1.Control {
         constructor(props) {
             super(props);
-            this.state = { text: '' };
+            this.hasCSS = true;
         }
         render(h) {
-            let { text } = this.props;
-            return h("div", Object.assign({}, this.props, { ref: (e) => this.element = e || this.element }), text);
+            let { label } = this.props;
+            return h("div", Object.assign({}, this.htmlProps(), { className: "test-control form-group", ref: (e) => this.element = e || this.element }),
+                h("label", null, label),
+                h("div", { className: "control" },
+                    h("input", { className: "form-control" })));
         }
     }
-    TestControl.defaultProps = ({ text: 'HelloWorld' });
+    TestControl.defaultProps = ({ label: '未命名' });
     exports.default = TestControl;
     pdesigner_1.Control.register(TestControl);
 });

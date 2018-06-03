@@ -1,13 +1,8 @@
 import { ComponentDefine } from "pdesigner";
 
-// type T = { [propName:string]: Array<ComponentDefine> };
-// let a: T;
-// let b = a['a']
-
-
 export let componets: Array<ComponentDefine> = [
     {
-        name: "TestControl",
+        name: "Test",
         displayName: "商品列表",
         icon: "icon-list",
         introduce: "",

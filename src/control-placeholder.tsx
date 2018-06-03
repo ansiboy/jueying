@@ -35,13 +35,6 @@ namespace pdesigner {
             $(element).sortable({
                 axis: "y",
                 change: () => {
-                    // for (let i = 0; i < element.children.length; i++) {
-                    //     if (!element.children.item(i).id) {
-                    //         let previewElement = element.children.item(i - 1);
-                    //         previousControlId = previewElement ? previewElement.id : null;
-                    //         break;
-                    //     }
-                    // }
                 },
                 receive: (event: Event, ui: UI) => {
 
@@ -92,7 +85,7 @@ namespace pdesigner {
                     <PageViewContext.Consumer>
                         {context => {
                             self.designer = c.designer;
-                            return <div {...this.props} className={`place-holder ${ControlToolbar.connectorElementClassName}`}
+                            return <div {...this.htmlProps()} className={`place-holder ${ComponentToolbar.connectorElementClassName}`}
                                 style={this.props.style}
                                 ref={(e: HTMLElement) => this.element = e || this.element}>
 

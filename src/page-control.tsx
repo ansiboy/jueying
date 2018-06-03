@@ -1,24 +1,41 @@
+/*******************************************************************************
+ * Copyright (C) maishu All rights reserved.
+ *
+ * HTML 页面设计器 
+ * 
+ * 作者: 寒烟
+ * 日期: 2018/5/30
+ *
+ * 个人博客：   http://www.cnblogs.com/ansiboy/
+ * GITHUB:     http://github.com/ansiboy
+ * 
+ ********************************************************************************/
+
 namespace pdesigner {
     let h = React.createElement;
 
     export interface ControlProps<T> extends React.Props<T> {
+        componentName?: string,
     }
 
-    let customControlTypes: { [key: string]: React.ComponentClass<any> } = {}
+    export interface ControlState {
+        selected: boolean
+    }
+
+    let customControlTypes: { [key: string]: React.ComponentClass<any> | string } = {}
 
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
+        private _componentName: string;
+        private _pageView: PageView;
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
         private originalRender: () => React.ReactNode;
-
         static componentsDir = 'components';
-        static selectedClassName = 'selected';
+        static selectedClassName = 'control-selected';
 
         protected hasCSS = false;
         public hasEditor = true;
-
-        children = new Array<Control<any, any>>();
 
         abstract element: HTMLElement;
 
@@ -42,40 +59,85 @@ namespace pdesigner {
             return id;
         }
 
+        get componentName() {
+            if (!this._componentName)
+                this._componentName = this.props.componentName;
+
+            console.assert(this._componentName);
+            return this._componentName;
+        }
+
+        protected htmlProps() {
+            let props = {}
+            let keys = ['id', 'style', 'className'];
+            for (let key in this.props) {
+                if (keys.indexOf(key) >= 0) {
+                    props[key] = this.props[key];
+                }
+            }
+            return props;
+        }
+
+        protected async loadControlCSS() {
+            let componentName = this.componentName;
+            console.assert(componentName != null);
+            let path = `${Control.componentsDir}/${componentName}/control`;
+            requirejs([`less!${path}`])
+        }
+
         private static componentDidMount() {
-            let self = this as any as Control<any, any>;
+            let self = this as any as Control<any, ControlState>;
             if (self.originalComponentDidMount)
                 self.originalComponentDidMount();
 
             self.element.onclick = function (e) {
-                if (!self.hasEditor) {
+                if (!self.hasEditor || self.props.disabled) {
+                    self.props.disabled ?
+                        console.log(`Control ${self.constructor.name} is disabled.`) :
+                        console.log(`Control ${self.constructor.name} has none editor.`);
                     return;
                 }
+
+                let pageViwe = self instanceof PageView ? self : self._pageView;
+                console.assert(pageViwe != null);
+                let previousSelected = pageViwe.element.querySelector(`.${Control.selectedClassName}`) || pageViwe.element;
+                previousSelected.className = previousSelected.className.replace(Control.selectedClassName, '');
 
                 let className = self.element.className;
                 if (className.indexOf(Control.selectedClassName) < 0) {
                     className = `${className} ${Control.selectedClassName}`;
                     self.element.className = className;
                 }
+
                 e.stopPropagation();
                 e.cancelBubble = true;
                 self._designer.controlSelected.fire(self._designer, self)
             }
 
             self._designer.controlComponentDidMount.fire(self._designer, self);
+
+            if (self.hasCSS) {
+                self.loadControlCSS();
+            }
         }
 
         private static render() {
             let self = this as any as Control<any, any>;
-            if (typeof self.originalRender != 'function')
-                return null;
-
             return <DesignerContext.Consumer>
                 {context => {
                     self._designer = context.designer;
-                    let result = context.designer != null ?
-                        (self.originalRender as Function)(createDesignTimeElement) :
-                        (self.originalRender as Function)(React.createElement);
+                    let result =
+                        <PageViewContext.Consumer>
+                            {context1 => {
+                                self._pageView = context1.pageView;
+                                if (typeof self.originalRender != 'function')
+                                    return null;
+
+                                return context.designer != null ?
+                                    (self.originalRender as Function)(createDesignTimeElement) :
+                                    (self.originalRender as Function)(React.createElement)
+                            }}
+                        </PageViewContext.Consumer>
 
                     return result;
                 }}
@@ -83,18 +145,14 @@ namespace pdesigner {
         }
 
         static async create(description: ControlDescription) {
-            let controlName = description.name;
+            let componentName = description.name;
             let children = description.children || [];
             let data = description.data || {};
             data.id = description.id;
 
-            let controlType = customControlTypes[controlName];
-            if (controlType == null && controlName[0].toUpperCase() == controlName[0]) {
-                let name = controlName.endsWith('Control') ?
-                    controlName.substr(0, controlName.length - 'Control'.length) :
-                    controlName;
-
-                let controlPath = `${Control.componentsDir}/${name}/control`;
+            let controlType = customControlTypes[componentName];
+            if (typeof controlType == 'string') {
+                let controlPath = controlType;//`${Control.componentsDir}/${name}/control`;
                 controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
                     requirejs([controlPath],
                         (exports2) => {
@@ -109,10 +167,18 @@ namespace pdesigner {
                     )
                 })
                 console.assert(controlType != null);
-                Control.register(controlType);
+                customControlTypes[componentName] = controlType;
+            }
+
+            if (controlType) {
+                data.componentName = componentName;
+            }
+            else {
+                console.log(`${componentName} control class is null.`);
             }
 
             children.forEach(o => {
+                o.data = o.data || {};
                 o.data.key = o.id;
                 o.data.id = o.id;
             });
@@ -122,36 +188,143 @@ namespace pdesigner {
 
             console.assert(data.id != null);
             let controlElement = React.createElement(
-                controlType ? controlType : controlName,
+                controlType ? controlType : componentName,
                 data, childElements
             )
 
+            // console.assert(typeof controlElement.type == 'string', `Typeof ${componentName} control type is ${typeof controlElement.type} `);
             return controlElement;
         }
 
-        static register(controlType: React.ComponentClass<any>) {
-            customControlTypes[controlType.name] = controlType;
+        static register(controlType: React.ComponentClass<any>);
+        static register(controlName: string, controlType: React.ComponentClass<any>)
+        static register(controlName: string, controlPath: string)
+        static register(controlName: any, controlType?: React.ComponentClass<any> | string) {
+            if (controlType == null && typeof controlName == 'function') {
+                controlType = controlName;
+                controlName = (controlType as React.ComponentClass<any>).name;
+            }
+
+            if (!controlName)
+                throw Errors.argumentNull('controlName');
+
+            if (!controlType)
+                throw Errors.argumentNull('controlType');
+
+            customControlTypes[controlName] = controlType;
         }
 
-        export(): ControlDescription {
-            let children = this.children || [];
-            let members = this.persistentMembers || [];
-            let state = this.state || {};
+        private static getComponentNameByType(type: React.ComponentClass<any> | React.StatelessComponent<any>) {
+            for (let key in customControlTypes) {
+                if (customControlTypes[key] == type)
+                    return key;
+            }
+
+            return null;
+        }
+
+        static export(control: Control<ControlProps<any>, any>) {
+            let id = (control.props as any).id;
+            console.assert(id != null);
+
+            let name = control.componentName;
+            console.assert(name != null);
+
+            let data = Control.trimProps(control.props);
+            let childElements: Array<React.ReactElement<any>>;
+            if (control.props.children != null) {
+                childElements = Array.isArray(control.props.children) ?
+                    control.props.children as Array<React.ReactElement<any>> :
+                    [control.props.children as React.ReactElement<any>];
+            }
+
+            let result: ControlDescription = { id, name };
+            if (!this.isEmptyObject(data)) {
+                result.data = data;
+            }
+            if (childElements) {
+                result.children = childElements.map(o => Control.exportElement(o));
+            }
+
+            return result;
+        }
+
+        private static exportElement(element: React.ReactElement<any>): ControlDescription {
+            let controlType = element.type;
+            console.assert(controlType != null, `Element type is null.`);
+
+            let id = element.props.id as string;
+            let name = typeof controlType == 'function' ? this.getComponentNameByType(controlType) : controlType;
+            let data = Control.trimProps(element.props);
+
+            let childElements: Array<React.ReactElement<any>>;
+            if (element.props.children) {
+                childElements = Array.isArray(element.props.children) ?
+                    element.props.children : [element.props.children];
+            }
+
+            let result: ControlDescription = { id, name };
+            if (!this.isEmptyObject(data)) {
+                result.data = data;
+            }
+
+            if (childElements) {
+                result.children = childElements.map(o => this.exportElement(o));
+            }
+            return result;
+        }
+
+        private static trimProps(props: any) {
             let data = {};
-
-            for (let key in state) {
-                if (members.indexOf(key as keyof S) >= 0)
-                    data[key] = state[key];
+            let skipFields = ['id', 'componentName', 'key', 'ref', 'children'];
+            for (let key in props) {
+                let isSkipField = skipFields.indexOf(key) >= 0;
+                if (key[0] == '_' || isSkipField) {
+                    continue;
+                }
+                data[key] = props[key];
             }
-
-            let controlDescription: ControlDescription = {
-                id: this.id,
-                name: this.constructor.name,
-                data,
-                children: children.map(o => o.export())
-            }
-            return controlDescription;
+            return data;
         }
+
+        private static isEmptyObject(obj) {
+            if (obj == null)
+                return true;
+
+            let names = Object.getOwnPropertyNames(obj);
+            return names.length == 0;
+        }
+
+        // private translateControl(control: React.ReactElement<any>): ControlDescription {
+        //     if (control instanceof Control) {
+        //         return control.export();
+        //     }
+
+        //     var str = `<test/>`;
+        //     var data = {}
+
+        //     let skipFields = ['id', 'componentName', 'key'];
+        //     for (let key in control.props) {
+        //         let isSkipField = skipFields.indexOf(key) >= 0;
+        //         if (key[0] == '_' || typeof (data[key] == 'function') || isSkipField) {
+        //             continue;
+        //         }
+        //         data[key] = control.props[key];
+        //     }
+
+        //     // delete data.id;
+        //     // delete data.componentName;
+        //     // delete data.key;
+
+        //     debugger;
+        //     let result: ControlDescription = {
+        //         id: control.props.id,
+        //         name: control.type as string,
+        //         data
+        //     };
+
+        //     return result;
+        // }
     }
 
     //==============================================================    
