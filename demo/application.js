@@ -53,16 +53,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                                 "minHeight": 200,
                                 "border": "dotted 3px #ccc"
                             }
-                        },
-                        "children": [
-                            {
-                                "id": "8b018486-69de-f595-eabf-909bad85e97a",
-                                "name": "test",
-                                "data": {
-                                    "label": "未命名"
-                                }
-                            }
-                        ]
+                        }
                     }
                 ]
             },
@@ -79,16 +70,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                                 "minHeight": 80,
                                 "border": "dotted 3px #ccc"
                             }
-                        },
-                        "children": [
-                            {
-                                "id": "2df4fb2e-d54f-517f-fac5-423b1ef23e0e",
-                                "name": "test",
-                                "data": {
-                                    "label": "未命名"
-                                }
-                            }
-                        ]
+                        }
                     }
                 ]
             }
@@ -100,12 +82,10 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
         }
     }
     pdesigner_1.Editor.register('PageView', PageViewEditor);
-    // Control.register('Test', '')
     pdesigner_1.Control.register('test', 'components/Test/control');
     pdesigner_1.Editor.register('test', 'components/Test/editor');
     let pageViewElement;
     let designer;
-    const MyDesignerContext = pdesigner_1.PageDesigner.createContext({ designer, page: null });
     function renderPageData(pageData) {
         return h("div", { className: "main-panel", onClick: (e) => {
                 designer.selectControl(null);
@@ -126,6 +106,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
     class MainPage extends React.Component {
         constructor(props) {
             super(props);
+            this.state = { allowSave: false };
             controlDescription.data.ref = (c) => {
                 if (!c)
                     return;
@@ -134,15 +115,24 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
         }
         save() {
             let pageData = pdesigner_1.Control.export(this.pageView);
-            alert(JSON.stringify(pageData));
+            this.pageDesigner.save(((pageData) => {
+                localStorage.setItem(pageData.id, JSON.stringify(pageData));
+                return Promise.resolve(pageData);
+            }));
+        }
+        componentDidMount() {
+            this.pageDesigner.changed.add(() => {
+                this.setState({ allowSave: true });
+            });
         }
         render() {
+            let { allowSave } = this.state;
             return h(pdesigner_1.PageDesigner, { pageData: controlDescription, ref: (e) => this.pageDesigner = e || this.pageDesigner },
                 h("ul", null,
                     h("li", { className: "pull-left" },
                         h("h3", { style: { margin: 0, padding: '0 0 0 10px' } }, "\u597D\u6613\u9875\u9762\u8BBE\u8BA1\u5668")),
                     h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary", onClick: (e) => this.save() },
+                        h("button", { className: "btn btn-primary", onClick: (e) => this.save(), disabled: !allowSave },
                             h("i", { className: "icon-save" }),
                             h("span", { style: { paddingLeft: 4 } }, "\u4FDD\u5B58"))),
                     h("li", { className: "pull-right" },

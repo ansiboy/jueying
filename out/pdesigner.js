@@ -316,9 +316,15 @@ var pdesigner;
     class PageDesigner extends React.Component {
         constructor(props) {
             super(props);
+            this.undoStack = new Array();
+            this.redoStack = new Array();
             this.controlSelected = chitu.Callbacks();
             this.controlComponentDidMount = chitu.Callbacks();
+            this.changed = chitu.Callbacks();
+            if (this.props.pageData == null)
+                throw new Error('Prop of pageData cannt be null.');
             this.state = { pageData: this.props.pageData };
+            this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData));
             this.controlSelected.add((sender, control) => {
                 let previousSelected = this.findSelectedElement(); // || pageViwe.element;
                 if (previousSelected) {
@@ -333,8 +339,85 @@ var pdesigner;
                 }
             });
         }
-        static createContext(value) {
-            return React.createContext(value);
+        setState(state, callback) {
+            super.setState(state, callback);
+            let { pageData } = this.state;
+            if (this.pageDataIsChanged(pageData)) {
+                let copy = JSON.parse(JSON.stringify(pageData));
+                this.undoStack.push(copy);
+                this.changed.fire(this, pageData);
+            }
+        }
+        save(callback) {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (!callback)
+                    throw pdesigner.Errors.argumentNull('callback');
+                // if (this.props.save) {
+                yield callback(this.state.pageData);
+                // }
+                this.originalPageData = JSON.parse(JSON.stringify(this.state.pageData));
+                return;
+            });
+        }
+        get canUndo() {
+            return this.undoStack.length > 0;
+        }
+        undo() {
+            if (!this.canUndo)
+                return;
+            let pageData = this.undoStack.pop();
+            this.redoStack.push(pageData);
+            this.setState({ pageData });
+        }
+        get canRedo() {
+            return this.redoStack.length > 0;
+        }
+        redo() {
+            if (!this.canRedo)
+                return;
+            let pageData = this.redoStack.pop();
+            this.undoStack.push(pageData);
+            this.setState(this.state);
+        }
+        pageDataIsChanged(pageData) {
+            console.assert(this.undoStack.length > 0);
+            let lastestCopy = this.undoStack[this.undoStack.length - 1];
+            let isChanged = !this.isEquals(lastestCopy, pageData);
+            return isChanged;
+        }
+        isEquals(obj1, obj2) {
+            if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
+                return false;
+            if (obj1 == null && obj2 == null)
+                return true;
+            var type = typeof obj1;
+            if (type == 'number' || type == 'string' || obj1 instanceof Date) {
+                return obj1 == obj2;
+            }
+            if (Array.isArray(obj1)) {
+                if (!Array.isArray(obj2))
+                    return false;
+                for (let i = 0; i < obj1.length; i++) {
+                    if (!this.isEquals(obj1[i], obj2[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            let keys1 = Object.getOwnPropertyNames(obj1);
+            let keys2 = Object.getOwnPropertyNames(obj2);
+            if (!this.isEquals(keys1, keys2))
+                return false;
+            for (let i = 0; i < keys1.length; i++) {
+                // for (var key in obj1) {
+                let key = keys1[i];
+                let value1 = obj1[key];
+                let value2 = obj2[key];
+                if (!this.isEquals(value1, value2)) {
+                    return false;
+                }
+            }
+            return true;
         }
         updateControlProps(controlId, props) {
             let controlDescription = this.findControl(controlId);
@@ -459,6 +542,11 @@ var pdesigner;
                 this.removeControl(element.id);
             }
         }
+        componentDidMount() {
+            console.assert(this.state.pageData != null);
+            let copy = JSON.parse(JSON.stringify(this.state.pageData));
+            this.undoStack.push(copy);
+        }
         render() {
             let designer = this;
             return h("div", { className: "pdesigner", ref: (e) => this.element = e || this.element, onKeyDown: (e) => this.onKeyDown(e) },
@@ -466,7 +554,7 @@ var pdesigner;
         }
     }
     pdesigner.PageDesigner = PageDesigner;
-    pdesigner.DesignerContext = PageDesigner.createContext({ designer: null });
+    pdesigner.DesignerContext = React.createContext({ designer: null });
 })(pdesigner || (pdesigner = {}));
 /// <reference path="page-control.tsx"/>
 /// <reference path="page-designer.tsx"/>

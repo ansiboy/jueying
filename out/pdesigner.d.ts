@@ -14,7 +14,7 @@ declare namespace pdesigner {
         constructor(props: any);
         setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
         static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
-        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
+        static create(control: Control<any, any>): Promise<React.ReactElement<any>>;
     }
 }
 /*******************************************************************************
@@ -81,7 +81,6 @@ declare namespace pdesigner {
 declare namespace pdesigner {
     interface PageDesignerProps extends React.Props<PageDesigner> {
         pageData: ControlDescription;
-        componentsDirectory?: string;
     }
     interface PageDesignerState {
         pageData: ControlDescription;
@@ -89,12 +88,21 @@ declare namespace pdesigner {
     }
     class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
         private element;
+        private undoStack;
+        private redoStack;
+        private originalPageData;
         controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
         controlComponentDidMount: chitu.Callback1<PageDesigner, Control<any, any>>;
+        changed: chitu.Callback1<PageDesigner, ControlDescription>;
         constructor(props: any);
-        static createContext<T extends {
-            designer: PageDesigner;
-        }>(value: T): React.Context<T>;
+        setState<K extends keyof PageDesignerState>(state: Pick<PageDesignerState, K> | PageDesignerState | null, callback?: () => void): void;
+        save(callback: (pageData: ControlDescription) => Promise<any>): Promise<void>;
+        readonly canUndo: boolean;
+        undo(): void;
+        readonly canRedo: boolean;
+        redo(): void;
+        private pageDataIsChanged(pageData);
+        private isEquals(obj1, obj2);
         updateControlProps(controlId: string, props: any): any;
         sortControlChildren(controlId: string, childIds: string[]): any;
         sortChildren(parentId: string, childIds: string[]): Promise<void>;
@@ -109,6 +117,7 @@ declare namespace pdesigner {
         private findSelectedElement();
         private findControl(controlId);
         private onKeyDown(e);
+        componentDidMount(): void;
         render(): JSX.Element;
     }
     const DesignerContext: React.Context<{

@@ -50,16 +50,7 @@ let controlDescription: ControlDescription = {
                             "minHeight": 200,
                             "border": "dotted 3px #ccc"
                         }
-                    },
-                    "children": [
-                        {
-                            "id": "8b018486-69de-f595-eabf-909bad85e97a",
-                            "name": "test",
-                            "data": {
-                                "label": "未命名"
-                            }
-                        }
-                    ]
+                    }
                 }
             ]
         },
@@ -76,16 +67,7 @@ let controlDescription: ControlDescription = {
                             "minHeight": 80,
                             "border": "dotted 3px #ccc"
                         }
-                    },
-                    "children": [
-                        {
-                            "id": "2df4fb2e-d54f-517f-fac5-423b1ef23e0e",
-                            "name": "test",
-                            "data": {
-                                "label": "未命名"
-                            }
-                        }
-                    ]
+                    }
                 }
             ]
         }
@@ -102,14 +84,11 @@ class PageViewEditor extends Editor<any, any> {
 }
 
 Editor.register('PageView', PageViewEditor);
-// Control.register('Test', '')
 Control.register('test', 'components/Test/control');
 Editor.register('test', 'components/Test/editor');
 
 let pageViewElement: HTMLElement;
 let designer: PageDesigner;
-
-const MyDesignerContext = PageDesigner.createContext({ designer, page: null })
 
 function renderPageData(pageData: ControlDescription) {
     return <div className="main-panel"
@@ -132,12 +111,16 @@ function renderPageData(pageData: ControlDescription) {
     </div>
 }
 
-class MainPage extends React.Component<any, any>{
+interface MainPageState {
+    allowSave: boolean,
+}
+class MainPage extends React.Component<any, MainPageState>{
     pageView: PageView;
     pageDesigner: PageDesigner;
 
     constructor(props) {
         super(props);
+        this.state = { allowSave: false };
         controlDescription.data.ref = (c: PageView) => {
             if (!c) return;
             this.pageView = c;
@@ -146,9 +129,18 @@ class MainPage extends React.Component<any, any>{
 
     save() {
         let pageData = Control.export(this.pageView);
-        alert(JSON.stringify(pageData));
+        this.pageDesigner.save(((pageData) => {
+            localStorage.setItem(pageData.id, JSON.stringify(pageData));
+            return Promise.resolve(pageData);
+        }));
+    }
+    componentDidMount() {
+        this.pageDesigner.changed.add(() => {
+            this.setState({ allowSave: true });
+        })
     }
     render() {
+        let { allowSave } = this.state;
         return <PageDesigner pageData={controlDescription}
             ref={(e) => this.pageDesigner = e || this.pageDesigner} >
             <ul>
@@ -157,7 +149,7 @@ class MainPage extends React.Component<any, any>{
                 </li>
                 <li className="pull-right">
                     <button className="btn btn-primary"
-                        onClick={(e) => this.save()}>
+                        onClick={(e) => this.save()} disabled={!allowSave}>
                         <i className="icon-save" />
                         <span style={{ paddingLeft: 4 }}>保存</span>
                     </button>
