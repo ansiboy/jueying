@@ -3,7 +3,7 @@
 
 namespace pdesigner {
     export interface ControlPlaceholderState {
-        controls: ControlDescription[]
+        controls: ElementData[]
     }
     export interface ControlPlaceholderProps extends ControlProps<ControlPlaceholder> {
         style?: React.CSSProperties,
@@ -42,8 +42,8 @@ namespace pdesigner {
                         let componentName = ui.item.attr('data-control-name');
                         console.assert(componentName);
 
-                        let ctrl = { id: guid(), name: componentName, data: {} };
-                        ui.item[0].setAttribute('id', ctrl.id);
+                        let ctrl: ElementData = { type: componentName, props: { id: guid() } };
+                        ui.item[0].setAttribute('id', ctrl.props.id);
                         //==================================================
                         // 将所有 id 子元素找出来，用于排序
                         let childIds = this.childrenIds(element);
@@ -59,7 +59,12 @@ namespace pdesigner {
                         console.assert(ui.item.length == 1);
                         let childIds = this.childrenIds(element);
                         if (childIds.indexOf(ui.item[0].id) >= 0) {
-                            this.designer.moveControl(ui.item[0].id, element.id, childIds);
+                            //==================================================
+                            // 需要 setTimout
+                            setTimeout(() => {
+                                this.designer.moveControl(ui.item[0].id, element.id, childIds);
+                            });
+                            //==================================================
                         }
                     }
                 },

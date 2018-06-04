@@ -1,13 +1,19 @@
 define(["require", "exports", "pdesigner"], function (require, exports, pdesigner_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class TextInputControl extends pdesigner_1.Control {
+    class ValueInput extends pdesigner_1.Control {
+        constructor(props) {
+            super(props);
+            this.hasCSS = true;
+        }
         render(h) {
-            return h("div", { ref: (e) => this.element = e || this.element },
-                h("label", null),
-                h("div", null,
-                    h("input", null)));
+            let { label } = this.props;
+            return h("div", Object.assign({}, pdesigner_1.Control.htmlDOMProps(this.props), { ref: (e) => this.element = e || this.element }),
+                h("label", null, label),
+                h("div", { className: "control" },
+                    h("input", { className: "form-control" })));
         }
     }
-    exports.default = TextInputControl;
+    ValueInput.defaultProps = ({ label: '未命名', className: 'test-control form-group' });
+    exports.default = ValueInput;
 });

@@ -15,7 +15,13 @@ namespace pdesigner {
     let h = React.createElement;
 
     export interface ControlProps<T> extends React.Props<T> {
+        id?: string,
         componentName?: string,
+        className?: string,
+        style?: React.CSSProperties,
+        name?: string,
+        disabled?: boolean;
+        onClick?: React.MouseEventHandler<T>
     }
 
     export interface ControlState {
@@ -24,9 +30,14 @@ namespace pdesigner {
 
     let customControlTypes: { [key: string]: React.ComponentClass<any> | string } = {}
 
+    export interface ElementData {
+        type: string;
+        props: ControlProps<any>;
+        children?: ElementData[],
+    }
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
-        private _componentName: string;
+        // private _componentName: string;
         private _pageView: PageView;
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
@@ -49,7 +60,7 @@ namespace pdesigner {
             this.render = Control.render;
 
             this.originalComponentDidMount = this.componentDidMount;
-            this.componentDidMount = Control.componentDidMount;
+            this.componentDidMount = this.myComponentDidMount;
         }
 
         abstract get persistentMembers(): (keyof S)[];
@@ -61,11 +72,9 @@ namespace pdesigner {
         }
 
         get componentName() {
-            if (!this._componentName)
-                this._componentName = this.props.componentName;
-
-            console.assert(this._componentName);
-            return this._componentName;
+            var componentName = this.constructor['componentName'];
+            console.assert(componentName != null)
+            return componentName;
         }
 
         static htmlDOMProps(props: any) {
@@ -73,7 +82,7 @@ namespace pdesigner {
             if (!props) {
                 return result;
             }
-            let keys = ['id', 'style', 'className'];
+            let keys = ['id', 'style', 'className', 'onClick'];
             for (let key in props) {
                 if (keys.indexOf(key) >= 0) {
                     result[key] = props[key];
@@ -89,31 +98,40 @@ namespace pdesigner {
             requirejs([`less!${path}`])
         }
 
-        private static componentDidMount() {
-            let self = this as any as Control<any, ControlState>;
-            if (self.originalComponentDidMount)
-                self.originalComponentDidMount();
+        private myComponentDidMount() {
+            if (this.originalComponentDidMount)
+                this.originalComponentDidMount();
 
-            self.element.onclick = function (e) {
-                if (!self.hasEditor || self.props.disabled) {
-                    self.props.disabled ?
-                        console.log(`Control ${self.constructor.name} is disabled.`) :
-                        console.log(`Control ${self.constructor.name} has none editor.`);
-                    return;
-                }
+            this._designer.controlComponentDidMount.fire(this._designer, this);
 
+            if (this.hasCSS) {
+                this.loadControlCSS();
+            }
+        }
 
+        createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children) {
+
+            console.assert(this._designer != null);
+
+            props = props || {};
+            props.onClick = (e) => {
+                this._designer.selectControl(this);
                 e.stopPropagation();
-                e.cancelBubble = true;
-                self._designer.selectControl(self);
             }
 
-
-            self._designer.controlComponentDidMount.fire(self._designer, self);
-
-            if (self.hasCSS) {
-                self.loadControlCSS();
+            if (type == 'a' && (props as any).href) {
+                (props as any).href = 'javascript:';
             }
+            else if (type == 'input') {
+                delete props.onClick;
+                (props as any).readOnly = true;
+            }
+
+            let args = [type, props];
+            for (let i = 2; i < arguments.length; i++) {
+                args[i] = arguments[i];
+            }
+            return React.createElement.apply(React, args);
         }
 
         private static render() {
@@ -129,7 +147,7 @@ namespace pdesigner {
                                     return null;
 
                                 return context.designer != null ?
-                                    (self.originalRender as Function)(createDesignTimeElement) :
+                                    (self.originalRender as Function)(self.createDesignTimeElement.bind(self)) :
                                     (self.originalRender as Function)(React.createElement)
                             }}
                         </PageViewContext.Consumer>
@@ -139,55 +157,88 @@ namespace pdesigner {
             </DesignerContext.Consumer>
         }
 
-        static async create(description: ControlDescription) {
-            let componentName = description.name;
+        private static getControlType(componentName: string): Promise<React.ComponentClass<any>> {
+            return new Promise<React.ComponentClass<any>>((resolve, reject) => {
+                let controlType = customControlTypes[componentName];
+                if (typeof controlType != 'string') {
+                    resolve(controlType);
+                    return;
+                }
+
+                let controlPath = controlType;
+                requirejs([controlPath],
+                    (exports2) => {
+                        let controlType: React.ComponentClass = exports2['default'];
+                        if (controlType == null)
+                            throw new Error(`Default export of file '${controlPath}' is null.`)
+
+                        controlType['componentName'] = componentName;
+                        customControlTypes[componentName] = controlType;
+                        resolve(controlType);
+                    },
+                    (err) => reject(err)
+                )
+            })
+        }
+
+        static loadTypes(elementData: ElementData) {
+            if (!elementData) throw Errors.argumentNull('elementData');
+            let stack = new Array<ElementData>();
+            stack.push(elementData);
+            let ps = new Array<Promise<any>>();
+            while (stack.length > 0) {
+                let item = stack.pop();
+                let componentName = item.type;
+                ps.push(this.getControlType(componentName));
+
+                let children = item.children || [];
+                for (let i = 0; i < children.length; i++)
+                    stack.push(children[i]);
+            }
+
+            return Promise.all(ps);
+        }
+
+        static loadAllTypes() {
+
+            let ps = new Array<Promise<any>>();
+            for (let key in customControlTypes) {
+                if (typeof customControlTypes[key] == 'string') {
+                    ps.push(this.getControlType(key));
+                }
+            }
+
+            return Promise.all(ps);
+        }
+
+
+        static create(description: ElementData): React.ReactElement<any> {
+
+            let controlElement = this.createElement(description);
+            return controlElement;
+        }
+
+        private static createElement(description) {
+            let componentName = description.type;
             let children = description.children || [];
-            let data = description.data || {};
-            data.id = description.id;
+            let data = description.props || {};
+            data.id = description.props.id;
+            data.key = data.id;
+            console.assert(data.id != null);
 
             let controlType = customControlTypes[componentName];
-            if (typeof controlType == 'string') {
-                let controlPath = controlType;//`${Control.componentsDir}/${name}/control`;
-                controlType = await new Promise<React.ComponentClass>((resolve, reject) => {
-                    requirejs([controlPath],
-                        (exports2) => {
 
-                            let controlType: React.ComponentClass = exports2['default'];
-                            if (controlType == null)
-                                throw new Error(`Default export of file '${controlPath}' is null.`)
+            let childElements = children.length ? children.map(o => this.createElement(o)) : null;
 
-                            resolve(controlType);
-                        },
-                        (err) => reject(err)
-                    )
-                })
-                console.assert(controlType != null);
-                customControlTypes[componentName] = controlType;
-            }
-
-            if (controlType) {
-                data.componentName = componentName;
-            }
-            else {
+            if (!controlType) {
                 console.log(`${componentName} control class is null.`);
             }
 
-            children.forEach(o => {
-                o.data = o.data || {};
-                o.data.key = o.id;
-                o.data.id = o.id;
-            });
-            let childElements: React.ReactElement<any>[];
-            if (children.length)
-                childElements = await Promise.all(children.map(o => this.create(o)));
-
-            console.assert(data.id != null);
             let controlElement = React.createElement(
                 controlType ? controlType : componentName,
                 data, childElements
             )
 
-            // console.assert(typeof controlElement.type == 'string', `Typeof ${componentName} control type is ${typeof controlElement.type} `);
             return controlElement;
         }
 
@@ -198,6 +249,7 @@ namespace pdesigner {
             if (controlType == null && typeof controlName == 'function') {
                 controlType = controlName;
                 controlName = (controlType as React.ComponentClass<any>).name;
+                controlType['componentName'] = controlName;
             }
 
             if (!controlName)
@@ -233,9 +285,9 @@ namespace pdesigner {
                     [control.props.children as React.ReactElement<any>];
             }
 
-            let result: ControlDescription = { id, name };
+            let result: ElementData = { type: name, props: { id } };
             if (!this.isEmptyObject(data)) {
-                result.data = data;
+                result.props = data;
             }
             if (childElements) {
                 result.children = childElements.map(o => Control.exportElement(o));
@@ -244,7 +296,7 @@ namespace pdesigner {
             return result;
         }
 
-        private static exportElement(element: React.ReactElement<any>): ControlDescription {
+        private static exportElement(element: React.ReactElement<any>): ElementData {
             let controlType = element.type;
             console.assert(controlType != null, `Element type is null.`);
 
@@ -258,9 +310,9 @@ namespace pdesigner {
                     element.props.children : [element.props.children];
             }
 
-            let result: ControlDescription = { id, name };
+            let result: ElementData = { type: name, props: { id } };
             if (!this.isEmptyObject(data)) {
-                result.data = data;
+                result.props = data;
             }
 
             if (childElements) {
@@ -299,15 +351,15 @@ namespace pdesigner {
 
     function createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
         props = props || {};
-        if (typeof type == 'string')
-            props.onClick = () => { };
-        else if (typeof type != 'string') {
-            props.onClick = (event, control: Control<any, any>) => {
-                if (control.context != null) {
-                    control.context.designer.selecteControl(control, type);
-                }
-            }
-        }
+        // if (typeof type == 'string')
+        //     props.onClick = () => { };
+        // else if (typeof type != 'string') {
+        //     props.onClick = (event, control: Control<any, any>) => {
+        //         if (control.context != null) {
+        //             control.context.designer.selecteControl(control, type);
+        //         }
+        //     }
+        // }
         if (type == 'a' && (props as any).href) {
             (props as any).href = 'javascript:';
         }

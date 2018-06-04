@@ -1,18 +1,13 @@
 namespace pdesigner {
     export interface Props extends ControlProps<any> {
+        id?: string,
         style?: React.CSSProperties,
         className?: string,
     }
 
     export const PageViewContext = React.createContext({ pageView: null })
 
-    export interface ControlDescription {
-        name: string;
-        id: string;
-        data?: any;
-        disabled?: boolean;
-        children?: ControlDescription[],
-    }
+
 
     export type ControlPair = { control: Control<any, any>, controlType: React.ComponentClass<any> }
     export type State = {

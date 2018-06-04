@@ -31,13 +31,23 @@ declare namespace pdesigner {
  ********************************************************************************/
 declare namespace pdesigner {
     interface ControlProps<T> extends React.Props<T> {
+        id?: string;
         componentName?: string;
+        className?: string;
+        style?: React.CSSProperties;
+        name?: string;
+        disabled?: boolean;
+        onClick?: React.MouseEventHandler<T>;
     }
     interface ControlState {
         selected: boolean;
     }
+    interface ElementData {
+        type: string;
+        props: ControlProps<any>;
+        children?: ElementData[];
+    }
     abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
-        private _componentName;
         private _pageView;
         private _designer;
         private originalComponentDidMount;
@@ -51,17 +61,22 @@ declare namespace pdesigner {
         constructor(props: any);
         readonly abstract persistentMembers: (keyof S)[];
         readonly id: string;
-        readonly componentName: string;
+        readonly componentName: any;
         static htmlDOMProps(props: any): {};
         protected loadControlCSS(): Promise<void>;
-        private static componentDidMount();
+        private myComponentDidMount();
+        createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children: any[]): any;
         private static render();
-        static create(description: ControlDescription): Promise<React.ReactElement<any>>;
+        private static getControlType(componentName);
+        static loadTypes(elementData: ElementData): Promise<any[]>;
+        static loadAllTypes(): Promise<any[]>;
+        static create(description: ElementData): React.ReactElement<any>;
+        private static createElement(description);
         static register(controlType: React.ComponentClass<any>): any;
         static register(controlName: string, controlType: React.ComponentClass<any>): any;
         static register(controlName: string, controlPath: string): any;
         private static getComponentNameByType(type);
-        static export(control: Control<ControlProps<any>, any>): ControlDescription;
+        static export(control: Control<ControlProps<any>, any>): ElementData;
         private static exportElement(element);
         private static trimProps(props);
         private static isEmptyObject(obj);
@@ -81,43 +96,45 @@ declare namespace pdesigner {
  ********************************************************************************/
 declare namespace pdesigner {
     interface PageDesignerProps extends React.Props<PageDesigner> {
-        pageData: ControlDescription;
+        pageData: ElementData;
     }
     interface PageDesignerState {
-        pageData: ControlDescription;
-        selectedControlId?: string;
+        pageData: ElementData;
     }
     class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
+        selectedControlId1: string;
         private element;
         private undoStack;
         private redoStack;
         private originalPageData;
-        controlSelected: chitu.Callback1<PageDesigner, Control<any, any>>;
+        private snapshootVersion;
+        controlSelected: chitu.Callback1<PageDesigner, Control<ControlProps<any>, any>>;
         controlComponentDidMount: chitu.Callback1<PageDesigner, Control<any, any>>;
-        changed: chitu.Callback1<PageDesigner, ControlDescription>;
+        changed: chitu.Callback1<PageDesigner, ElementData>;
         constructor(props: any);
-        setState<K extends keyof PageDesignerState>(state: Pick<PageDesignerState, K> | PageDesignerState | null, callback?: () => void): void;
-        save(callback: (pageData: ControlDescription) => Promise<any>): Promise<void>;
+        set_state<K extends keyof PageDesignerState>(state: Pick<PageDesignerState, K> | PageDesignerState | null, isUndoData?: boolean): void;
+        save(callback: (pageData: ElementData) => Promise<any>): Promise<void>;
         readonly canUndo: boolean;
         undo(): void;
         readonly canRedo: boolean;
         redo(): void;
         private pageDataIsChanged(pageData);
         private isEquals(obj1, obj2);
+        private skipField(obj, field);
         updateControlProps(controlId: string, props: any): any;
         sortControlChildren(controlId: string, childIds: string[]): any;
         sortChildren(parentId: string, childIds: string[]): Promise<void>;
-        appendControl(parentId: string, childControl: ControlDescription, childIds: string[]): Promise<void>;
+        appendControl(parentId: string, childControl: ElementData, childIds: string[]): Promise<void>;
         /**
          * 选择指定的控件
          * @param control 指定的控件，可以为空，为空表示清空选择。
          */
         selectControl(control: Control<any, any>): void;
+        clearSelectControl(): void;
         private removeControl(controlId);
         moveControl(controlId: string, parentId: string, childIds: string[]): void;
         private removeControlFrom(controlId, collection);
-        private findSelectedElement();
-        private findControl(controlId);
+        private findControlData(controlId);
         private onKeyDown(e);
         componentDidMount(): void;
         render(): JSX.Element;
@@ -128,7 +145,7 @@ declare namespace pdesigner {
 }
 declare namespace pdesigner {
     interface ControlPlaceholderState {
-        controls: ControlDescription[];
+        controls: ElementData[];
     }
     interface ControlPlaceholderProps extends ControlProps<ControlPlaceholder> {
         style?: React.CSSProperties;
@@ -229,19 +246,13 @@ declare namespace pdesigner {
 }
 declare namespace pdesigner {
     interface Props extends ControlProps<any> {
+        id?: string;
         style?: React.CSSProperties;
         className?: string;
     }
     const PageViewContext: React.Context<{
         pageView: any;
     }>;
-    interface ControlDescription {
-        name: string;
-        id: string;
-        data?: any;
-        disabled?: boolean;
-        children?: ControlDescription[];
-    }
     type ControlPair = {
         control: Control<any, any>;
         controlType: React.ComponentClass<any>;

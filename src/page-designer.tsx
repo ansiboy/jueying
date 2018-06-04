@@ -14,25 +14,37 @@
 namespace pdesigner {
 
     export interface PageDesignerProps extends React.Props<PageDesigner> {
-        pageData: ControlDescription,
+        pageData: ElementData,
     }
 
     export interface PageDesignerState {
-        pageData: ControlDescription,
-        selectedControlId?: string,
+        pageData: ElementData
+    }
+
+    interface Snapshoot {
+        data: string,
+        version: number,
     }
 
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
 
-
+        selectedControlId1: string;
+        // selectedControlId: any;
         private element: HTMLElement;
-        private undoStack = new Array<ControlDescription>();
-        private redoStack = new Array<ControlDescription>();
-        private originalPageData: ControlDescription;
+        private undoStack = new Array<Snapshoot>();
+        private redoStack = new Array<Snapshoot>();
+        //======================================
+        // 未保存时的页面数据
+        private originalPageData: ElementData;
+        //======================================
+        // 未保存时的页面数据
+        // private previouPageData: string;
+        //======================================
+        private snapshootVersion = 0;
 
-        controlSelected = chitu.Callbacks<PageDesigner, Control<any, any>>();
+        controlSelected = chitu.Callbacks<PageDesigner, Control<ControlProps<any>, any>>();
         controlComponentDidMount = chitu.Callbacks<PageDesigner, Control<any, any>>();
-        changed = chitu.Callbacks<PageDesigner, ControlDescription>();
+        changed = chitu.Callbacks<PageDesigner, ElementData>();
 
         constructor(props) {
             super(props);
@@ -41,58 +53,54 @@ namespace pdesigner {
                 throw new Error('Prop of pageData cannt be null.');
 
             this.state = { pageData: this.props.pageData };
-            this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData));
+            this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData)) as ElementData;
 
-            this.controlSelected.add((sender, control) => {
-                let previousSelected = this.findSelectedElement();// || pageViwe.element;
-                if (previousSelected) {
-                    previousSelected.className = previousSelected.className.replace(Control.selectedClassName, '');
-                }
-
-                if (control) {
-                    let className = control.element.className;
-                    if (className.indexOf(Control.selectedClassName) < 0) {
-                        className = `${className} ${Control.selectedClassName}`;
-                        control.element.className = className;
-                    }
-                }
-            })
         }
 
-        setState<K extends keyof PageDesignerState>(
+        set_state<K extends keyof PageDesignerState>(
             state: Pick<PageDesignerState, K> | PageDesignerState | null,
-            callback?: () => void
+            isUndoData?: boolean
         ): void {
-            super.setState(state, callback);
-            let { pageData } = this.state;
-            if (this.pageDataIsChanged(pageData)) {
-                let copy = JSON.parse(JSON.stringify(pageData));
-                this.undoStack.push(copy);
-                this.changed.fire(this, pageData);
+
+            super.setState(state);
+            let { pageData } = state;
+
+            if (pageData) {
+                isUndoData = isUndoData == null ? false : isUndoData;
+                if (this.pageDataIsChanged(pageData)) {
+                    if (!isUndoData) {
+                        this.undoStack.push({ data: JSON.stringify(pageData), version: this.snapshootVersion++ });
+                    }
+                    this.changed.fire(this, pageData);
+                }
             }
         }
 
-        async save(callback: (pageData: ControlDescription) => Promise<any>) {
+        async save(callback: (pageData: ElementData) => Promise<any>) {
             if (!callback) throw Errors.argumentNull('callback');
-            // if (this.props.save) {
             await callback(this.state.pageData);
-            // }
 
             this.originalPageData = JSON.parse(JSON.stringify(this.state.pageData));
             return;
         }
 
         get canUndo() {
-            return this.undoStack.length > 0;
+            return this.undoStack.length > 1;
         }
 
         undo() {
             if (!this.canUndo)
                 return;
 
-            let pageData = this.undoStack.pop();
-            this.redoStack.push(pageData);
-            this.setState({ pageData });
+            let snapshoot = this.undoStack.pop();
+            console.assert(this.undoStack.length > 0);
+
+            let pageData: ElementData = JSON.parse(this.undoStack[this.undoStack.length - 1].data);
+            console.assert(typeof pageData == 'object');
+
+            this.redoStack.push(snapshoot);
+
+            this.set_state({ pageData }, true);
         }
 
         get canRedo() {
@@ -103,18 +111,22 @@ namespace pdesigner {
             if (!this.canRedo)
                 return;
 
-            let pageData = this.redoStack.pop();
-            this.undoStack.push(pageData);
-            this.setState(this.state);
+            let snapshoot = this.redoStack.pop();
+
+            type PageDataType = this['state']['pageData']
+            let pageData: PageDataType = JSON.parse(snapshoot.data);
+            console.assert(typeof pageData == 'object');
+            this.set_state({ pageData });
         }
 
-        private pageDataIsChanged(pageData: ControlDescription) {
-            console.assert(this.undoStack.length > 0);
-            let lastestCopy = this.undoStack[this.undoStack.length - 1];
-            let isChanged = !this.isEquals(lastestCopy, pageData);
+        private pageDataIsChanged(pageData: ElementData) {
+            type PageData = this['state']['pageData'];
+            let copy = JSON.parse(this.undoStack[this.undoStack.length - 1].data) as PageData;
+            let isChanged = !this.isEquals(copy, pageData);
             return isChanged;
         }
 
+        // private static compareSkipFields = ['ref'];
         private isEquals(obj1: object, obj2: object) {
             if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
                 return false;
@@ -131,6 +143,9 @@ namespace pdesigner {
                 if (!Array.isArray(obj2))
                     return false;
 
+                if (obj1.length != obj2.length)
+                    return false;
+
                 for (let i = 0; i < obj1.length; i++) {
                     if (!this.isEquals(obj1[i], obj2[i])) {
                         return false;
@@ -140,8 +155,13 @@ namespace pdesigner {
                 return true;
             }
 
-            let keys1 = Object.getOwnPropertyNames(obj1);
-            let keys2 = Object.getOwnPropertyNames(obj2);
+            let keys1 = Object.getOwnPropertyNames(obj1)
+                .filter(o => !this.skipField(obj1, o))
+                .sort();
+            let keys2 = Object.getOwnPropertyNames(obj2)
+                .filter(o => !this.skipField(obj2, o))
+                .sort();
+
             if (!this.isEquals(keys1, keys2))
                 return false;
 
@@ -159,23 +179,27 @@ namespace pdesigner {
             return true;
         }
 
+        private skipField(obj: any, field: string): boolean {
+            return typeof obj[field] == 'function';
+        }
+
         updateControlProps(controlId: string, props: any): any {
-            let controlDescription = this.findControl(controlId);
+            let controlDescription = this.findControlData(controlId);
             console.assert(controlDescription != null);
             console.assert(props != null, 'props is null');
 
-            controlDescription.data = controlDescription.data || {};
+            controlDescription.props = controlDescription.props || {};
             for (let key in props) {
-                controlDescription.data[key] = props[key];
+                controlDescription.props[key] = props[key];
             }
 
-            this.setState(this.state);
+            this.set_state(this.state);
         }
 
         sortControlChildren(controlId: string, childIds: string[]): any {
-            let c = this.findControl(controlId);
-            c.children = childIds.map(o => c.children.filter(a => a.id == o)[0]).filter(o => o != null);
-            this.setState(this.state);
+            let c = this.findControlData(controlId);
+            c.children = childIds.map(o => c.children.filter(a => a.props.id == o)[0]).filter(o => o != null);
+            this.set_state(this.state);
         }
 
         async sortChildren(parentId: string, childIds: string[]) {
@@ -183,25 +207,25 @@ namespace pdesigner {
             if (!childIds) throw Errors.argumentNull('childIds');
 
             let pageData = this.state.pageData;
-            let parentControl = this.findControl(parentId);
+            let parentControl = this.findControlData(parentId);
             console.assert(parentControl != null);
             console.assert(parentControl.children != null);
             console.assert(parentControl.children.length == childIds.length);
 
             parentControl.children = childIds.map(o => {
-                let child = parentControl.children.filter(a => a.id == o)[0];
+                let child = parentControl.children.filter(a => a.props.id == o)[0];
                 console.assert(child != null, `child ${o} is null`);
                 return child;
             });
 
-            this.setState(this.state);
+            this.set_state(this.state);
         }
-        async appendControl(parentId: string, childControl: ControlDescription, childIds: string[]) {
+        async appendControl(parentId: string, childControl: ElementData, childIds: string[]) {
             if (!parentId) throw Errors.argumentNull('parentId');
             if (!childControl) throw Errors.argumentNull('childControl');
             if (!childIds) throw Errors.argumentNull('childIds');
 
-            let parentControl = this.findControl(parentId);
+            let parentControl = this.findControlData(parentId);
             console.assert(parentControl != null);
             parentControl.children = parentControl.children || [];
             parentControl.children.push(childControl);
@@ -214,7 +238,31 @@ namespace pdesigner {
          * @param control 指定的控件，可以为空，为空表示清空选择。
          */
         selectControl(control: Control<any, any>): void {
+            if (!control) throw Errors.argumentNull('control');
+
+            // if (!control.hasEditor || control.props.disabled) {
+            //     return;
+            // }
+
+            // console.assert(control != null);
             this.controlSelected.fire(this, control)
+
+            // if (this.selectedControlId1) {
+            //     $(`#${this.selectedControlId1}`).removeClass(Control.selectedClassName);
+            // }
+
+            let selectedControlId1 = control ? control.id : null;
+
+            // $(`#${control.id}`).addClass(Control.selectedClassName);
+
+            this.selectedControlId1 = selectedControlId1;
+        }
+
+        clearSelectControl() {
+
+            $(`.${Control.selectedClassName}`).removeClass(Control.selectedClassName);
+            this.selectedControlId1 = null;
+            this.controlSelected.fire(this, null);
         }
 
         private removeControl(controlId: string) {
@@ -224,13 +272,12 @@ namespace pdesigner {
 
             let isRemoved = this.removeControlFrom(controlId, pageData.children);
             if (isRemoved) {
-                this.setState({ pageData });
-                this.selectControl(null);
+                this.set_state({ pageData });
             }
         }
 
         moveControl(controlId: string, parentId: string, childIds: string[]) {
-            let control = this.findControl(controlId);
+            let control = this.findControlData(controlId);
             console.assert(control != null, `Cannt find control by id ${controlId}`);
 
             let pageData = this.state.pageData;
@@ -239,10 +286,10 @@ namespace pdesigner {
             this.appendControl(parentId, control, childIds);
         }
 
-        private removeControlFrom(controlId: string, collection: ControlDescription[]): boolean {
+        private removeControlFrom(controlId: string, collection: ElementData[]): boolean {
             let controlIndex: number;
             for (let i = 0; i < collection.length; i++) {
-                if (controlId == collection[i].id) {
+                if (controlId == collection[i].props.id) {
                     controlIndex = i;
                     break;
                 }
@@ -275,17 +322,23 @@ namespace pdesigner {
             return true;
         }
 
-        private findSelectedElement(): HTMLElement {
-            return this.element.querySelector(`.${Control.selectedClassName}`) as HTMLElement;// || pageViwe.element;
-        }
+        // private findSelectedElement(): ElementData {
+        //     let { selectedControlId } = this.state;
+        //     if (selectedControlId) {
+        //         return this.findControlData(selectedControlId)
+        //     }
 
-        private findControl(controlId: string) {
+        //     return null;
+        //     //return this.element.querySelector(`.${Control.selectedClassName}`) as HTMLElement;// || pageViwe.element;
+        // }
+
+        private findControlData(controlId: string) {
             let pageData = this.state.pageData;
-            let stack = new Array<ControlDescription>();
+            let stack = new Array<ElementData>();
             stack.push(pageData);
             while (stack.length > 0) {
                 let item = stack.pop();
-                if (item.id == controlId)
+                if (item.props.id == controlId)
                     return item;
 
                 stack.push(...(item.children || []));
@@ -297,23 +350,28 @@ namespace pdesigner {
         private onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
             const DELETE_KEY_CODE = 46;
             if (e.keyCode == DELETE_KEY_CODE) {
-                let element = this.findSelectedElement();
-                if (element == null) {
-                    return;
-                }
 
-                console.assert(element.id);
-                this.removeControl(element.id);
+                // let { selectedControlId } = this.state;
+                // let element = this.selectedControlId ? this.findControlData(this.selectedControlId) : null;
+                // if (element == null) {
+                //     return;
+                // }
+
+                // console.assert(element.props.id);
+                // this.removeControl(element.props.id);
             }
         }
 
         componentDidMount() {
             console.assert(this.state.pageData != null);
-            let copy = JSON.parse(JSON.stringify(this.state.pageData));
-            this.undoStack.push(copy);
+            this.undoStack.push({
+                data: JSON.stringify(this.state.pageData),
+                version: this.snapshootVersion++
+            });
         }
 
         render() {
+
             let designer = this;
             return <div className="pdesigner" ref={(e: HTMLElement) => this.element = e || this.element}
                 onKeyDown={(e) => this.onKeyDown(e)}>
