@@ -20,3 +20,4 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
     }
     exports.default = TextHeaderEditor;
 });
+//# sourceMappingURL=editor.js.map

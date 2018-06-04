@@ -152,3 +152,4 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
         ReactDOM.render(h(MainPage, null), container);
     });
 });
+//# sourceMappingURL=application.js.map
