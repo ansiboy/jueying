@@ -702,13 +702,23 @@ var pdesigner;
             }
         }
         render(h) {
-            let { emptyText } = this.props;
+            let { emptyText, htmlTag } = this.props;
             let emptyElement = h("div", { className: "empty" }, emptyText || '');
+            htmlTag = htmlTag || 'div';
             let controls = this.props.children || [];
             let self = this;
             return h(pdesigner.DesignerContext.Consumer, null, c => h(pdesigner.PageViewContext.Consumer, null, context => {
                 self.designer = c.designer;
-                return h("div", Object.assign({}, pdesigner.Control.htmlDOMProps(this.props), { className: `place-holder ${pdesigner.Control.connectorElementClassName}`, style: this.props.style, ref: (e) => this.element = e || this.element }), controls.length == 0 ? emptyElement : controls);
+                let props = Object.assign(pdesigner.Control.htmlDOMProps(this.props), {
+                    className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+                    style: this.props.style, ref: (e) => this.element = e || this.element
+                });
+                return h(htmlTag, props, controls.length == 0 ? emptyElement : controls);
+                // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
+                //     style={this.props.style}
+                //     ref={(e: HTMLElement) => this.element = e || this.element}>
+                //     {controls.length == 0 ? emptyElement : controls}
+                // </div>
             }));
         }
     }

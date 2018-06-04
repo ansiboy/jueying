@@ -18,54 +18,31 @@ let controlDescription: ElementData = {
     },
     "children": [
         {
-            type: "header",
+            type: "ControlPlaceholder",
             props: {
-                "id": "dabb6966-8ca9-2fea-c60d-cc3ff0d77f22",
-            },
-            "children": [
-                {
-                    type: "ControlPlaceholder",
-                    props: {
-                        "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
-                        "emptyText": "页面顶部，可以从工具栏拖拉控件到这里",
-                        "key": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
-                    } as any
-                }
-            ]
+                "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
+                "emptyText": "页面顶部，可以从工具栏拖拉控件到这里",
+                "key": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
+                htmlTag: 'header',
+            } as any
         },
         {
-            type: "section",
+            type: "ControlPlaceholder",
             props: {
-                "id": "31d0cfcf-a4a2-a7f6-65b6-95a9e0678ff3",
-                "key": "31d0cfcf-a4a2-a7f6-65b6-95a9e0678ff3",
-            },
-            "children": [
-                {
-                    type: "ControlPlaceholder",
-                    props: {
-                        "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
-                        "key": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
-                        "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
-                    } as any
-                }
-            ]
+                "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
+                "key": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                htmlTag: 'section',
+            } as any
         },
         {
-            type: "footer",
-            "children": [
-                {
-                    type: "ControlPlaceholder",
-                    props: {
-                        "emptyText": "页面底部，可以从工具栏拖拉控件到这里",
-                        "key": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
-                        "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
-                    } as any
-                }
-            ],
+            type: "ControlPlaceholder",
             props: {
-                "id": "5b4d1783-8a85-e8a7-7712-0446519c59d4",
-                "key": "5b4d1783-8a85-e8a7-7712-0446519c59d4",
-            }
+                "emptyText": "页面底部，可以从工具栏拖拉控件到这里",
+                "key": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
+                "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
+                htmlTag: 'footer',
+            } as any
         }
     ]
 }
@@ -203,9 +180,7 @@ class MainPage extends React.Component<any, MainPageState>{
                             <li role="presentation"><a href="#">页面二</a></li>
                             <li role="presentation"><a href="#">页面三</a></li>
                         </ul>
-                        <div>
-                            {element}
-                        </div>
+                        {element}
                     </div>
                 }}
             </DesignerContext.Consumer>

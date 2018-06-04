@@ -8,6 +8,7 @@ namespace pdesigner {
     export interface ControlPlaceholderProps extends ControlProps<ControlPlaceholder> {
         style?: React.CSSProperties,
         emptyText?: string,
+        htmlTag?: string,
     }
     export class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
         private designer: PageDesigner;
@@ -96,8 +97,9 @@ namespace pdesigner {
             }
         }
         render(h?: any) {
-            let { emptyText } = this.props;
+            let { emptyText, htmlTag } = this.props;
             let emptyElement = <div className="empty">{emptyText || ''}</div>;
+            htmlTag = htmlTag || 'div';
             let controls = this.props.children as JSX.Element[] || [];
             let self = this;
             return <DesignerContext.Consumer>
@@ -105,11 +107,16 @@ namespace pdesigner {
                     <PageViewContext.Consumer>
                         {context => {
                             self.designer = c.designer;
-                            return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
-                                style={this.props.style}
-                                ref={(e: HTMLElement) => this.element = e || this.element}>
-                                {controls.length == 0 ? emptyElement : controls}
-                            </div>
+                            let props = Object.assign(Control.htmlDOMProps(this.props), {
+                                className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+                                style: this.props.style, ref: (e) => this.element = e || this.element
+                            })
+                            return h(htmlTag, props, controls.length == 0 ? emptyElement : controls);
+                            // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
+                            //     style={this.props.style}
+                            //     ref={(e: HTMLElement) => this.element = e || this.element}>
+                            //     {controls.length == 0 ? emptyElement : controls}
+                            // </div>
                         }}
                     </PageViewContext.Consumer>
                 }
