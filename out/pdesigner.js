@@ -125,8 +125,19 @@ var pdesigner;
                 this.loadControlCSS();
             }
         }
+        //createElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children)
+        commonCreateElement(type, props, ...children) {
+            props = props || {};
+            this.originalRef = props.ref;
+            props.ref = (e) => {
+                if (this.originalRef) {
+                    this.originalRef(e);
+                }
+            };
+        }
         createDesignTimeElement(type, props, ...children) {
             console.assert(this._designer != null);
+            this.commonCreateElement(type, props, ...children);
             props = props || {};
             props.onClick = (e) => {
                 this._designer.selectControl(this);
@@ -145,6 +156,10 @@ var pdesigner;
             }
             return React.createElement.apply(React, args);
         }
+        createRuntimeElement(type, props, ...children) {
+            this.commonCreateElement(type, props, ...children);
+            return React.createElement(type, props, ...children);
+        }
         static render() {
             let self = this;
             return h(pdesigner.DesignerContext.Consumer, null, context => {
@@ -155,7 +170,7 @@ var pdesigner;
                         return null;
                     return context.designer != null ?
                         self.originalRender(self.createDesignTimeElement.bind(self)) :
-                        self.originalRender(React.createElement);
+                        self.originalRender(self.createRuntimeElement.bind(self));
                 });
                 return result;
             });

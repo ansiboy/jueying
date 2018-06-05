@@ -37,7 +37,7 @@ namespace pdesigner {
     }
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
-        // private _componentName: string;
+        private originalRef: (e: Control<any, any>) => void;
         private _pageView: PageView;
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
@@ -109,10 +109,22 @@ namespace pdesigner {
             }
         }
 
-        createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children) {
+        //createElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children)
+        commonCreateElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children) {
+            props = props || {};
+            this.originalRef = props.ref as any;
+            props.ref = (e) => {
+                if (this.originalRef) {
+                    this.originalRef(e);
+                }
+
+            }
+        }
+        private createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children) {
 
             console.assert(this._designer != null);
 
+            this.commonCreateElement(type, props, ...children);
             props = props || {};
             props.onClick = (e) => {
                 this._designer.selectControl(this);
@@ -134,6 +146,11 @@ namespace pdesigner {
             return React.createElement.apply(React, args);
         }
 
+        createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children) {
+            this.commonCreateElement(type, props, ...children);
+            return React.createElement(type, props, ...children);
+        }
+
         private static render() {
             let self = this as any as Control<any, any>;
             return <DesignerContext.Consumer>
@@ -148,7 +165,7 @@ namespace pdesigner {
 
                                 return context.designer != null ?
                                     (self.originalRender as Function)(self.createDesignTimeElement.bind(self)) :
-                                    (self.originalRender as Function)(React.createElement)
+                                    (self.originalRender as Function)(self.createRuntimeElement.bind(self))
                             }}
                         </PageViewContext.Consumer>
 
@@ -226,6 +243,7 @@ namespace pdesigner {
             data.key = data.id;
             console.assert(data.id != null);
 
+
             let controlType = customControlTypes[componentName];
 
             let childElements = children.length ? children.map(o => this.createElement(o)) : null;
@@ -238,6 +256,8 @@ namespace pdesigner {
                 controlType ? controlType : componentName,
                 data, childElements
             )
+
+
 
             return controlElement;
         }

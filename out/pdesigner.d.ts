@@ -48,6 +48,7 @@ declare namespace pdesigner {
         children?: ElementData[];
     }
     abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
+        private originalRef;
         private _pageView;
         private _designer;
         private originalComponentDidMount;
@@ -65,7 +66,9 @@ declare namespace pdesigner {
         static htmlDOMProps(props: any): {};
         protected loadControlCSS(): Promise<void>;
         private myComponentDidMount();
-        createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children: any[]): any;
+        commonCreateElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children: any[]): void;
+        private createDesignTimeElement(type, props, ...children);
+        createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children: any[]): React.ReactElement<any>;
         private static render();
         private static getControlType(componentName);
         static loadTypes(elementData: ElementData): Promise<any[]>;
