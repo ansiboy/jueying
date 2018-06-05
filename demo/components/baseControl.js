@@ -8,3 +8,4 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
     }
     exports.BaseControl = BaseControl;
 });
+//# sourceMappingURL=baseControl.js.map

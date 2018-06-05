@@ -17,3 +17,4 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
     ValueInput.defaultProps = ({ label: '未命名', className: 'test-control form-group' });
     exports.default = ValueInput;
 });
+//# sourceMappingURL=control.js.map

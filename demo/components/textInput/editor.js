@@ -27,3 +27,4 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
     }
     exports.default = TestEditor;
 });
+//# sourceMappingURL=editor.js.map

@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es6",
         "module": "amd",
-        "sourceMap": false,
+        "sourceMap": true,
         "rootDir": ".",
         "jsx": "react",
         "jsxFactory": "h"

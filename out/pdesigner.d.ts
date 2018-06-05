@@ -14,7 +14,7 @@ declare namespace pdesigner {
         constructor(props: any);
         setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
         static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
-        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
+        static create(control: Control<any, any>): Promise<React.ReactElement<any>>;
     }
 }
 /*******************************************************************************
@@ -115,7 +115,7 @@ declare namespace pdesigner {
         controlComponentDidMount: chitu.Callback1<PageDesigner, Control<any, any>>;
         changed: chitu.Callback1<PageDesigner, ElementData>;
         constructor(props: any);
-        set_state<K extends keyof PageDesignerState>(state: Pick<PageDesignerState, K> | PageDesignerState | null, isUndoData?: boolean): void;
+        set_state(state: PageDesignerState, isUndoData?: boolean): void;
         save(callback: (pageData: ElementData) => Promise<any>): Promise<void>;
         readonly canUndo: boolean;
         undo(): void;
@@ -153,6 +153,7 @@ declare namespace pdesigner {
     interface ControlPlaceholderProps extends ControlProps<ControlPlaceholder> {
         style?: React.CSSProperties;
         emptyText?: string;
+        htmlTag?: string;
     }
     class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
         private designer;

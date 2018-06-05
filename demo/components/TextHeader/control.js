@@ -13,3 +13,4 @@ define(["require", "exports", "pdesigner", "../baseControl"], function (require,
     TextHeader.defaultProps = { size: 1 };
     exports.default = TextHeader;
 });
+//# sourceMappingURL=control.js.map

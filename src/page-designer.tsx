@@ -57,8 +57,8 @@ namespace pdesigner {
 
         }
 
-        set_state<K extends keyof PageDesignerState>(
-            state: Pick<PageDesignerState, K> | PageDesignerState | null,
+        set_state(
+            state:  PageDesignerState,
             isUndoData?: boolean
         ): void {
 
