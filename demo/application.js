@@ -133,7 +133,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                 h(pdesigner_1.DesignerContext.Consumer, null, context => {
                     designer = context.designer;
                     this.namedControl(designer.state.pageData);
-                    let element = pdesigner_1.Control.create(designer.state.pageData);
+                    let element = pdesigner_1.Control.create(designer.state.pageData, designer);
                     return h("div", { className: "main-panel", onClick: (e) => {
                             designer.clearSelectControl();
                         } },

@@ -21,7 +21,9 @@ namespace pdesigner {
         style?: React.CSSProperties,
         name?: string,
         disabled?: boolean;
-        onClick?: React.MouseEventHandler<T>
+        onClick?: React.MouseEventHandler<T>,
+        onKeyDown?: React.KeyboardEventHandler<T>,
+        tabIndex?: number,
     }
 
     export interface ControlState {
@@ -36,12 +38,16 @@ namespace pdesigner {
         children?: ElementData[],
     }
 
+    let allInstance: { [key: string]: Control<any, any> } = {};
+
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private originalRef: (e: Control<any, any>) => void;
         private _pageView: PageView;
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
         private originalRender: () => React.ReactNode;
+        static tabIndex = 1;
+
         static componentsDir = 'components';
         static selectedClassName = 'control-selected';
         static connectorElementClassName = 'control-container';
@@ -61,9 +67,8 @@ namespace pdesigner {
 
             this.originalComponentDidMount = this.componentDidMount;
             this.componentDidMount = this.myComponentDidMount;
+            allInstance[this.props.id] = this;
         }
-
-        abstract get persistentMembers(): (keyof S)[];
 
         get id(): string {
             let id = (this.props as any).id;
@@ -109,26 +114,21 @@ namespace pdesigner {
             }
         }
 
-        //createElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children)
-        commonCreateElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children) {
-            props = props || {};
-            this.originalRef = props.ref as any;
-            props.ref = (e) => {
-                if (this.originalRef) {
-                    this.originalRef(e);
+
+        private static createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
+            if (props != null && props.id != null)
+                props.key = props.id;
+
+            if (this instanceof Control) {
+                let control = this;
+                console.assert(control._designer != null);
+
+                props = props || {};
+                props.onClick = (e) => {
+                    control._designer.selectControl(control);
+                    e.stopPropagation();
                 }
 
-            }
-        }
-        private createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children) {
-
-            console.assert(this._designer != null);
-
-            this.commonCreateElement(type, props, ...children);
-            props = props || {};
-            props.onClick = (e) => {
-                this._designer.selectControl(this);
-                e.stopPropagation();
             }
 
             if (type == 'a' && (props as any).href) {
@@ -146,8 +146,10 @@ namespace pdesigner {
             return React.createElement.apply(React, args);
         }
 
-        createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children) {
-            this.commonCreateElement(type, props, ...children);
+        private static createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
+            if (props != null && props.id != null)
+                props.key = props.id;
+
             return React.createElement(type, props, ...children);
         }
 
@@ -164,8 +166,8 @@ namespace pdesigner {
                                     return null;
 
                                 return context.designer != null ?
-                                    (self.originalRender as Function)(self.createDesignTimeElement.bind(self)) :
-                                    (self.originalRender as Function)(self.createRuntimeElement.bind(self))
+                                    (self.originalRender as Function)(Control.createDesignTimeElement.bind(self)) :
+                                    (self.originalRender as Function)(Control.createRuntimeElement.bind(self))
                             }}
                         </PageViewContext.Consumer>
 
@@ -228,38 +230,30 @@ namespace pdesigner {
             return Promise.all(ps);
         }
 
+        static getInstance(id: string) {
+            if (!id) throw Errors.argumentNull('id');
 
-        static create(description: ElementData): React.ReactElement<any> {
-
-            let controlElement = this.createElement(description);
-            return controlElement;
+            return allInstance[id];
         }
 
-        private static createElement(description) {
-            let componentName = description.type;
-            let children = description.children || [];
-            let data = description.props || {};
-            data.id = description.props.id;
-            data.key = data.id;
-            console.assert(data.id != null);
+        static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any> {
 
+            let c = customControlTypes[args.type];
 
+            let type: string | React.ComponentClass = args.type;
+            let componentName = args.type;
             let controlType = customControlTypes[componentName];
-
-            let childElements = children.length ? children.map(o => this.createElement(o)) : null;
-
-            if (!controlType) {
-                console.log(`${componentName} control class is null.`);
+            if (controlType) {
+                type = controlType;
             }
 
-            let controlElement = React.createElement(
-                controlType ? controlType : componentName,
-                data, childElements
-            )
+            let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
 
+            if (designer) {
+                return this.createDesignTimeElement(type, args.props, children);
+            }
 
-
-            return controlElement;
+            return this.createRuntimeElement(type, args.props, children);
         }
 
         static register(controlType: React.ComponentClass<any>);

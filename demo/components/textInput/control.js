@@ -7,14 +7,14 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
             this.hasCSS = true;
         }
         render(h) {
-            let { label } = this.props;
+            let { dataField } = this.props;
             return h("div", Object.assign({}, pdesigner_1.Control.htmlDOMProps(this.props), { ref: (e) => this.element = e || this.element }),
-                h("label", null, label),
+                h("label", null, dataField),
                 h("div", { className: "control" },
                     h("input", { className: "form-control" })));
         }
     }
-    ValueInput.defaultProps = ({ label: '未命名', className: 'test-control form-group' });
+    ValueInput.defaultProps = ({ dataField: '未命名', className: 'test-control form-group' });
     exports.default = ValueInput;
 });
 //# sourceMappingURL=control.js.map

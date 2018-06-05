@@ -58,7 +58,7 @@ namespace pdesigner {
         }
 
         set_state(
-            state:  PageDesignerState,
+            state: PageDesignerState,
             isUndoData?: boolean
         ): void {
 
@@ -231,6 +231,10 @@ namespace pdesigner {
             parentControl.children.push(childControl);
 
             this.sortChildren(parentId, childIds);
+
+            let control = Control.getInstance(childControl.props.id);
+            console.assert(control != null);
+            this.selectControl(control);
         }
 
         /**
@@ -240,23 +244,27 @@ namespace pdesigner {
         selectControl(control: Control<any, any>): void {
             if (!control) throw Errors.argumentNull('control');
 
-            // if (!control.hasEditor || control.props.disabled) {
-            //     return;
-            // }
-
-            // console.assert(control != null);
             this.controlSelected.fire(this, control)
-
-            // if (this.selectedControlId1) {
-            //     $(`#${this.selectedControlId1}`).removeClass(Control.selectedClassName);
-            // }
-
             let selectedControlId1 = control ? control.id : null;
-
-            // $(`#${control.id}`).addClass(Control.selectedClassName);
-
             this.selectedControlId1 = selectedControlId1;
+
+            if (!control.hasEditor) {
+                console.log(`Control ${control.constructor.name} has none editor.`);
+                return;
+            }
+
+            $(`.${Control.selectedClassName}`).removeClass(Control.selectedClassName);
+            $(control.element).addClass(Control.selectedClassName);
+
+            if (selectedControlId1) {
+                setTimeout(() => {
+                    $(`#${selectedControlId1}`).focus();
+                    console.log(`focuse ${selectedControlId1} element`);
+                }, 100);
+            }
         }
+
+
 
         clearSelectControl() {
 
@@ -265,7 +273,7 @@ namespace pdesigner {
             this.controlSelected.fire(this, null);
         }
 
-        private removeControl(controlId: string) {
+        removeControl(controlId: string) {
             let pageData = this.state.pageData;
             if (!pageData || !pageData.children || pageData.children.length == 0)
                 return;
@@ -350,15 +358,15 @@ namespace pdesigner {
         private onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
             const DELETE_KEY_CODE = 46;
             if (e.keyCode == DELETE_KEY_CODE) {
+                debugger;
+                let selectedControlId = this.selectedControlId1
+                let element = selectedControlId ? this.findControlData(selectedControlId) : null;
+                if (element == null) {
+                    return;
+                }
 
-                // let { selectedControlId } = this.state;
-                // let element = this.selectedControlId ? this.findControlData(this.selectedControlId) : null;
-                // if (element == null) {
-                //     return;
-                // }
-
-                // console.assert(element.props.id);
-                // this.removeControl(element.props.id);
+                console.assert(element.props.id);
+                this.removeControl(element.props.id);
             }
         }
 
@@ -371,7 +379,6 @@ namespace pdesigner {
         }
 
         render() {
-
             let designer = this;
             return <div className="pdesigner" ref={(e: HTMLElement) => this.element = e || this.element}
                 onKeyDown={(e) => this.onKeyDown(e)}>

@@ -29,9 +29,6 @@ namespace pdesigner {
                     return;
                 }
 
-                $(`.${Control.selectedClassName}`).removeClass(Control.selectedClassName);
-                $(control.element).addClass(Control.selectedClassName);
-
                 let editor = await Editor.create(control);
                 this.setState({ editor });
             })

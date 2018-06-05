@@ -6,22 +6,15 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
             super(props);
         }
         render() {
-            let { label, name } = this.state;
+            let { dataField } = this.state;
             return h(pdesigner_1.DesignerContext.Consumer, null, c => [
                 h("div", { key: 10, className: "form-group", ref: (e) => this.element = e || this.element },
-                    h("label", null, "\u540D\u79F0"),
+                    h("label", null, "\u5B57\u6BB5"),
                     h("div", { className: "control" },
-                        h("input", { className: "form-control", value: name || '', onChange: (e) => {
-                                name = e.target.value;
-                                this.setState({ name });
+                        h("input", { className: "form-control", value: dataField || '', onChange: (e) => {
+                                dataField = e.target.value;
+                                this.setState({ dataField });
                             } }))),
-                h("div", { key: 20, className: "form-group", ref: (e) => this.element = e || this.element },
-                    h("label", null, "\u6807\u7B7E"),
-                    h("div", { className: "control" },
-                        h("input", { className: "form-control", value: label || '', onChange: (e) => {
-                                label = e.target.value;
-                                this.setState({ label });
-                            } })))
             ]);
         }
     }

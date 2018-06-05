@@ -14,7 +14,7 @@ declare namespace pdesigner {
         constructor(props: any);
         setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
         static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
-        static create(control: Control<any, any>): Promise<React.ReactElement<any>>;
+        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
     }
 }
 /*******************************************************************************
@@ -38,6 +38,8 @@ declare namespace pdesigner {
         name?: string;
         disabled?: boolean;
         onClick?: React.MouseEventHandler<T>;
+        onKeyDown?: React.KeyboardEventHandler<T>;
+        tabIndex?: number;
     }
     interface ControlState {
         selected: boolean;
@@ -53,6 +55,7 @@ declare namespace pdesigner {
         private _designer;
         private originalComponentDidMount;
         private originalRender;
+        static tabIndex: number;
         static componentsDir: string;
         static selectedClassName: string;
         static connectorElementClassName: string;
@@ -60,21 +63,19 @@ declare namespace pdesigner {
         hasEditor: boolean;
         abstract element: HTMLElement;
         constructor(props: any);
-        readonly abstract persistentMembers: (keyof S)[];
         readonly id: string;
         readonly componentName: any;
         static htmlDOMProps(props: any): {};
         protected loadControlCSS(): Promise<void>;
         private myComponentDidMount();
-        commonCreateElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children: any[]): void;
-        private createDesignTimeElement(type, props, ...children);
-        createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children: any[]): React.ReactElement<any>;
+        private static createDesignTimeElement(type, props, ...children);
+        private static createRuntimeElement(type, props, ...children);
         private static render();
         private static getControlType(componentName);
         static loadTypes(elementData: ElementData): Promise<any[]>;
         static loadAllTypes(): Promise<any[]>;
-        static create(description: ElementData): React.ReactElement<any>;
-        private static createElement(description);
+        static getInstance(id: string): Control<any, any>;
+        static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any>;
         static register(controlType: React.ComponentClass<any>): any;
         static register(controlName: string, controlType: React.ComponentClass<any>): any;
         static register(controlName: string, controlPath: string): any;
@@ -134,7 +135,7 @@ declare namespace pdesigner {
          */
         selectControl(control: Control<any, any>): void;
         clearSelectControl(): void;
-        private removeControl(controlId);
+        removeControl(controlId: string): void;
         moveControl(controlId: string, parentId: string, childIds: string[]): void;
         private removeControlFrom(controlId, collection);
         private findControlData(controlId);
@@ -160,7 +161,6 @@ declare namespace pdesigner {
         private controls;
         element: HTMLElement;
         constructor(props: any);
-        readonly persistentMembers: any[];
         private sortableElement(element, designer);
         private childrenIds(element);
         componentDidMount(): void;
@@ -271,7 +271,6 @@ declare namespace pdesigner {
         element: HTMLElement;
         constructor(props: any);
         hasEditor: boolean;
-        persistentMembers: never[];
         render(): JSX.Element;
     }
 }

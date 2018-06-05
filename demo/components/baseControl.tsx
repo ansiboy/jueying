@@ -5,8 +5,6 @@ export interface BaseControlProps<T> extends React.Props<T> {
 }
 
 export abstract class BaseControl<P extends BaseControlProps<any>, S> extends Control<P, S> {
-    persistentMembers: (keyof S)[];
-
     constructor(props) {
         super(props);
     }

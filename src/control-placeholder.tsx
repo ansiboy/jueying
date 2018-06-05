@@ -23,10 +23,6 @@ namespace pdesigner {
             this.hasEditor = false;
         }
 
-        get persistentMembers() {
-            return [];
-        }
-
         private sortableElement(element: HTMLElement, designer: PageDesigner) {
             type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
             let controls = this.state.controls;

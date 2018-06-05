@@ -14,6 +14,7 @@ export default class TextHeader extends BaseControl<any, any> {
         let { size, text, name } = this.props;
         let elementType = `h${size}`;
         let props: any = Control.htmlDOMProps(this.props);
+        props.tabIndex = Control.tabIndex++;
         props.ref = (e) => this.element = e || this.element;
         return h(elementType, props, text || name);
     }

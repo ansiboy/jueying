@@ -75,6 +75,7 @@ var pdesigner;
 (function (pdesigner) {
     let h = React.createElement;
     let customControlTypes = {};
+    let allInstance = {};
     class Control extends React.Component {
         constructor(props) {
             super(props);
@@ -85,6 +86,7 @@ var pdesigner;
             this.render = Control.render;
             this.originalComponentDidMount = this.componentDidMount;
             this.componentDidMount = this.myComponentDidMount;
+            allInstance[this.props.id] = this;
         }
         get id() {
             let id = this.props.id;
@@ -125,24 +127,18 @@ var pdesigner;
                 this.loadControlCSS();
             }
         }
-        //createElement(type: string | React.ComponentClass<any>, props: ControlProps<this>, ...children)
-        commonCreateElement(type, props, ...children) {
-            props = props || {};
-            this.originalRef = props.ref;
-            props.ref = (e) => {
-                if (this.originalRef) {
-                    this.originalRef(e);
-                }
-            };
-        }
-        createDesignTimeElement(type, props, ...children) {
-            console.assert(this._designer != null);
-            this.commonCreateElement(type, props, ...children);
-            props = props || {};
-            props.onClick = (e) => {
-                this._designer.selectControl(this);
-                e.stopPropagation();
-            };
+        static createDesignTimeElement(type, props, ...children) {
+            if (props != null && props.id != null)
+                props.key = props.id;
+            if (this instanceof Control) {
+                let control = this;
+                console.assert(control._designer != null);
+                props = props || {};
+                props.onClick = (e) => {
+                    control._designer.selectControl(control);
+                    e.stopPropagation();
+                };
+            }
             if (type == 'a' && props.href) {
                 props.href = 'javascript:';
             }
@@ -156,8 +152,9 @@ var pdesigner;
             }
             return React.createElement.apply(React, args);
         }
-        createRuntimeElement(type, props, ...children) {
-            this.commonCreateElement(type, props, ...children);
+        static createRuntimeElement(type, props, ...children) {
+            if (props != null && props.id != null)
+                props.key = props.id;
             return React.createElement(type, props, ...children);
         }
         static render() {
@@ -169,8 +166,8 @@ var pdesigner;
                     if (typeof self.originalRender != 'function')
                         return null;
                     return context.designer != null ?
-                        self.originalRender(self.createDesignTimeElement.bind(self)) :
-                        self.originalRender(self.createRuntimeElement.bind(self));
+                        self.originalRender(Control.createDesignTimeElement.bind(self)) :
+                        self.originalRender(Control.createRuntimeElement.bind(self));
                 });
                 return result;
             });
@@ -218,24 +215,24 @@ var pdesigner;
             }
             return Promise.all(ps);
         }
-        static create(description) {
-            let controlElement = this.createElement(description);
-            return controlElement;
+        static getInstance(id) {
+            if (!id)
+                throw pdesigner.Errors.argumentNull('id');
+            return allInstance[id];
         }
-        static createElement(description) {
-            let componentName = description.type;
-            let children = description.children || [];
-            let data = description.props || {};
-            data.id = description.props.id;
-            data.key = data.id;
-            console.assert(data.id != null);
+        static create(args, designer) {
+            let c = customControlTypes[args.type];
+            let type = args.type;
+            let componentName = args.type;
             let controlType = customControlTypes[componentName];
-            let childElements = children.length ? children.map(o => this.createElement(o)) : null;
-            if (!controlType) {
-                console.log(`${componentName} control class is null.`);
+            if (controlType) {
+                type = controlType;
             }
-            let controlElement = React.createElement(controlType ? controlType : componentName, data, childElements);
-            return controlElement;
+            let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
+            if (designer) {
+                return this.createDesignTimeElement(type, args.props, children);
+            }
+            return this.createRuntimeElement(type, args.props, children);
         }
         static register(controlName, controlType) {
             if (controlType == null && typeof controlName == 'function') {
@@ -316,6 +313,7 @@ var pdesigner;
             return names.length == 0;
         }
     }
+    Control.tabIndex = 1;
     Control.componentsDir = 'components';
     Control.selectedClassName = 'control-selected';
     Control.connectorElementClassName = 'control-container';
@@ -519,6 +517,9 @@ var pdesigner;
                 parentControl.children = parentControl.children || [];
                 parentControl.children.push(childControl);
                 this.sortChildren(parentId, childIds);
+                let control = pdesigner.Control.getInstance(childControl.props.id);
+                console.assert(control != null);
+                this.selectControl(control);
             });
         }
         /**
@@ -528,17 +529,21 @@ var pdesigner;
         selectControl(control) {
             if (!control)
                 throw pdesigner.Errors.argumentNull('control');
-            // if (!control.hasEditor || control.props.disabled) {
-            //     return;
-            // }
-            // console.assert(control != null);
             this.controlSelected.fire(this, control);
-            // if (this.selectedControlId1) {
-            //     $(`#${this.selectedControlId1}`).removeClass(Control.selectedClassName);
-            // }
             let selectedControlId1 = control ? control.id : null;
-            // $(`#${control.id}`).addClass(Control.selectedClassName);
             this.selectedControlId1 = selectedControlId1;
+            if (!control.hasEditor) {
+                console.log(`Control ${control.constructor.name} has none editor.`);
+                return;
+            }
+            $(`.${pdesigner.Control.selectedClassName}`).removeClass(pdesigner.Control.selectedClassName);
+            $(control.element).addClass(pdesigner.Control.selectedClassName);
+            if (selectedControlId1) {
+                setTimeout(() => {
+                    $(`#${selectedControlId1}`).focus();
+                    console.log(`focuse ${selectedControlId1} element`);
+                }, 100);
+            }
         }
         clearSelectControl() {
             $(`.${pdesigner.Control.selectedClassName}`).removeClass(pdesigner.Control.selectedClassName);
@@ -616,13 +621,14 @@ var pdesigner;
         onKeyDown(e) {
             const DELETE_KEY_CODE = 46;
             if (e.keyCode == DELETE_KEY_CODE) {
-                // let { selectedControlId } = this.state;
-                // let element = this.selectedControlId ? this.findControlData(this.selectedControlId) : null;
-                // if (element == null) {
-                //     return;
-                // }
-                // console.assert(element.props.id);
-                // this.removeControl(element.props.id);
+                debugger;
+                let selectedControlId = this.selectedControlId1;
+                let element = selectedControlId ? this.findControlData(selectedControlId) : null;
+                if (element == null) {
+                    return;
+                }
+                console.assert(element.props.id);
+                this.removeControl(element.props.id);
             }
         }
         componentDidMount() {
@@ -650,9 +656,6 @@ var pdesigner;
             super(props);
             this.state = { controls: [] };
             this.hasEditor = false;
-        }
-        get persistentMembers() {
-            return [];
         }
         sortableElement(element, designer) {
             let controls = this.state.controls;
@@ -797,8 +800,6 @@ var pdesigner;
                     console.log(`Control ${control.constructor.name} has none editor.`);
                     return;
                 }
-                $(`.${pdesigner.Control.selectedClassName}`).removeClass(pdesigner.Control.selectedClassName);
-                $(control.element).addClass(pdesigner.Control.selectedClassName);
                 let editor = yield pdesigner.Editor.create(control);
                 this.setState({ editor });
             }));

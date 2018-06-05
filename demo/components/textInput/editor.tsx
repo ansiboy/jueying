@@ -11,30 +11,20 @@ export default class TestEditor extends Editor<EditorProps, State> {
         super(props)
     }
     render() {
-        let { label, name } = this.state;
+        let { dataField } = this.state;
         return <DesignerContext.Consumer>
             {c => [
                 <div key={10} className="form-group" ref={(e: HTMLElement) => this.element = e || this.element}>
-                    <label>名称</label>
+                    <label>字段</label>
                     <div className="control">
-                        <input className="form-control" value={name || ''}
+                        <input className="form-control" value={dataField || ''}
                             onChange={(e) => {
-                                name = (e.target as HTMLInputElement).value;
-                                this.setState({ name });
+                                dataField = (e.target as HTMLInputElement).value;
+                                this.setState({ dataField });
                             }} />
                     </div>
                 </div>,
-                <div key={20} className="form-group" ref={(e: HTMLElement) => this.element = e || this.element}>
-                    <label>标签</label>
-                    <div className="control">
-                        <input className="form-control" value={label || ''}
-                            onChange={(e) => {
-                                label = (e.target as HTMLInputElement).value;
-                                this.setState({ label });
 
-                            }} />
-                    </div>
-                </div>
             ]}
         </DesignerContext.Consumer>
     }

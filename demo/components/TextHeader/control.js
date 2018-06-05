@@ -6,6 +6,7 @@ define(["require", "exports", "pdesigner", "../baseControl"], function (require,
             let { size, text, name } = this.props;
             let elementType = `h${size}`;
             let props = pdesigner_1.Control.htmlDOMProps(this.props);
+            props.tabIndex = pdesigner_1.Control.tabIndex++;
             props.ref = (e) => this.element = e || this.element;
             return h(elementType, props, text || name);
         }

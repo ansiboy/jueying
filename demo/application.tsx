@@ -170,7 +170,7 @@ class MainPage extends React.Component<any, MainPageState>{
                 {context => {
                     designer = context.designer;
                     this.namedControl(designer.state.pageData);
-                    let element = Control.create(designer.state.pageData);
+                    let element = Control.create(designer.state.pageData, designer);
                     return <div className="main-panel"
                         onClick={(e) => {
                             designer.clearSelectControl();

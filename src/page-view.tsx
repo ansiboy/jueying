@@ -43,7 +43,6 @@ namespace pdesigner {
             this._hasEditor = value;
         }
 
-        persistentMembers: never[];
 
         render() {
             let children = React.Children.toArray(this.props.children) || [];

@@ -6,12 +6,11 @@ interface State {
 }
 
 export interface Props extends BaseControlProps<ValueInput> {
-    label: string,
+    dataField: string,
     className: string
 }
 
 export default class ValueInput extends Control<Props, State> {
-    persistentMembers: never[];
     element: HTMLElement;
     constructor(props) {
         super(props);
@@ -19,13 +18,13 @@ export default class ValueInput extends Control<Props, State> {
         this.hasCSS = true;
     }
 
-    static defaultProps: Props = ({ label: '未命名', className: 'test-control form-group' });
+    static defaultProps: Props = ({ dataField: '未命名', className: 'test-control form-group' });
 
     render(h?: any) {
-        let { label } = this.props;
+        let { dataField } = this.props;
         return <div {...Control.htmlDOMProps(this.props)}
             ref={(e: HTMLElement) => this.element = e || this.element}>
-            <label>{label}</label>
+            <label>{dataField}</label>
             <div className="control">
                 <input className="form-control" />
             </div>
