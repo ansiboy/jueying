@@ -44,7 +44,7 @@ namespace pdesigner {
         }
 
 
-        render() {
+        render(h?) {
             let children = React.Children.toArray(this.props.children) || [];
             let pageData = { controls: [] };
 

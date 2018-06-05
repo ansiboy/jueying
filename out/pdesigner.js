@@ -853,7 +853,7 @@ var pdesigner;
         set hasEditor(value) {
             this._hasEditor = value;
         }
-        render() {
+        render(h) {
             let children = React.Children.toArray(this.props.children) || [];
             let pageData = { controls: [] };
             let pageView = this;

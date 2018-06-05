@@ -271,6 +271,6 @@ declare namespace pdesigner {
         element: HTMLElement;
         constructor(props: any);
         hasEditor: boolean;
-        render(): JSX.Element;
+        render(h?: any): JSX.Element;
     }
 }

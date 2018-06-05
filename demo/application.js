@@ -138,7 +138,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                             designer.clearSelectControl();
                         } },
                         h("ul", { className: "nav nav-tabs" },
-                            h("li", { role: "presentation", className: "bg-primary" },
+                            h("li", { role: "presentation", className: "active" },
                                 h("a", { href: "#" }, "\u9875\u9762\u4E00")),
                             h("li", { role: "presentation" },
                                 h("a", { href: "#" }, "\u9875\u9762\u4E8C")),

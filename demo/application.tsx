@@ -176,7 +176,7 @@ class MainPage extends React.Component<any, MainPageState>{
                             designer.clearSelectControl();
                         }}>
                         <ul className="nav nav-tabs">
-                            <li role="presentation" className="bg-primary"><a href="#">页面一</a></li>
+                            <li role="presentation" className="active"><a href="#">页面一</a></li>
                             <li role="presentation"><a href="#">页面二</a></li>
                             <li role="presentation"><a href="#">页面三</a></li>
                         </ul>

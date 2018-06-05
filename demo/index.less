@@ -1,3 +1,5 @@
+@import "lib/bootstrap-3.3.7/less/variables.less";
+
 body {
     background: whitesmoke;
 }
@@ -85,6 +87,21 @@ body {
     }
 }
 
+:focus {
+    /* -webkit-focus-ring-color = '#5B9DD9' */
+    outline:none;
+}
+
+
 .control-selected {
-    border: solid 1px #0080FF;
+    border: solid 1px @brand-primary;
+}
+
+.nav-tabs > li > a:hover{
+    border: none;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus{
+ background-color: @brand-primary;
+ color: white;
 }
