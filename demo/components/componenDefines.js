@@ -5,30 +5,39 @@ define(["require", "exports"], function (require, exports) {
     let TextInput = 'TextInput';
     let TextHeader = 'TextHeader';
     let SubmitButton = 'SubmitButton';
+    let Spliter = 'Spliter';
     exports.componets = [
         {
             name: `${TextHeader}`,
+            controlPath: `${componentsDirectory}/${TextHeader}/control`,
+            editorPath: `${componentsDirectory}/${TextHeader}/editor`,
             displayName: "文本标题",
             icon: "icon-text-width",
             introduce: "页面标题",
-            controlPath: `${componentsDirectory}/${TextHeader}/control`,
-            editorPath: `${componentsDirectory}/${TextHeader}/editor`
         },
         {
             name: `${TextInput}`,
+            controlPath: `${componentsDirectory}/${TextInput}/control`,
+            editorPath: `${componentsDirectory}/${TextInput}/editor`,
             displayName: "文本框",
             icon: "icon-edit",
             introduce: "提供文本的输入",
-            controlPath: `${componentsDirectory}/${TextInput}/control`,
-            editorPath: `${componentsDirectory}/${TextInput}/editor`
         },
         {
             name: `${SubmitButton}`,
+            controlPath: `${componentsDirectory}/${SubmitButton}/control`,
+            editorPath: `${componentsDirectory}/${SubmitButton}/editor`,
             displayName: "表单按钮",
             icon: "icon-th-large",
             introduce: "表单提交按钮",
-            controlPath: `${componentsDirectory}/${SubmitButton}/control`,
-            editorPath: `${componentsDirectory}/${SubmitButton}/editor`
+        },
+        {
+            name: `${Spliter}`,
+            controlPath: `${componentsDirectory}/${Spliter}/control`,
+            editorPath: `${componentsDirectory}/${Spliter}/editor`,
+            displayName: "分割线",
+            icon: "icon-th-large",
+            introduce: "表单提交按钮",
         },
     ];
 });

@@ -11,7 +11,6 @@ export interface Props extends BaseControlProps<ValueInput> {
 }
 
 export default class ValueInput extends Control<Props, State> {
-    element: HTMLElement;
     constructor(props) {
         super(props);
 
@@ -22,12 +21,13 @@ export default class ValueInput extends Control<Props, State> {
 
     render(h?: any) {
         let { dataField } = this.props;
-        return this.Element("div",
-            <label>{dataField}</label>,
+        let c = <React.Fragment>
+            <label>{dataField}</label>
             <div className="control">
                 <input className="form-control" />
             </div>
-        )
+        </React.Fragment>
+        return this.Element('div', {}, c);
     }
 }
 

@@ -152,40 +152,32 @@ namespace pdesigner {
             return Promise.all(ps);
         }
 
-        static createElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-            return React.createElement(DesignerContext.Consumer, null, context => {
-                if (context.designer != null)
-                    return ControlFactory.createDesignTimeElement(this, type, props, ...children);
+        static createElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
+            if (control != null && control.designer != null)
+                return ControlFactory.createDesignTimeElement(control, type, props, ...children);
 
-                return ControlFactory.createRuntimeElement(this, type, props, ...children);
-            })
+            return ControlFactory.createRuntimeElement(control, type, props, ...children);
         }
 
         static createDesignTimeElement(instance, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-            return React.createElement(DesignerContext.Consumer, null, (context) => {
-                if (props != null && props.id != null)
-                    props.key = props.id;
+            if (props != null && props.id != null)
+                props.key = props.id;
 
-                if (instance instanceof Control) {
-                    let control = this;
-                    console.assert(context.designer != null);
+            if (instance instanceof Control) {
+                console.assert(instance.designer != null);
 
-                    props = props || {};
-                    props.onClick = (e) => {
-                        instance.designer.selectControl(instance);
-                        e.stopPropagation();
-                    }
-                }
+                props = props || {};
+            }
 
-                if (type == 'a' && (props as any).href) {
-                    (props as any).href = 'javascript:';
-                }
-                else if (type == 'input') {
-                    delete props.onClick;
-                    (props as any).readOnly = true;
-                }
-                return React.createElement(type, props, ...children)
-            })
+            if (type == 'a' && (props as any).href) {
+                (props as any).href = 'javascript:';
+            }
+            else if (type == 'input') {
+                delete props.onClick;
+                (props as any).readOnly = true;
+            }
+            return React.createElement(type, props, ...children)
+            // })
         }
 
         private static createRuntimeElement(instance, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {

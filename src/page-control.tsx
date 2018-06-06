@@ -55,7 +55,7 @@ namespace pdesigner {
         protected hasCSS = false;
         public hasEditor = true;
 
-        abstract element: HTMLElement;
+        element: HTMLElement;
 
         constructor(props) {
             super(props);
@@ -118,15 +118,49 @@ namespace pdesigner {
             }
         }
 
+        Element(element: JSX.Element)
+        Element(props: any, element: JSX.Element)
         Element(type: string, ...children: JSX.Element[])
         Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
-        Element(type: string, props: any, ...children: any[]) {
+        Element(type: any, props?: any, ...children: any[]) {
 
-            let type1 = typeof arguments[1];
-            if (type1 == 'object' && React.isValidElement(props)) {
+            //let type1 = typeof arguments[1];
+            // if (type1 == 'object' && React.isValidElement(props)) {
+            //     children = children || [];
+            //     children.unshift(props);
+            //     props = {};
+            // }
+            // if (typeof type == 'string' && typeof props == 'object' && children == null) {
+            //     //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
+            // }
+            // else if (typeof type == 'string' && typeof (props) == 'object') {
+
+            // }
+            if (typeof type == 'string' && typeof (props) == 'object' && !React.isValidElement(props)) {
+                //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
+            }
+            else if (typeof type == 'string' && (props == null || typeof (props) == 'object' && React.isValidElement(props))) {
+                // Element(type: string, ...children: JSX.Element[])
                 children = children || [];
-                children.unshift(props);
+                if (props)
+                    children.unshift(props);
+
                 props = {};
+                if (children.length == 0)
+                    children = null;
+            }
+            else if (typeof type == 'object' && React.isValidElement(type) && props == null) {
+                children = [this.element];
+                type = 'div';
+                props = {};
+            }
+            else if (typeof type == 'object' && !React.isValidElement(type) && React.isValidElement(props)) {
+                children = [props];
+                props = type;
+                type = 'div';
+            }
+            else {
+                throw new Error('not implement');
             }
 
             if (this.props.id)
@@ -138,7 +172,7 @@ namespace pdesigner {
             if (this.props.className)
                 props.className = this.props.className;
 
-            if (this.designer) {
+            if (this.designer && typeof type == 'string') {
                 props.onClick = (e) => {
                     this.designer.selectControl(this);
                     e.stopPropagation();
@@ -146,46 +180,46 @@ namespace pdesigner {
             }
 
             (props as any).ref = (e) => this.element = e || this.element;
-            return ControlFactory.createElement(type, props, ...children);
+            return ControlFactory.createElement(this,type, props, ...children);
         }
 
-        private static createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-            if (props != null && props.id != null)
-                props.key = props.id;
+        // private static createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
+        //     if (props != null && props.id != null)
+        //         props.key = props.id;
 
-            if (this instanceof Control) {
-                let control = this;
-                console.assert(control.designer != null);
+        //     if (this instanceof Control) {
+        //         let control = this;
+        //         console.assert(control.designer != null);
 
-                props = props || {};
-                props.onClick = (e) => {
-                    control.designer.selectControl(control);
-                    e.stopPropagation();
-                }
+        //         props = props || {};
+        //         // props.onClick = (e) => {
+        //         //     control.designer.selectControl(control);
+        //         //     e.stopPropagation();
+        //         // }
 
-            }
+        //     }
 
-            if (type == 'a' && (props as any).href) {
-                (props as any).href = 'javascript:';
-            }
-            else if (type == 'input') {
-                delete props.onClick;
-                (props as any).readOnly = true;
-            }
+        //     if (type == 'a' && (props as any).href) {
+        //         (props as any).href = 'javascript:';
+        //     }
+        //     else if (type == 'input') {
+        //         delete props.onClick;
+        //         (props as any).readOnly = true;
+        //     }
 
-            let args = [type, props];
-            for (let i = 2; i < arguments.length; i++) {
-                args[i] = arguments[i];
-            }
-            return React.createElement.apply(React, args);
-        }
+        //     let args = [type, props];
+        //     for (let i = 2; i < arguments.length; i++) {
+        //         args[i] = arguments[i];
+        //     }
+        //     return React.createElement.apply(React, args);
+        // }
 
-        private static createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-            if (props != null && props.id != null)
-                props.key = props.id;
+        // private static createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
+        //     if (props != null && props.id != null)
+        //         props.key = props.id;
 
-            return React.createElement(type, props, ...children);
-        }
+        //     return React.createElement(type, props, ...children);
+        // }
 
         private static render() {
             let self = this as any as Control<any, any>;
@@ -198,10 +232,10 @@ namespace pdesigner {
                                 self._pageView = context1.pageView;
                                 if (typeof self.originalRender != 'function')
                                     return null;
+                                let h = (type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) =>
+                                    ControlFactory.createElement(self, type, props, ...children);
 
-                                return context.designer != null ?
-                                    (self.originalRender as Function)(ControlFactory.createElement.bind(this)) :
-                                    (self.originalRender as Function)(ControlFactory.createElement.bind(this))
+                                return (self.originalRender as Function)(h)
                             }}
                         </PageViewContext.Consumer>
 

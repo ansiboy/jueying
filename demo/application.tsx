@@ -1,5 +1,3 @@
-/// <reference path="../../out/pdesigner.d.ts"/>
-
 import {
     ComponentToolbar, PageDesigner, ElementData, guid,
     Control, DesignerContext, EditorPanel, Editor, PageView,
@@ -107,8 +105,7 @@ class MainPage extends React.Component<any, MainPageState>{
         this.pageDesigner.redo();
     }
     save() {
-        let pageData = Control.export(this.pageView);
-        this.pageDesigner.save(((pageData) => {
+        return this.pageDesigner.save(((pageData) => {
             localStorage.setItem(pageData.props.id, JSON.stringify(pageData));
             return Promise.resolve(pageData);
         }));
@@ -132,8 +129,13 @@ class MainPage extends React.Component<any, MainPageState>{
                 </li>
 
                 <li className="pull-right">
-                    <button className="btn btn-primary"
-                        onClick={(e) => this.save()} disabled={!changed}>
+                    <button className="btn btn-primary" disabled={!changed}
+                        ref={(e: HTMLButtonElement) => {
+                            if (!e) return;
+                            ui.buttonOnClick(e, (event) => {
+                                return this.save()
+                            }, { toast: '保存成功' })
+                        }}>
                         <i className="icon-save" />
                         <span style={{ paddingLeft: 4 }}>保存</span>
                     </button>

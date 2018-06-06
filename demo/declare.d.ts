@@ -1,3 +1,5 @@
+/// <reference path="../out/pdesigner.d.ts" />
+
 interface RequireShim {
 
 	/**

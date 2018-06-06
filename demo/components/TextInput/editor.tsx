@@ -1,27 +1,28 @@
 import { EditorProps, Editor, DesignerContext } from "pdesigner";
 import { Props as ControlProps } from 'control';
+import * as React from 'react';
 
 interface State extends Partial<ControlProps> {
 
 }
 
-export default class TestEditor extends Editor<EditorProps, State> {
+export default class TextInputEditor extends Editor<EditorProps, State> {
     constructor(props) {
         super(props)
     }
     render() {
         let { dataField, name } = this.state;
-        return this.Element(
+        let c = <React.Fragment>
             <div className="form-group">
                 <label>名称</label>
                 <div className="control">
                     <input className="form-control" value={name || ''}
                         onChange={(e) => {
                             name = (e.target as HTMLInputElement).value;
-                            this.setState({ dataField });
+                            this.setState({ name });
                         }} />
                 </div>
-            </div>,
+            </div>
             <div className="form-group">
                 <label>字段</label>
                 <div className="control">
@@ -32,6 +33,7 @@ export default class TestEditor extends Editor<EditorProps, State> {
                         }} />
                 </div>
             </div>
-        );
+        </React.Fragment>
+        return this.Element(c);
     }
 }

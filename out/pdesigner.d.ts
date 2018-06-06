@@ -29,8 +29,8 @@ declare namespace pdesigner {
         static register(controlName: string, controlType: React.ComponentClass<any>): any;
         static register(controlName: string, controlPath: string): any;
         static loadAllTypes(): Promise<any[]>;
-        static createElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<React.ConsumerProps<DesignerContextValue>>;
-        static createDesignTimeElement(instance: any, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<React.ConsumerProps<DesignerContextValue>>;
+        static createElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<any>;
+        static createDesignTimeElement(instance: any, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<any>;
         private static createRuntimeElement(instance, type, props, ...children);
     }
 }
@@ -78,7 +78,7 @@ declare namespace pdesigner {
         static connectorElementClassName: string;
         protected hasCSS: boolean;
         hasEditor: boolean;
-        abstract element: HTMLElement;
+        element: HTMLElement;
         constructor(props: any);
         readonly id: string;
         readonly componentName: any;
@@ -86,10 +86,10 @@ declare namespace pdesigner {
         static htmlDOMProps(props: any): {};
         protected loadControlCSS(): Promise<void>;
         private myComponentDidMount();
+        Element(element: JSX.Element): any;
+        Element(props: any, element: JSX.Element): any;
         Element(type: string, ...children: JSX.Element[]): any;
         Element(type: string, props: ControlProps<this>, ...children: JSX.Element[]): any;
-        private static createDesignTimeElement(type, props, ...children);
-        private static createRuntimeElement(type, props, ...children);
         private static render();
         private static getControlType(componentName);
         static loadTypes(elementData: ElementData): Promise<any[]>;

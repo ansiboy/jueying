@@ -1,18 +1,17 @@
-define(["require", "exports", "../baseControl", "pdesigner"], function (require, exports, baseControl_1, pdesigner_1) {
+define(["require", "exports", "pdesigner"], function (require, exports, pdesigner_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class SubmitButton extends baseControl_1.BaseControl {
+    class SubmitButton extends pdesigner_1.Control {
         render(h) {
             let { text } = this.props;
             let props = {
-                className: "btn btn-primary btn-block"
+                className: "btn btn-primary btn-block",
+                tabIndex: pdesigner_1.Control.tabIndex++
             };
-            return h("div", { id: this.props.id, className: "form-group", tabIndex: pdesigner_1.Control.tabIndex++, ref: (e) => {
-                    this.element = e || this.element;
-                } },
-                h(pdesigner_1.DesignerContext.Consumer, null, context => context.designer ?
-                    h("div", Object.assign({}, props), text) :
-                    h("button", Object.assign({}, props), text)));
+            let child = this.designer ?
+                h("div", Object.assign({}, props), text) :
+                h("button", Object.assign({}, props), text);
+            return this.Element('div', child);
         }
     }
     SubmitButton.defaultProps = { text: '提交表单' };

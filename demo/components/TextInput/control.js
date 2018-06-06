@@ -1,4 +1,4 @@
-define(["require", "exports", "pdesigner"], function (require, exports, pdesigner_1) {
+define(["require", "exports", "react", "pdesigner"], function (require, exports, React, pdesigner_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class ValueInput extends pdesigner_1.Control {
@@ -8,8 +8,11 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
         }
         render(h) {
             let { dataField } = this.props;
-            return this.Element("div", h("label", null, dataField), h("div", { className: "control" },
-                h("input", { className: "form-control" })));
+            let c = h(React.Fragment, null,
+                h("label", null, dataField),
+                h("div", { className: "control" },
+                    h("input", { className: "form-control" })));
+            return this.Element('div', {}, c);
         }
     }
     ValueInput.defaultProps = ({ dataField: '未命名', className: 'test-control form-group' });

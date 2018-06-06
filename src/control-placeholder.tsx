@@ -101,9 +101,9 @@ namespace pdesigner {
 
             let props = Object.assign(Control.htmlDOMProps(this.props), {
                 className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
-                style: this.props.style, ref: (e) => this.element = e || this.element
+                style: this.props.style
             })
-            return h(htmlTag, props, controls.length == 0 ? emptyElement : controls);
+            return this.Element(htmlTag, props, ...(controls.length == 0 ? [emptyElement] : controls));
             // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
             //     style={this.props.style}
             //     ref={(e: HTMLElement) => this.element = e || this.element}>

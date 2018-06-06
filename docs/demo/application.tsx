@@ -1,4 +1,4 @@
-/// <reference path="../../out/pdesigner.d.ts"/>
+/// <reference path="../out/pdesigner.d.ts"/>
 
 import {
     ComponentToolbar, PageDesigner, ElementData, guid,
@@ -107,7 +107,6 @@ class MainPage extends React.Component<any, MainPageState>{
         this.pageDesigner.redo();
     }
     save() {
-        let pageData = Control.export(this.pageView);
         this.pageDesigner.save(((pageData) => {
             localStorage.setItem(pageData.props.id, JSON.stringify(pageData));
             return Promise.resolve(pageData);

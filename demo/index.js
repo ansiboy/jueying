@@ -28,10 +28,11 @@ requirejs.config({
         'jquery-ui': 'lib/jquery-ui',
         'react': 'lib/react.development',
         'react-dom': 'lib/react-dom.development',
-        'pdesigner': location.port == `80` ? 'lib/pdesigner' : '../../out/pdesigner',
+        'ui': 'lib/ui',
+        'pdesigner': '../out/pdesigner',
     }
 });
-requirejs(['react', 'react-dom', 'jquery', 'jquery-ui'], function (react, reactDom) {
+requirejs(['react', 'react-dom', 'ui', 'jquery', 'jquery-ui'], function (react, reactDom) {
     window['React'] = react;
     window['ReactDOM'] = reactDom;
     window['h'] = react.createElement;

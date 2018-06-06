@@ -1,4 +1,3 @@
-/// <reference path="../../out/pdesigner.d.ts"/>
 define(["require", "exports", "pdesigner", "react-dom", "react", "./components/componenDefines", "less!index"], function (require, exports, pdesigner_1, ReactDOM, React, componenDefines_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -85,8 +84,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
             this.pageDesigner.redo();
         }
         save() {
-            let pageData = pdesigner_1.Control.export(this.pageView);
-            this.pageDesigner.save(((pageData) => {
+            return this.pageDesigner.save(((pageData) => {
                 localStorage.setItem(pageData.props.id, JSON.stringify(pageData));
                 return Promise.resolve(pageData);
             }));
@@ -107,7 +105,13 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                     h("li", { className: "pull-left" },
                         h("h3", { style: { margin: 0, padding: '0 0 0 10px' } }, "\u597D\u6613\u9875\u9762\u8BBE\u8BA1\u5668")),
                     h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary", onClick: (e) => this.save(), disabled: !changed },
+                        h("button", { className: "btn btn-primary", disabled: !changed, ref: (e) => {
+                                if (!e)
+                                    return;
+                                ui.buttonOnClick(e, (event) => {
+                                    return this.save();
+                                }, { toast: '保存成功' });
+                            } },
                             h("i", { className: "icon-save" }),
                             h("span", { style: { paddingLeft: 4 } }, "\u4FDD\u5B58"))),
                     h("li", { className: "pull-right" },

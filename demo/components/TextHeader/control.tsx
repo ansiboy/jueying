@@ -6,7 +6,7 @@ export interface Props extends BaseControlProps<TextHeader> {
     text?: string,
 }
 
-export default class TextHeader extends BaseControl<any, any> {
+export default class TextHeader extends BaseControl<any, {}> {
     element: HTMLElement;
     static defaultProps: Props = { size: 1 }
 
