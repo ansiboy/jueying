@@ -118,6 +118,36 @@ namespace pdesigner {
             }
         }
 
+        Element(type: string, ...children: JSX.Element[])
+        Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
+        Element(type: string, props: any, ...children: any[]) {
+
+            let type1 = typeof arguments[1];
+            if (type1 == 'object' && React.isValidElement(props)) {
+                children = children || [];
+                children.unshift(props);
+                props = {};
+            }
+
+            if (this.props.id)
+                props.id = this.props.id;
+
+            if (this.props.style)
+                props.style = this.props.style;
+
+            if (this.props.className)
+                props.className = this.props.className;
+
+            if (this.designer) {
+                props.onClick = (e) => {
+                    this.designer.selectControl(this);
+                    e.stopPropagation();
+                }
+            }
+
+            (props as any).ref = (e) => this.element = e || this.element;
+            return ControlFactory.createElement(type, props, ...children);
+        }
 
         private static createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
             if (props != null && props.id != null)

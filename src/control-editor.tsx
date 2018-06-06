@@ -12,7 +12,7 @@ namespace pdesigner {
 
         validate: () => Promise<boolean>;
 
-        abstract element: HTMLElement;
+        private _element: HTMLElement;
 
         constructor(props) {
             super(props);
@@ -32,6 +32,10 @@ namespace pdesigner {
             }
         }
 
+        get element() {
+            return this._element;
+        }
+
         setState<K extends keyof S>(
             state: (Pick<S, K> | S),
             callback?: () => void
@@ -42,6 +46,14 @@ namespace pdesigner {
                 this.designer.updateControlProps(this.props.control.id, state);
             }
             return super.setState(state, callback);
+        }
+
+        Element(...children: JSX.Element[]) {
+            return React.createElement('div', {
+                ref: (e) => {
+                    this._element = e || this._element
+                }
+            }, ...children);
         }
 
         // static register(controlTypeName, editorType: React.ComponentClass<any> | string) {

@@ -16,7 +16,7 @@ module.exports = function (grunt) {
                     // 物理路径(默认为. 即根目录) 注：使用'.'或'..'为路径的时，可能会返回403 Forbidden. 此时将该值改为相对路径 如：/grunt/reloard。
                     base: './',
                     open: {
-                        target: `http://localhost:${port}/docs/demo/`
+                        target: `http://localhost:${port}/demo/`
                     },
                     // protocol: 'https'
                 }
@@ -32,16 +32,16 @@ module.exports = function (grunt) {
                 ]
             }
         },
-        copy: {
-            client: {
-                files: [{
-                    expand: true,
-                    cwd: `out`,
-                    src: [`*.js`],
-                    dest: `docs/demo/lib`
-                }]
-            },
-        }
+        // copy: {
+        //     client: {
+        //         files: [{
+        //             expand: true,
+        //             cwd: `out`,
+        //             src: [`*.js`],
+        //             dest: `docs/demo/lib`
+        //         }]
+        //     },
+        // }
     })
 
     grunt.loadNpmTasks('grunt-contrib-connect');

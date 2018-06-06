@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "amd",
+        "sourceMap": true,
+        "rootDir": ".",
+        "jsx": "react",
+        "jsxFactory": "h"
+    }
+}
