@@ -43,7 +43,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
     };
     pdesigner_1.EditorFactory.register('PageView', 'components/PageViewEditor');
     componenDefines_1.componets.forEach(o => {
-        pdesigner_1.ElementFactory.register(o.name, o.controlPath);
+        pdesigner_1.ControlFactory.register(o.name, o.controlPath);
         pdesigner_1.EditorFactory.register(o.name, o.editorPath);
     });
     let pageViewElement;
@@ -148,7 +148,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                 }));
         }
     }
-    pdesigner_1.ElementFactory.loadAllTypes().then(o => {
+    pdesigner_1.ControlFactory.loadAllTypes().then(o => {
         ReactDOM.render(h(MainPage, null), container);
     });
 });

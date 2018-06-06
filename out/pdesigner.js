@@ -27,7 +27,7 @@ var pdesigner;
 (function (pdesigner) {
     let customControlTypes = {};
     let allInstance = {};
-    class ElementFactory {
+    class ControlFactory {
         static export(control) {
             let id = control.props.id;
             console.assert(id != null);
@@ -140,8 +140,8 @@ var pdesigner;
         static createElement(type, props, ...children) {
             return React.createElement(pdesigner.DesignerContext.Consumer, null, context => {
                 if (context.designer != null)
-                    return ElementFactory.createDesignTimeElement(this, type, props, ...children);
-                return ElementFactory.createRuntimeElement(this, type, props, ...children);
+                    return ControlFactory.createDesignTimeElement(this, type, props, ...children);
+                return ControlFactory.createRuntimeElement(this, type, props, ...children);
             });
         }
         static createDesignTimeElement(instance, type, props, ...children) {
@@ -173,7 +173,7 @@ var pdesigner;
             return React.createElement(type, props, ...children);
         }
     }
-    pdesigner.ElementFactory = ElementFactory;
+    pdesigner.ControlFactory = ControlFactory;
 })(pdesigner || (pdesigner = {}));
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
@@ -249,7 +249,7 @@ var pdesigner;
         myComponentDidMount() {
             if (this.originalComponentDidMount)
                 this.originalComponentDidMount();
-            this._designer.controlComponentDidMount.fire(this._designer, this);
+            this._designer.controlComponentDidMount.fire(this);
             if (this.hasCSS) {
                 this.loadControlCSS();
             }
@@ -293,8 +293,8 @@ var pdesigner;
                     if (typeof self.originalRender != 'function')
                         return null;
                     return context.designer != null ?
-                        self.originalRender(pdesigner.ElementFactory.createElement.bind(this)) :
-                        self.originalRender(pdesigner.ElementFactory.createElement.bind(this));
+                        self.originalRender(pdesigner.ControlFactory.createElement.bind(this)) :
+                        self.originalRender(pdesigner.ControlFactory.createElement.bind(this));
                 });
                 return result;
             });
@@ -334,7 +334,7 @@ var pdesigner;
             return Promise.all(ps);
         }
         static loadAllTypes() {
-            return pdesigner.ElementFactory.loadAllTypes();
+            return pdesigner.ControlFactory.loadAllTypes();
         }
         static getInstance(id) {
             if (!id)
@@ -342,7 +342,7 @@ var pdesigner;
             return allInstance[id];
         }
         static create(args, designer) {
-            return pdesigner.ElementFactory.create(args);
+            return pdesigner.ControlFactory.create(args);
         }
         static getComponentNameByType(type) {
             for (let key in customControlTypes) {
@@ -446,7 +446,26 @@ var pdesigner;
  ********************************************************************************/
 var pdesigner;
 (function (pdesigner) {
+    class Callback {
+        constructor() {
+            this.funcs = new Array();
+        }
+        add(func) {
+            this.funcs.push(func);
+        }
+        remove(func) {
+            this.funcs = this.funcs.filter(o => o != func);
+        }
+        fire(args) {
+            this.funcs.forEach(o => o(args));
+        }
+        static create() {
+            return new Callback();
+        }
+    }
+    pdesigner.Callback = Callback;
     class PageDesigner extends React.Component {
+        //chitu.Callbacks<PageDesigner, ElementData>();
         constructor(props) {
             super(props);
             this.undoStack = new Array();
@@ -456,9 +475,11 @@ var pdesigner;
             // private previouPageData: string;
             //======================================
             this.snapshootVersion = 0;
-            this.controlSelected = chitu.Callbacks();
-            this.controlComponentDidMount = chitu.Callbacks();
-            this.changed = chitu.Callbacks();
+            this.controlSelected = Callback.create();
+            //chitu.Callbacks<PageDesigner, Control<ControlProps<any>, any>>();
+            this.controlComponentDidMount = Callback.create();
+            //chitu.Callbacks<PageDesigner, Control<any, any>>();
+            this.changed = Callback.create();
             if (this.props.pageData == null)
                 throw new Error('Prop of pageData cannt be null.');
             this.state = { pageData: this.props.pageData };
@@ -473,7 +494,7 @@ var pdesigner;
                     if (!isUndoData) {
                         this.undoStack.push({ data: JSON.stringify(pageData), version: this.snapshootVersion++ });
                     }
-                    this.changed.fire(this, pageData);
+                    this.changed.fire(pageData);
                 }
             }
         }
@@ -618,7 +639,7 @@ var pdesigner;
         selectControl(control) {
             if (!control)
                 throw pdesigner.Errors.argumentNull('control');
-            this.controlSelected.fire(this, control);
+            this.controlSelected.fire(control);
             let selectedControlId1 = control ? control.id : null;
             this.selectedControlId1 = selectedControlId1;
             if (!control.hasEditor) {
@@ -637,7 +658,7 @@ var pdesigner;
         clearSelectControl() {
             $(`.${pdesigner.Control.selectedClassName}`).removeClass(pdesigner.Control.selectedClassName);
             this.selectedControlId1 = null;
-            this.controlSelected.fire(this, null);
+            this.controlSelected.fire(null);
         }
         removeControl(controlId) {
             let pageData = this.state.pageData;
@@ -829,14 +850,14 @@ var pdesigner;
         }
     }
     pdesigner.ControlPlaceholder = ControlPlaceholder;
-    pdesigner.ElementFactory.register(ControlPlaceholder);
+    pdesigner.ControlFactory.register(ControlPlaceholder);
 })(pdesigner || (pdesigner = {}));
 var pdesigner;
 (function (pdesigner) {
     class ComponentToolbar extends React.Component {
         componentDidMount() {
             this.draggable($(`.${pdesigner.Control.connectorElementClassName}`));
-            this.designer.controlComponentDidMount.add((sender, control) => {
+            this.designer.controlComponentDidMount.add((control) => {
                 console.assert(control.element != null);
                 this.draggable($(control.element));
             });
@@ -915,7 +936,7 @@ var pdesigner;
             this.state = { editor: null };
         }
         componentDidMount() {
-            this.designer.controlSelected.add((designer, control) => __awaiter(this, void 0, void 0, function* () {
+            this.designer.controlSelected.add((control) => __awaiter(this, void 0, void 0, function* () {
                 if (control == null) {
                     this.setState({ editor: null });
                     return;
@@ -986,6 +1007,6 @@ var pdesigner;
         }
     }
     pdesigner.PageView = PageView;
-    pdesigner.ElementFactory.register(PageView);
+    pdesigner.ControlFactory.register(PageView);
 })(pdesigner || (pdesigner = {}));
 //# sourceMappingURL=pdesigner.js.map

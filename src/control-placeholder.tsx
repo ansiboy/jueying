@@ -111,5 +111,5 @@ namespace pdesigner {
             // </div>
         }
     }
-    ElementFactory.register(ControlPlaceholder);
+    ControlFactory.register(ControlPlaceholder);
 }

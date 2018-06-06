@@ -111,7 +111,7 @@ namespace pdesigner {
             if (this.originalComponentDidMount)
                 this.originalComponentDidMount();
 
-            this._designer.controlComponentDidMount.fire(this._designer, this);
+            this._designer.controlComponentDidMount.fire(this);
 
             if (this.hasCSS) {
                 this.loadControlCSS();
@@ -170,8 +170,8 @@ namespace pdesigner {
                                     return null;
 
                                 return context.designer != null ?
-                                    (self.originalRender as Function)(ElementFactory.createElement.bind(this)) :
-                                    (self.originalRender as Function)(ElementFactory.createElement.bind(this))
+                                    (self.originalRender as Function)(ControlFactory.createElement.bind(this)) :
+                                    (self.originalRender as Function)(ControlFactory.createElement.bind(this))
                             }}
                         </PageViewContext.Consumer>
 
@@ -223,7 +223,7 @@ namespace pdesigner {
         }
 
         static loadAllTypes() {
-            return ElementFactory.loadAllTypes();
+            return ControlFactory.loadAllTypes();
         }
 
         static getInstance(id: string) {
@@ -233,7 +233,7 @@ namespace pdesigner {
         }
 
         static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any> {
-            return ElementFactory.create(args);
+            return ControlFactory.create(args);
         }
 
         private static getComponentNameByType(type: React.ComponentClass<any> | React.StatelessComponent<any>) {

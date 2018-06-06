@@ -19,7 +19,7 @@ namespace pdesigner {
             this.state = { editor: null };
         }
         componentDidMount() {
-            this.designer.controlSelected.add(async (designer, control) => {
+            this.designer.controlSelected.add(async (control) => {
                 if (control == null) {
                     this.setState({ editor: null });
                     return;

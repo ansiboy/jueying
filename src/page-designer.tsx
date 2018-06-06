@@ -26,6 +26,27 @@ namespace pdesigner {
         version: number,
     }
 
+    export class Callback<T> {
+        private funcs = new Array<(...args: Array<any>) => void>();
+
+        constructor() {
+        }
+
+        add(func: (args: T) => void) {
+            this.funcs.push(func);
+        }
+        remove(func: (args: T) => any) {
+            this.funcs = this.funcs.filter(o => o != func);
+        }
+        fire(args: T) {
+            this.funcs.forEach(o => o(args));
+        }
+
+        static create<T>() {
+            return new Callback<T>();
+        }
+    }
+
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
 
         selectedControlId1: string;
@@ -42,9 +63,12 @@ namespace pdesigner {
         //======================================
         private snapshootVersion = 0;
 
-        controlSelected = chitu.Callbacks<PageDesigner, Control<ControlProps<any>, any>>();
-        controlComponentDidMount = chitu.Callbacks<PageDesigner, Control<any, any>>();
-        changed = chitu.Callbacks<PageDesigner, ElementData>();
+        controlSelected = Callback.create<Control<ControlProps<any>, any>>();
+        //chitu.Callbacks<PageDesigner, Control<ControlProps<any>, any>>();
+        controlComponentDidMount = Callback.create<Control<any, any>>();
+        //chitu.Callbacks<PageDesigner, Control<any, any>>();
+        changed = Callback.create<ElementData>();
+        //chitu.Callbacks<PageDesigner, ElementData>();
 
         constructor(props) {
             super(props);
@@ -71,7 +95,7 @@ namespace pdesigner {
                     if (!isUndoData) {
                         this.undoStack.push({ data: JSON.stringify(pageData), version: this.snapshootVersion++ });
                     }
-                    this.changed.fire(this, pageData);
+                    this.changed.fire(pageData);
                 }
             }
         }
@@ -244,7 +268,7 @@ namespace pdesigner {
         selectControl(control: Control<any, any>): void {
             if (!control) throw Errors.argumentNull('control');
 
-            this.controlSelected.fire(this, control)
+            this.controlSelected.fire(control)
             let selectedControlId1 = control ? control.id : null;
             this.selectedControlId1 = selectedControlId1;
 
@@ -270,7 +294,7 @@ namespace pdesigner {
 
             $(`.${Control.selectedClassName}`).removeClass(Control.selectedClassName);
             this.selectedControlId1 = null;
-            this.controlSelected.fire(this, null);
+            this.controlSelected.fire(null);
         }
 
         removeControl(controlId: string) {

@@ -3,7 +3,7 @@ namespace pdesigner {
     let customControlTypes: { [key: string]: React.ComponentClass<any> | string } = {}
     let allInstance: { [key: string]: Control<any, any> } = {};
 
-    export class ElementFactory {
+    export class ControlFactory {
 
         static export(control: Control<ControlProps<any>, any>) {
             let id = (control.props as any).id;
@@ -155,9 +155,9 @@ namespace pdesigner {
         static createElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
             return React.createElement(DesignerContext.Consumer, null, context => {
                 if (context.designer != null)
-                    return ElementFactory.createDesignTimeElement(this, type, props, ...children);
+                    return ControlFactory.createDesignTimeElement(this, type, props, ...children);
 
-                return ElementFactory.createRuntimeElement(this, type, props, ...children);
+                return ControlFactory.createRuntimeElement(this, type, props, ...children);
             })
         }
 

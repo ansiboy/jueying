@@ -1,6 +1,10 @@
 /// <reference path="../../out/pdesigner.d.ts"/>
 
-import { ComponentToolbar, PageDesigner, ElementData, guid, Control, DesignerContext, EditorPanel, Editor, PageView, ControlPlaceholder, ElementFactory, EditorFactory } from "pdesigner";
+import {
+    ComponentToolbar, PageDesigner, ElementData, guid,
+    Control, DesignerContext, EditorPanel, Editor, PageView,
+    ControlPlaceholder, ControlFactory, EditorFactory
+} from "pdesigner";
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
 import { componets } from "./components/componenDefines";
@@ -50,7 +54,7 @@ let controlDescription: ElementData = {
 
 EditorFactory.register('PageView', 'components/PageViewEditor');
 componets.forEach(o => {
-    ElementFactory.register(o.name, o.controlPath);
+    ControlFactory.register(o.name, o.controlPath);
     EditorFactory.register(o.name, o.editorPath);
 })
 
@@ -188,7 +192,6 @@ class MainPage extends React.Component<any, MainPageState>{
     }
 }
 
-
-ElementFactory.loadAllTypes().then(o => {
+ControlFactory.loadAllTypes().then(o => {
     ReactDOM.render(<MainPage />, container);
 })

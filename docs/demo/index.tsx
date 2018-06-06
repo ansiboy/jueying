@@ -15,7 +15,6 @@ requirejs.config({
         },
         'pdesigner': {
             exports: 'pdesigner',
-            deps: ['chitu']
         }
     },
     paths: {

@@ -15,7 +15,7 @@ namespace pdesigner {
 
         componentDidMount() {
             this.draggable($(`.${Control.connectorElementClassName}`));
-            this.designer.controlComponentDidMount.add((sender, control) => {
+            this.designer.controlComponentDidMount.add((control) => {
                 console.assert(control.element != null);
                 this.draggable($(control.element));
             })

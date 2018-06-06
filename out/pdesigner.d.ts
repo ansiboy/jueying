@@ -16,7 +16,7 @@ declare namespace pdesigner {
     }
 }
 declare namespace pdesigner {
-    class ElementFactory {
+    class ControlFactory {
         static export(control: Control<ControlProps<any>, any>): ElementData;
         private static getControlType(componentName);
         private static exportElement(element);
@@ -118,6 +118,14 @@ declare namespace pdesigner {
     interface PageDesignerState {
         pageData: ElementData;
     }
+    class Callback<T> {
+        private funcs;
+        constructor();
+        add(func: (args: T) => void): void;
+        remove(func: (args: T) => any): void;
+        fire(args: T): void;
+        static create<T>(): Callback<T>;
+    }
     class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
         selectedControlId1: string;
         private element;
@@ -125,9 +133,9 @@ declare namespace pdesigner {
         private redoStack;
         private originalPageData;
         private snapshootVersion;
-        controlSelected: chitu.Callback1<PageDesigner, Control<ControlProps<any>, any>>;
-        controlComponentDidMount: chitu.Callback1<PageDesigner, Control<any, any>>;
-        changed: chitu.Callback1<PageDesigner, ElementData>;
+        controlSelected: Callback<Control<ControlProps<any>, any>>;
+        controlComponentDidMount: Callback<Control<any, any>>;
+        changed: Callback<ElementData>;
         constructor(props: any);
         set_state(state: PageDesignerState, isUndoData?: boolean): void;
         save(callback: (pageData: ElementData) => Promise<any>): Promise<void>;
