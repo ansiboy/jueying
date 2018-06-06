@@ -29,7 +29,7 @@ requirejs.config({
         'jquery-ui': 'lib/jquery-ui',
         'react': 'lib/react.development',
         'react-dom': 'lib/react-dom.development',
-        'pdesigner': '../out/pdesigner',
+        'pdesigner': '../../out/pdesigner',
     }
 });
 requirejs(['react', 'react-dom', 'jquery', 'jquery-ui'], function (react, reactDom) {
