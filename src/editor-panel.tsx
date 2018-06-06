@@ -29,7 +29,7 @@ namespace pdesigner {
                     return;
                 }
 
-                let editor = await Editor.create(control);
+                let editor = await EditorFactory.create(control);
                 this.setState({ editor });
             })
         }

@@ -17,7 +17,6 @@ module.exports = function (grunt) {
                     base: './',
                     open: {
                         target: `http://localhost:${port}/docs/demo/`
-
                     },
                     // protocol: 'https'
                 }
@@ -33,9 +32,20 @@ module.exports = function (grunt) {
                 ]
             }
         },
+        copy: {
+            client: {
+                files: [{
+                    expand: true,
+                    cwd: `out`,
+                    src: [`*.js`],
+                    dest: `docs/demo/lib`
+                }]
+            },
+        }
     })
 
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.registerTask('dev', ['connect', 'watch']);
 }

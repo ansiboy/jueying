@@ -13,8 +13,23 @@ declare namespace pdesigner {
         abstract element: HTMLElement;
         constructor(props: any);
         setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
-        static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
-        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
+    }
+}
+declare namespace pdesigner {
+    class ElementFactory {
+        static export(control: Control<ControlProps<any>, any>): ElementData;
+        private static getControlType(componentName);
+        private static exportElement(element);
+        private static getComponentNameByType(type);
+        private static trimProps(props);
+        static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any>;
+        static register(controlType: React.ComponentClass<any>): any;
+        static register(controlName: string, controlType: React.ComponentClass<any>): any;
+        static register(controlName: string, controlPath: string): any;
+        static loadAllTypes(): Promise<any[]>;
+        static createElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<React.ConsumerProps<DesignerContextValue>>;
+        static createDesignTimeElement(instance: any, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<React.ConsumerProps<DesignerContextValue>>;
+        private static createRuntimeElement(instance, type, props, ...children);
     }
 }
 /*******************************************************************************
@@ -65,6 +80,7 @@ declare namespace pdesigner {
         constructor(props: any);
         readonly id: string;
         readonly componentName: any;
+        readonly designer: PageDesigner;
         static htmlDOMProps(props: any): {};
         protected loadControlCSS(): Promise<void>;
         private myComponentDidMount();
@@ -76,9 +92,6 @@ declare namespace pdesigner {
         static loadAllTypes(): Promise<any[]>;
         static getInstance(id: string): Control<any, any>;
         static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any>;
-        static register(controlType: React.ComponentClass<any>): any;
-        static register(controlName: string, controlType: React.ComponentClass<any>): any;
-        static register(controlName: string, controlPath: string): any;
         private static getComponentNameByType(type);
         static export(control: Control<ControlProps<any>, any>): ElementData;
         private static exportElement(element);
@@ -143,9 +156,10 @@ declare namespace pdesigner {
         componentDidMount(): void;
         render(): JSX.Element;
     }
-    const DesignerContext: React.Context<{
-        designer: any;
-    }>;
+    type DesignerContextValue = {
+        designer: PageDesigner;
+    };
+    const DesignerContext: React.Context<DesignerContextValue>;
 }
 declare namespace pdesigner {
     interface ControlPlaceholderState {
@@ -157,14 +171,13 @@ declare namespace pdesigner {
         htmlTag?: string;
     }
     class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
-        private designer;
         private controls;
         element: HTMLElement;
         constructor(props: any);
         private sortableElement(element, designer);
         private childrenIds(element);
         componentDidMount(): void;
-        render(h?: any): JSX.Element;
+        render(h?: any): any;
     }
 }
 declare namespace pdesigner {
@@ -181,6 +194,12 @@ declare namespace pdesigner {
         componentDidMount(): void;
         draggable(selector: JQuery): void;
         render(): JSX.Element;
+    }
+}
+declare namespace pdesigner {
+    class EditorFactory {
+        static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
+        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
     }
 }
 declare namespace pdesigner {

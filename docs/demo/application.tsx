@@ -1,6 +1,6 @@
-/// <reference path="../out/pdesigner.d.ts"/>
+/// <reference path="../../out/pdesigner.d.ts"/>
 
-import { ComponentToolbar, PageDesigner, ElementData, guid, Control, DesignerContext, EditorPanel, Editor, PageView, ControlPlaceholder } from "pdesigner";
+import { ComponentToolbar, PageDesigner, ElementData, guid, Control, DesignerContext, EditorPanel, Editor, PageView, ControlPlaceholder, ElementFactory, EditorFactory } from "pdesigner";
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
 import { componets } from "./components/componenDefines";
@@ -48,10 +48,10 @@ let controlDescription: ElementData = {
 }
 
 
-Editor.register('PageView', 'components/PageViewEditor');
+EditorFactory.register('PageView', 'components/PageViewEditor');
 componets.forEach(o => {
-    Control.register(o.name, o.controlPath);
-    Editor.register(o.name, o.editorPath);
+    ElementFactory.register(o.name, o.controlPath);
+    EditorFactory.register(o.name, o.editorPath);
 })
 
 let pageViewElement: HTMLElement;
@@ -170,7 +170,7 @@ class MainPage extends React.Component<any, MainPageState>{
                 {context => {
                     designer = context.designer;
                     this.namedControl(designer.state.pageData);
-                    let element = Control.create(designer.state.pageData, designer);
+                    let element = Control.create(designer.state.pageData);
                     return <div className="main-panel"
                         onClick={(e) => {
                             designer.clearSelectControl();
@@ -189,7 +189,6 @@ class MainPage extends React.Component<any, MainPageState>{
 }
 
 
-Control.loadAllTypes().then(o => {
+ElementFactory.loadAllTypes().then(o => {
     ReactDOM.render(<MainPage />, container);
-
 })

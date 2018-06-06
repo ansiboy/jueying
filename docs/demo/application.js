@@ -1,4 +1,4 @@
-/// <reference path="../out/pdesigner.d.ts"/>
+/// <reference path="../../out/pdesigner.d.ts"/>
 define(["require", "exports", "pdesigner", "react-dom", "react", "./components/componenDefines", "less!index"], function (require, exports, pdesigner_1, ReactDOM, React, componenDefines_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -41,10 +41,10 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
             }
         ]
     };
-    pdesigner_1.Editor.register('PageView', 'components/PageViewEditor');
+    pdesigner_1.EditorFactory.register('PageView', 'components/PageViewEditor');
     componenDefines_1.componets.forEach(o => {
-        pdesigner_1.Control.register(o.name, o.controlPath);
-        pdesigner_1.Editor.register(o.name, o.editorPath);
+        pdesigner_1.ElementFactory.register(o.name, o.controlPath);
+        pdesigner_1.EditorFactory.register(o.name, o.editorPath);
     });
     let pageViewElement;
     let designer;
@@ -133,7 +133,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                 h(pdesigner_1.DesignerContext.Consumer, null, context => {
                     designer = context.designer;
                     this.namedControl(designer.state.pageData);
-                    let element = pdesigner_1.Control.create(designer.state.pageData, designer);
+                    let element = pdesigner_1.Control.create(designer.state.pageData);
                     return h("div", { className: "main-panel", onClick: (e) => {
                             designer.clearSelectControl();
                         } },
@@ -148,7 +148,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                 }));
         }
     }
-    pdesigner_1.Control.loadAllTypes().then(o => {
+    pdesigner_1.ElementFactory.loadAllTypes().then(o => {
         ReactDOM.render(h(MainPage, null), container);
     });
 });

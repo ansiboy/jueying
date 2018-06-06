@@ -1,7 +1,5 @@
 namespace pdesigner {
 
-    let customEditorTypes: { [key: string]: React.ComponentClass<any> | string } = {}
-
     export interface EditorProps extends React.Props<Editor<any, any>> {
         control: Control<any, any>,
     }
@@ -46,40 +44,43 @@ namespace pdesigner {
             return super.setState(state, callback);
         }
 
-        static register(controlTypeName, editorType: React.ComponentClass<any> | string) {
-            customEditorTypes[controlTypeName] = editorType;
-        }
+        // static register(controlTypeName, editorType: React.ComponentClass<any> | string) {
+        //     customEditorTypes[controlTypeName] = editorType;
+        // }
 
-        static async create(control: Control<any, any>) {
-            let componentName = control.componentName;
+        // static async create(control: Control<any, any>) {
+        //     if (control == null)
+        //         throw Errors.argumentNull('control');
 
-            let editorType = customEditorTypes[componentName];
-            if (!editorType) {
-                throw new Error(`${componentName} editor type is not exists.`)
-            }
+        //     let componentName = control.componentName;
 
-            if (typeof editorType == 'string') {
-                editorType = await new Promise<React.ComponentClass>((resolve, reject) => {
-                    let editorPath = editorType as string;
-                    requirejs([editorPath],
-                        (exports2) => {
-                            let editor: React.ComponentClass = exports2['default'];
-                            if (editor == null)
-                                throw new Error(`Default export of file '${editorPath}' is null.`)
+        //     let editorType = customEditorTypes[componentName];
+        //     if (!editorType) {
+        //         throw new Error(`${componentName} editor type is not exists.`)
+        //     }
 
-                            resolve(editor);
-                        },
-                        (err) => reject(err)
-                    )
-                })
-                customEditorTypes[componentName] = editorType;
-            }
+        //     if (typeof editorType == 'string') {
+        //         editorType = await new Promise<React.ComponentClass>((resolve, reject) => {
+        //             let editorPath = editorType as string;
+        //             requirejs([editorPath],
+        //                 (exports2) => {
+        //                     let editor: React.ComponentClass = exports2['default'];
+        //                     if (editor == null)
+        //                         throw new Error(`Default export of file '${editorPath}' is null.`)
 
-            let editorProps: EditorProps = { control, key: control.id };
-            let editorElement = React.createElement(editorType, editorProps);
+        //                     resolve(editor);
+        //                 },
+        //                 (err) => reject(err)
+        //             )
+        //         })
+        //         customEditorTypes[componentName] = editorType;
+        //     }
 
-            return editorElement;
-        }
+        //     let editorProps: EditorProps = { control, key: control.id };
+        //     let editorElement = React.createElement(editorType, editorProps);
+
+        //     return editorElement;
+        // }
 
     }
 }

@@ -389,5 +389,7 @@ namespace pdesigner {
         }
     }
 
-    export const DesignerContext = React.createContext({ designer: null });
+    export type DesignerContextValue = { designer: PageDesigner };
+    let value: DesignerContextValue = { designer: null };
+    export const DesignerContext = React.createContext(value);
 }

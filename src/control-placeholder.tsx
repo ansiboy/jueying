@@ -1,5 +1,6 @@
 /// <reference path="page-control.tsx"/>
 /// <reference path="page-designer.tsx"/>
+/// <reference path="control-factory.tsx"/>
 
 namespace pdesigner {
     export interface ControlPlaceholderState {
@@ -11,7 +12,6 @@ namespace pdesigner {
         htmlTag?: string,
     }
     export class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
-        private designer: PageDesigner;
         private controls: (Control<any, any> & { id: string, name: string })[];
 
         element: HTMLElement;
@@ -98,26 +98,18 @@ namespace pdesigner {
             htmlTag = htmlTag || 'div';
             let controls = this.props.children as JSX.Element[] || [];
             let self = this;
-            return <DesignerContext.Consumer>
-                {c =>
-                    <PageViewContext.Consumer>
-                        {context => {
-                            self.designer = c.designer;
-                            let props = Object.assign(Control.htmlDOMProps(this.props), {
-                                className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
-                                style: this.props.style, ref: (e) => this.element = e || this.element
-                            })
-                            return h(htmlTag, props, controls.length == 0 ? emptyElement : controls);
-                            // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
-                            //     style={this.props.style}
-                            //     ref={(e: HTMLElement) => this.element = e || this.element}>
-                            //     {controls.length == 0 ? emptyElement : controls}
-                            // </div>
-                        }}
-                    </PageViewContext.Consumer>
-                }
-            </DesignerContext.Consumer>
+
+            let props = Object.assign(Control.htmlDOMProps(this.props), {
+                className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+                style: this.props.style, ref: (e) => this.element = e || this.element
+            })
+            return h(htmlTag, props, controls.length == 0 ? emptyElement : controls);
+            // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
+            //     style={this.props.style}
+            //     ref={(e: HTMLElement) => this.element = e || this.element}>
+            //     {controls.length == 0 ? emptyElement : controls}
+            // </div>
         }
     }
-    Control.register(ControlPlaceholder);
+    ElementFactory.register(ControlPlaceholder);
 }

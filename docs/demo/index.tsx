@@ -30,7 +30,7 @@ requirejs.config({
         'jquery-ui': 'lib/jquery-ui',
         'react': 'lib/react.development',
         'react-dom': 'lib/react-dom.development',
-        'pdesigner': '../out/pdesigner',
+        'pdesigner': location.port == `80` ? 'lib/pdesigner' : '../../out/pdesigner',
     }
 })
 
@@ -38,10 +38,7 @@ requirejs(['react', 'react-dom', 'jquery', 'jquery-ui'], function (react, reactD
     window['React'] = react;
     window['ReactDOM'] = reactDom;
     window['h'] = react.createElement;
-    // requirejs(['components/test/control'], function (control) {
-    // window['TestControl'] = control;
+
     requirejs(['pdesigner', 'application'], function () {
     })
-    // })
-
 })

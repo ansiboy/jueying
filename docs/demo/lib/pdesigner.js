@@ -1,14 +1,5 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var pdesigner;
 (function (pdesigner) {
-    let customEditorTypes = {};
     class Editor extends React.Component {
         constructor(props) {
             super(props);
@@ -29,35 +20,160 @@ var pdesigner;
             }
             return super.setState(state, callback);
         }
-        static register(controlTypeName, editorType) {
-            customEditorTypes[controlTypeName] = editorType;
-        }
-        static create(control) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let componentName = control.componentName;
-                let editorType = customEditorTypes[componentName];
-                if (!editorType) {
-                    throw new Error(`${componentName} editor type is not exists.`);
-                }
-                if (typeof editorType == 'string') {
-                    editorType = yield new Promise((resolve, reject) => {
-                        let editorPath = editorType;
-                        requirejs([editorPath], (exports2) => {
-                            let editor = exports2['default'];
-                            if (editor == null)
-                                throw new Error(`Default export of file '${editorPath}' is null.`);
-                            resolve(editor);
-                        }, (err) => reject(err));
-                    });
-                    customEditorTypes[componentName] = editorType;
-                }
-                let editorProps = { control, key: control.id };
-                let editorElement = React.createElement(editorType, editorProps);
-                return editorElement;
-            });
-        }
     }
     pdesigner.Editor = Editor;
+})(pdesigner || (pdesigner = {}));
+var pdesigner;
+(function (pdesigner) {
+    let customControlTypes = {};
+    let allInstance = {};
+    class ElementFactory {
+        static export(control) {
+            let id = control.props.id;
+            console.assert(id != null);
+            let name = control.componentName;
+            console.assert(name != null);
+            let data = this.trimProps(control.props);
+            let childElements;
+            if (control.props.children != null) {
+                childElements = Array.isArray(control.props.children) ?
+                    control.props.children :
+                    [control.props.children];
+            }
+            let result = { type: name, props: { id } };
+            if (childElements) {
+                result.children = childElements.map(o => this.exportElement(o));
+            }
+            return result;
+        }
+        static getControlType(componentName) {
+            return new Promise((resolve, reject) => {
+                let controlType = customControlTypes[componentName];
+                if (typeof controlType != 'string') {
+                    resolve(controlType);
+                    return;
+                }
+                let controlPath = controlType;
+                requirejs([controlPath], (exports2) => {
+                    let controlType = exports2['default'];
+                    if (controlType == null)
+                        throw new Error(`Default export of file '${controlPath}' is null.`);
+                    controlType['componentName'] = componentName;
+                    customControlTypes[componentName] = controlType;
+                    resolve(controlType);
+                }, (err) => reject(err));
+            });
+        }
+        static exportElement(element) {
+            let controlType = element.type;
+            console.assert(controlType != null, `Element type is null.`);
+            let id = element.props.id;
+            let name = typeof controlType == 'function' ? this.getComponentNameByType(controlType) : controlType;
+            let data = this.trimProps(element.props);
+            let childElements;
+            if (element.props.children) {
+                childElements = Array.isArray(element.props.children) ?
+                    element.props.children : [element.props.children];
+            }
+            let result = { type: name, props: { id } };
+            result.props = data;
+            if (childElements) {
+                result.children = childElements.map(o => this.exportElement(o));
+            }
+            return result;
+        }
+        static getComponentNameByType(type) {
+            for (let key in customControlTypes) {
+                if (customControlTypes[key] == type)
+                    return key;
+            }
+            return null;
+        }
+        static trimProps(props) {
+            let data = {};
+            let skipFields = ['id', 'componentName', 'key', 'ref', 'children'];
+            for (let key in props) {
+                let isSkipField = skipFields.indexOf(key) >= 0;
+                if (key[0] == '_' || isSkipField) {
+                    continue;
+                }
+                data[key] = props[key];
+            }
+            return data;
+        }
+        static create(args, designer) {
+            let c = customControlTypes[args.type];
+            let type = args.type;
+            let componentName = args.type;
+            let controlType = customControlTypes[componentName];
+            if (controlType) {
+                type = controlType;
+            }
+            let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
+            return React.createElement(pdesigner.DesignerContext.Consumer, { key: pdesigner.guid(), children: null }, (context) => {
+                if (context.designer)
+                    return this.createDesignTimeElement(this, type, args.props, children);
+                return this.createRuntimeElement(this, type, args.props, children);
+            });
+        }
+        static register(controlName, controlType) {
+            if (controlType == null && typeof controlName == 'function') {
+                controlType = controlName;
+                controlName = controlType.name;
+                controlType['componentName'] = controlName;
+            }
+            if (!controlName)
+                throw pdesigner.Errors.argumentNull('controlName');
+            if (!controlType)
+                throw pdesigner.Errors.argumentNull('controlType');
+            customControlTypes[controlName] = controlType;
+        }
+        static loadAllTypes() {
+            let ps = new Array();
+            for (let key in customControlTypes) {
+                if (typeof customControlTypes[key] == 'string') {
+                    ps.push(this.getControlType(key));
+                }
+            }
+            return Promise.all(ps);
+        }
+        static createElement(type, props, ...children) {
+            return React.createElement(pdesigner.DesignerContext.Consumer, null, context => {
+                if (context.designer != null)
+                    return ElementFactory.createDesignTimeElement(this, type, props, ...children);
+                return ElementFactory.createRuntimeElement(this, type, props, ...children);
+            });
+        }
+        static createDesignTimeElement(instance, type, props, ...children) {
+            return React.createElement(pdesigner.DesignerContext.Consumer, null, (context) => {
+                if (props != null && props.id != null)
+                    props.key = props.id;
+                if (instance instanceof pdesigner.Control) {
+                    let control = this;
+                    console.assert(context.designer != null);
+                    props = props || {};
+                    props.onClick = (e) => {
+                        instance.designer.selectControl(instance);
+                        e.stopPropagation();
+                    };
+                }
+                if (type == 'a' && props.href) {
+                    props.href = 'javascript:';
+                }
+                else if (type == 'input') {
+                    delete props.onClick;
+                    props.readOnly = true;
+                }
+                return React.createElement(type, props, ...children);
+            });
+        }
+        static createRuntimeElement(instance, type, props, ...children) {
+            if (props != null && props.id != null)
+                props.key = props.id;
+            return React.createElement(type, props, ...children);
+        }
+    }
+    pdesigner.ElementFactory = ElementFactory;
 })(pdesigner || (pdesigner = {}));
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
@@ -71,6 +187,14 @@ var pdesigner;
  * GITHUB:     http://github.com/ansiboy
  *
  ********************************************************************************/
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var pdesigner;
 (function (pdesigner) {
     let h = React.createElement;
@@ -97,6 +221,9 @@ var pdesigner;
             var componentName = this.constructor['componentName'];
             console.assert(componentName != null);
             return componentName;
+        }
+        get designer() {
+            return this._designer;
         }
         static htmlDOMProps(props) {
             let result = {};
@@ -132,10 +259,10 @@ var pdesigner;
                 props.key = props.id;
             if (this instanceof Control) {
                 let control = this;
-                console.assert(control._designer != null);
+                console.assert(control.designer != null);
                 props = props || {};
                 props.onClick = (e) => {
-                    control._designer.selectControl(control);
+                    control.designer.selectControl(control);
                     e.stopPropagation();
                 };
             }
@@ -166,8 +293,8 @@ var pdesigner;
                     if (typeof self.originalRender != 'function')
                         return null;
                     return context.designer != null ?
-                        self.originalRender(Control.createDesignTimeElement.bind(self)) :
-                        self.originalRender(Control.createRuntimeElement.bind(self));
+                        self.originalRender(pdesigner.ElementFactory.createElement.bind(this)) :
+                        self.originalRender(pdesigner.ElementFactory.createElement.bind(this));
                 });
                 return result;
             });
@@ -207,13 +334,7 @@ var pdesigner;
             return Promise.all(ps);
         }
         static loadAllTypes() {
-            let ps = new Array();
-            for (let key in customControlTypes) {
-                if (typeof customControlTypes[key] == 'string') {
-                    ps.push(this.getControlType(key));
-                }
-            }
-            return Promise.all(ps);
+            return pdesigner.ElementFactory.loadAllTypes();
         }
         static getInstance(id) {
             if (!id)
@@ -221,30 +342,7 @@ var pdesigner;
             return allInstance[id];
         }
         static create(args, designer) {
-            let c = customControlTypes[args.type];
-            let type = args.type;
-            let componentName = args.type;
-            let controlType = customControlTypes[componentName];
-            if (controlType) {
-                type = controlType;
-            }
-            let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
-            if (designer) {
-                return this.createDesignTimeElement(type, args.props, children);
-            }
-            return this.createRuntimeElement(type, args.props, children);
-        }
-        static register(controlName, controlType) {
-            if (controlType == null && typeof controlName == 'function') {
-                controlType = controlName;
-                controlName = controlType.name;
-                controlType['componentName'] = controlName;
-            }
-            if (!controlName)
-                throw pdesigner.Errors.argumentNull('controlName');
-            if (!controlType)
-                throw pdesigner.Errors.argumentNull('controlType');
-            customControlTypes[controlName] = controlType;
+            return pdesigner.ElementFactory.create(args);
         }
         static getComponentNameByType(type) {
             for (let key in customControlTypes) {
@@ -320,15 +418,6 @@ var pdesigner;
     pdesigner.Control = Control;
     function createDesignTimeElement(type, props, ...children) {
         props = props || {};
-        // if (typeof type == 'string')
-        //     props.onClick = () => { };
-        // else if (typeof type != 'string') {
-        //     props.onClick = (event, control: Control<any, any>) => {
-        //         if (control.context != null) {
-        //             control.context.designer.selecteControl(control, type);
-        //         }
-        //     }
-        // }
         if (type == 'a' && props.href) {
             props.href = 'javascript:';
         }
@@ -645,10 +734,12 @@ var pdesigner;
         }
     }
     pdesigner.PageDesigner = PageDesigner;
-    pdesigner.DesignerContext = React.createContext({ designer: null });
+    let value = { designer: null };
+    pdesigner.DesignerContext = React.createContext(value);
 })(pdesigner || (pdesigner = {}));
 /// <reference path="page-control.tsx"/>
 /// <reference path="page-designer.tsx"/>
+/// <reference path="control-factory.tsx"/>
 var pdesigner;
 (function (pdesigner) {
     class ControlPlaceholder extends pdesigner.Control {
@@ -725,23 +816,20 @@ var pdesigner;
             htmlTag = htmlTag || 'div';
             let controls = this.props.children || [];
             let self = this;
-            return h(pdesigner.DesignerContext.Consumer, null, c => h(pdesigner.PageViewContext.Consumer, null, context => {
-                self.designer = c.designer;
-                let props = Object.assign(pdesigner.Control.htmlDOMProps(this.props), {
-                    className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
-                    style: this.props.style, ref: (e) => this.element = e || this.element
-                });
-                return h(htmlTag, props, controls.length == 0 ? emptyElement : controls);
-                // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
-                //     style={this.props.style}
-                //     ref={(e: HTMLElement) => this.element = e || this.element}>
-                //     {controls.length == 0 ? emptyElement : controls}
-                // </div>
-            }));
+            let props = Object.assign(pdesigner.Control.htmlDOMProps(this.props), {
+                className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+                style: this.props.style, ref: (e) => this.element = e || this.element
+            });
+            return h(htmlTag, props, controls.length == 0 ? emptyElement : controls);
+            // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
+            //     style={this.props.style}
+            //     ref={(e: HTMLElement) => this.element = e || this.element}>
+            //     {controls.length == 0 ? emptyElement : controls}
+            // </div>
         }
     }
     pdesigner.ControlPlaceholder = ControlPlaceholder;
-    pdesigner.Control.register(ControlPlaceholder);
+    pdesigner.ElementFactory.register(ControlPlaceholder);
 })(pdesigner || (pdesigner = {}));
 var pdesigner;
 (function (pdesigner) {
@@ -785,6 +873,42 @@ var pdesigner;
 })(pdesigner || (pdesigner = {}));
 var pdesigner;
 (function (pdesigner) {
+    let customEditorTypes = {};
+    class EditorFactory {
+        static register(controlTypeName, editorType) {
+            customEditorTypes[controlTypeName] = editorType;
+        }
+        static create(control) {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (control == null)
+                    throw pdesigner.Errors.argumentNull('control');
+                let componentName = control.componentName;
+                let editorType = customEditorTypes[componentName];
+                if (!editorType) {
+                    throw new Error(`${componentName} editor type is not exists.`);
+                }
+                if (typeof editorType == 'string') {
+                    editorType = yield new Promise((resolve, reject) => {
+                        let editorPath = editorType;
+                        requirejs([editorPath], (exports2) => {
+                            let editor = exports2['default'];
+                            if (editor == null)
+                                throw new Error(`Default export of file '${editorPath}' is null.`);
+                            resolve(editor);
+                        }, (err) => reject(err));
+                    });
+                    customEditorTypes[componentName] = editorType;
+                }
+                let editorProps = { control, key: control.id };
+                let editorElement = React.createElement(editorType, editorProps);
+                return editorElement;
+            });
+        }
+    }
+    pdesigner.EditorFactory = EditorFactory;
+})(pdesigner || (pdesigner = {}));
+var pdesigner;
+(function (pdesigner) {
     class EditorPanel extends React.Component {
         constructor(props) {
             super(props);
@@ -800,7 +924,7 @@ var pdesigner;
                     console.log(`Control ${control.constructor.name} has none editor.`);
                     return;
                 }
-                let editor = yield pdesigner.Editor.create(control);
+                let editor = yield pdesigner.EditorFactory.create(control);
                 this.setState({ editor });
             }));
         }
@@ -862,6 +986,6 @@ var pdesigner;
         }
     }
     pdesigner.PageView = PageView;
-    pdesigner.Control.register(PageView);
+    pdesigner.ElementFactory.register(PageView);
 })(pdesigner || (pdesigner = {}));
 //# sourceMappingURL=pdesigner.js.map

@@ -82,6 +82,10 @@ namespace pdesigner {
             return componentName;
         }
 
+        get designer() {
+            return this._designer;
+        }
+
         static htmlDOMProps(props: any) {
             let result = {};
             if (!props) {
@@ -121,11 +125,11 @@ namespace pdesigner {
 
             if (this instanceof Control) {
                 let control = this;
-                console.assert(control._designer != null);
+                console.assert(control.designer != null);
 
                 props = props || {};
                 props.onClick = (e) => {
-                    control._designer.selectControl(control);
+                    control.designer.selectControl(control);
                     e.stopPropagation();
                 }
 
@@ -166,8 +170,8 @@ namespace pdesigner {
                                     return null;
 
                                 return context.designer != null ?
-                                    (self.originalRender as Function)(Control.createDesignTimeElement.bind(self)) :
-                                    (self.originalRender as Function)(Control.createRuntimeElement.bind(self))
+                                    (self.originalRender as Function)(ElementFactory.createElement.bind(this)) :
+                                    (self.originalRender as Function)(ElementFactory.createElement.bind(this))
                             }}
                         </PageViewContext.Consumer>
 
@@ -219,15 +223,7 @@ namespace pdesigner {
         }
 
         static loadAllTypes() {
-
-            let ps = new Array<Promise<any>>();
-            for (let key in customControlTypes) {
-                if (typeof customControlTypes[key] == 'string') {
-                    ps.push(this.getControlType(key));
-                }
-            }
-
-            return Promise.all(ps);
+            return ElementFactory.loadAllTypes();
         }
 
         static getInstance(id: string) {
@@ -237,42 +233,7 @@ namespace pdesigner {
         }
 
         static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any> {
-
-            let c = customControlTypes[args.type];
-
-            let type: string | React.ComponentClass = args.type;
-            let componentName = args.type;
-            let controlType = customControlTypes[componentName];
-            if (controlType) {
-                type = controlType;
-            }
-
-            let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
-
-            if (designer) {
-                return this.createDesignTimeElement(type, args.props, children);
-            }
-
-            return this.createRuntimeElement(type, args.props, children);
-        }
-
-        static register(controlType: React.ComponentClass<any>);
-        static register(controlName: string, controlType: React.ComponentClass<any>)
-        static register(controlName: string, controlPath: string)
-        static register(controlName: any, controlType?: React.ComponentClass<any> | string) {
-            if (controlType == null && typeof controlName == 'function') {
-                controlType = controlName;
-                controlName = (controlType as React.ComponentClass<any>).name;
-                controlType['componentName'] = controlName;
-            }
-
-            if (!controlName)
-                throw Errors.argumentNull('controlName');
-
-            if (!controlType)
-                throw Errors.argumentNull('controlType');
-
-            customControlTypes[controlName] = controlType;
+            return ElementFactory.create(args);
         }
 
         private static getComponentNameByType(type: React.ComponentClass<any> | React.StatelessComponent<any>) {
@@ -365,15 +326,6 @@ namespace pdesigner {
 
     function createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProp<any>, ...children) {
         props = props || {};
-        // if (typeof type == 'string')
-        //     props.onClick = () => { };
-        // else if (typeof type != 'string') {
-        //     props.onClick = (event, control: Control<any, any>) => {
-        //         if (control.context != null) {
-        //             control.context.designer.selecteControl(control, type);
-        //         }
-        //     }
-        // }
         if (type == 'a' && (props as any).href) {
             (props as any).href = 'javascript:';
         }

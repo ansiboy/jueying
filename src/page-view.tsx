@@ -58,6 +58,6 @@ namespace pdesigner {
         }
     }
 
-    Control.register(PageView);
+    ElementFactory.register(PageView);
 }
 
