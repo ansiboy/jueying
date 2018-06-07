@@ -111,7 +111,8 @@ namespace pdesigner {
             if (this.originalComponentDidMount)
                 this.originalComponentDidMount();
 
-            this._designer.controlComponentDidMount.fire(this);
+            if (this.designer)
+                this.designer.controlComponentDidMount.fire(this);
 
             if (this.hasCSS) {
                 this.loadControlCSS();
@@ -168,7 +169,7 @@ namespace pdesigner {
             }
 
             (props as any).ref = (e) => this.element = e || this.element;
-            
+
             try {
                 return ControlFactory.createElement(this, type, props, ...children);
             }

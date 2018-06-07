@@ -19,11 +19,10 @@ declare namespace pdesigner {
 }
 declare namespace pdesigner {
     class ControlFactory {
-        static export(control: Control<ControlProps<any>, any>): ElementData;
-        private static getControlType(componentName);
-        private static exportElement(element);
-        private static getComponentNameByType(type);
-        private static trimProps(props);
+        private static getControlType;
+        private static exportElement;
+        private static getComponentNameByType;
+        private static trimProps;
         static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any>;
         static register(controlType: React.ComponentClass<any>): any;
         static register(controlName: string, controlType: React.ComponentClass<any>): any;
@@ -31,7 +30,7 @@ declare namespace pdesigner {
         static loadAllTypes(): Promise<any[]>;
         static createElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<any>;
         static createDesignTimeElement(instance: any, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<any>;
-        private static createRuntimeElement(instance, type, props, ...children);
+        private static createRuntimeElement;
     }
 }
 /*******************************************************************************
@@ -84,22 +83,18 @@ declare namespace pdesigner {
         readonly designer: PageDesigner;
         static htmlDOMProps(props: any): {};
         protected loadControlCSS(): Promise<void>;
-        private myComponentDidMount();
+        private myComponentDidMount;
         Element(element: JSX.Element): any;
         Element(props: any, element: JSX.Element): any;
         Element(type: string, ...children: JSX.Element[]): any;
         Element(type: string, props: ControlProps<this>, ...children: JSX.Element[]): any;
-        private static render();
-        private static getControlType(componentName);
+        private static render;
+        private static getControlType;
         static loadTypes(elementData: ElementData): Promise<any[]>;
         static loadAllTypes(): Promise<any[]>;
         static getInstance(id: string): Control<any, any>;
         static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any>;
-        private static getComponentNameByType(type);
-        static export(control: Control<ControlProps<any>, any>): ElementData;
-        private static exportElement(element);
-        private static trimProps(props);
-        private static isEmptyObject(obj);
+        private static getComponentNameByType;
     }
 }
 /*******************************************************************************
@@ -146,9 +141,9 @@ declare namespace pdesigner {
         undo(): void;
         readonly canRedo: boolean;
         redo(): void;
-        private pageDataIsChanged(pageData);
-        private isEquals(obj1, obj2);
-        private skipField(obj, field);
+        private pageDataIsChanged;
+        private isEquals;
+        private skipField;
         updateControlProps(controlId: string, props: any): any;
         sortControlChildren(controlId: string, childIds: string[]): any;
         sortChildren(parentId: string, childIds: string[]): Promise<void>;
@@ -161,9 +156,9 @@ declare namespace pdesigner {
         clearSelectControl(): void;
         removeControl(controlId: string): void;
         moveControl(controlId: string, parentId: string, childIds: string[]): void;
-        private removeControlFrom(controlId, collection);
-        private findControlData(controlId);
-        private onKeyDown(e);
+        private removeControlFrom;
+        private findControlData;
+        private onKeyDown;
         componentDidMount(): void;
         render(): JSX.Element;
     }
@@ -185,8 +180,8 @@ declare namespace pdesigner {
         private controls;
         element: HTMLElement;
         constructor(props: any);
-        private sortableElement(element, designer);
-        private childrenIds(element);
+        private sortableElement;
+        private childrenIds;
         componentDidMount(): void;
         render(h?: any): any;
     }

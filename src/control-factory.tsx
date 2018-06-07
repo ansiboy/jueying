@@ -75,22 +75,28 @@ namespace pdesigner {
         }
 
         static create(args: ElementData, designer?: PageDesigner): React.ReactElement<any> {
-            let c = customControlTypes[args.type];
+            try {
+                let c = customControlTypes[args.type];
 
-            let type: string | React.ComponentClass = args.type;
-            let componentName = args.type;
-            let controlType = customControlTypes[componentName];
-            if (controlType) {
-                type = controlType;
-            }
-
-            let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
-
-            return React.createElement(DesignerContext.Consumer, { key: guid(), children: null },
-                (context: DesignerContextValue) => {
-                    return React.createElement(type, args.props, children);
+                let type: string | React.ComponentClass = args.type;
+                let componentName = args.type;
+                let controlType = customControlTypes[componentName];
+                if (controlType) {
+                    type = controlType;
                 }
-            );
+
+                let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
+
+                return React.createElement(DesignerContext.Consumer, { key: guid(), children: null },
+                    (context: DesignerContextValue) => {
+                        return React.createElement(type, args.props, children);
+                    }
+                );
+            }
+            catch (e) {
+                console.error(e);
+                return null;
+            }
 
         }
 

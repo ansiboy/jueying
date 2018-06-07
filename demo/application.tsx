@@ -7,7 +7,10 @@ import {
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
 import { componets } from "./components/componenDefines";
+import TemplateDialog from './controls/template-dialog';
+
 import 'less!index';
+
 
 let container = document.getElementById('container');
 
@@ -110,6 +113,9 @@ class MainPage extends React.Component<any, MainPageState>{
             return Promise.resolve(pageData);
         }));
     }
+    newFile() {
+        TemplateDialog.show();
+    }
     componentDidMount() {
         this.pageDesigner.changed.add(() => {
             this.setState({
@@ -161,7 +167,7 @@ class MainPage extends React.Component<any, MainPageState>{
                     </button>
                 </li>
                 <li className="pull-right">
-                    <button className="btn btn-primary">
+                    <button className="btn btn-primary" onClick={this.newFile}>
                         <i className="icon-file" />
                         <span style={{ paddingLeft: 4 }}>新建</span>
                     </button>

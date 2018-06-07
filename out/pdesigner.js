@@ -38,24 +38,6 @@ var pdesigner;
     let customControlTypes = {};
     let allInstance = {};
     class ControlFactory {
-        static export(control) {
-            let id = control.props.id;
-            console.assert(id != null);
-            let name = control.componentName;
-            console.assert(name != null);
-            let data = this.trimProps(control.props);
-            let childElements;
-            if (control.props.children != null) {
-                childElements = Array.isArray(control.props.children) ?
-                    control.props.children :
-                    [control.props.children];
-            }
-            let result = { type: name, props: { id } };
-            if (childElements) {
-                result.children = childElements.map(o => this.exportElement(o));
-            }
-            return result;
-        }
         static getControlType(componentName) {
             return new Promise((resolve, reject) => {
                 let controlType = customControlTypes[componentName];
@@ -112,20 +94,23 @@ var pdesigner;
             return data;
         }
         static create(args, designer) {
-            let c = customControlTypes[args.type];
-            let type = args.type;
-            let componentName = args.type;
-            let controlType = customControlTypes[componentName];
-            if (controlType) {
-                type = controlType;
+            try {
+                let c = customControlTypes[args.type];
+                let type = args.type;
+                let componentName = args.type;
+                let controlType = customControlTypes[componentName];
+                if (controlType) {
+                    type = controlType;
+                }
+                let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
+                return React.createElement(pdesigner.DesignerContext.Consumer, { key: pdesigner.guid(), children: null }, (context) => {
+                    return React.createElement(type, args.props, children);
+                });
             }
-            let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
-            return React.createElement(pdesigner.DesignerContext.Consumer, { key: pdesigner.guid(), children: null }, (context) => {
-                // if (context.designer)
-                //     return this.createDesignTimeElement(this, type, args.props, children);
-                // return this.createRuntimeElement(this, type, args.props, children);
-                return React.createElement(type, args.props, children);
-            });
+            catch (e) {
+                console.error(e);
+                return null;
+            }
         }
         static register(controlName, controlType) {
             if (controlType == null && typeof controlName == 'function') {
@@ -252,23 +237,13 @@ var pdesigner;
         myComponentDidMount() {
             if (this.originalComponentDidMount)
                 this.originalComponentDidMount();
-            this._designer.controlComponentDidMount.fire(this);
+            if (this.designer)
+                this.designer.controlComponentDidMount.fire(this);
             if (this.hasCSS) {
                 this.loadControlCSS();
             }
         }
         Element(type, props, ...children) {
-            //let type1 = typeof arguments[1];
-            // if (type1 == 'object' && React.isValidElement(props)) {
-            //     children = children || [];
-            //     children.unshift(props);
-            //     props = {};
-            // }
-            // if (typeof type == 'string' && typeof props == 'object' && children == null) {
-            //     //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
-            // }
-            // else if (typeof type == 'string' && typeof (props) == 'object') {
-            // }
             if (typeof type == 'string' && typeof (props) == 'object' && !React.isValidElement(props)) {
                 //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
             }
@@ -307,53 +282,22 @@ var pdesigner;
                 };
             }
             props.ref = (e) => this.element = e || this.element;
-            return pdesigner.ControlFactory.createElement(this, type, props, ...children);
+            try {
+                return pdesigner.ControlFactory.createElement(this, type, props, ...children);
+            }
+            catch (e) {
+                console.error(e);
+                return null;
+            }
         }
-        // private static createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-        //     if (props != null && props.id != null)
-        //         props.key = props.id;
-        //     if (this instanceof Control) {
-        //         let control = this;
-        //         console.assert(control.designer != null);
-        //         props = props || {};
-        //         // props.onClick = (e) => {
-        //         //     control.designer.selectControl(control);
-        //         //     e.stopPropagation();
-        //         // }
-        //     }
-        //     if (type == 'a' && (props as any).href) {
-        //         (props as any).href = 'javascript:';
-        //     }
-        //     else if (type == 'input') {
-        //         delete props.onClick;
-        //         (props as any).readOnly = true;
-        //     }
-        //     let args = [type, props];
-        //     for (let i = 2; i < arguments.length; i++) {
-        //         args[i] = arguments[i];
-        //     }
-        //     return React.createElement.apply(React, args);
-        // }
-        // private static createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-        //     if (props != null && props.id != null)
-        //         props.key = props.id;
-        //     return React.createElement(type, props, ...children);
-        // }
         static render() {
             let self = this;
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 self._designer = context.designer;
-                // let result =
-                //     <PageViewContext.Consumer>
-                //         {context1 => {
-                // self._pageView = context1.pageView;
                 if (typeof self.originalRender != 'function')
                     return null;
                 let h = (type, props, ...children) => pdesigner.ControlFactory.createElement(self, type, props, ...children);
                 return self.originalRender(h);
-                //         }}
-                //     </PageViewContext.Consumer>
-                // return result;
             });
         }
         static getControlType(componentName) {
@@ -407,65 +351,6 @@ var pdesigner;
                     return key;
             }
             return null;
-        }
-        static export(control) {
-            let id = control.props.id;
-            console.assert(id != null);
-            let name = control.componentName;
-            console.assert(name != null);
-            let data = Control.trimProps(control.props);
-            let childElements;
-            if (control.props.children != null) {
-                childElements = Array.isArray(control.props.children) ?
-                    control.props.children :
-                    [control.props.children];
-            }
-            let result = { type: name, props: { id } };
-            if (!this.isEmptyObject(data)) {
-                result.props = data;
-            }
-            if (childElements) {
-                result.children = childElements.map(o => Control.exportElement(o));
-            }
-            return result;
-        }
-        static exportElement(element) {
-            let controlType = element.type;
-            console.assert(controlType != null, `Element type is null.`);
-            let id = element.props.id;
-            let name = typeof controlType == 'function' ? this.getComponentNameByType(controlType) : controlType;
-            let data = Control.trimProps(element.props);
-            let childElements;
-            if (element.props.children) {
-                childElements = Array.isArray(element.props.children) ?
-                    element.props.children : [element.props.children];
-            }
-            let result = { type: name, props: { id } };
-            if (!this.isEmptyObject(data)) {
-                result.props = data;
-            }
-            if (childElements) {
-                result.children = childElements.map(o => this.exportElement(o));
-            }
-            return result;
-        }
-        static trimProps(props) {
-            let data = {};
-            let skipFields = ['id', 'componentName', 'key', 'ref', 'children'];
-            for (let key in props) {
-                let isSkipField = skipFields.indexOf(key) >= 0;
-                if (key[0] == '_' || isSkipField) {
-                    continue;
-                }
-                data[key] = props[key];
-            }
-            return data;
-        }
-        static isEmptyObject(obj) {
-            if (obj == null)
-                return true;
-            let names = Object.getOwnPropertyNames(obj);
-            return names.length == 0;
         }
     }
     Control.tabIndex = 1;
@@ -835,7 +720,7 @@ var pdesigner;
                 },
                 update: (event, ui) => {
                     let element = event.target;
-                    if (ui.item && !ui.item[0].id) {
+                    if (ui.item && !ui.item[0].id) { // 添加操作
                         console.assert(ui.item.length == 1);
                         let componentName = ui.item.attr('data-control-name');
                         console.assert(componentName);
@@ -852,7 +737,7 @@ var pdesigner;
                         //==================================================
                         this.designer.appendControl(element.id, ctrl, childIds);
                     }
-                    else if (ui.item && ui.item[0].id) {
+                    else if (ui.item && ui.item[0].id) { // 更新操作
                         console.assert(ui.item.length == 1);
                         let childIds = this.childrenIds(element);
                         if (childIds.indexOf(ui.item[0].id) >= 0) {

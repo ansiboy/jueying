@@ -1,4 +1,4 @@
-define(["require", "exports", "pdesigner", "react-dom", "react", "./components/componenDefines", "less!index"], function (require, exports, pdesigner_1, ReactDOM, React, componenDefines_1) {
+define(["require", "exports", "pdesigner", "react-dom", "react", "./components/componenDefines", "./controls/template-dialog", "less!index"], function (require, exports, pdesigner_1, ReactDOM, React, componenDefines_1, template_dialog_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let container = document.getElementById('container');
@@ -89,6 +89,9 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                 return Promise.resolve(pageData);
             }));
         }
+        newFile() {
+            template_dialog_1.default.show();
+        }
         componentDidMount() {
             this.pageDesigner.changed.add(() => {
                 this.setState({
@@ -127,7 +130,7 @@ define(["require", "exports", "pdesigner", "react-dom", "react", "./components/c
                             h("i", { className: "icon-eye-open" }),
                             h("span", { style: { paddingLeft: 4 } }, "\u9884\u89C8"))),
                     h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary" },
+                        h("button", { className: "btn btn-primary", onClick: this.newFile },
                             h("i", { className: "icon-file" }),
                             h("span", { style: { paddingLeft: 4 } }, "\u65B0\u5EFA")))),
                 h("div", { className: "clearfix" }),
