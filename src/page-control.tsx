@@ -42,7 +42,7 @@ namespace pdesigner {
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private originalRef: (e: Control<any, any>) => void;
-        private _pageView: PageView;
+        // private _pageView: PageView;
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
         private originalRender: () => React.ReactNode;
@@ -180,7 +180,7 @@ namespace pdesigner {
             }
 
             (props as any).ref = (e) => this.element = e || this.element;
-            return ControlFactory.createElement(this,type, props, ...children);
+            return ControlFactory.createElement(this, type, props, ...children);
         }
 
         // private static createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
@@ -226,20 +226,20 @@ namespace pdesigner {
             return <DesignerContext.Consumer>
                 {context => {
                     self._designer = context.designer;
-                    let result =
-                        <PageViewContext.Consumer>
-                            {context1 => {
-                                self._pageView = context1.pageView;
-                                if (typeof self.originalRender != 'function')
-                                    return null;
-                                let h = (type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) =>
-                                    ControlFactory.createElement(self, type, props, ...children);
+                    // let result =
+                    //     <PageViewContext.Consumer>
+                    //         {context1 => {
+                    // self._pageView = context1.pageView;
+                    if (typeof self.originalRender != 'function')
+                        return null;
+                    let h = (type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) =>
+                        ControlFactory.createElement(self, type, props, ...children);
 
-                                return (self.originalRender as Function)(h)
-                            }}
-                        </PageViewContext.Consumer>
+                    return (self.originalRender as Function)(h)
+                    //         }}
+                    //     </PageViewContext.Consumer>
 
-                    return result;
+                    // return result;
                 }}
             </DesignerContext.Consumer>
         }

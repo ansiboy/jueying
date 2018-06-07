@@ -111,10 +111,11 @@ namespace pdesigner {
 
             return React.createElement(DesignerContext.Consumer, { key: guid(), children: null },
                 (context: DesignerContextValue) => {
-                    if (context.designer)
-                        return this.createDesignTimeElement(this, type, args.props, children);
+                    // if (context.designer)
+                    //     return this.createDesignTimeElement(this, type, args.props, children);
 
-                    return this.createRuntimeElement(this, type, args.props, children);
+                    // return this.createRuntimeElement(this, type, args.props, children);
+                    return React.createElement(type, args.props, children);
                 }
             );
 

@@ -38,7 +38,7 @@ export let componets: Array<ComponentDefine> = [
         editorPath: `${componentsDirectory}/${Spliter}/editor`,
 
         displayName: "分割线",
-        icon: "icon-th-large",
+        icon: "icon-resize-horizontal",
         introduce: "表单提交按钮",
 
     },
