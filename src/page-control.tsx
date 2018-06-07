@@ -8,6 +8,7 @@
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
  * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
  * 
  ********************************************************************************/
 
@@ -31,13 +32,6 @@ namespace pdesigner {
     }
 
     let customControlTypes: { [key: string]: React.ComponentClass<any> | string } = {}
-
-    export interface ElementData {
-        type: string;
-        props: ControlProps<any>;
-        children?: ElementData[],
-    }
-
     let allInstance: { [key: string]: Control<any, any> } = {};
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
@@ -123,19 +117,6 @@ namespace pdesigner {
         Element(type: string, ...children: JSX.Element[])
         Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
         Element(type: any, props?: any, ...children: any[]) {
-
-            //let type1 = typeof arguments[1];
-            // if (type1 == 'object' && React.isValidElement(props)) {
-            //     children = children || [];
-            //     children.unshift(props);
-            //     props = {};
-            // }
-            // if (typeof type == 'string' && typeof props == 'object' && children == null) {
-            //     //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
-            // }
-            // else if (typeof type == 'string' && typeof (props) == 'object') {
-
-            // }
             if (typeof type == 'string' && typeof (props) == 'object' && !React.isValidElement(props)) {
                 //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
             }
@@ -182,44 +163,6 @@ namespace pdesigner {
             (props as any).ref = (e) => this.element = e || this.element;
             return ControlFactory.createElement(this,type, props, ...children);
         }
-
-        // private static createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-        //     if (props != null && props.id != null)
-        //         props.key = props.id;
-
-        //     if (this instanceof Control) {
-        //         let control = this;
-        //         console.assert(control.designer != null);
-
-        //         props = props || {};
-        //         // props.onClick = (e) => {
-        //         //     control.designer.selectControl(control);
-        //         //     e.stopPropagation();
-        //         // }
-
-        //     }
-
-        //     if (type == 'a' && (props as any).href) {
-        //         (props as any).href = 'javascript:';
-        //     }
-        //     else if (type == 'input') {
-        //         delete props.onClick;
-        //         (props as any).readOnly = true;
-        //     }
-
-        //     let args = [type, props];
-        //     for (let i = 2; i < arguments.length; i++) {
-        //         args[i] = arguments[i];
-        //     }
-        //     return React.createElement.apply(React, args);
-        // }
-
-        // private static createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-        //     if (props != null && props.id != null)
-        //         props.key = props.id;
-
-        //     return React.createElement(type, props, ...children);
-        // }
 
         private static render() {
             let self = this as any as Control<any, any>;
