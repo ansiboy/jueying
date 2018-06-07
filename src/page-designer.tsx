@@ -8,6 +8,7 @@
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
  * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
  * 
  ********************************************************************************/
 
@@ -64,11 +65,8 @@ namespace pdesigner {
         private snapshootVersion = 0;
 
         controlSelected = Callback.create<Control<ControlProps<any>, any>>();
-        //chitu.Callbacks<PageDesigner, Control<ControlProps<any>, any>>();
         controlComponentDidMount = Callback.create<Control<any, any>>();
-        //chitu.Callbacks<PageDesigner, Control<any, any>>();
         changed = Callback.create<ElementData>();
-        //chitu.Callbacks<PageDesigner, ElementData>();
 
         constructor(props) {
             super(props);
@@ -150,7 +148,6 @@ namespace pdesigner {
             return isChanged;
         }
 
-        // private static compareSkipFields = ['ref'];
         private isEquals(obj1: object, obj2: object) {
             if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
                 return false;
@@ -353,16 +350,6 @@ namespace pdesigner {
 
             return true;
         }
-
-        // private findSelectedElement(): ElementData {
-        //     let { selectedControlId } = this.state;
-        //     if (selectedControlId) {
-        //         return this.findControlData(selectedControlId)
-        //     }
-
-        //     return null;
-        //     //return this.element.querySelector(`.${Control.selectedClassName}`) as HTMLElement;// || pageViwe.element;
-        // }
 
         private findControlData(controlId: string) {
             let pageData = this.state.pageData;

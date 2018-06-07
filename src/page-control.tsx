@@ -8,6 +8,7 @@
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
  * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
  * 
  ********************************************************************************/
 
@@ -19,10 +20,6 @@ namespace pdesigner {
         componentName?: string,
         className?: string,
         style?: React.CSSProperties,
-        name?: string,
-        disabled?: boolean;
-        onClick?: React.MouseEventHandler<T>,
-        onKeyDown?: React.KeyboardEventHandler<T>,
         tabIndex?: number,
     }
 
@@ -31,13 +28,6 @@ namespace pdesigner {
     }
 
     let customControlTypes: { [key: string]: React.ComponentClass<any> | string } = {}
-
-    export interface ElementData {
-        type: string;
-        props: ControlProps<any>;
-        children?: ElementData[],
-    }
-
     let allInstance: { [key: string]: Control<any, any> } = {};
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
@@ -124,7 +114,6 @@ namespace pdesigner {
         Element(type: string, ...children: JSX.Element[])
         Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
         Element(type: any, props?: any, ...children: any[]) {
-
             if (typeof type == 'string' && typeof (props) == 'object' && !React.isValidElement(props)) {
                 //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
             }
@@ -160,6 +149,9 @@ namespace pdesigner {
 
             if (this.props.className)
                 props.className = this.props.className;
+
+            if (this.props.tabIndex)
+                props.tagIndex = this.props.tabIndex;
 
             if (this.designer && typeof type == 'string') {
                 props.onClick = (e) => {
