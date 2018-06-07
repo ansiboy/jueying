@@ -124,18 +124,6 @@ namespace pdesigner {
         Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
         Element(type: any, props?: any, ...children: any[]) {
 
-            //let type1 = typeof arguments[1];
-            // if (type1 == 'object' && React.isValidElement(props)) {
-            //     children = children || [];
-            //     children.unshift(props);
-            //     props = {};
-            // }
-            // if (typeof type == 'string' && typeof props == 'object' && children == null) {
-            //     //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
-            // }
-            // else if (typeof type == 'string' && typeof (props) == 'object') {
-
-            // }
             if (typeof type == 'string' && typeof (props) == 'object' && !React.isValidElement(props)) {
                 //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
             }
@@ -180,66 +168,28 @@ namespace pdesigner {
             }
 
             (props as any).ref = (e) => this.element = e || this.element;
-            return ControlFactory.createElement(this, type, props, ...children);
+            
+            try {
+                return ControlFactory.createElement(this, type, props, ...children);
+            }
+            catch (e) {
+                console.error(e);
+                return null;
+            }
         }
-
-        // private static createDesignTimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-        //     if (props != null && props.id != null)
-        //         props.key = props.id;
-
-        //     if (this instanceof Control) {
-        //         let control = this;
-        //         console.assert(control.designer != null);
-
-        //         props = props || {};
-        //         // props.onClick = (e) => {
-        //         //     control.designer.selectControl(control);
-        //         //     e.stopPropagation();
-        //         // }
-
-        //     }
-
-        //     if (type == 'a' && (props as any).href) {
-        //         (props as any).href = 'javascript:';
-        //     }
-        //     else if (type == 'input') {
-        //         delete props.onClick;
-        //         (props as any).readOnly = true;
-        //     }
-
-        //     let args = [type, props];
-        //     for (let i = 2; i < arguments.length; i++) {
-        //         args[i] = arguments[i];
-        //     }
-        //     return React.createElement.apply(React, args);
-        // }
-
-        // private static createRuntimeElement(type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-        //     if (props != null && props.id != null)
-        //         props.key = props.id;
-
-        //     return React.createElement(type, props, ...children);
-        // }
 
         private static render() {
             let self = this as any as Control<any, any>;
             return <DesignerContext.Consumer>
                 {context => {
                     self._designer = context.designer;
-                    // let result =
-                    //     <PageViewContext.Consumer>
-                    //         {context1 => {
-                    // self._pageView = context1.pageView;
+
                     if (typeof self.originalRender != 'function')
                         return null;
                     let h = (type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) =>
                         ControlFactory.createElement(self, type, props, ...children);
 
                     return (self.originalRender as Function)(h)
-                    //         }}
-                    //     </PageViewContext.Consumer>
-
-                    // return result;
                 }}
             </DesignerContext.Consumer>
         }
@@ -309,77 +259,77 @@ namespace pdesigner {
             return null;
         }
 
-        static export(control: Control<ControlProps<any>, any>) {
-            let id = (control.props as any).id;
-            console.assert(id != null);
+        // static export(control: Control<ControlProps<any>, any>) {
+        //     let id = (control.props as any).id;
+        //     console.assert(id != null);
 
-            let name = control.componentName;
-            console.assert(name != null);
+        //     let name = control.componentName;
+        //     console.assert(name != null);
 
-            let data = Control.trimProps(control.props);
-            let childElements: Array<React.ReactElement<any>>;
-            if (control.props.children != null) {
-                childElements = Array.isArray(control.props.children) ?
-                    control.props.children as Array<React.ReactElement<any>> :
-                    [control.props.children as React.ReactElement<any>];
-            }
+        //     let data = Control.trimProps(control.props);
+        //     let childElements: Array<React.ReactElement<any>>;
+        //     if (control.props.children != null) {
+        //         childElements = Array.isArray(control.props.children) ?
+        //             control.props.children as Array<React.ReactElement<any>> :
+        //             [control.props.children as React.ReactElement<any>];
+        //     }
 
-            let result: ElementData = { type: name, props: { id } };
-            if (!this.isEmptyObject(data)) {
-                result.props = data;
-            }
-            if (childElements) {
-                result.children = childElements.map(o => Control.exportElement(o));
-            }
+        //     let result: ElementData = { type: name, props: { id } };
+        //     if (!this.isEmptyObject(data)) {
+        //         result.props = data;
+        //     }
+        //     if (childElements) {
+        //         result.children = childElements.map(o => Control.exportElement(o));
+        //     }
 
-            return result;
-        }
+        //     return result;
+        // }
 
-        private static exportElement(element: React.ReactElement<any>): ElementData {
-            let controlType = element.type;
-            console.assert(controlType != null, `Element type is null.`);
+        // private static exportElement(element: React.ReactElement<any>): ElementData {
+        //     let controlType = element.type;
+        //     console.assert(controlType != null, `Element type is null.`);
 
-            let id = element.props.id as string;
-            let name = typeof controlType == 'function' ? this.getComponentNameByType(controlType) : controlType;
-            let data = Control.trimProps(element.props);
+        //     let id = element.props.id as string;
+        //     let name = typeof controlType == 'function' ? this.getComponentNameByType(controlType) : controlType;
+        //     let data = Control.trimProps(element.props);
 
-            let childElements: Array<React.ReactElement<any>>;
-            if (element.props.children) {
-                childElements = Array.isArray(element.props.children) ?
-                    element.props.children : [element.props.children];
-            }
+        //     let childElements: Array<React.ReactElement<any>>;
+        //     if (element.props.children) {
+        //         childElements = Array.isArray(element.props.children) ?
+        //             element.props.children : [element.props.children];
+        //     }
 
-            let result: ElementData = { type: name, props: { id } };
-            if (!this.isEmptyObject(data)) {
-                result.props = data;
-            }
+        //     let result: ElementData = { type: name, props: { id } };
+        //     if (!this.isEmptyObject(data)) {
+        //         result.props = data;
+        //     }
 
-            if (childElements) {
-                result.children = childElements.map(o => this.exportElement(o));
-            }
-            return result;
-        }
+        //     if (childElements) {
+        //         result.children = childElements.map(o => this.exportElement(o));
+        //     }
+        //     return result;
+        // }
 
-        private static trimProps(props: any) {
-            let data = {};
-            let skipFields = ['id', 'componentName', 'key', 'ref', 'children'];
-            for (let key in props) {
-                let isSkipField = skipFields.indexOf(key) >= 0;
-                if (key[0] == '_' || isSkipField) {
-                    continue;
-                }
-                data[key] = props[key];
-            }
-            return data;
-        }
+        // private static trimProps(props: any) {
+        //     let data = {};
+        //     let skipFields = ['id', 'componentName', 'key', 'ref', 'children'];
+        //     for (let key in props) {
+        //         let isSkipField = skipFields.indexOf(key) >= 0;
+        //         if (key[0] == '_' || isSkipField) {
+        //             continue;
+        //         }
+        //         data[key] = props[key];
+        //     }
+        //     return data;
+        // }
 
-        private static isEmptyObject(obj) {
-            if (obj == null)
-                return true;
+        // private static isEmptyObject(obj) {
+        //     if (obj == null)
+        //         return true;
 
-            let names = Object.getOwnPropertyNames(obj);
-            return names.length == 0;
-        }
+        //     let names = Object.getOwnPropertyNames(obj);
+        //     return names.length == 0;
+        // }
     }
 
     //==============================================================    

@@ -5,29 +5,6 @@ namespace pdesigner {
 
     export class ControlFactory {
 
-        static export(control: Control<ControlProps<any>, any>) {
-            let id = (control.props as any).id;
-            console.assert(id != null);
-
-            let name = control.componentName;
-            console.assert(name != null);
-
-            let data = this.trimProps(control.props);
-            let childElements: Array<React.ReactElement<any>>;
-            if (control.props.children != null) {
-                childElements = Array.isArray(control.props.children) ?
-                    control.props.children as Array<React.ReactElement<any>> :
-                    [control.props.children as React.ReactElement<any>];
-            }
-
-            let result: ElementData = { type: name, props: { id } };
-            if (childElements) {
-                result.children = childElements.map(o => this.exportElement(o));
-            }
-
-            return result;
-        }
-
         private static getControlType(componentName: string): Promise<React.ComponentClass<any>> {
             return new Promise<React.ComponentClass<any>>((resolve, reject) => {
                 let controlType = customControlTypes[componentName];
@@ -111,10 +88,6 @@ namespace pdesigner {
 
             return React.createElement(DesignerContext.Consumer, { key: guid(), children: null },
                 (context: DesignerContextValue) => {
-                    // if (context.designer)
-                    //     return this.createDesignTimeElement(this, type, args.props, children);
-
-                    // return this.createRuntimeElement(this, type, args.props, children);
                     return React.createElement(type, args.props, children);
                 }
             );
