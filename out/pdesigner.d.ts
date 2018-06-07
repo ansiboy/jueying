@@ -6,12 +6,12 @@ declare namespace pdesigner {
         control: Control<any, any>;
     }
     abstract class Editor<P extends EditorProps, S> extends React.Component<P, S> {
-        private designer;
         private originalRender;
         private controlType;
         validate: () => Promise<boolean>;
         private _element;
         constructor(props: any);
+        readonly designer: PageDesigner;
         readonly element: HTMLElement;
         setState<K extends keyof S>(state: (Pick<S, K> | S), callback?: () => void): void;
         Element(...children: JSX.Element[]): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLElement>, HTMLElement>;
@@ -28,8 +28,8 @@ declare namespace pdesigner {
         static register(controlName: string, controlType: React.ComponentClass<any>): any;
         static register(controlName: string, controlPath: string): any;
         static loadAllTypes(): Promise<any[]>;
-        static createElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<any>;
-        static createDesignTimeElement(instance: any, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children: any[]): React.ReactElement<any>;
+        static createElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: React.HTMLAttributes<any> & React.Attributes, ...children: any[]): React.ReactElement<any>;
+        static createDesignTimeElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: React.HTMLAttributes<any> & React.Attributes, ...children: any[]): React.ReactElement<any>;
         private static createRuntimeElement;
     }
 }
@@ -43,27 +43,21 @@ declare namespace pdesigner {
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
  * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
  *
  ********************************************************************************/
 declare namespace pdesigner {
     interface ControlProps<T> extends React.Props<T> {
         id?: string;
-        componentName?: string;
+        name?: string;
         className?: string;
         style?: React.CSSProperties;
-        name?: string;
-        disabled?: boolean;
-        onClick?: React.MouseEventHandler<T>;
-        onKeyDown?: React.KeyboardEventHandler<T>;
         tabIndex?: number;
+        componentName?: string;
+        designMode?: boolean;
     }
     interface ControlState {
         selected: boolean;
-    }
-    interface ElementData {
-        type: string;
-        props: ControlProps<any>;
-        children?: ElementData[];
     }
     abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private originalRef;
@@ -79,6 +73,7 @@ declare namespace pdesigner {
         element: HTMLElement;
         constructor(props: any);
         readonly id: string;
+        readonly isDesignMode: boolean;
         readonly componentName: any;
         readonly designer: PageDesigner;
         static htmlDOMProps(props: any): {};
@@ -107,6 +102,7 @@ declare namespace pdesigner {
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
  * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
  *
  ********************************************************************************/
 declare namespace pdesigner {
@@ -178,7 +174,9 @@ declare namespace pdesigner {
     }
     class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
         private controls;
-        element: HTMLElement;
+        static defaultProps: {
+            className: string;
+        };
         constructor(props: any);
         private sortableElement;
         private childrenIds;
@@ -231,16 +229,10 @@ declare namespace pdesigner {
     }
 }
 declare namespace pdesigner {
-    interface PageData {
-        id?: string;
+    interface Document {
         name?: string;
-        remark?: string;
-        isDefault?: boolean;
-        showMenu?: boolean;
-        className?: string;
         createDateTime?: Date;
         version?: number;
-        templateId?: string;
         /**
          * 页面的类型，默认为 page
          * snapshoot 为页面快照
@@ -249,18 +241,12 @@ declare namespace pdesigner {
          * system 为系统页面
          */
         type?: 'snapshoot' | 'productTemplate' | 'page' | 'system';
-        controls: ControlData[];
+        data: ElementData;
     }
-    interface ControlData {
-        id: string;
-        name: string;
-        data?: any;
-        selected?: boolean | 'disabled';
-        position: 'header' | 'view' | 'footer';
-        /**
-         * 是否保存到数据库，默认保存，true 保存，false 不保存
-         */
-        save?: boolean;
+    interface ElementData {
+        type: string;
+        props: ControlProps<any>;
+        children?: ElementData[];
     }
     interface ComponentDefine {
         name: string;

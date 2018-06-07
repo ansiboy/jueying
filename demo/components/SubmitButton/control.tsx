@@ -7,19 +7,21 @@ export interface Props {
 }
 export default class SubmitButton extends Control<any, {}> {
     element: HTMLElement;
-    static defaultProps = { text: '提交表单' }
+    static defaultProps = {
+        text: '提交表单',
+        tabIndex: Control.tabIndex++
+    }
     render(h?: (type, props, ...children) => JSX.Element) {
         let { text } = this.props;
         let props = {
             className: "btn btn-primary btn-block",
-            tabIndex: Control.tabIndex++
         }
 
-        let child = this.designer ?
+        let child = this.isDesignMode ?
             <div {...props}>{text}</div> :
             <button {...props}>{text}</button>;
 
-        return this.Element('div', child);
+        return this.Element(child);
 
     }
 }

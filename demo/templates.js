@@ -1,11 +1,16 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    let width = 375;
-    let height = 667;
-    let scale = 0.6;
-    let transform = `translateX(-${width * 0.2}px) translateY(-${height * 0.2}px) scale(0.6)`; // `scale(0.6)`; //
-    let style = { width, height, minWidth: 'unset', transform };
+    // export let phone_screen_width = 375;
+    // export let phone_screen_height = 667;
+    // let scale = 0.6;
+    exports.phone_screen_width = 320;
+    exports.phone_screen_height = 568;
+    exports.scale = 0.6;
+    exports.phone_height = exports.phone_screen_height * exports.scale;
+    exports.phone_width = exports.phone_screen_width * exports.scale;
+    let transform = `translateX(-${exports.phone_screen_width * 0.2}px) translateY(-${exports.phone_screen_height * 0.2}px) scale(0.6)`; // `scale(0.6)`; //
+    let style = { width: exports.phone_screen_width, height: exports.phone_screen_height, minWidth: 'unset', transform };
     let template0 = {
         type: 'PageView',
         props: {

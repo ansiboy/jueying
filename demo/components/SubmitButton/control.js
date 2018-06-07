@@ -6,15 +6,17 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
             let { text } = this.props;
             let props = {
                 className: "btn btn-primary btn-block",
-                tabIndex: pdesigner_1.Control.tabIndex++
             };
-            let child = this.designer ?
+            let child = this.isDesignMode ?
                 h("div", Object.assign({}, props), text) :
                 h("button", Object.assign({}, props), text);
-            return this.Element('div', child);
+            return this.Element(child);
         }
     }
-    SubmitButton.defaultProps = { text: '提交表单' };
+    SubmitButton.defaultProps = {
+        text: '提交表单',
+        tabIndex: pdesigner_1.Control.tabIndex++
+    };
     exports.default = SubmitButton;
 });
 //# sourceMappingURL=control.js.map

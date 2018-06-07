@@ -13,8 +13,7 @@ namespace pdesigner {
     }
     export class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
         private controls: (Control<any, any> & { id: string, name: string })[];
-
-        element: HTMLElement;
+        static defaultProps = { className: `place-holder ${pdesigner.Control.connectorElementClassName}` };
 
         constructor(props) {
             super(props)
@@ -99,11 +98,11 @@ namespace pdesigner {
             let controls = this.props.children as JSX.Element[] || [];
             let self = this;
 
-            let props = Object.assign(Control.htmlDOMProps(this.props), {
-                className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
-                style: this.props.style
-            })
-            return this.Element(htmlTag, props, ...(controls.length == 0 ? [emptyElement] : controls));
+            // let props = Object.assign(Control.htmlDOMProps(this.props), {
+            //     className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+            //     style: this.props.style
+            // })
+            return this.Element(htmlTag, ...(controls.length == 0 ? [emptyElement] : controls));
             // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
             //     style={this.props.style}
             //     ref={(e: HTMLElement) => this.element = e || this.element}>

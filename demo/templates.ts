@@ -1,10 +1,18 @@
 import { ElementData } from "pdesigner";
 
-let width = 375;
-let height = 667;
-let scale = 0.6;
-let transform = `translateX(-${width * 0.2}px) translateY(-${height * 0.2}px) scale(0.6)`;// `scale(0.6)`; //
-let style = { width, height, minWidth: 'unset', transform };
+// export let phone_screen_width = 375;
+// export let phone_screen_height = 667;
+// let scale = 0.6;
+
+export let phone_screen_width = 320;
+export let phone_screen_height = 568;
+export let scale = 0.6;
+
+export let phone_height = phone_screen_height * scale;
+export let phone_width = phone_screen_width * scale;
+
+let transform = `translateX(-${phone_screen_width * 0.2}px) translateY(-${phone_screen_height * 0.2}px) scale(0.6)`;// `scale(0.6)`; //
+let style = { width: phone_screen_width, height: phone_screen_height, minWidth: 'unset', transform };
 let template0: ElementData = {
     type: 'PageView',
     props: {

@@ -17,10 +17,12 @@ namespace pdesigner {
 
     export interface ControlProps<T> extends React.Props<T> {
         id?: string,
-        componentName?: string,
+        name?: string,
         className?: string,
         style?: React.CSSProperties,
         tabIndex?: number,
+        componentName?: string,
+        designMode?: boolean,
     }
 
     export interface ControlState {
@@ -32,7 +34,6 @@ namespace pdesigner {
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private originalRef: (e: Control<any, any>) => void;
-        // private _pageView: PageView;
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
         private originalRender: () => React.ReactNode;
@@ -64,6 +65,13 @@ namespace pdesigner {
             let id = (this.props as any).id;
             console.assert(id);
             return id;
+        }
+
+        get isDesignMode(): boolean {
+            if (this.props.designMode != null)
+                return this.props.designMode;
+
+            return this.designer != null;
         }
 
         get componentName() {
@@ -117,7 +125,8 @@ namespace pdesigner {
             if (typeof type == 'string' && typeof (props) == 'object' && !React.isValidElement(props)) {
                 //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
             }
-            else if (typeof type == 'string' && (props == null || typeof (props) == 'object' && React.isValidElement(props))) {
+            else if (typeof type == 'string' && (props == null || typeof (props) == 'object' && React.isValidElement(props) ||
+                typeof (props) == 'string')) {
                 // Element(type: string, ...children: JSX.Element[])
                 children = children || [];
                 if (props)
@@ -128,7 +137,7 @@ namespace pdesigner {
                     children = null;
             }
             else if (typeof type == 'object' && React.isValidElement(type) && props == null) {
-                children = [this.element];
+                children = [type];
                 type = 'div';
                 props = {};
             }
@@ -151,12 +160,14 @@ namespace pdesigner {
                 props.className = this.props.className;
 
             if (this.props.tabIndex)
-                props.tagIndex = this.props.tabIndex;
+                props.tabIndex = this.props.tabIndex;
 
-            if (this.designer && typeof type == 'string') {
+            if (this.isDesignMode && typeof type == 'string') {
                 props.onClick = (e) => {
-                    this.designer.selectControl(this);
-                    e.stopPropagation();
+                    if (this.designer) {
+                        this.designer.selectControl(this);
+                        e.stopPropagation();
+                    }
                 }
             }
 
@@ -251,78 +262,6 @@ namespace pdesigner {
 
             return null;
         }
-
-        // static export(control: Control<ControlProps<any>, any>) {
-        //     let id = (control.props as any).id;
-        //     console.assert(id != null);
-
-        //     let name = control.componentName;
-        //     console.assert(name != null);
-
-        //     let data = Control.trimProps(control.props);
-        //     let childElements: Array<React.ReactElement<any>>;
-        //     if (control.props.children != null) {
-        //         childElements = Array.isArray(control.props.children) ?
-        //             control.props.children as Array<React.ReactElement<any>> :
-        //             [control.props.children as React.ReactElement<any>];
-        //     }
-
-        //     let result: ElementData = { type: name, props: { id } };
-        //     if (!this.isEmptyObject(data)) {
-        //         result.props = data;
-        //     }
-        //     if (childElements) {
-        //         result.children = childElements.map(o => Control.exportElement(o));
-        //     }
-
-        //     return result;
-        // }
-
-        // private static exportElement(element: React.ReactElement<any>): ElementData {
-        //     let controlType = element.type;
-        //     console.assert(controlType != null, `Element type is null.`);
-
-        //     let id = element.props.id as string;
-        //     let name = typeof controlType == 'function' ? this.getComponentNameByType(controlType) : controlType;
-        //     let data = Control.trimProps(element.props);
-
-        //     let childElements: Array<React.ReactElement<any>>;
-        //     if (element.props.children) {
-        //         childElements = Array.isArray(element.props.children) ?
-        //             element.props.children : [element.props.children];
-        //     }
-
-        //     let result: ElementData = { type: name, props: { id } };
-        //     if (!this.isEmptyObject(data)) {
-        //         result.props = data;
-        //     }
-
-        //     if (childElements) {
-        //         result.children = childElements.map(o => this.exportElement(o));
-        //     }
-        //     return result;
-        // }
-
-        // private static trimProps(props: any) {
-        //     let data = {};
-        //     let skipFields = ['id', 'componentName', 'key', 'ref', 'children'];
-        //     for (let key in props) {
-        //         let isSkipField = skipFields.indexOf(key) >= 0;
-        //         if (key[0] == '_' || isSkipField) {
-        //             continue;
-        //         }
-        //         data[key] = props[key];
-        //     }
-        //     return data;
-        // }
-
-        // private static isEmptyObject(obj) {
-        //     if (obj == null)
-        //         return true;
-
-        //     let names = Object.getOwnPropertyNames(obj);
-        //     return names.length == 0;
-        // }
     }
 
     //==============================================================    

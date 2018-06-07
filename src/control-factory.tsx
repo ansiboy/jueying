@@ -132,32 +132,27 @@ namespace pdesigner {
             return Promise.all(ps);
         }
 
-        static createElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-            if (control != null && control.designer != null)
+        static createElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: React.HTMLAttributes<any> & React.Attributes, ...children) {
+            if (control != null && control.isDesignMode != null)
                 return ControlFactory.createDesignTimeElement(control, type, props, ...children);
 
             return ControlFactory.createRuntimeElement(control, type, props, ...children);
         }
 
-        static createDesignTimeElement(instance, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {
-            if (props != null && props.id != null)
+        static createDesignTimeElement(control: Control<any, any>, type: string | React.ComponentClass<any>, props: React.HTMLAttributes<any> & React.Attributes, ...children) {
+            props = props || {};
+
+            if (props.id != null)
                 props.key = props.id;
-
-            if (instance instanceof Control) {
-                console.assert(instance.designer != null);
-
-                props = props || {};
-            }
 
             if (type == 'a' && (props as any).href) {
                 (props as any).href = 'javascript:';
             }
-            else if (type == 'input') {
+            else if (type == 'input' || type == 'button') {
                 delete props.onClick;
                 (props as any).readOnly = true;
             }
             return React.createElement(type, props, ...children)
-            // })
         }
 
         private static createRuntimeElement(instance, type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) {

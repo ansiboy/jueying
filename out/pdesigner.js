@@ -7,11 +7,11 @@ var pdesigner;
             this.state = this.props.control.props;
             this.originalRender = this.render;
             this.render = () => {
-                return h(pdesigner.DesignerContext.Consumer, null, context => {
-                    this.designer = context.designer;
-                    return this.originalRender ? this.originalRender() : null;
-                });
+                return this.originalRender ? this.originalRender() : null;
             };
+        }
+        get designer() {
+            return this.props.control.designer;
         }
         get element() {
             return this._element;
@@ -134,26 +134,22 @@ var pdesigner;
             return Promise.all(ps);
         }
         static createElement(control, type, props, ...children) {
-            if (control != null && control.designer != null)
+            if (control != null && control.isDesignMode != null)
                 return ControlFactory.createDesignTimeElement(control, type, props, ...children);
             return ControlFactory.createRuntimeElement(control, type, props, ...children);
         }
-        static createDesignTimeElement(instance, type, props, ...children) {
-            if (props != null && props.id != null)
+        static createDesignTimeElement(control, type, props, ...children) {
+            props = props || {};
+            if (props.id != null)
                 props.key = props.id;
-            if (instance instanceof pdesigner.Control) {
-                console.assert(instance.designer != null);
-                props = props || {};
-            }
             if (type == 'a' && props.href) {
                 props.href = 'javascript:';
             }
-            else if (type == 'input') {
+            else if (type == 'input' || type == 'button') {
                 delete props.onClick;
                 props.readOnly = true;
             }
             return React.createElement(type, props, ...children);
-            // })
         }
         static createRuntimeElement(instance, type, props, ...children) {
             if (props != null && props.id != null)
@@ -173,6 +169,7 @@ var pdesigner;
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
  * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
  *
  ********************************************************************************/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -204,6 +201,11 @@ var pdesigner;
             let id = this.props.id;
             console.assert(id);
             return id;
+        }
+        get isDesignMode() {
+            if (this.props.designMode != null)
+                return this.props.designMode;
+            return this.designer != null;
         }
         get componentName() {
             var componentName = this.constructor['componentName'];
@@ -247,7 +249,8 @@ var pdesigner;
             if (typeof type == 'string' && typeof (props) == 'object' && !React.isValidElement(props)) {
                 //Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
             }
-            else if (typeof type == 'string' && (props == null || typeof (props) == 'object' && React.isValidElement(props))) {
+            else if (typeof type == 'string' && (props == null || typeof (props) == 'object' && React.isValidElement(props) ||
+                typeof (props) == 'string')) {
                 // Element(type: string, ...children: JSX.Element[])
                 children = children || [];
                 if (props)
@@ -257,7 +260,7 @@ var pdesigner;
                     children = null;
             }
             else if (typeof type == 'object' && React.isValidElement(type) && props == null) {
-                children = [this.element];
+                children = [type];
                 type = 'div';
                 props = {};
             }
@@ -275,10 +278,14 @@ var pdesigner;
                 props.style = this.props.style;
             if (this.props.className)
                 props.className = this.props.className;
-            if (this.designer && typeof type == 'string') {
+            if (this.props.tabIndex)
+                props.tabIndex = this.props.tabIndex;
+            if (this.isDesignMode && typeof type == 'string') {
                 props.onClick = (e) => {
-                    this.designer.selectControl(this);
-                    e.stopPropagation();
+                    if (this.designer) {
+                        this.designer.selectControl(this);
+                        e.stopPropagation();
+                    }
                 };
             }
             props.ref = (e) => this.element = e || this.element;
@@ -384,6 +391,7 @@ var pdesigner;
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
  * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
  *
  ********************************************************************************/
 var pdesigner;
@@ -407,7 +415,6 @@ var pdesigner;
     }
     pdesigner.Callback = Callback;
     class PageDesigner extends React.Component {
-        //chitu.Callbacks<PageDesigner, ElementData>();
         constructor(props) {
             super(props);
             this.undoStack = new Array();
@@ -418,9 +425,7 @@ var pdesigner;
             //======================================
             this.snapshootVersion = 0;
             this.controlSelected = Callback.create();
-            //chitu.Callbacks<PageDesigner, Control<ControlProps<any>, any>>();
             this.controlComponentDidMount = Callback.create();
-            //chitu.Callbacks<PageDesigner, Control<any, any>>();
             this.changed = Callback.create();
             if (this.props.pageData == null)
                 throw new Error('Prop of pageData cannt be null.');
@@ -478,7 +483,6 @@ var pdesigner;
             let isChanged = !this.isEquals(copy, pageData);
             return isChanged;
         }
-        // private static compareSkipFields = ['ref'];
         isEquals(obj1, obj2) {
             if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
                 return false;
@@ -650,14 +654,6 @@ var pdesigner;
             }
             return true;
         }
-        // private findSelectedElement(): ElementData {
-        //     let { selectedControlId } = this.state;
-        //     if (selectedControlId) {
-        //         return this.findControlData(selectedControlId)
-        //     }
-        //     return null;
-        //     //return this.element.querySelector(`.${Control.selectedClassName}`) as HTMLElement;// || pageViwe.element;
-        // }
         findControlData(controlId) {
             let pageData = this.state.pageData;
             let stack = new Array();
@@ -779,11 +775,11 @@ var pdesigner;
             htmlTag = htmlTag || 'div';
             let controls = this.props.children || [];
             let self = this;
-            let props = Object.assign(pdesigner.Control.htmlDOMProps(this.props), {
-                className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
-                style: this.props.style
-            });
-            return this.Element(htmlTag, props, ...(controls.length == 0 ? [emptyElement] : controls));
+            // let props = Object.assign(Control.htmlDOMProps(this.props), {
+            //     className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+            //     style: this.props.style
+            // })
+            return this.Element(htmlTag, ...(controls.length == 0 ? [emptyElement] : controls));
             // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
             //     style={this.props.style}
             //     ref={(e: HTMLElement) => this.element = e || this.element}>
@@ -791,6 +787,7 @@ var pdesigner;
             // </div>
         }
     }
+    ControlPlaceholder.defaultProps = { className: `place-holder ${pdesigner.Control.connectorElementClassName}` };
     pdesigner.ControlPlaceholder = ControlPlaceholder;
     pdesigner.ControlFactory.register(ControlPlaceholder);
 })(pdesigner || (pdesigner = {}));
