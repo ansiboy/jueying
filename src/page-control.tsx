@@ -20,10 +20,6 @@ namespace pdesigner {
         componentName?: string,
         className?: string,
         style?: React.CSSProperties,
-        name?: string,
-        disabled?: boolean;
-        onClick?: React.MouseEventHandler<T>,
-        onKeyDown?: React.KeyboardEventHandler<T>,
         tabIndex?: number,
     }
 
@@ -153,6 +149,9 @@ namespace pdesigner {
             if (this.props.className)
                 props.className = this.props.className;
 
+            if (this.props.tabIndex)
+                props.tagIndex = this.props.tabIndex;
+
             if (this.designer && typeof type == 'string') {
                 props.onClick = (e) => {
                     this.designer.selectControl(this);
@@ -161,7 +160,7 @@ namespace pdesigner {
             }
 
             (props as any).ref = (e) => this.element = e || this.element;
-            
+
             try {
                 return ControlFactory.createElement(this, type, props, ...children);
             }
