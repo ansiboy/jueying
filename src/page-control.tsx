@@ -36,7 +36,7 @@ namespace pdesigner {
 
     export abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private originalRef: (e: Control<any, any>) => void;
-        private _pageView: PageView;
+        // private _pageView: PageView;
         private _designer: PageDesigner;
         private originalComponentDidMount: () => void;
         private originalRender: () => React.ReactNode;
@@ -161,7 +161,14 @@ namespace pdesigner {
             }
 
             (props as any).ref = (e) => this.element = e || this.element;
-            return ControlFactory.createElement(this,type, props, ...children);
+            
+            try {
+                return ControlFactory.createElement(this, type, props, ...children);
+            }
+            catch (e) {
+                console.error(e);
+                return null;
+            }
         }
 
         private static render() {
@@ -169,20 +176,13 @@ namespace pdesigner {
             return <DesignerContext.Consumer>
                 {context => {
                     self._designer = context.designer;
-                    let result =
-                        <PageViewContext.Consumer>
-                            {context1 => {
-                                self._pageView = context1.pageView;
-                                if (typeof self.originalRender != 'function')
-                                    return null;
-                                let h = (type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) =>
-                                    ControlFactory.createElement(self, type, props, ...children);
 
-                                return (self.originalRender as Function)(h)
-                            }}
-                        </PageViewContext.Consumer>
+                    if (typeof self.originalRender != 'function')
+                        return null;
+                    let h = (type: string | React.ComponentClass<any>, props: ControlProps<any>, ...children) =>
+                        ControlFactory.createElement(self, type, props, ...children);
 
-                    return result;
+                    return (self.originalRender as Function)(h)
                 }}
             </DesignerContext.Consumer>
         }
@@ -252,77 +252,77 @@ namespace pdesigner {
             return null;
         }
 
-        static export(control: Control<ControlProps<any>, any>) {
-            let id = (control.props as any).id;
-            console.assert(id != null);
+        // static export(control: Control<ControlProps<any>, any>) {
+        //     let id = (control.props as any).id;
+        //     console.assert(id != null);
 
-            let name = control.componentName;
-            console.assert(name != null);
+        //     let name = control.componentName;
+        //     console.assert(name != null);
 
-            let data = Control.trimProps(control.props);
-            let childElements: Array<React.ReactElement<any>>;
-            if (control.props.children != null) {
-                childElements = Array.isArray(control.props.children) ?
-                    control.props.children as Array<React.ReactElement<any>> :
-                    [control.props.children as React.ReactElement<any>];
-            }
+        //     let data = Control.trimProps(control.props);
+        //     let childElements: Array<React.ReactElement<any>>;
+        //     if (control.props.children != null) {
+        //         childElements = Array.isArray(control.props.children) ?
+        //             control.props.children as Array<React.ReactElement<any>> :
+        //             [control.props.children as React.ReactElement<any>];
+        //     }
 
-            let result: ElementData = { type: name, props: { id } };
-            if (!this.isEmptyObject(data)) {
-                result.props = data;
-            }
-            if (childElements) {
-                result.children = childElements.map(o => Control.exportElement(o));
-            }
+        //     let result: ElementData = { type: name, props: { id } };
+        //     if (!this.isEmptyObject(data)) {
+        //         result.props = data;
+        //     }
+        //     if (childElements) {
+        //         result.children = childElements.map(o => Control.exportElement(o));
+        //     }
 
-            return result;
-        }
+        //     return result;
+        // }
 
-        private static exportElement(element: React.ReactElement<any>): ElementData {
-            let controlType = element.type;
-            console.assert(controlType != null, `Element type is null.`);
+        // private static exportElement(element: React.ReactElement<any>): ElementData {
+        //     let controlType = element.type;
+        //     console.assert(controlType != null, `Element type is null.`);
 
-            let id = element.props.id as string;
-            let name = typeof controlType == 'function' ? this.getComponentNameByType(controlType) : controlType;
-            let data = Control.trimProps(element.props);
+        //     let id = element.props.id as string;
+        //     let name = typeof controlType == 'function' ? this.getComponentNameByType(controlType) : controlType;
+        //     let data = Control.trimProps(element.props);
 
-            let childElements: Array<React.ReactElement<any>>;
-            if (element.props.children) {
-                childElements = Array.isArray(element.props.children) ?
-                    element.props.children : [element.props.children];
-            }
+        //     let childElements: Array<React.ReactElement<any>>;
+        //     if (element.props.children) {
+        //         childElements = Array.isArray(element.props.children) ?
+        //             element.props.children : [element.props.children];
+        //     }
 
-            let result: ElementData = { type: name, props: { id } };
-            if (!this.isEmptyObject(data)) {
-                result.props = data;
-            }
+        //     let result: ElementData = { type: name, props: { id } };
+        //     if (!this.isEmptyObject(data)) {
+        //         result.props = data;
+        //     }
 
-            if (childElements) {
-                result.children = childElements.map(o => this.exportElement(o));
-            }
-            return result;
-        }
+        //     if (childElements) {
+        //         result.children = childElements.map(o => this.exportElement(o));
+        //     }
+        //     return result;
+        // }
 
-        private static trimProps(props: any) {
-            let data = {};
-            let skipFields = ['id', 'componentName', 'key', 'ref', 'children'];
-            for (let key in props) {
-                let isSkipField = skipFields.indexOf(key) >= 0;
-                if (key[0] == '_' || isSkipField) {
-                    continue;
-                }
-                data[key] = props[key];
-            }
-            return data;
-        }
+        // private static trimProps(props: any) {
+        //     let data = {};
+        //     let skipFields = ['id', 'componentName', 'key', 'ref', 'children'];
+        //     for (let key in props) {
+        //         let isSkipField = skipFields.indexOf(key) >= 0;
+        //         if (key[0] == '_' || isSkipField) {
+        //             continue;
+        //         }
+        //         data[key] = props[key];
+        //     }
+        //     return data;
+        // }
 
-        private static isEmptyObject(obj) {
-            if (obj == null)
-                return true;
+        // private static isEmptyObject(obj) {
+        //     if (obj == null)
+        //         return true;
 
-            let names = Object.getOwnPropertyNames(obj);
-            return names.length == 0;
-        }
+        //     let names = Object.getOwnPropertyNames(obj);
+        //     return names.length == 0;
+        // }
     }
 
     //==============================================================    

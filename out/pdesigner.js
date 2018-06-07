@@ -121,9 +121,10 @@ var pdesigner;
             }
             let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
             return React.createElement(pdesigner.DesignerContext.Consumer, { key: pdesigner.guid(), children: null }, (context) => {
-                if (context.designer)
-                    return this.createDesignTimeElement(this, type, args.props, children);
-                return this.createRuntimeElement(this, type, args.props, children);
+                // if (context.designer)
+                //     return this.createDesignTimeElement(this, type, args.props, children);
+                // return this.createRuntimeElement(this, type, args.props, children);
+                return React.createElement(type, args.props, children);
             });
         }
         static register(controlName, controlType) {
@@ -342,14 +343,17 @@ var pdesigner;
             let self = this;
             return h(pdesigner.DesignerContext.Consumer, null, context => {
                 self._designer = context.designer;
-                let result = h(pdesigner.PageViewContext.Consumer, null, context1 => {
-                    self._pageView = context1.pageView;
-                    if (typeof self.originalRender != 'function')
-                        return null;
-                    let h = (type, props, ...children) => pdesigner.ControlFactory.createElement(self, type, props, ...children);
-                    return self.originalRender(h);
-                });
-                return result;
+                // let result =
+                //     <PageViewContext.Consumer>
+                //         {context1 => {
+                // self._pageView = context1.pageView;
+                if (typeof self.originalRender != 'function')
+                    return null;
+                let h = (type, props, ...children) => pdesigner.ControlFactory.createElement(self, type, props, ...children);
+                return self.originalRender(h);
+                //         }}
+                //     </PageViewContext.Consumer>
+                // return result;
             });
         }
         static getControlType(componentName) {

@@ -68,7 +68,6 @@ declare namespace pdesigner {
     }
     abstract class Control<P extends ControlProps<any>, S> extends React.Component<P, S> {
         private originalRef;
-        private _pageView;
         private _designer;
         private originalComponentDidMount;
         private originalRender;
