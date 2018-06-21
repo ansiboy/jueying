@@ -3,9 +3,10 @@ namespace pdesigner {
         id?: string,
         style?: React.CSSProperties,
         className?: string,
+        layout?: 'flowing' | 'absolute',
     }
 
-    export const PageViewContext = React.createContext({ pageView: null })
+    export const PageViewContext = React.createContext({ pageView: null as PageView })
 
 
 
@@ -28,36 +29,61 @@ namespace pdesigner {
      */
     export class PageView extends Control<Props, State>{
 
-        private _hasEditor: boolean;
-
-        element: HTMLElement;
+        static defaultProps: Props = { layout: 'flowing' }
 
         constructor(props) {
             super(props);
         }
 
-        get hasEditor() {
-            return this._hasEditor;
+        get layout() {
+            return this.props.layout;
         }
-        set hasEditor(value: boolean) {
-            this._hasEditor = value;
-        }
-
 
         render(h?) {
             let children = React.Children.toArray(this.props.children) || [];
             let pageData = { controls: [] };
 
             let pageView = this;
-            return <div {...Control.htmlDOMProps(this.props)}
-                ref={(e: HTMLElement) => this.element = e || this.element}>
+            return this.Element(<React.Fragment>
                 <PageViewContext.Provider value={{ pageView }}>
                     {this.props.children}
                 </PageViewContext.Provider>
-            </div>;
+            </React.Fragment>)
         }
     }
 
     ControlFactory.register(PageView);
+
+    export interface PageViewEditorState extends Props {
+
+    }
+    export class PageViewEditor extends Editor<EditorProps, PageViewEditorState>{
+        render() {
+            let { name, layout } = this.state;
+            return this.Element(<React.Fragment>
+                <div className="form-group">
+                    <label>名称</label>
+                    <div className="control">
+                        <input className="form-control" value={name || ''}
+                            onChange={(e) => {
+                                name = (e.target as HTMLInputElement).value;
+                                this.setState({ name });
+                            }} />
+                    </div>
+                </div>
+                <div className="form-group">
+                    <label>布局</label>
+                    <div className="control">
+                        <select className="form-control" value={layout || ''} disabled >
+                            <option value="flowing">流式定位</option>
+                            <option value="absolute">绝对定位</option>
+                        </select>
+                    </div>
+                </div>
+            </React.Fragment>)
+        }
+    }
+
+    EditorFactory.register("PageView", PageViewEditor);
 }
 

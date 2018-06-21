@@ -89,7 +89,8 @@ namespace pdesigner {
 
                 return React.createElement(DesignerContext.Consumer, { key: guid(), children: null },
                     (context: DesignerContextValue) => {
-                        return React.createElement(type, args.props, children);
+                        let props = JSON.parse(JSON.stringify(args.props));
+                        return React.createElement(type, props, children);
                     }
                 );
             }

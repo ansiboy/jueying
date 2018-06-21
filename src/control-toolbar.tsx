@@ -40,7 +40,7 @@ namespace pdesigner {
 
                 props[k] = this.props[k];
             }
-
+            //key={i} data-control-name={c.name}
             let componets = this.props.componets;
             return <DesignerContext.Consumer>
                 {context => {
@@ -49,14 +49,19 @@ namespace pdesigner {
                         <div className="panel-heading">工具栏</div>
                         <div className="panel-body">
                             <ul ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
-                                {componets.map((c, i) => <li key={i} data-control-name={c.name}>
-                                    <div className="btn-link">
-                                        <i className={c.icon} style={{ fontSize: 44, color: 'black' }} />
-                                    </div>
-                                    <div>
-                                        {c.displayName}
-                                    </div>
-                                </li>)}
+                                {componets.map((c, i) => {
+                                    let props = { key: i };
+                                    props[Control.controlTypeName] = c.name;
+
+                                    return <li {...props} >
+                                        <div className="btn-link">
+                                            <i className={c.icon} style={{ fontSize: 44, color: 'black' }} />
+                                        </div>
+                                        <div>
+                                            {c.displayName}
+                                        </div>
+                                    </li>
+                                })}
                             </ul>
                         </div>
                     </div>

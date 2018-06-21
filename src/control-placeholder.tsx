@@ -1,6 +1,7 @@
 /// <reference path="page-control.tsx"/>
 /// <reference path="page-designer.tsx"/>
 /// <reference path="control-factory.tsx"/>
+/// <reference path="editor-factory.tsx"/>
 
 namespace pdesigner {
     export interface ControlPlaceholderState {
@@ -10,16 +11,21 @@ namespace pdesigner {
         style?: React.CSSProperties,
         emptyText?: string,
         htmlTag?: string,
+        // layout?: 'flowing' | 'free'
     }
     export class ControlPlaceholder extends Control<ControlPlaceholderProps, ControlPlaceholderState> {
         private controls: (Control<any, any> & { id: string, name: string })[];
-        static defaultProps = { className: `place-holder ${pdesigner.Control.connectorElementClassName}` };
+
+        static defaultProps = {
+            className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+            layout: 'flowing'
+        };
+        pageView: PageView;
 
         constructor(props) {
             super(props)
 
             this.state = { controls: [] };
-            this.hasEditor = false;
         }
 
         private sortableElement(element: HTMLElement, designer: PageDesigner) {
@@ -75,6 +81,54 @@ namespace pdesigner {
             })
         }
 
+        private droppableElement(element: HTMLElement, designer: PageDesigner) {
+            type UI = { item: JQuery, placeholder: JQuery, helper: JQuery };
+            let controls = this.state.controls;
+            $(element).droppable({
+                activate: function (event, ui) {
+                    ui.helper.css({
+                        'position': 'absolute',
+                        'z-index': 1000,
+                    });
+                },
+                drop: (event, ui) => {
+                    let element = event.target as HTMLElement;
+                    console.assert(ui.draggable != null);
+                    if (ui.draggable.attr(Control.controlTypeName)) {    // 添加操作 //&& !ui.draggable[0].id
+                        console.assert(ui.draggable.length == 1);
+                        let componentName = ui.draggable.attr('data-control-name');
+                        console.assert(componentName);
+
+                        let baseRect = this.element.getClientRects()[0]
+                        let iconRect = ui.helper[0].getClientRects()[0];
+                        if (!iconRect)
+                            return;
+
+                        let left = iconRect.left - baseRect.left;
+                        let top = iconRect.top - baseRect.top;
+                        let ctrl: ElementData = {
+                            type: componentName,
+                            props: {
+                                id: guid(),
+                                style: {
+                                    position: 'absolute',
+                                    left,
+                                    top,
+                                }
+                            }
+                        };
+                        this.designer.appendControl(element.id, ctrl);
+                        $(`#${ctrl.props.id}`).draggable();
+                    }
+                    else {
+                        let ctrlId = ui.draggable.attr('id');
+                        let pos = ui.draggable.position();
+                        this.designer.setControlPosition(ctrlId, pos.left, pos.top)
+                        this.designer.selectControlById(ctrlId);
+                    }
+                }
+            })
+        }
         private childrenIds(element: HTMLElement) {
             let childIds = new Array<string>();
             for (let i = 0; i < element.children.length; i++) {
@@ -88,7 +142,18 @@ namespace pdesigner {
 
         componentDidMount() {
             if (this.designer) {
-                this.sortableElement(this.element, this.designer);
+                if (this.pageView.layout == 'flowing') {
+                    this.sortableElement(this.element, this.designer);
+                }
+                else {
+                    this.droppableElement(this.element, this.designer);
+                    this.designer.controlSelected.add((ctrl) => {
+                        if ($(ctrl.element).parents(`#${this.element.id}`).length) {
+                            console.assert(ctrl.id, 'control id is null or empty.');
+                            $(ctrl.element).draggable();
+                        }
+                    })
+                }
             }
         }
         render(h?: any) {
@@ -98,17 +163,41 @@ namespace pdesigner {
             let controls = this.props.children as JSX.Element[] || [];
             let self = this;
 
-            // let props = Object.assign(Control.htmlDOMProps(this.props), {
-            //     className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
-            //     style: this.props.style
-            // })
-            return this.Element(htmlTag, ...(controls.length == 0 ? [emptyElement] : controls));
-            // return <div {...Control.htmlDOMProps(this.props)} className={`place-holder ${Control.connectorElementClassName}`}
-            //     style={this.props.style}
-            //     ref={(e: HTMLElement) => this.element = e || this.element}>
-            //     {controls.length == 0 ? emptyElement : controls}
-            // </div>
+            return <PageViewContext.Consumer>
+                {c => {
+                    this.pageView = c.pageView;
+                    return this.Element(htmlTag,
+                        <React.Fragment>
+                            {controls.length == 0 ? emptyElement : controls}
+                        </React.Fragment>
+                    );
+                }}
+            </PageViewContext.Consumer>
         }
     }
     ControlFactory.register(ControlPlaceholder);
+
+    export interface ControlPlaceholderEditorState extends Partial<ControlPlaceholderProps> {
+
+    }
+    export class ControlPlaceholderEditor extends Editor<EditorProps, ControlPlaceholderEditorState> {
+        render() {
+            let { name } = this.state;
+            let props = {};
+            return this.Element(<React.Fragment>
+                <div className="form-group">
+                    <label>名称</label>
+                    <div className="control">
+                        <input className="form-control" value={name || ''}
+                            onChange={(e) => {
+                                name = (e.target as HTMLInputElement).value;
+                                this.setState({ name });
+                            }} />
+                    </div>
+                </div>
+            </React.Fragment>)
+        }
+    }
+
+    EditorFactory.register('ControlPlaceholder', ControlPlaceholderEditor);
 }

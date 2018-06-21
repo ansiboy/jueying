@@ -42,9 +42,9 @@ namespace pdesigner {
         static componentsDir = 'components';
         static selectedClassName = 'control-selected';
         static connectorElementClassName = 'control-container';
+        static controlTypeName = 'data-control-name';
 
         protected hasCSS = false;
-        public hasEditor = true;
 
         element: HTMLElement;
 
@@ -84,6 +84,10 @@ namespace pdesigner {
             return this._designer;
         }
 
+        get hasEditor() {
+            return EditorFactory.hasEditor(this.constructor.name);
+        }
+
         static htmlDOMProps(props: any) {
             let result = {};
             if (!props) {
@@ -117,7 +121,7 @@ namespace pdesigner {
             }
         }
 
-        Element(element: JSX.Element)
+        Element(child: JSX.Element)
         Element(props: any, element: JSX.Element)
         Element(type: string, ...children: JSX.Element[])
         Element(type: string, props: ControlProps<this>, ...children: JSX.Element[])
@@ -153,8 +157,9 @@ namespace pdesigner {
             if (this.props.id)
                 props.id = this.props.id;
 
-            if (this.props.style)
-                props.style = this.props.style;
+            if (this.props.style) {
+                props.style = props.style ? Object.assign(props.style, this.props.style) : this.props.style;
+            }
 
             if (this.props.className)
                 props.className = this.props.className;
@@ -171,7 +176,13 @@ namespace pdesigner {
                 }
             }
 
-            (props as any).ref = (e) => this.element = e || this.element;
+            let originalRef = props.ref;
+            props.ref = (e) => {
+                if (originalRef) {
+                    originalRef(e);
+                }
+                this.element = e || this.element
+            };
 
             try {
                 return ControlFactory.createElement(this, type, props, ...children);

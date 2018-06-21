@@ -79,7 +79,7 @@ namespace pdesigner {
 
         }
 
-        set_state(
+        private set_state(
             state: PageDesignerState,
             isUndoData?: boolean
         ): void {
@@ -241,20 +241,38 @@ namespace pdesigner {
 
             this.set_state(this.state);
         }
-        async appendControl(parentId: string, childControl: ElementData, childIds: string[]) {
+        async appendControl(parentId: string, childControl: ElementData, childIds?: string[]) {
             if (!parentId) throw Errors.argumentNull('parentId');
             if (!childControl) throw Errors.argumentNull('childControl');
-            if (!childIds) throw Errors.argumentNull('childIds');
+            // if (!childIds) throw Errors.argumentNull('childIds');
 
             let parentControl = this.findControlData(parentId);
             console.assert(parentControl != null);
             parentControl.children = parentControl.children || [];
             parentControl.children.push(childControl);
 
-            this.sortChildren(parentId, childIds);
+            if (childIds)
+                this.sortChildren(parentId, childIds);
+            else
+                this.set_state(this.state);
 
             let control = Control.getInstance(childControl.props.id);
             console.assert(control != null);
+            this.selectControl(control);
+        }
+        async setControlPosition(controlId: string, left: number, top: number) {
+            let control = this.findControlData(controlId);
+            if (!control)
+                throw new Error(`Control ${controlId} is not exits.`);
+
+            let style: React.CSSProperties = control.props.style = (control.props.style || {});
+            style.left = left;
+            style.top = top;
+            this.set_state(this.state);
+        }
+
+        selectControlById(controlId: string) {
+            let control = Control.getInstance(controlId);
             this.selectControl(control);
         }
 

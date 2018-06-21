@@ -1,7 +1,7 @@
 namespace pdesigner {
 
     let customEditorTypes: { [key: string]: React.ComponentClass<any> | string } = {}
-    
+
     export class EditorFactory {
 
         static register(controlTypeName, editorType: React.ComponentClass<any> | string) {
@@ -40,6 +40,10 @@ namespace pdesigner {
             let editorElement = React.createElement(editorType, editorProps);
 
             return editorElement;
+        }
+
+        static hasEditor(controlTypeName) {
+            return customEditorTypes[controlTypeName] != null;
         }
 
     }

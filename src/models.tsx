@@ -16,7 +16,7 @@ namespace pdesigner {
 
     export interface ElementData {
         type: string;
-        props: ControlProps<any>;
+        props: any;
         children?: ElementData[],
     }
 
