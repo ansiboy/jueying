@@ -40,7 +40,7 @@ namespace pdesigner {
         static tabIndex = 1;
 
         static componentsDir = 'components';
-        static selectedClassName = 'control-selected';
+        // static selectedClassName = 'control-selected';
         static connectorElementClassName = 'control-container';
         static controlTypeName = 'data-control-name';
 

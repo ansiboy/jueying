@@ -2,6 +2,15 @@
 /// <reference types="jquery" />
 /// <reference types="jqueryui" />
 declare namespace pdesigner {
+    function guid(): string;
+    let classNames: {
+        controlSelected: string;
+        emptyTemplates: string;
+        loadingTemplates: string;
+        templateSelected: string;
+    };
+}
+declare namespace pdesigner {
     interface EditorProps extends React.Props<Editor<any, any>> {
         control: Control<any, any>;
     }
@@ -66,7 +75,6 @@ declare namespace pdesigner {
         private originalRender;
         static tabIndex: number;
         static componentsDir: string;
-        static selectedClassName: string;
         static connectorElementClassName: string;
         static controlTypeName: string;
         protected hasCSS: boolean;
@@ -236,6 +244,7 @@ declare namespace pdesigner {
         undo(): void;
         redo(): void;
         save(): Promise<void>;
+        fetchTemplates(): Promise<ElementData[]>;
         newFile(): Promise<void>;
         componentDidMount(): void;
         render(): JSX.Element;
@@ -309,7 +318,6 @@ declare namespace pdesigner {
         controlType: React.ComponentClass<any>;
     };
     type State = {};
-    function guid(): string;
     /**
      * 移动端页面，将 PageData 渲染为移动端页面。
      */
@@ -326,4 +334,25 @@ declare namespace pdesigner {
     }
 }
 declare namespace pdesigner {
+    interface TemplateDialogProps {
+    }
+    interface TemplateDialogState {
+        templates: ElementData[];
+        pageIndex: number;
+        selectedTemplateIndex: number;
+    }
+    class TemplateDialog extends React.Component<TemplateDialogProps, TemplateDialogState> {
+        element: HTMLElement;
+        private fetchTemplates;
+        private callback;
+        currentPageIndex: number;
+        static loadingElement: JSX.Element;
+        constructor(props: any);
+        private selectTemplate;
+        loadTemplates(pageIndex: number): Promise<void>;
+        render(): JSX.Element;
+        open(): void;
+        close(): void;
+        static show(fetchTemplates: () => Promise<ElementData[]>, callback: (tmp: ElementData) => void): void;
+    }
 }

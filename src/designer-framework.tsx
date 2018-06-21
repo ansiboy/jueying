@@ -1,5 +1,104 @@
 namespace pdesigner {
 
+    let style = { width: '100%', height: '100%', minWidth: 'unset' };
+    
+    let template0: ElementData = {
+        type: 'PageView',
+        props: {
+            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+            "className": "page-view",
+            style,
+            "componentName": "PageView"
+        },
+        children: [
+            {
+                type: "ControlPlaceholder",
+                props: {
+                    "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
+                    id: guid(),
+                    htmlTag: 'section',
+                    style: { height: '100%', margin: 0 }
+                } as any,
+                children: [
+                    {
+                        type: 'TextHeader',
+                        props: {
+                            id: guid(),
+                            text: '商品订购',
+                            size: 3,
+                        },
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: guid(),
+                            dataField: '商品名称'
+                        }
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: guid(),
+                            dataField: '商品数量'
+                        }
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: guid(),
+                            dataField: '收件人'
+                        }
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: guid(),
+                            dataField: '联系电话'
+                        }
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: guid(),
+                            dataField: '收件地址'
+                        }
+                    },
+                    {
+                        type: 'SubmitButton',
+                        props: {
+                            id: guid(),
+                            text: '提交订单'
+                        }
+                    },
+                ]
+            }
+        ]
+    }
+
+    let template1: ElementData = {
+        type: 'PageView',
+        props: {
+            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+            "className": "page-view",
+            style,
+            "componentName": "PageView"
+        },
+        "children": [
+            {
+                type: "ControlPlaceholder",
+                props: {
+                    "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
+                    "key": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                    "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                    htmlTag: 'section',
+                    style: { height: '100%', margin: 0 }
+                } as any
+            }
+        ]
+    }
+
+    let templates = [template0, template1];
+
     let controlDescription: ElementData = {
         type: 'PageView',
         props: {
@@ -110,13 +209,17 @@ namespace pdesigner {
                 return Promise.resolve(pageData);
             }));
         }
+        async fetchTemplates(): Promise<ElementData[]> {
+            return templates;
+        }
         async newFile() {
             // let result = await import('./controls/template-dialog');
             // let TemplateDialog = result.default;
-            // TemplateDialog.show((tmp) => {
-            //     // this.pageDesigner.state.pageData = tmp;
-            //     this.pageDesigner.setState({ pageData: tmp });
-            // });
+            TemplateDialog.show(
+                () => this.fetchTemplates(),
+                (tmp) => {
+                    this.pageDesigner.setState({ pageData: tmp });
+                });
         }
         componentDidMount() {
             this.pageDesigner.changed.add(() => {

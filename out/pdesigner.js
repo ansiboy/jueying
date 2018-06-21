@@ -1,5 +1,43 @@
 var pdesigner;
 (function (pdesigner) {
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+    pdesigner.guid = guid;
+    pdesigner.classNames = {
+        controlSelected: `control-selected `,
+        emptyTemplates: `empty-templates`,
+        loadingTemplates: `loading-templates`,
+        templateSelected: `template-selected`
+    };
+    let element = document.createElement('style');
+    element.type = 'text/css';
+    element.innerHTML = `
+        .${pdesigner.classNames.controlSelected} {
+            border: solid 1px #337ab7!important;
+        }
+        .${pdesigner.classNames.emptyTemplates} {
+            padding:50px 0;
+            text-align: center;
+        }
+        .${pdesigner.classNames.loadingTemplates} {
+            padding:50px 0;
+            text-align: center;
+        }
+        .${pdesigner.classNames.templateSelected} .page-view {
+            border: solid 1px #337ab7!important;
+        }
+    `;
+    document.head.appendChild(element);
+})(pdesigner || (pdesigner = {}));
+var pdesigner;
+(function (pdesigner) {
     class Editor extends React.Component {
         constructor(props) {
             super(props);
@@ -372,7 +410,7 @@ var pdesigner;
     }
     Control.tabIndex = 1;
     Control.componentsDir = 'components';
-    Control.selectedClassName = 'control-selected';
+    // static selectedClassName = 'control-selected';
     Control.connectorElementClassName = 'control-container';
     Control.controlTypeName = 'data-control-name';
     pdesigner.Control = Control;
@@ -620,8 +658,8 @@ var pdesigner;
                 console.log(`Control ${control.constructor.name} has none editor.`);
                 return;
             }
-            $(`.${pdesigner.Control.selectedClassName}`).removeClass(pdesigner.Control.selectedClassName);
-            $(control.element).addClass(pdesigner.Control.selectedClassName);
+            $(`.${pdesigner.classNames.controlSelected}`).removeClass(pdesigner.classNames.controlSelected);
+            $(control.element).addClass(pdesigner.classNames.controlSelected);
             if (selectedControlId1) {
                 setTimeout(() => {
                     $(`#${selectedControlId1}`).focus();
@@ -630,7 +668,7 @@ var pdesigner;
             }
         }
         clearSelectControl() {
-            $(`.${pdesigner.Control.selectedClassName}`).removeClass(pdesigner.Control.selectedClassName);
+            $(`.${pdesigner.classNames.controlSelected}`).removeClass(pdesigner.classNames.controlSelected);
             this.selectedControlId1 = null;
             this.controlSelected.fire(null);
         }
@@ -974,6 +1012,101 @@ var pdesigner;
 })(pdesigner || (pdesigner = {}));
 var pdesigner;
 (function (pdesigner) {
+    let style = { width: '100%', height: '100%', minWidth: 'unset' };
+    let template0 = {
+        type: 'PageView',
+        props: {
+            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+            "className": "page-view",
+            style,
+            "componentName": "PageView"
+        },
+        children: [
+            {
+                type: "ControlPlaceholder",
+                props: {
+                    "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
+                    id: pdesigner.guid(),
+                    htmlTag: 'section',
+                    style: { height: '100%', margin: 0 }
+                },
+                children: [
+                    {
+                        type: 'TextHeader',
+                        props: {
+                            id: pdesigner.guid(),
+                            text: '商品订购',
+                            size: 3,
+                        },
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: pdesigner.guid(),
+                            dataField: '商品名称'
+                        }
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: pdesigner.guid(),
+                            dataField: '商品数量'
+                        }
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: pdesigner.guid(),
+                            dataField: '收件人'
+                        }
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: pdesigner.guid(),
+                            dataField: '联系电话'
+                        }
+                    },
+                    {
+                        type: 'ValueInput',
+                        props: {
+                            id: pdesigner.guid(),
+                            dataField: '收件地址'
+                        }
+                    },
+                    {
+                        type: 'SubmitButton',
+                        props: {
+                            id: pdesigner.guid(),
+                            text: '提交订单'
+                        }
+                    },
+                ]
+            }
+        ]
+    };
+    let template1 = {
+        type: 'PageView',
+        props: {
+            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+            "className": "page-view",
+            style,
+            "componentName": "PageView"
+        },
+        "children": [
+            {
+                type: "ControlPlaceholder",
+                props: {
+                    "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
+                    "key": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                    "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                    htmlTag: 'section',
+                    style: { height: '100%', margin: 0 }
+                }
+            }
+        ]
+    };
+    let templates = [template0, template1];
     let controlDescription = {
         type: 'PageView',
         props: {
@@ -1071,14 +1204,18 @@ var pdesigner;
                 return Promise.resolve(pageData);
             }));
         }
+        fetchTemplates() {
+            return __awaiter(this, void 0, void 0, function* () {
+                return templates;
+            });
+        }
         newFile() {
             return __awaiter(this, void 0, void 0, function* () {
                 // let result = await import('./controls/template-dialog');
                 // let TemplateDialog = result.default;
-                // TemplateDialog.show((tmp) => {
-                //     // this.pageDesigner.state.pageData = tmp;
-                //     this.pageDesigner.setState({ pageData: tmp });
-                // });
+                pdesigner.TemplateDialog.show(() => this.fetchTemplates(), (tmp) => {
+                    this.pageDesigner.setState({ pageData: tmp });
+                });
             });
         }
         componentDidMount() {
@@ -1196,16 +1333,6 @@ var pdesigner;
 var pdesigner;
 (function (pdesigner) {
     pdesigner.PageViewContext = React.createContext({ pageView: null });
-    function guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-    }
-    pdesigner.guid = guid;
     /**
      * 移动端页面，将 PageData 渲染为移动端页面。
      */
@@ -1249,15 +1376,104 @@ var pdesigner;
     pdesigner.PageViewEditor = PageViewEditor;
     pdesigner.EditorFactory.register("PageView", PageViewEditor);
 })(pdesigner || (pdesigner = {}));
+/// <reference path="comon.tsx"/>
 var pdesigner;
 (function (pdesigner) {
-    let element = document.createElement('style');
-    element.type = 'text/css';
-    element.innerHTML = `
-        .control-selected {
-            border: solid 1px #337ab7!important
+    // let scale = 0.8
+    class PageViewContainer extends React.Component {
+        render() {
+            let { phone_screen_width, phone_screen_height } = PageViewContainer;
+            let transform = `translateX(-${phone_screen_width * 0.2}px) translateY(-${phone_screen_height * 0.2}px) scale(0.6)`; // `scale(0.6)`; //
+            let style = { width: phone_screen_width, height: phone_screen_height, minWidth: 'unset', transform };
+            return h("div", { style: style }, this.props.children);
         }
-    `;
-    document.head.appendChild(element);
+    }
+    PageViewContainer.phone_screen_width = 320;
+    PageViewContainer.phone_screen_height = 568;
+    PageViewContainer.scale = 0.6;
+    PageViewContainer.phone_height = PageViewContainer.phone_screen_height * PageViewContainer.scale;
+    PageViewContainer.phone_width = PageViewContainer.phone_screen_width * PageViewContainer.scale;
+    class TemplateDialog extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = { templates: null, pageIndex: 0, selectedTemplateIndex: 0 };
+        }
+        selectTemplate(templateIndex) {
+            // if (this.callback) {
+            //     this.callback(template);
+            //     this.close();
+            // }
+            this.setState({ selectedTemplateIndex: templateIndex });
+        }
+        loadTemplates(pageIndex) {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (!this.fetchTemplates)
+                    return;
+                if (this.currentPageIndex == pageIndex)
+                    return;
+                let tmps = yield this.fetchTemplates();
+                this.setState({ templates: tmps });
+                this.currentPageIndex = pageIndex;
+            });
+        }
+        render() {
+            let { pageIndex, templates, selectedTemplateIndex } = this.state;
+            this.loadTemplates(pageIndex);
+            let height = PageViewContainer.phone_height;
+            let width = PageViewContainer.phone_width;
+            let style = {
+                float: 'left', height, width,
+            };
+            let margin = 15; // 间距
+            let count = 3;
+            let dialog_header_height = 50;
+            let dialog_footer_height = 70;
+            let dialog_content_width = width * count + margin * (count + 1);
+            // let dialog_content_height = height + dialog_header_height + dialog_footer_height + margin * 2;
+            return h("div", { className: "modal fade", ref: (e) => this.element = e || this.element },
+                h("div", { className: "modal-dialog" },
+                    h("div", { className: "modal-content", style: { width: dialog_content_width } },
+                        h("div", { className: "modal-header" },
+                            h("button", { type: "button", className: "close", onClick: () => ui.hideDialog(this.element) },
+                                h("span", { "aria-hidden": "true" }, "\u00D7")),
+                            h("h4", { className: "modal-title" }, "\u9009\u62E9\u6A21\u677F")),
+                        h("div", { className: "modal-body clearfix" },
+                            h("div", { className: "form-group" }, templates == null ?
+                                h("div", { className: pdesigner.classNames.loadingTemplates }, "\u6570\u636E\u6B63\u5728\u52A0\u8F7D\u4E2D") :
+                                templates.length == 0 ?
+                                    h("div", { className: pdesigner.classNames.emptyTemplates }, "\u6682\u65E0\u6A21\u7248\u6570\u636E") :
+                                    h(React.Fragment, null,
+                                        templates.map((o, i) => h("div", { key: i, style: { width, height, float: i == templates.length - 1 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null }, onClick: () => this.selectTemplate(i), className: i == selectedTemplateIndex ? pdesigner.classNames.templateSelected : null },
+                                            h(PageViewContainer, null,
+                                                pdesigner.ControlFactory.create(o),
+                                                h("h3", { style: { marginTop: -36, height: 36, textAlign: 'center' } }, "\u7A7A\u767D\u6A21\u7248")))),
+                                        h("div", { className: "clearfix" }))),
+                            h("div", { className: "form-group", style: { marginBottom: 0 } },
+                                h("label", { className: "pull-left" }, "\u6587\u4EF6\u540D"),
+                                h("div", { style: { marginLeft: 100 } },
+                                    h("input", { className: "form-control" })))),
+                        h("div", { className: "modal-footer" },
+                            h("button", { className: "btn btn-default", onClick: () => this.close() }, "\u53D6\u6D88"),
+                            h("button", { className: "btn btn-primary" }, "\u786E\u5B9A")))));
+        }
+        open() {
+            this.setState({ pageIndex: 0 });
+            ui.showDialog(this.element);
+        }
+        close() {
+            ui.hideDialog(this.element);
+        }
+        static show(fetchTemplates, callback) {
+            defaultInstance.callback = callback;
+            defaultInstance.fetchTemplates = fetchTemplates;
+            defaultInstance.open();
+        }
+    }
+    TemplateDialog.loadingElement = h("div", { className: pdesigner.classNames.emptyTemplates }, "\u6570\u636E\u6B63\u5728\u52A0\u8F7D\u4E2D...");
+    pdesigner.TemplateDialog = TemplateDialog;
+    let element = document.createElement('div');
+    document.body.appendChild(element);
+    let defaultInstance;
+    ReactDOM.render(h(TemplateDialog, { ref: (e) => defaultInstance = e || defaultInstance }), element);
 })(pdesigner || (pdesigner = {}));
 //# sourceMappingURL=pdesigner.js.map

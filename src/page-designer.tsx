@@ -292,8 +292,8 @@ namespace pdesigner {
                 return;
             }
 
-            $(`.${Control.selectedClassName}`).removeClass(Control.selectedClassName);
-            $(control.element).addClass(Control.selectedClassName);
+            $(`.${classNames.controlSelected}`).removeClass(classNames.controlSelected);
+            $(control.element).addClass(classNames.controlSelected);
 
             if (selectedControlId1) {
                 setTimeout(() => {
@@ -307,7 +307,7 @@ namespace pdesigner {
 
         clearSelectControl() {
 
-            $(`.${Control.selectedClassName}`).removeClass(Control.selectedClassName);
+            $(`.${classNames.controlSelected}`).removeClass(classNames.controlSelected);
             this.selectedControlId1 = null;
             this.controlSelected.fire(null);
         }
