@@ -31,6 +31,8 @@ namespace pdesigner {
             // this.props.componets.forEach(o => this.designer.addComponentDefine(o));
         }
 
+
+
         render() {
             let props = {};
 

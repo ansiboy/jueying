@@ -4,7 +4,7 @@ define(["require", "exports", "pdesigner", "react"], function (require, exports,
     class Spliter extends pdesigner_1.Control {
         render() {
             let props = {
-                tabIndex: pdesigner_1.Control.tabIndex++, style: { padding: '12px 0 12px 0' }
+                tabIndex: pdesigner_1.Control.tabIndex++, style: { padding: '12px 0 12px 0', width: '100%' }
             };
             let child = h(React.Fragment, null,
                 h("hr", { className: "spliter", style: { width: '100%', height: '2px', margin: 0 } }));

@@ -68,18 +68,19 @@ declare namespace pdesigner {
         static componentsDir: string;
         static selectedClassName: string;
         static connectorElementClassName: string;
+        static controlTypeName: string;
         protected hasCSS: boolean;
-        hasEditor: boolean;
         element: HTMLElement;
         constructor(props: any);
         readonly id: string;
         readonly isDesignMode: boolean;
         readonly componentName: any;
         readonly designer: PageDesigner;
+        readonly hasEditor: boolean;
         static htmlDOMProps(props: any): {};
         protected loadControlCSS(): Promise<void>;
         private myComponentDidMount;
-        Element(element: JSX.Element): any;
+        Element(child: JSX.Element): any;
         Element(props: any, element: JSX.Element): any;
         Element(type: string, ...children: JSX.Element[]): any;
         Element(type: string, props: ControlProps<this>, ...children: JSX.Element[]): any;
@@ -131,7 +132,7 @@ declare namespace pdesigner {
         controlComponentDidMount: Callback<Control<any, any>>;
         changed: Callback<ElementData>;
         constructor(props: any);
-        set_state(state: PageDesignerState, isUndoData?: boolean): void;
+        private set_state;
         save(callback: (pageData: ElementData) => Promise<any>): Promise<void>;
         readonly canUndo: boolean;
         undo(): void;
@@ -143,7 +144,9 @@ declare namespace pdesigner {
         updateControlProps(controlId: string, props: any): any;
         sortControlChildren(controlId: string, childIds: string[]): any;
         sortChildren(parentId: string, childIds: string[]): Promise<void>;
-        appendControl(parentId: string, childControl: ElementData, childIds: string[]): Promise<void>;
+        appendControl(parentId: string, childControl: ElementData, childIds?: string[]): Promise<void>;
+        setControlPosition(controlId: string, left: number, top: number): Promise<void>;
+        selectControlById(controlId: string): void;
         /**
          * 选择指定的控件
          * @param control 指定的控件，可以为空，为空表示清空选择。
@@ -164,6 +167,13 @@ declare namespace pdesigner {
     const DesignerContext: React.Context<DesignerContextValue>;
 }
 declare namespace pdesigner {
+    class EditorFactory {
+        static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
+        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
+        static hasEditor(controlTypeName: any): boolean;
+    }
+}
+declare namespace pdesigner {
     interface ControlPlaceholderState {
         controls: ElementData[];
     }
@@ -176,12 +186,20 @@ declare namespace pdesigner {
         private controls;
         static defaultProps: {
             className: string;
+            layout: string;
         };
+        pageView: PageView;
         constructor(props: any);
         private sortableElement;
+        private droppableElement;
         private childrenIds;
         componentDidMount(): void;
-        render(h?: any): any;
+        render(h?: any): JSX.Element;
+    }
+    interface ControlPlaceholderEditorState extends Partial<ControlPlaceholderProps> {
+    }
+    class ControlPlaceholderEditor extends Editor<EditorProps, ControlPlaceholderEditorState> {
+        render(): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLElement>, HTMLElement>;
     }
 }
 declare namespace pdesigner {
@@ -201,9 +219,26 @@ declare namespace pdesigner {
     }
 }
 declare namespace pdesigner {
-    class EditorFactory {
-        static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
-        static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
+    interface DesignerFrameworkProps {
+        componets: ComponentDefine[];
+        title?: string;
+    }
+    interface DesignerFrameworkState {
+        changed: boolean;
+        canUndo: boolean;
+        canRedo: boolean;
+    }
+    class DesignerFramework extends React.Component<DesignerFrameworkProps, DesignerFrameworkState> {
+        pageDesigner: PageDesigner;
+        names: string[];
+        constructor(props: any);
+        namedControl(control: ElementData): void;
+        undo(): void;
+        redo(): void;
+        save(): Promise<void>;
+        newFile(): Promise<void>;
+        componentDidMount(): void;
+        render(): JSX.Element;
     }
 }
 declare namespace pdesigner {
@@ -245,7 +280,7 @@ declare namespace pdesigner {
     }
     interface ElementData {
         type: string;
-        props: ControlProps<any>;
+        props: any;
         children?: ElementData[];
     }
     interface ComponentDefine {
@@ -264,9 +299,10 @@ declare namespace pdesigner {
         id?: string;
         style?: React.CSSProperties;
         className?: string;
+        layout?: 'flowing' | 'absolute';
     }
     const PageViewContext: React.Context<{
-        pageView: any;
+        pageView: PageView;
     }>;
     type ControlPair = {
         control: Control<any, any>;
@@ -278,10 +314,16 @@ declare namespace pdesigner {
      * 移动端页面，将 PageData 渲染为移动端页面。
      */
     class PageView extends Control<Props, State> {
-        private _hasEditor;
-        element: HTMLElement;
+        static defaultProps: Props;
         constructor(props: any);
-        hasEditor: boolean;
-        render(h?: any): JSX.Element;
+        readonly layout: "flowing" | "absolute";
+        render(h?: any): any;
     }
+    interface PageViewEditorState extends Props {
+    }
+    class PageViewEditor extends Editor<EditorProps, PageViewEditorState> {
+        render(): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+    }
+}
+declare namespace pdesigner {
 }

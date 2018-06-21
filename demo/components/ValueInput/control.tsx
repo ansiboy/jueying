@@ -21,13 +21,16 @@ export default class ValueInput extends Control<Props, State> {
 
     render(h?: any) {
         let { dataField } = this.props;
+        let props = {
+            tabIndex: Control.tabIndex++
+        }
         let c = <React.Fragment>
             <label>{dataField}</label>
             <div className="control">
                 <input className="form-control" />
             </div>
         </React.Fragment>
-        return this.Element('div', {}, c);
+        return this.Element(props, c);
     }
 }
 

@@ -8,11 +8,14 @@ define(["require", "exports", "react", "pdesigner"], function (require, exports,
         }
         render(h) {
             let { dataField } = this.props;
+            let props = {
+                tabIndex: pdesigner_1.Control.tabIndex++
+            };
             let c = h(React.Fragment, null,
                 h("label", null, dataField),
                 h("div", { className: "control" },
                     h("input", { className: "form-control" })));
-            return this.Element('div', {}, c);
+            return this.Element(props, c);
         }
     }
     ValueInput.defaultProps = ({ dataField: '未命名', className: 'test-control form-group' });

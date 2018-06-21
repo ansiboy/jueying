@@ -1,10 +1,12 @@
 import { Editor } from "pdesigner";
-
+import * as React from 'react';
 export default class PageViewEditor extends Editor<any, any> {
-    element: HTMLElement;
     render() {
-        return <div ref={(e: HTMLElement) => this.element = e || this.element}>
+        // return <div ref={(e: HTMLElement) => this.element = e || this.element}>
+        //     PageView Editor
+        // </div>
+        return this.Element(<React.Fragment>
             PageView Editor
-        </div>
+        </React.Fragment>);
     }
 }

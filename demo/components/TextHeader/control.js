@@ -8,7 +8,7 @@ define(["require", "exports", "pdesigner", "../baseControl"], function (require,
             return this.Element(elementType, { tabIndex: pdesigner_1.Control.tabIndex++ }, text || name);
         }
     }
-    TextHeader.defaultProps = { size: 1 };
+    TextHeader.defaultProps = { size: 3 };
     exports.default = TextHeader;
 });
 //# sourceMappingURL=control.js.map

@@ -56,13 +56,21 @@ body {
     width: ~"calc(100% -  @{margin-left} - @{margin-right})";
 }
 
+.page-container {
+    @nav-height: 42px;
+    position: absolute;
+    width: 320px;
+    height: 568px;
+    top: @nav-height;
+}
+
 .page-view {
-    width: 400px;
+    width: 100%;
     background: white;
     list-style: none;
 
     header {
-            min-height: 80px;
+        min-height: 80px;
         border: dotted 3px #ccc;
     }
     section {
@@ -92,9 +100,9 @@ body {
 }
 
 
-.control-selected {
-    border: solid 1px @brand-primary;
-}
+// .control-selected {
+//     border: solid 1px @brand-primary;
+// }
 
 .nav-tabs > li > a:hover{
     border: none;

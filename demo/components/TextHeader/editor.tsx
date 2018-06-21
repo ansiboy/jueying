@@ -1,5 +1,6 @@
 import { Editor, EditorProps } from "pdesigner";
 import { Props as ControlProps } from 'control';
+import * as React from 'react';
 
 interface State extends Partial<ControlProps> {
 
@@ -9,8 +10,8 @@ interface State extends Partial<ControlProps> {
 export default class TextHeaderEditor extends Editor<EditorProps, State> {
     element: HTMLElement;
     render() {
-        let { size, name } = this.state;
-        return this.Element(
+        let { size, name, text } = this.state;
+        return this.Element(<React.Fragment>
             <div key={10} className="form-group">
                 <label>名称</label>
                 <div className="control">
@@ -20,7 +21,17 @@ export default class TextHeaderEditor extends Editor<EditorProps, State> {
                             this.setState({ name });
                         }} />
                 </div>
-            </div>,
+            </div>
+            <div key={15} className="form-group">
+                <label>文本</label>
+                <div className="control">
+                    <input className="form-control" value={text || name || ''}
+                        onChange={(e) => {
+                            text = (e.target as HTMLInputElement).value;
+                            this.setState({ text });
+                        }} />
+                </div>
+            </div>
             <div key={20} className="form-group">
                 <label>字体大小</label>
                 <div className="control">
@@ -36,6 +47,6 @@ export default class TextHeaderEditor extends Editor<EditorProps, State> {
                     </select>
                 </div>
             </div>
-        )
+        </React.Fragment>)
     }
 }

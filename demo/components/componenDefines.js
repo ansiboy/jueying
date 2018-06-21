@@ -2,7 +2,7 @@ define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let componentsDirectory = 'components';
-    let TextInput = 'TextInput';
+    let TextInput = 'ValueInput';
     let TextHeader = 'TextHeader';
     let SubmitButton = 'SubmitButton';
     let Spliter = 'Spliter';

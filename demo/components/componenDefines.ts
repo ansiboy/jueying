@@ -1,7 +1,7 @@
 import { ComponentDefine } from "pdesigner";
 
 let componentsDirectory = 'components';
-let TextInput = 'TextInput';
+let TextInput = 'ValueInput';
 let TextHeader = 'TextHeader';
 let SubmitButton = 'SubmitButton';
 let Spliter = 'Spliter';

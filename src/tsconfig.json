@@ -7,6 +7,6 @@
         "outFile": "../out/pdesigner.js",
         "rootDir": ".",
         "jsx": "react",
-        "jsxFactory": "h"
+        "jsxFactory": "h",
     }
 }
