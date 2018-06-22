@@ -3,7 +3,7 @@
 /// <reference path="control-factory.tsx"/>
 /// <reference path="editor-factory.tsx"/>
 
-namespace pdesigner {
+namespace jueying {
     export interface ControlPlaceholderState {
         controls: ElementData[]
     }
@@ -17,7 +17,7 @@ namespace pdesigner {
         private controls: (Control<any, any> & { id: string, name: string })[];
 
         static defaultProps = {
-            className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+            className: `place-holder ${Control.connectorElementClassName}`,
             layout: 'flowing'
         };
         pageView: PageView;

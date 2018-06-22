@@ -1,4 +1,4 @@
-namespace pdesigner {
+namespace jueying {
     export interface Document {
         name?: string,
         createDateTime?: Date,

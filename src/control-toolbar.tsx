@@ -1,5 +1,5 @@
 
-namespace pdesigner {
+namespace jueying {
     export interface ComponentToolbarProps extends React.Props<ComponentToolbar> {
         componets: ComponentDefine[],
         style?: React.CSSProperties,

@@ -1,20 +1,13 @@
-define(["require", "exports", "pdesigner", "react"], function (require, exports, pdesigner_1, React) {
+define(["require", "exports", "react", "../baseControl"], function (require, exports, React, baseControl_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class TextInputEditor extends pdesigner_1.Editor {
+    class TextInputEditor extends baseControl_1.ControlBaseEditor {
         constructor(props) {
             super(props);
         }
-        render() {
-            let { dataField, name } = this.state;
-            let c = h(React.Fragment, null,
-                h("div", { className: "form-group" },
-                    h("label", null, "\u540D\u79F0"),
-                    h("div", { className: "control" },
-                        h("input", { className: "form-control", value: name || '', onChange: (e) => {
-                                name = e.target.value;
-                                this.setState({ name });
-                            } }))),
+        renderControlProps() {
+            let { dataField } = this.state;
+            return h(React.Fragment, null,
                 h("div", { className: "form-group" },
                     h("label", null, "\u5B57\u6BB5"),
                     h("div", { className: "control" },
@@ -22,7 +15,6 @@ define(["require", "exports", "pdesigner", "react"], function (require, exports,
                                 dataField = e.target.value;
                                 this.setState({ dataField });
                             } }))));
-            return this.Element(c);
         }
     }
     exports.default = TextInputEditor;

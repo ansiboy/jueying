@@ -1,4 +1,4 @@
-namespace pdesigner {
+namespace jueying {
 
     export interface EditorProps extends React.Props<Editor<any, any>> {
         control: Control<any, any>,
@@ -17,7 +17,10 @@ namespace pdesigner {
             super(props);
 
             console.assert(this.props.control.props != null);
-            this.state = this.props.control.props as any;
+            let controlProps = Object.assign({}, this.props.control.props);
+            delete (controlProps as any).children;
+
+            this.state = JSON.parse(JSON.stringify(controlProps));
 
             this.originalRender = this.render;
             this.render = () => {

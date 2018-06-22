@@ -12,7 +12,7 @@
  * 
  ********************************************************************************/
 
-namespace pdesigner {
+namespace jueying {
     let h = React.createElement;
 
     export interface ControlProps<T> extends React.Props<T> {

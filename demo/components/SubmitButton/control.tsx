@@ -1,8 +1,8 @@
 import { BaseControl } from "../baseControl";
-import { DesignerContext, Control } from "pdesigner";
+import { DesignerContext, Control, ControlProps } from "pdesigner";
 import * as React from 'react';
 
-export interface Props {
+export interface Props extends ControlProps<SubmitButton> {
     text?: string
 }
 export default class SubmitButton extends Control<any, {}> {
@@ -17,11 +17,11 @@ export default class SubmitButton extends Control<any, {}> {
             className: "btn btn-primary btn-block",
         }
 
-        let child = this.isDesignMode ?
-            <div {...props}>{text}</div> :
-            <button {...props}>{text}</button>;
-
-        return this.Element(child);
+        // let child = this.isDesignMode ?
+        //     <div {...props}>{text}</div> :
+        //     <button {...props}>{text}</button>;
+        let tagName = this.isDesignMode ? 'div' : 'button';
+        return this.Element(tagName, props, text);
 
     }
 }

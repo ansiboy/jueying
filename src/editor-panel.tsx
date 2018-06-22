@@ -1,4 +1,4 @@
-namespace pdesigner {
+namespace jueying {
     export interface EditorPanelState {
         editor: React.ReactElement<any>,
         // editors: { [key: string]: React.ReactElement<any> },

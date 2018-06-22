@@ -1,4 +1,4 @@
-namespace pdesigner {
+namespace jueying {
     export interface Props extends ControlProps<any> {
         id?: string,
         style?: React.CSSProperties,

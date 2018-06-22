@@ -5,7 +5,7 @@ import { BaseControlProps } from '../baseControl';
 interface State {
 }
 
-export interface Props extends BaseControlProps<ValueInput> {
+export interface Props extends ControlProps<ValueInput> {
     dataField: string,
     className: string
 }

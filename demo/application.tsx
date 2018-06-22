@@ -1,7 +1,7 @@
 import {
     ComponentToolbar, PageDesigner, ElementData, guid,
     Control, DesignerContext, EditorPanel, Editor, PageView,
-    ControlPlaceholder, ControlFactory, EditorFactory, DesignerFramework
+    ControlPlaceholder, ControlFactory, EditorFactory
 } from "pdesigner";
 
 import * as ReactDOM from 'react-dom';
@@ -90,7 +90,7 @@ interface MainPageState {
     canUndo: boolean,
     canRedo: boolean,
 }
-class MainPage extends DesignerFramework {
+class MainPage extends jueying.extentions.DesignerFramework {
     constructor(props) {
         super(props);
     }

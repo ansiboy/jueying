@@ -69,7 +69,7 @@ define(["require", "exports", "pdesigner", "react-dom", "./components/componenDe
     });
     let pageViewElement;
     let designer;
-    class MainPage extends pdesigner_1.DesignerFramework {
+    class MainPage extends jueying.extentions.DesignerFramework {
         constructor(props) {
             super(props);
         }

@@ -1,16 +1,17 @@
 /// <reference types="react" />
 /// <reference types="jquery" />
 /// <reference types="jqueryui" />
-declare namespace pdesigner {
+declare namespace jueying {
     function guid(): string;
     let classNames: {
         controlSelected: string;
         emptyTemplates: string;
         loadingTemplates: string;
         templateSelected: string;
+        templateDialog: string;
     };
 }
-declare namespace pdesigner {
+declare namespace jueying {
     interface EditorProps extends React.Props<Editor<any, any>> {
         control: Control<any, any>;
     }
@@ -26,7 +27,7 @@ declare namespace pdesigner {
         Element(...children: JSX.Element[]): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLElement>, HTMLElement>;
     }
 }
-declare namespace pdesigner {
+declare namespace jueying {
     class ControlFactory {
         private static getControlType;
         private static exportElement;
@@ -55,7 +56,7 @@ declare namespace pdesigner {
  * QQ 讨论组：  119038574
  *
  ********************************************************************************/
-declare namespace pdesigner {
+declare namespace jueying {
     interface ControlProps<T> extends React.Props<T> {
         id?: string;
         name?: string;
@@ -114,12 +115,12 @@ declare namespace pdesigner {
  * QQ 讨论组：  119038574
  *
  ********************************************************************************/
-declare namespace pdesigner {
+declare namespace jueying {
     interface PageDesignerProps extends React.Props<PageDesigner> {
-        pageData: ElementData;
+        pageData?: ElementData;
     }
     interface PageDesignerState {
-        pageData: ElementData;
+        pageData?: ElementData;
     }
     class Callback<T> {
         private funcs;
@@ -132,23 +133,13 @@ declare namespace pdesigner {
     class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
         selectedControlId1: string;
         private element;
-        private undoStack;
-        private redoStack;
-        private originalPageData;
         private snapshootVersion;
         controlSelected: Callback<Control<ControlProps<any>, any>>;
         controlComponentDidMount: Callback<Control<any, any>>;
         changed: Callback<ElementData>;
         constructor(props: any);
-        private set_state;
-        save(callback: (pageData: ElementData) => Promise<any>): Promise<void>;
-        readonly canUndo: boolean;
-        undo(): void;
-        readonly canRedo: boolean;
-        redo(): void;
-        private pageDataIsChanged;
-        private isEquals;
-        private skipField;
+        componentWillReceiveProps(props: PageDesignerProps): void;
+        pageData: ElementData;
         updateControlProps(controlId: string, props: any): any;
         sortControlChildren(controlId: string, childIds: string[]): any;
         sortChildren(parentId: string, childIds: string[]): Promise<void>;
@@ -174,14 +165,14 @@ declare namespace pdesigner {
     };
     const DesignerContext: React.Context<DesignerContextValue>;
 }
-declare namespace pdesigner {
+declare namespace jueying {
     class EditorFactory {
         static register(controlTypeName: any, editorType: React.ComponentClass<any> | string): void;
         static create(control: Control<any, any>): Promise<React.ComponentElement<any, React.Component<any, React.ComponentState, any>>>;
         static hasEditor(controlTypeName: any): boolean;
     }
 }
-declare namespace pdesigner {
+declare namespace jueying {
     interface ControlPlaceholderState {
         controls: ElementData[];
     }
@@ -210,7 +201,7 @@ declare namespace pdesigner {
         render(): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLElement>, HTMLElement>;
     }
 }
-declare namespace pdesigner {
+declare namespace jueying {
     interface ComponentToolbarProps extends React.Props<ComponentToolbar> {
         componets: ComponentDefine[];
         style?: React.CSSProperties;
@@ -226,31 +217,7 @@ declare namespace pdesigner {
         render(): JSX.Element;
     }
 }
-declare namespace pdesigner {
-    interface DesignerFrameworkProps {
-        componets: ComponentDefine[];
-        title?: string;
-    }
-    interface DesignerFrameworkState {
-        changed: boolean;
-        canUndo: boolean;
-        canRedo: boolean;
-    }
-    class DesignerFramework extends React.Component<DesignerFrameworkProps, DesignerFrameworkState> {
-        pageDesigner: PageDesigner;
-        names: string[];
-        constructor(props: any);
-        namedControl(control: ElementData): void;
-        undo(): void;
-        redo(): void;
-        save(): Promise<void>;
-        fetchTemplates(): Promise<ElementData[]>;
-        newFile(): Promise<void>;
-        componentDidMount(): void;
-        render(): JSX.Element;
-    }
-}
-declare namespace pdesigner {
+declare namespace jueying {
     interface EditorPanelState {
         editor: React.ReactElement<any>;
     }
@@ -267,12 +234,13 @@ declare namespace pdesigner {
         render(): JSX.Element;
     }
 }
-declare namespace pdesigner {
+declare namespace jueying {
     class Errors {
         static argumentNull(argumentName: string): Error;
+        static pageDataIsNull(): Error;
     }
 }
-declare namespace pdesigner {
+declare namespace jueying {
     interface Document {
         name?: string;
         createDateTime?: Date;
@@ -303,7 +271,7 @@ declare namespace pdesigner {
         editorPath: string;
     }
 }
-declare namespace pdesigner {
+declare namespace jueying {
     interface Props extends ControlProps<any> {
         id?: string;
         style?: React.CSSProperties;
@@ -333,26 +301,92 @@ declare namespace pdesigner {
         render(): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLElement>, HTMLElement>;
     }
 }
-declare namespace pdesigner {
+declare namespace jueying.extentions {
+    let classNames: {
+        controlSelected: string;
+        emptyTemplates: string;
+        loadingTemplates: string;
+        templateSelected: string;
+        templateDialog: string;
+        emptyDocument: string;
+    };
+    function guid(): string;
+}
+declare namespace jueying.extentions {
+    interface DesignerFrameworkProps {
+        componets: jueying.ComponentDefine[];
+        title?: string;
+    }
+    interface DesignerFrameworkState {
+        changed: boolean;
+        canUndo: boolean;
+        canRedo: boolean;
+        acitveDocumentIndex?: number;
+        pageDocuments?: PageDocument[];
+    }
+    class DesignerFramework extends React.Component<DesignerFrameworkProps, DesignerFrameworkState> {
+        private pageDesigner;
+        private names;
+        constructor(props: any);
+        namedControl(control: jueying.ElementData): void;
+        static readonly dialogsElement: HTMLElement;
+        undo(): void;
+        redo(): void;
+        save(): void;
+        assingControlIds(data: jueying.ElementData): void;
+        fetchTemplates(): Promise<PageDocument[]>;
+        newFile(): Promise<void>;
+        componentDidMount(): void;
+        render(): JSX.Element;
+    }
+}
+declare namespace pdesigner_extentions {
+}
+declare namespace jueying.extentions {
+    interface DocumentStorage {
+        list(): Promise<PageDocument[]>;
+        load(name: string): Promise<PageDocument>;
+        save(name: string, doc: PageDocument): Promise<any>;
+        remove(name: string): Promise<any>;
+    }
+    class LocalDocumentStorage implements DocumentStorage {
+        private static prefix;
+        list(): Promise<PageDocument[]>;
+        load(name: string): Promise<any>;
+        save(name: string, doc: PageDocument): Promise<void>;
+        remove(name: string): Promise<any>;
+    }
+}
+declare namespace jueying.extentions {
     interface TemplateDialogProps {
     }
     interface TemplateDialogState {
-        templates: ElementData[];
+        templates: PageDocument[];
         pageIndex: number;
         selectedTemplateIndex: number;
+        fileName?: string;
     }
     class TemplateDialog extends React.Component<TemplateDialogProps, TemplateDialogState> {
-        element: HTMLElement;
         private fetchTemplates;
         private callback;
-        currentPageIndex: number;
-        static loadingElement: JSX.Element;
+        private currentPageIndex;
+        private validator;
         constructor(props: any);
         private selectTemplate;
+        private confirm;
         loadTemplates(pageIndex: number): Promise<void>;
+        componentDidMount(): void;
         render(): JSX.Element;
         open(): void;
         close(): void;
-        static show(fetchTemplates: () => Promise<ElementData[]>, callback: (tmp: ElementData) => void): void;
+        static show(fetchTemplates: () => Promise<PageDocument[]>, callback: (tmp: PageDocument, fileName?: string) => void): void;
     }
+}
+declare namespace jueying.extentions {
+    type ElementData = jueying.ElementData;
+    interface PageDocument {
+        pageData: ElementData;
+        name: string;
+    }
+    let templates: PageDocument[];
 }

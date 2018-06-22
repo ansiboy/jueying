@@ -12,14 +12,14 @@
  * 
  ********************************************************************************/
 
-namespace pdesigner {
+namespace jueying {
 
     export interface PageDesignerProps extends React.Props<PageDesigner> {
-        pageData: ElementData,
+        pageData?: ElementData,
     }
 
     export interface PageDesignerState {
-        pageData: ElementData
+        pageData?: ElementData
     }
 
     interface Snapshoot {
@@ -53,11 +53,11 @@ namespace pdesigner {
         selectedControlId1: string;
         // selectedControlId: any;
         private element: HTMLElement;
-        private undoStack = new Array<Snapshoot>();
-        private redoStack = new Array<Snapshoot>();
+        // private undoStack = new Array<Snapshoot>();
+        // private redoStack = new Array<Snapshoot>();
         //======================================
         // 未保存时的页面数据
-        private originalPageData: ElementData;
+        // private originalPageData: ElementData;
         //======================================
         // 未保存时的页面数据
         // private previouPageData: string;
@@ -71,138 +71,149 @@ namespace pdesigner {
         constructor(props) {
             super(props);
 
-            if (this.props.pageData == null)
-                throw new Error('Prop of pageData cannt be null.');
+            // if (this.props.pageData == null)
+            //     throw new Error('Prop of pageData cannt be null.');
 
             this.state = { pageData: this.props.pageData };
-            this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData)) as ElementData;
+            // this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData)) as ElementData;
 
         }
 
-        private set_state(
-            state: PageDesignerState,
-            isUndoData?: boolean
-        ): void {
-
-            super.setState(state);
-            let { pageData } = state;
-
-            if (pageData) {
-                isUndoData = isUndoData == null ? false : isUndoData;
-                if (this.pageDataIsChanged(pageData)) {
-                    if (!isUndoData) {
-                        this.undoStack.push({ data: JSON.stringify(pageData), version: this.snapshootVersion++ });
-                    }
-                    this.changed.fire(pageData);
-                }
-            }
+        componentWillReceiveProps(props: PageDesignerProps) {
+            debugger;
+            this.setState({ pageData: props.pageData });
         }
 
-        async save(callback: (pageData: ElementData) => Promise<any>) {
-            if (!callback) throw Errors.argumentNull('callback');
-            await callback(this.state.pageData);
+        // private set_state(
+        //     state: PageDesignerState,
+        //     isUndoData?: boolean
+        // ): void {
 
-            this.originalPageData = JSON.parse(JSON.stringify(this.state.pageData));
-            return;
+        //     super.setState(state);
+        //     let { pageData } = state;
+
+        //     if (pageData) {
+        //         isUndoData = isUndoData == null ? false : isUndoData;
+        //         if (this.pageDataIsChanged(pageData)) {
+        //             if (!isUndoData) {
+        //                 this.undoStack.push({ data: JSON.stringify(pageData), version: this.snapshootVersion++ });
+        //             }
+        //             this.changed.fire(pageData);
+        //         }
+        //     }
+        // }
+
+        // async save(callback: (pageData: ElementData) => Promise<any>) {
+        //     if (!callback) throw Errors.argumentNull('callback');
+        //     await callback(this.state.pageData);
+
+        //     this.originalPageData = JSON.parse(JSON.stringify(this.state.pageData));
+        //     return;
+        // }
+
+        get pageData() {
+            return this.state.pageData;
+        }
+        set pageData(value: ElementData) {
+            this.setState({ pageData: value });
         }
 
-        get canUndo() {
-            return this.undoStack.length > 1;
-        }
+        // get canUndo() {
+        //     return this.undoStack.length > 1;
+        // }
 
-        undo() {
-            if (!this.canUndo)
-                return;
+        // undo() {
+        //     if (!this.canUndo)
+        //         return;
 
-            let snapshoot = this.undoStack.pop();
-            console.assert(this.undoStack.length > 0);
+        //     let snapshoot = this.undoStack.pop();
+        //     console.assert(this.undoStack.length > 0);
 
-            let pageData: ElementData = JSON.parse(this.undoStack[this.undoStack.length - 1].data);
-            console.assert(typeof pageData == 'object');
+        //     let pageData: ElementData = JSON.parse(this.undoStack[this.undoStack.length - 1].data);
+        //     console.assert(typeof pageData == 'object');
 
-            this.redoStack.push(snapshoot);
+        //     this.redoStack.push(snapshoot);
 
-            this.set_state({ pageData }, true);
-        }
+        //     this.set_state({ pageData }, true);
+        // }
 
-        get canRedo() {
-            return this.redoStack.length > 0;
-        }
+        // get canRedo() {
+        //     return this.redoStack.length > 0;
+        // }
 
-        redo() {
-            if (!this.canRedo)
-                return;
+        // redo() {
+        //     if (!this.canRedo)
+        //         return;
 
-            let snapshoot = this.redoStack.pop();
+        //     let snapshoot = this.redoStack.pop();
 
-            type PageDataType = this['state']['pageData']
-            let pageData: PageDataType = JSON.parse(snapshoot.data);
-            console.assert(typeof pageData == 'object');
-            this.set_state({ pageData });
-        }
+        //     type PageDataType = this['state']['pageData']
+        //     let pageData: PageDataType = JSON.parse(snapshoot.data);
+        //     console.assert(typeof pageData == 'object');
+        //     this.set_state({ pageData });
+        // }
 
-        private pageDataIsChanged(pageData: ElementData) {
-            type PageData = this['state']['pageData'];
-            let copy = JSON.parse(this.undoStack[this.undoStack.length - 1].data) as PageData;
-            let isChanged = !this.isEquals(copy, pageData);
-            return isChanged;
-        }
+        // private pageDataIsChanged(pageData: ElementData) {
+        //     type PageData = this['state']['pageData'];
+        //     let copy = JSON.parse(this.undoStack[this.undoStack.length - 1].data) as PageData;
+        //     let isChanged = !this.isEquals(copy, pageData);
+        //     return isChanged;
+        // }
 
-        private isEquals(obj1: object, obj2: object) {
-            if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
-                return false;
+        // private isEquals(obj1: object, obj2: object) {
+        //     if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
+        //         return false;
 
-            if (obj1 == null && obj2 == null)
-                return true;
+        //     if (obj1 == null && obj2 == null)
+        //         return true;
 
-            var type = typeof obj1;
-            if (type == 'number' || type == 'string' || obj1 instanceof Date) {
-                return obj1 == obj2;
-            }
+        //     var type = typeof obj1;
+        //     if (type == 'number' || type == 'string' || obj1 instanceof Date) {
+        //         return obj1 == obj2;
+        //     }
 
-            if (Array.isArray(obj1)) {
-                if (!Array.isArray(obj2))
-                    return false;
+        //     if (Array.isArray(obj1)) {
+        //         if (!Array.isArray(obj2))
+        //             return false;
 
-                if (obj1.length != obj2.length)
-                    return false;
+        //         if (obj1.length != obj2.length)
+        //             return false;
 
-                for (let i = 0; i < obj1.length; i++) {
-                    if (!this.isEquals(obj1[i], obj2[i])) {
-                        return false;
-                    }
-                }
+        //         for (let i = 0; i < obj1.length; i++) {
+        //             if (!this.isEquals(obj1[i], obj2[i])) {
+        //                 return false;
+        //             }
+        //         }
 
-                return true;
-            }
+        //         return true;
+        //     }
 
-            let keys1 = Object.getOwnPropertyNames(obj1)
-                .filter(o => !this.skipField(obj1, o))
-                .sort();
-            let keys2 = Object.getOwnPropertyNames(obj2)
-                .filter(o => !this.skipField(obj2, o))
-                .sort();
+        //     let keys1 = Object.getOwnPropertyNames(obj1)
+        //         .filter(o => !this.skipField(obj1, o))
+        //         .sort();
+        //     let keys2 = Object.getOwnPropertyNames(obj2)
+        //         .filter(o => !this.skipField(obj2, o))
+        //         .sort();
 
-            if (!this.isEquals(keys1, keys2))
-                return false;
+        //     if (!this.isEquals(keys1, keys2))
+        //         return false;
 
-            for (let i = 0; i < keys1.length; i++) {
-                // for (var key in obj1) {
-                let key = keys1[i];
-                let value1 = obj1[key];
-                let value2 = obj2[key];
+        //     for (let i = 0; i < keys1.length; i++) {
+        //         let key = keys1[i];
+        //         let value1 = obj1[key];
+        //         let value2 = obj2[key];
 
-                if (!this.isEquals(value1, value2)) {
-                    return false;
-                }
-            }
+        //         if (!this.isEquals(value1, value2)) {
+        //             return false;
+        //         }
+        //     }
 
-            return true;
-        }
+        //     return true;
+        // }
 
-        private skipField(obj: any, field: string): boolean {
-            return typeof obj[field] == 'function';
-        }
+        // private skipField(obj: any, field: string): boolean {
+        //     return typeof obj[field] == 'function';
+        // }
 
         updateControlProps(controlId: string, props: any): any {
             let controlDescription = this.findControlData(controlId);
@@ -214,13 +225,15 @@ namespace pdesigner {
                 controlDescription.props[key] = props[key];
             }
 
-            this.set_state(this.state);
+            this.setState(this.state);
         }
 
         sortControlChildren(controlId: string, childIds: string[]): any {
             let c = this.findControlData(controlId);
             c.children = childIds.map(o => c.children.filter(a => a.props.id == o)[0]).filter(o => o != null);
-            this.set_state(this.state);
+
+            let { pageData } = this.state;
+            this.setState({ pageData });
         }
 
         async sortChildren(parentId: string, childIds: string[]) {
@@ -239,7 +252,7 @@ namespace pdesigner {
                 return child;
             });
 
-            this.set_state(this.state);
+            this.setState({ pageData });
         }
         async appendControl(parentId: string, childControl: ElementData, childIds?: string[]) {
             if (!parentId) throw Errors.argumentNull('parentId');
@@ -253,13 +266,15 @@ namespace pdesigner {
 
             if (childIds)
                 this.sortChildren(parentId, childIds);
-            else
-                this.set_state(this.state);
-
+            else {
+                let { pageData } = this.state;
+                this.setState({ pageData });
+            }
             let control = Control.getInstance(childControl.props.id);
             console.assert(control != null);
             this.selectControl(control);
         }
+
         async setControlPosition(controlId: string, left: number, top: number) {
             let control = this.findControlData(controlId);
             if (!control)
@@ -268,7 +283,9 @@ namespace pdesigner {
             let style: React.CSSProperties = control.props.style = (control.props.style || {});
             style.left = left;
             style.top = top;
-            this.set_state(this.state);
+
+            let { pageData } = this.state;
+            this.setState({ pageData });
         }
 
         selectControlById(controlId: string) {
@@ -303,8 +320,6 @@ namespace pdesigner {
             }
         }
 
-
-
         clearSelectControl() {
 
             $(`.${classNames.controlSelected}`).removeClass(classNames.controlSelected);
@@ -319,7 +334,7 @@ namespace pdesigner {
 
             let isRemoved = this.removeControlFrom(controlId, pageData.children);
             if (isRemoved) {
-                this.set_state({ pageData });
+                this.setState({ pageData });
             }
         }
 
@@ -371,6 +386,9 @@ namespace pdesigner {
 
         private findControlData(controlId: string) {
             let pageData = this.state.pageData;
+            if (!pageData)
+                throw Errors.pageDataIsNull();
+
             let stack = new Array<ElementData>();
             stack.push(pageData);
             while (stack.length > 0) {
@@ -387,7 +405,6 @@ namespace pdesigner {
         private onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
             const DELETE_KEY_CODE = 46;
             if (e.keyCode == DELETE_KEY_CODE) {
-                debugger;
                 let selectedControlId = this.selectedControlId1
                 let element = selectedControlId ? this.findControlData(selectedControlId) : null;
                 if (element == null) {
@@ -400,11 +417,11 @@ namespace pdesigner {
         }
 
         componentDidMount() {
-            console.assert(this.state.pageData != null);
-            this.undoStack.push({
-                data: JSON.stringify(this.state.pageData),
-                version: this.snapshootVersion++
-            });
+            // console.assert(this.state.pageData != null);
+            // this.undoStack.push({
+            //     data: JSON.stringify(this.state.pageData),
+            //     version: this.snapshootVersion++
+            // });
         }
 
         render() {

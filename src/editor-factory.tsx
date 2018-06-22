@@ -1,4 +1,4 @@
-namespace pdesigner {
+namespace jueying {
 
     let customEditorTypes: { [key: string]: React.ComponentClass<any> | string } = {}
 

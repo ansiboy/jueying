@@ -1,5 +1,5 @@
-var pdesigner;
-(function (pdesigner) {
+var jueying;
+(function (jueying) {
     function guid() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -9,40 +9,68 @@ var pdesigner;
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
             s4() + '-' + s4() + s4() + s4();
     }
-    pdesigner.guid = guid;
-    pdesigner.classNames = {
+    jueying.guid = guid;
+    jueying.classNames = {
         controlSelected: `control-selected `,
         emptyTemplates: `empty-templates`,
         loadingTemplates: `loading-templates`,
-        templateSelected: `template-selected`
+        templateSelected: `template-selected`,
+        templateDialog: `template-dialog`,
     };
+    // let templateDialog = {
+    //     nameHeight: 40,
+    //     fontSize: 22
+    // }
     let element = document.createElement('style');
     element.type = 'text/css';
     element.innerHTML = `
-        .${pdesigner.classNames.controlSelected} {
+        .${jueying.classNames.controlSelected} {
             border: solid 1px #337ab7!important;
         }
-        .${pdesigner.classNames.emptyTemplates} {
+        .${jueying.classNames.emptyTemplates} {
             padding:50px 0;
             text-align: center;
         }
-        .${pdesigner.classNames.loadingTemplates} {
+        .${jueying.classNames.loadingTemplates} {
             padding:50px 0;
             text-align: center;
         }
-        .${pdesigner.classNames.templateSelected} .page-view {
+        .${jueying.classNames.templateSelected} .page-view {
             border: solid 1px #337ab7!important;
+        }
+        .${jueying.classNames.templateDialog} .name span {
+            color: white;
+        }
+        .validationMessage {
+            position: absolute;
+            margin-top: -60px;
+            background-color: red;
+            color: white;
+            padding: 4px 10px;
         }
     `;
+    /*
+        .${classNames.templateDialog} .name {
+            margin-top: -${templateDialog.nameHeight}px;
+            height: ${templateDialog.nameHeight}px;
+            font-size: ${templateDialog.fontSize}px;
+            text-align: center;
+            padding-top: 6px;
+            background-color: black;
+            opacity: 0.5;
+        }
+    */
     document.head.appendChild(element);
-})(pdesigner || (pdesigner = {}));
-var pdesigner;
-(function (pdesigner) {
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
     class Editor extends React.Component {
         constructor(props) {
             super(props);
             console.assert(this.props.control.props != null);
-            this.state = this.props.control.props;
+            let controlProps = Object.assign({}, this.props.control.props);
+            delete controlProps.children;
+            this.state = JSON.parse(JSON.stringify(controlProps));
             this.originalRender = this.render;
             this.render = () => {
                 return this.originalRender ? this.originalRender() : null;
@@ -69,10 +97,10 @@ var pdesigner;
             }, ...children);
         }
     }
-    pdesigner.Editor = Editor;
-})(pdesigner || (pdesigner = {}));
-var pdesigner;
-(function (pdesigner) {
+    jueying.Editor = Editor;
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
     let customControlTypes = {};
     let allInstance = {};
     class ControlFactory {
@@ -141,7 +169,7 @@ var pdesigner;
                     type = controlType;
                 }
                 let children = args.children ? args.children.map(o => this.create(o, designer)) : null;
-                return React.createElement(pdesigner.DesignerContext.Consumer, { key: pdesigner.guid(), children: null }, (context) => {
+                return React.createElement(jueying.DesignerContext.Consumer, { key: jueying.guid(), children: null }, (context) => {
                     let props = JSON.parse(JSON.stringify(args.props));
                     return React.createElement(type, props, children);
                 });
@@ -158,9 +186,9 @@ var pdesigner;
                 controlType['componentName'] = controlName;
             }
             if (!controlName)
-                throw pdesigner.Errors.argumentNull('controlName');
+                throw jueying.Errors.argumentNull('controlName');
             if (!controlType)
-                throw pdesigner.Errors.argumentNull('controlType');
+                throw jueying.Errors.argumentNull('controlType');
             customControlTypes[controlName] = controlType;
         }
         static loadAllTypes() {
@@ -196,8 +224,8 @@ var pdesigner;
             return React.createElement(type, props, ...children);
         }
     }
-    pdesigner.ControlFactory = ControlFactory;
-})(pdesigner || (pdesigner = {}));
+    jueying.ControlFactory = ControlFactory;
+})(jueying || (jueying = {}));
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
  *
@@ -219,8 +247,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var pdesigner;
-(function (pdesigner) {
+var jueying;
+(function (jueying) {
     let h = React.createElement;
     let customControlTypes = {};
     let allInstance = {};
@@ -254,7 +282,7 @@ var pdesigner;
             return this._designer;
         }
         get hasEditor() {
-            return pdesigner.EditorFactory.hasEditor(this.constructor.name);
+            return jueying.EditorFactory.hasEditor(this.constructor.name);
         }
         static htmlDOMProps(props) {
             let result = {};
@@ -338,7 +366,7 @@ var pdesigner;
                 this.element = e || this.element;
             };
             try {
-                return pdesigner.ControlFactory.createElement(this, type, props, ...children);
+                return jueying.ControlFactory.createElement(this, type, props, ...children);
             }
             catch (e) {
                 console.error(e);
@@ -347,11 +375,11 @@ var pdesigner;
         }
         static render() {
             let self = this;
-            return h(pdesigner.DesignerContext.Consumer, null, context => {
+            return h(jueying.DesignerContext.Consumer, null, context => {
                 self._designer = context.designer;
                 if (typeof self.originalRender != 'function')
                     return null;
-                let h = (type, props, ...children) => pdesigner.ControlFactory.createElement(self, type, props, ...children);
+                let h = (type, props, ...children) => jueying.ControlFactory.createElement(self, type, props, ...children);
                 return self.originalRender(h);
             });
         }
@@ -375,7 +403,7 @@ var pdesigner;
         }
         static loadTypes(elementData) {
             if (!elementData)
-                throw pdesigner.Errors.argumentNull('elementData');
+                throw jueying.Errors.argumentNull('elementData');
             let stack = new Array();
             stack.push(elementData);
             let ps = new Array();
@@ -390,15 +418,15 @@ var pdesigner;
             return Promise.all(ps);
         }
         static loadAllTypes() {
-            return pdesigner.ControlFactory.loadAllTypes();
+            return jueying.ControlFactory.loadAllTypes();
         }
         static getInstance(id) {
             if (!id)
-                throw pdesigner.Errors.argumentNull('id');
+                throw jueying.Errors.argumentNull('id');
             return allInstance[id];
         }
         static create(args, designer) {
-            return pdesigner.ControlFactory.create(args);
+            return jueying.ControlFactory.create(args);
         }
         static getComponentNameByType(type) {
             for (let key in customControlTypes) {
@@ -413,7 +441,7 @@ var pdesigner;
     // static selectedClassName = 'control-selected';
     Control.connectorElementClassName = 'control-container';
     Control.controlTypeName = 'data-control-name';
-    pdesigner.Control = Control;
+    jueying.Control = Control;
     function createDesignTimeElement(type, props, ...children) {
         props = props || {};
         if (type == 'a' && props.href) {
@@ -429,7 +457,7 @@ var pdesigner;
         }
         return React.createElement.apply(React, args);
     }
-})(pdesigner || (pdesigner = {}));
+})(jueying || (jueying = {}));
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
  *
@@ -443,8 +471,8 @@ var pdesigner;
  * QQ 讨论组：  119038574
  *
  ********************************************************************************/
-var pdesigner;
-(function (pdesigner) {
+var jueying;
+(function (jueying) {
     class Callback {
         constructor() {
             this.funcs = new Array();
@@ -462,12 +490,15 @@ var pdesigner;
             return new Callback();
         }
     }
-    pdesigner.Callback = Callback;
+    jueying.Callback = Callback;
     class PageDesigner extends React.Component {
         constructor(props) {
             super(props);
-            this.undoStack = new Array();
-            this.redoStack = new Array();
+            // private undoStack = new Array<Snapshoot>();
+            // private redoStack = new Array<Snapshoot>();
+            //======================================
+            // 未保存时的页面数据
+            // private originalPageData: ElementData;
             //======================================
             // 未保存时的页面数据
             // private previouPageData: string;
@@ -476,105 +507,116 @@ var pdesigner;
             this.controlSelected = Callback.create();
             this.controlComponentDidMount = Callback.create();
             this.changed = Callback.create();
-            if (this.props.pageData == null)
-                throw new Error('Prop of pageData cannt be null.');
+            // if (this.props.pageData == null)
+            //     throw new Error('Prop of pageData cannt be null.');
             this.state = { pageData: this.props.pageData };
-            this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData));
+            // this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData)) as ElementData;
         }
-        set_state(state, isUndoData) {
-            super.setState(state);
-            let { pageData } = state;
-            if (pageData) {
-                isUndoData = isUndoData == null ? false : isUndoData;
-                if (this.pageDataIsChanged(pageData)) {
-                    if (!isUndoData) {
-                        this.undoStack.push({ data: JSON.stringify(pageData), version: this.snapshootVersion++ });
-                    }
-                    this.changed.fire(pageData);
-                }
-            }
+        componentWillReceiveProps(props) {
+            debugger;
+            this.setState({ pageData: props.pageData });
         }
-        save(callback) {
-            return __awaiter(this, void 0, void 0, function* () {
-                if (!callback)
-                    throw pdesigner.Errors.argumentNull('callback');
-                yield callback(this.state.pageData);
-                this.originalPageData = JSON.parse(JSON.stringify(this.state.pageData));
-                return;
-            });
+        // private set_state(
+        //     state: PageDesignerState,
+        //     isUndoData?: boolean
+        // ): void {
+        //     super.setState(state);
+        //     let { pageData } = state;
+        //     if (pageData) {
+        //         isUndoData = isUndoData == null ? false : isUndoData;
+        //         if (this.pageDataIsChanged(pageData)) {
+        //             if (!isUndoData) {
+        //                 this.undoStack.push({ data: JSON.stringify(pageData), version: this.snapshootVersion++ });
+        //             }
+        //             this.changed.fire(pageData);
+        //         }
+        //     }
+        // }
+        // async save(callback: (pageData: ElementData) => Promise<any>) {
+        //     if (!callback) throw Errors.argumentNull('callback');
+        //     await callback(this.state.pageData);
+        //     this.originalPageData = JSON.parse(JSON.stringify(this.state.pageData));
+        //     return;
+        // }
+        get pageData() {
+            return this.state.pageData;
         }
-        get canUndo() {
-            return this.undoStack.length > 1;
+        set pageData(value) {
+            this.setState({ pageData: value });
         }
-        undo() {
-            if (!this.canUndo)
-                return;
-            let snapshoot = this.undoStack.pop();
-            console.assert(this.undoStack.length > 0);
-            let pageData = JSON.parse(this.undoStack[this.undoStack.length - 1].data);
-            console.assert(typeof pageData == 'object');
-            this.redoStack.push(snapshoot);
-            this.set_state({ pageData }, true);
-        }
-        get canRedo() {
-            return this.redoStack.length > 0;
-        }
-        redo() {
-            if (!this.canRedo)
-                return;
-            let snapshoot = this.redoStack.pop();
-            let pageData = JSON.parse(snapshoot.data);
-            console.assert(typeof pageData == 'object');
-            this.set_state({ pageData });
-        }
-        pageDataIsChanged(pageData) {
-            let copy = JSON.parse(this.undoStack[this.undoStack.length - 1].data);
-            let isChanged = !this.isEquals(copy, pageData);
-            return isChanged;
-        }
-        isEquals(obj1, obj2) {
-            if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
-                return false;
-            if (obj1 == null && obj2 == null)
-                return true;
-            var type = typeof obj1;
-            if (type == 'number' || type == 'string' || obj1 instanceof Date) {
-                return obj1 == obj2;
-            }
-            if (Array.isArray(obj1)) {
-                if (!Array.isArray(obj2))
-                    return false;
-                if (obj1.length != obj2.length)
-                    return false;
-                for (let i = 0; i < obj1.length; i++) {
-                    if (!this.isEquals(obj1[i], obj2[i])) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            let keys1 = Object.getOwnPropertyNames(obj1)
-                .filter(o => !this.skipField(obj1, o))
-                .sort();
-            let keys2 = Object.getOwnPropertyNames(obj2)
-                .filter(o => !this.skipField(obj2, o))
-                .sort();
-            if (!this.isEquals(keys1, keys2))
-                return false;
-            for (let i = 0; i < keys1.length; i++) {
-                // for (var key in obj1) {
-                let key = keys1[i];
-                let value1 = obj1[key];
-                let value2 = obj2[key];
-                if (!this.isEquals(value1, value2)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        skipField(obj, field) {
-            return typeof obj[field] == 'function';
-        }
+        // get canUndo() {
+        //     return this.undoStack.length > 1;
+        // }
+        // undo() {
+        //     if (!this.canUndo)
+        //         return;
+        //     let snapshoot = this.undoStack.pop();
+        //     console.assert(this.undoStack.length > 0);
+        //     let pageData: ElementData = JSON.parse(this.undoStack[this.undoStack.length - 1].data);
+        //     console.assert(typeof pageData == 'object');
+        //     this.redoStack.push(snapshoot);
+        //     this.set_state({ pageData }, true);
+        // }
+        // get canRedo() {
+        //     return this.redoStack.length > 0;
+        // }
+        // redo() {
+        //     if (!this.canRedo)
+        //         return;
+        //     let snapshoot = this.redoStack.pop();
+        //     type PageDataType = this['state']['pageData']
+        //     let pageData: PageDataType = JSON.parse(snapshoot.data);
+        //     console.assert(typeof pageData == 'object');
+        //     this.set_state({ pageData });
+        // }
+        // private pageDataIsChanged(pageData: ElementData) {
+        //     type PageData = this['state']['pageData'];
+        //     let copy = JSON.parse(this.undoStack[this.undoStack.length - 1].data) as PageData;
+        //     let isChanged = !this.isEquals(copy, pageData);
+        //     return isChanged;
+        // }
+        // private isEquals(obj1: object, obj2: object) {
+        //     if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
+        //         return false;
+        //     if (obj1 == null && obj2 == null)
+        //         return true;
+        //     var type = typeof obj1;
+        //     if (type == 'number' || type == 'string' || obj1 instanceof Date) {
+        //         return obj1 == obj2;
+        //     }
+        //     if (Array.isArray(obj1)) {
+        //         if (!Array.isArray(obj2))
+        //             return false;
+        //         if (obj1.length != obj2.length)
+        //             return false;
+        //         for (let i = 0; i < obj1.length; i++) {
+        //             if (!this.isEquals(obj1[i], obj2[i])) {
+        //                 return false;
+        //             }
+        //         }
+        //         return true;
+        //     }
+        //     let keys1 = Object.getOwnPropertyNames(obj1)
+        //         .filter(o => !this.skipField(obj1, o))
+        //         .sort();
+        //     let keys2 = Object.getOwnPropertyNames(obj2)
+        //         .filter(o => !this.skipField(obj2, o))
+        //         .sort();
+        //     if (!this.isEquals(keys1, keys2))
+        //         return false;
+        //     for (let i = 0; i < keys1.length; i++) {
+        //         let key = keys1[i];
+        //         let value1 = obj1[key];
+        //         let value2 = obj2[key];
+        //         if (!this.isEquals(value1, value2)) {
+        //             return false;
+        //         }
+        //     }
+        //     return true;
+        // }
+        // private skipField(obj: any, field: string): boolean {
+        //     return typeof obj[field] == 'function';
+        // }
         updateControlProps(controlId, props) {
             let controlDescription = this.findControlData(controlId);
             console.assert(controlDescription != null);
@@ -583,19 +625,20 @@ var pdesigner;
             for (let key in props) {
                 controlDescription.props[key] = props[key];
             }
-            this.set_state(this.state);
+            this.setState(this.state);
         }
         sortControlChildren(controlId, childIds) {
             let c = this.findControlData(controlId);
             c.children = childIds.map(o => c.children.filter(a => a.props.id == o)[0]).filter(o => o != null);
-            this.set_state(this.state);
+            let { pageData } = this.state;
+            this.setState({ pageData });
         }
         sortChildren(parentId, childIds) {
             return __awaiter(this, void 0, void 0, function* () {
                 if (!parentId)
-                    throw pdesigner.Errors.argumentNull('parentId');
+                    throw jueying.Errors.argumentNull('parentId');
                 if (!childIds)
-                    throw pdesigner.Errors.argumentNull('childIds');
+                    throw jueying.Errors.argumentNull('childIds');
                 let pageData = this.state.pageData;
                 let parentControl = this.findControlData(parentId);
                 console.assert(parentControl != null);
@@ -606,15 +649,15 @@ var pdesigner;
                     console.assert(child != null, `child ${o} is null`);
                     return child;
                 });
-                this.set_state(this.state);
+                this.setState({ pageData });
             });
         }
         appendControl(parentId, childControl, childIds) {
             return __awaiter(this, void 0, void 0, function* () {
                 if (!parentId)
-                    throw pdesigner.Errors.argumentNull('parentId');
+                    throw jueying.Errors.argumentNull('parentId');
                 if (!childControl)
-                    throw pdesigner.Errors.argumentNull('childControl');
+                    throw jueying.Errors.argumentNull('childControl');
                 // if (!childIds) throw Errors.argumentNull('childIds');
                 let parentControl = this.findControlData(parentId);
                 console.assert(parentControl != null);
@@ -622,9 +665,11 @@ var pdesigner;
                 parentControl.children.push(childControl);
                 if (childIds)
                     this.sortChildren(parentId, childIds);
-                else
-                    this.set_state(this.state);
-                let control = pdesigner.Control.getInstance(childControl.props.id);
+                else {
+                    let { pageData } = this.state;
+                    this.setState({ pageData });
+                }
+                let control = jueying.Control.getInstance(childControl.props.id);
                 console.assert(control != null);
                 this.selectControl(control);
             });
@@ -637,11 +682,12 @@ var pdesigner;
                 let style = control.props.style = (control.props.style || {});
                 style.left = left;
                 style.top = top;
-                this.set_state(this.state);
+                let { pageData } = this.state;
+                this.setState({ pageData });
             });
         }
         selectControlById(controlId) {
-            let control = pdesigner.Control.getInstance(controlId);
+            let control = jueying.Control.getInstance(controlId);
             this.selectControl(control);
         }
         /**
@@ -650,7 +696,7 @@ var pdesigner;
          */
         selectControl(control) {
             if (!control)
-                throw pdesigner.Errors.argumentNull('control');
+                throw jueying.Errors.argumentNull('control');
             this.controlSelected.fire(control);
             let selectedControlId1 = control ? control.id : null;
             this.selectedControlId1 = selectedControlId1;
@@ -658,8 +704,8 @@ var pdesigner;
                 console.log(`Control ${control.constructor.name} has none editor.`);
                 return;
             }
-            $(`.${pdesigner.classNames.controlSelected}`).removeClass(pdesigner.classNames.controlSelected);
-            $(control.element).addClass(pdesigner.classNames.controlSelected);
+            $(`.${jueying.classNames.controlSelected}`).removeClass(jueying.classNames.controlSelected);
+            $(control.element).addClass(jueying.classNames.controlSelected);
             if (selectedControlId1) {
                 setTimeout(() => {
                     $(`#${selectedControlId1}`).focus();
@@ -668,7 +714,7 @@ var pdesigner;
             }
         }
         clearSelectControl() {
-            $(`.${pdesigner.classNames.controlSelected}`).removeClass(pdesigner.classNames.controlSelected);
+            $(`.${jueying.classNames.controlSelected}`).removeClass(jueying.classNames.controlSelected);
             this.selectedControlId1 = null;
             this.controlSelected.fire(null);
         }
@@ -678,7 +724,7 @@ var pdesigner;
                 return;
             let isRemoved = this.removeControlFrom(controlId, pageData.children);
             if (isRemoved) {
-                this.set_state({ pageData });
+                this.setState({ pageData });
             }
         }
         moveControl(controlId, parentId, childIds) {
@@ -722,6 +768,8 @@ var pdesigner;
         }
         findControlData(controlId) {
             let pageData = this.state.pageData;
+            if (!pageData)
+                throw jueying.Errors.pageDataIsNull();
             let stack = new Array();
             stack.push(pageData);
             while (stack.length > 0) {
@@ -735,7 +783,6 @@ var pdesigner;
         onKeyDown(e) {
             const DELETE_KEY_CODE = 46;
             if (e.keyCode == DELETE_KEY_CODE) {
-                debugger;
                 let selectedControlId = this.selectedControlId1;
                 let element = selectedControlId ? this.findControlData(selectedControlId) : null;
                 if (element == null) {
@@ -746,24 +793,24 @@ var pdesigner;
             }
         }
         componentDidMount() {
-            console.assert(this.state.pageData != null);
-            this.undoStack.push({
-                data: JSON.stringify(this.state.pageData),
-                version: this.snapshootVersion++
-            });
+            // console.assert(this.state.pageData != null);
+            // this.undoStack.push({
+            //     data: JSON.stringify(this.state.pageData),
+            //     version: this.snapshootVersion++
+            // });
         }
         render() {
             let designer = this;
             return h("div", { className: "pdesigner", ref: (e) => this.element = e || this.element, onKeyDown: (e) => this.onKeyDown(e) },
-                h(pdesigner.DesignerContext.Provider, { value: { designer } }, this.props.children));
+                h(jueying.DesignerContext.Provider, { value: { designer } }, this.props.children));
         }
     }
-    pdesigner.PageDesigner = PageDesigner;
+    jueying.PageDesigner = PageDesigner;
     let value = { designer: null };
-    pdesigner.DesignerContext = React.createContext(value);
-})(pdesigner || (pdesigner = {}));
-var pdesigner;
-(function (pdesigner) {
+    jueying.DesignerContext = React.createContext(value);
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
     let customEditorTypes = {};
     class EditorFactory {
         static register(controlTypeName, editorType) {
@@ -772,7 +819,7 @@ var pdesigner;
         static create(control) {
             return __awaiter(this, void 0, void 0, function* () {
                 if (control == null)
-                    throw pdesigner.Errors.argumentNull('control');
+                    throw jueying.Errors.argumentNull('control');
                 let componentName = control.componentName;
                 let editorType = customEditorTypes[componentName];
                 if (!editorType) {
@@ -799,15 +846,15 @@ var pdesigner;
             return customEditorTypes[controlTypeName] != null;
         }
     }
-    pdesigner.EditorFactory = EditorFactory;
-})(pdesigner || (pdesigner = {}));
+    jueying.EditorFactory = EditorFactory;
+})(jueying || (jueying = {}));
 /// <reference path="page-control.tsx"/>
 /// <reference path="page-designer.tsx"/>
 /// <reference path="control-factory.tsx"/>
 /// <reference path="editor-factory.tsx"/>
-var pdesigner;
-(function (pdesigner) {
-    class ControlPlaceholder extends pdesigner.Control {
+var jueying;
+(function (jueying) {
+    class ControlPlaceholder extends jueying.Control {
         constructor(props) {
             super(props);
             this.state = { controls: [] };
@@ -816,7 +863,7 @@ var pdesigner;
             let controls = this.state.controls;
             $(element).sortable({
                 axis: "y",
-                connectWith: `.${pdesigner.Control.connectorElementClassName}`,
+                connectWith: `.${jueying.Control.connectorElementClassName}`,
                 receive(event, ui) {
                 },
                 update: (event, ui) => {
@@ -825,7 +872,7 @@ var pdesigner;
                         console.assert(ui.item.length == 1);
                         let componentName = ui.item.attr('data-control-name');
                         console.assert(componentName);
-                        let ctrl = { type: componentName, props: { id: pdesigner.guid() } };
+                        let ctrl = { type: componentName, props: { id: jueying.guid() } };
                         ui.item[0].setAttribute('id', ctrl.props.id);
                         //==================================================
                         // 将所有 id 子元素找出来，用于排序
@@ -872,7 +919,7 @@ var pdesigner;
                 drop: (event, ui) => {
                     let element = event.target;
                     console.assert(ui.draggable != null);
-                    if (ui.draggable.attr(pdesigner.Control.controlTypeName)) { // 添加操作 //&& !ui.draggable[0].id
+                    if (ui.draggable.attr(jueying.Control.controlTypeName)) { // 添加操作 //&& !ui.draggable[0].id
                         console.assert(ui.draggable.length == 1);
                         let componentName = ui.draggable.attr('data-control-name');
                         console.assert(componentName);
@@ -885,7 +932,7 @@ var pdesigner;
                         let ctrl = {
                             type: componentName,
                             props: {
-                                id: pdesigner.guid(),
+                                id: jueying.guid(),
                                 style: {
                                     position: 'absolute',
                                     left,
@@ -936,19 +983,19 @@ var pdesigner;
             htmlTag = htmlTag || 'div';
             let controls = this.props.children || [];
             let self = this;
-            return h(pdesigner.PageViewContext.Consumer, null, c => {
+            return h(jueying.PageViewContext.Consumer, null, c => {
                 this.pageView = c.pageView;
                 return this.Element(htmlTag, h(React.Fragment, null, controls.length == 0 ? emptyElement : controls));
             });
         }
     }
     ControlPlaceholder.defaultProps = {
-        className: `place-holder ${pdesigner.Control.connectorElementClassName}`,
+        className: `place-holder ${jueying.Control.connectorElementClassName}`,
         layout: 'flowing'
     };
-    pdesigner.ControlPlaceholder = ControlPlaceholder;
-    pdesigner.ControlFactory.register(ControlPlaceholder);
-    class ControlPlaceholderEditor extends pdesigner.Editor {
+    jueying.ControlPlaceholder = ControlPlaceholder;
+    jueying.ControlFactory.register(ControlPlaceholder);
+    class ControlPlaceholderEditor extends jueying.Editor {
         render() {
             let { name } = this.state;
             let props = {};
@@ -962,14 +1009,14 @@ var pdesigner;
                             } })))));
         }
     }
-    pdesigner.ControlPlaceholderEditor = ControlPlaceholderEditor;
-    pdesigner.EditorFactory.register('ControlPlaceholder', ControlPlaceholderEditor);
-})(pdesigner || (pdesigner = {}));
-var pdesigner;
-(function (pdesigner) {
+    jueying.ControlPlaceholderEditor = ControlPlaceholderEditor;
+    jueying.EditorFactory.register('ControlPlaceholder', ControlPlaceholderEditor);
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
     class ComponentToolbar extends React.Component {
         componentDidMount() {
-            this.draggable($(`.${pdesigner.Control.connectorElementClassName}`));
+            this.draggable($(`.${jueying.Control.connectorElementClassName}`));
             this.designer.controlComponentDidMount.add((control) => {
                 console.assert(control.element != null);
                 this.draggable($(control.element));
@@ -977,7 +1024,7 @@ var pdesigner;
         }
         draggable(selector) {
             $(this.toolbarElement).find('li').draggable({
-                connectToSortable: $(`section, .${pdesigner.Control.connectorElementClassName}`),
+                connectToSortable: $(`section, .${jueying.Control.connectorElementClassName}`),
                 helper: "clone",
                 revert: "invalid",
             });
@@ -992,14 +1039,14 @@ var pdesigner;
             }
             //key={i} data-control-name={c.name}
             let componets = this.props.componets;
-            return h(pdesigner.DesignerContext.Consumer, null, context => {
+            return h(jueying.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
                 return h("div", Object.assign({}, props, { className: "component-panel panel panel-primary" }),
                     h("div", { className: "panel-heading" }, "\u5DE5\u5177\u680F"),
                     h("div", { className: "panel-body" },
                         h("ul", { ref: (e) => this.toolbarElement = this.toolbarElement || e }, componets.map((c, i) => {
                             let props = { key: i };
-                            props[pdesigner.Control.controlTypeName] = c.name;
+                            props[jueying.Control.controlTypeName] = c.name;
                             return h("li", Object.assign({}, props),
                                 h("div", { className: "btn-link" },
                                     h("i", { className: c.icon, style: { fontSize: 44, color: 'black' } })),
@@ -1008,286 +1055,10 @@ var pdesigner;
             });
         }
     }
-    pdesigner.ComponentToolbar = ComponentToolbar;
-})(pdesigner || (pdesigner = {}));
-var pdesigner;
-(function (pdesigner) {
-    let style = { width: '100%', height: '100%', minWidth: 'unset' };
-    let template0 = {
-        type: 'PageView',
-        props: {
-            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
-            "className": "page-view",
-            style,
-            "componentName": "PageView"
-        },
-        children: [
-            {
-                type: "ControlPlaceholder",
-                props: {
-                    "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
-                    id: pdesigner.guid(),
-                    htmlTag: 'section',
-                    style: { height: '100%', margin: 0 }
-                },
-                children: [
-                    {
-                        type: 'TextHeader',
-                        props: {
-                            id: pdesigner.guid(),
-                            text: '商品订购',
-                            size: 3,
-                        },
-                    },
-                    {
-                        type: 'ValueInput',
-                        props: {
-                            id: pdesigner.guid(),
-                            dataField: '商品名称'
-                        }
-                    },
-                    {
-                        type: 'ValueInput',
-                        props: {
-                            id: pdesigner.guid(),
-                            dataField: '商品数量'
-                        }
-                    },
-                    {
-                        type: 'ValueInput',
-                        props: {
-                            id: pdesigner.guid(),
-                            dataField: '收件人'
-                        }
-                    },
-                    {
-                        type: 'ValueInput',
-                        props: {
-                            id: pdesigner.guid(),
-                            dataField: '联系电话'
-                        }
-                    },
-                    {
-                        type: 'ValueInput',
-                        props: {
-                            id: pdesigner.guid(),
-                            dataField: '收件地址'
-                        }
-                    },
-                    {
-                        type: 'SubmitButton',
-                        props: {
-                            id: pdesigner.guid(),
-                            text: '提交订单'
-                        }
-                    },
-                ]
-            }
-        ]
-    };
-    let template1 = {
-        type: 'PageView',
-        props: {
-            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
-            "className": "page-view",
-            style,
-            "componentName": "PageView"
-        },
-        "children": [
-            {
-                type: "ControlPlaceholder",
-                props: {
-                    "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
-                    "key": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
-                    "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
-                    htmlTag: 'section',
-                    style: { height: '100%', margin: 0 }
-                }
-            }
-        ]
-    };
-    let templates = [template0, template1];
-    let controlDescription = {
-        type: 'PageView',
-        props: {
-            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
-            "className": "page-view",
-            "style": {
-                position: 'absolute',
-                height: '100%',
-                width: '100%'
-            },
-            "componentName": "PageView",
-            layout: 'absolute'
-        },
-        "children": [
-            {
-                type: "ControlPlaceholder",
-                props: {
-                    "id": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
-                    "emptyText": "页面顶部，可以从工具栏拖拉控件到这里",
-                    "key": "5844958c-f8e5-2f83-d290-a9ee2b36aaec",
-                    htmlTag: 'header',
-                    style: {
-                        position: 'absolute',
-                        height: 80,
-                        width: '100%'
-                    }
-                }
-            },
-            {
-                type: "ControlPlaceholder",
-                props: {
-                    "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
-                    "key": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
-                    "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
-                    htmlTag: 'section',
-                    style: {
-                        position: 'absolute',
-                        height: 200,
-                        width: '100%',
-                        top: 80
-                    }
-                }
-            },
-            {
-                type: "ControlPlaceholder",
-                props: {
-                    "emptyText": "页面底部，可以从工具栏拖拉控件到这里",
-                    "key": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
-                    "id": "1b6fcd03-5d39-03eb-f586-53ecb1ad2cf7",
-                    htmlTag: 'footer',
-                    style: {
-                        position: 'absolute',
-                        height: 80,
-                        width: '100%',
-                        top: 296
-                    }
-                }
-            }
-        ]
-    };
-    class DesignerFramework extends React.Component {
-        constructor(props) {
-            super(props);
-            this.names = [];
-            this.state = { changed: false, canUndo: false, canRedo: false };
-        }
-        namedControl(control) {
-            let props = control.props;
-            if (!props.name) {
-                let num = 0;
-                let name;
-                do {
-                    num = num + 1;
-                    name = `${control.type}${num}`;
-                } while (this.names.indexOf(name) >= 0);
-                this.names.push(name);
-                props.name = name;
-            }
-            if (!control.children || control.children.length == 0) {
-                return;
-            }
-            for (let i = 0; i < control.children.length; i++) {
-                this.namedControl(control.children[i]);
-            }
-        }
-        undo() {
-            this.pageDesigner.undo();
-        }
-        redo() {
-            this.pageDesigner.redo();
-        }
-        save() {
-            return this.pageDesigner.save(((pageData) => {
-                localStorage.setItem(pageData.props.id, JSON.stringify(pageData));
-                return Promise.resolve(pageData);
-            }));
-        }
-        fetchTemplates() {
-            return __awaiter(this, void 0, void 0, function* () {
-                return templates;
-            });
-        }
-        newFile() {
-            return __awaiter(this, void 0, void 0, function* () {
-                // let result = await import('./controls/template-dialog');
-                // let TemplateDialog = result.default;
-                pdesigner.TemplateDialog.show(() => this.fetchTemplates(), (tmp) => {
-                    this.pageDesigner.setState({ pageData: tmp });
-                });
-            });
-        }
-        componentDidMount() {
-            this.pageDesigner.changed.add(() => {
-                this.setState({
-                    changed: true,
-                    canRedo: this.pageDesigner.canRedo,
-                    canUndo: this.pageDesigner.canUndo,
-                });
-            });
-        }
-        render() {
-            let { changed, canRedo, canUndo } = this.state;
-            let { componets, title } = this.props;
-            return h(pdesigner.PageDesigner, { pageData: controlDescription, ref: (e) => this.pageDesigner = e || this.pageDesigner },
-                h("ul", null,
-                    h("li", { className: "pull-left" },
-                        h("h3", { style: { margin: 0, padding: '0 0 0 10px' } }, title || '')),
-                    h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary", disabled: !changed, ref: (e) => {
-                                if (!e)
-                                    return;
-                                // ui.buttonOnClick(e, (event) => {
-                                //     return this.save()
-                                // }, { toast: '保存成功' })
-                            } },
-                            h("i", { className: "icon-save" }),
-                            h("span", { style: { paddingLeft: 4 } }, "\u4FDD\u5B58"))),
-                    h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary", disabled: !canRedo, onClick: () => this.redo() },
-                            h("i", { className: "icon-repeat" }),
-                            h("span", { style: { paddingLeft: 4 } }, "\u91CD\u505A"))),
-                    h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary", disabled: !canUndo, onClick: () => this.undo() },
-                            h("i", { className: "icon-undo" }),
-                            h("span", { style: { paddingLeft: 4 } }, "\u64A4\u9500"))),
-                    h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary", disabled: changed },
-                            h("i", { className: "icon-eye-open" }),
-                            h("span", { style: { paddingLeft: 4 } }, "\u9884\u89C8"))),
-                    h("li", { className: "pull-right" },
-                        h("button", { className: "btn btn-primary", onClick: () => this.newFile() },
-                            h("i", { className: "icon-file" }),
-                            h("span", { style: { paddingLeft: 4 } }, "\u65B0\u5EFA")))),
-                h("div", { className: "clearfix" }),
-                h("hr", { style: { margin: 0, borderWidth: 4 } }),
-                h(pdesigner.ComponentToolbar, { className: "component-panel", componets: componets }),
-                h(pdesigner.EditorPanel, { emptyText: "未选中控件，点击页面控件，可以编辑选中控件的属性" }),
-                h(pdesigner.DesignerContext.Consumer, null, context => {
-                    let designer = context.designer;
-                    this.namedControl(designer.state.pageData);
-                    let element = pdesigner.Control.create(designer.state.pageData);
-                    return h("div", { className: "main-panel", onClick: (e) => {
-                            // designer.clearSelectControl();
-                            let pageViewId = controlDescription.props.id;
-                            designer.selectControlById(pageViewId);
-                        } },
-                        h("ul", { className: "nav nav-tabs" },
-                            h("li", { role: "presentation", className: "active" },
-                                h("a", { href: "#" }, "\u9875\u9762\u4E00")),
-                            h("li", { role: "presentation" },
-                                h("a", { href: "#" }, "\u9875\u9762\u4E8C")),
-                            h("li", { role: "presentation" },
-                                h("a", { href: "#" }, "\u9875\u9762\u4E09"))),
-                        h("div", { className: "page-container" }, element));
-                }));
-        }
-    }
-    pdesigner.DesignerFramework = DesignerFramework;
-})(pdesigner || (pdesigner = {}));
-var pdesigner;
-(function (pdesigner) {
+    jueying.ComponentToolbar = ComponentToolbar;
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
     class EditorPanel extends React.Component {
         constructor(props) {
             super(props);
@@ -1303,7 +1074,7 @@ var pdesigner;
                     console.log(`Control ${control.constructor.name} has none editor.`);
                     return;
                 }
-                let editor = yield pdesigner.EditorFactory.create(control);
+                let editor = yield jueying.EditorFactory.create(control);
                 this.setState({ editor });
             }));
         }
@@ -1311,32 +1082,35 @@ var pdesigner;
             let { editor } = this.state;
             let { emptyText } = this.props;
             emptyText = emptyText || '';
-            return h(pdesigner.DesignerContext.Consumer, null, context => {
+            return h(jueying.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return h("div", Object.assign({}, pdesigner.Control.htmlDOMProps(this.props), { className: "editor-panel panel panel-primary", ref: (e) => this.element = e || this.element }),
+                return h("div", Object.assign({}, jueying.Control.htmlDOMProps(this.props), { className: "editor-panel panel panel-primary", ref: (e) => this.element = e || this.element }),
                     h("div", { className: "panel-heading" }, "\u63A7\u4EF6\u5C5E\u6027"),
                     h("div", { className: "panel-body" }, editor ? editor : h("div", { className: "empty" }, emptyText)));
             });
         }
     }
-    pdesigner.EditorPanel = EditorPanel;
-})(pdesigner || (pdesigner = {}));
-var pdesigner;
-(function (pdesigner) {
+    jueying.EditorPanel = EditorPanel;
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
     class Errors {
         static argumentNull(argumentName) {
             return new Error(`Argument ${argumentName} is null or empty.`);
         }
+        static pageDataIsNull() {
+            return new Error(`Page data is null.`);
+        }
     }
-    pdesigner.Errors = Errors;
-})(pdesigner || (pdesigner = {}));
-var pdesigner;
-(function (pdesigner) {
-    pdesigner.PageViewContext = React.createContext({ pageView: null });
+    jueying.Errors = Errors;
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    jueying.PageViewContext = React.createContext({ pageView: null });
     /**
      * 移动端页面，将 PageData 渲染为移动端页面。
      */
-    class PageView extends pdesigner.Control {
+    class PageView extends jueying.Control {
         constructor(props) {
             super(props);
         }
@@ -1348,13 +1122,13 @@ var pdesigner;
             let pageData = { controls: [] };
             let pageView = this;
             return this.Element(h(React.Fragment, null,
-                h(pdesigner.PageViewContext.Provider, { value: { pageView } }, this.props.children)));
+                h(jueying.PageViewContext.Provider, { value: { pageView } }, this.props.children)));
         }
     }
     PageView.defaultProps = { layout: 'flowing' };
-    pdesigner.PageView = PageView;
-    pdesigner.ControlFactory.register(PageView);
-    class PageViewEditor extends pdesigner.Editor {
+    jueying.PageView = PageView;
+    jueying.ControlFactory.register(PageView);
+    class PageViewEditor extends jueying.Editor {
         render() {
             let { name, layout } = this.state;
             return this.Element(h(React.Fragment, null,
@@ -1373,107 +1147,533 @@ var pdesigner;
                             h("option", { value: "absolute" }, "\u7EDD\u5BF9\u5B9A\u4F4D"))))));
         }
     }
-    pdesigner.PageViewEditor = PageViewEditor;
-    pdesigner.EditorFactory.register("PageView", PageViewEditor);
-})(pdesigner || (pdesigner = {}));
+    jueying.PageViewEditor = PageViewEditor;
+    jueying.EditorFactory.register("PageView", PageViewEditor);
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        extentions.classNames = {
+            controlSelected: `control-selected `,
+            emptyTemplates: `empty-templates`,
+            loadingTemplates: `loading-templates`,
+            templateSelected: `template-selected`,
+            templateDialog: `template-dialog`,
+            emptyDocument: `empty-document`,
+        };
+        function guid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                s4() + '-' + s4() + s4() + s4();
+        }
+        extentions.guid = guid;
+        let templateDialog = {
+            nameHeight: 40,
+            fontSize: 22
+        };
+        let element = document.createElement('style');
+        element.type = 'text/css';
+        element.innerHTML = `
+        .${extentions.classNames.controlSelected} {
+            border: solid 1px #337ab7!important;
+        }
+        .${extentions.classNames.emptyTemplates} {
+            padding:50px 0;
+            text-align: center;
+        }
+        .${extentions.classNames.loadingTemplates} {
+            padding:50px 0;
+            text-align: center;
+        }
+        .${extentions.classNames.templateSelected} .page-view {
+            border: solid 1px #337ab7!important;
+        }
+        .${extentions.classNames.templateDialog} .name {
+            margin-top: -${templateDialog.nameHeight}px;
+            height: ${templateDialog.nameHeight}px;
+            font-size: ${templateDialog.fontSize}px;
+            text-align: center;
+            padding-top: 6px;
+            background-color: black;
+            opacity: 0.5;
+        }
+        .${extentions.classNames.templateDialog} .name span {
+            color: white;
+        }
+        .${extentions.classNames.emptyDocument} {
+            text-align: center;
+            padding: 100px 0;
+        }
+    `;
+        document.head.appendChild(element);
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        class DesignerFramework extends React.Component {
+            constructor(props) {
+                super(props);
+                this.names = [];
+                this.state = { changed: false, canUndo: false, canRedo: false };
+            }
+            namedControl(control) {
+                let props = control.props;
+                if (!props.name) {
+                    let num = 0;
+                    let name;
+                    do {
+                        num = num + 1;
+                        name = `${control.type}${num}`;
+                    } while (this.names.indexOf(name) >= 0);
+                    this.names.push(name);
+                    props.name = name;
+                }
+                if (!control.children || control.children.length == 0) {
+                    return;
+                }
+                for (let i = 0; i < control.children.length; i++) {
+                    this.namedControl(control.children[i]);
+                }
+            }
+            static get dialogsElement() {
+                let id = 'designer-framework-dialogs';
+                let element = document.getElementById(id);
+                if (!element) {
+                    element = document.createElement('div');
+                    element.id = id;
+                    document.body.appendChild(element);
+                }
+                return element;
+            }
+            undo() {
+                // this.pageDesigner.undo();
+            }
+            redo() {
+                // this.pageDesigner.redo();
+            }
+            save() {
+                // return this.pageDesigner.save(((pageData) => {
+                //     localStorage.setItem(pageData.props.id, JSON.stringify(pageData));
+                //     return Promise.resolve(pageData);
+                // }));
+            }
+            assingControlIds(data) {
+                // data.props.id = guid();
+                let stack = new Array();
+                stack.push(data);
+                while (stack.length > 0) {
+                    let item = stack.pop();
+                    item.props.id = extentions.guid();
+                    if (item.children != null && item.children.length > 0) {
+                        for (let i = 0; i < item.children.length; i++)
+                            stack.push(item.children[i]);
+                    }
+                }
+            }
+            fetchTemplates() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    return extentions.templates;
+                });
+            }
+            newFile() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    extentions.TemplateDialog.show(() => this.fetchTemplates(), (tmp, fileName) => {
+                        let pageData = JSON.parse(JSON.stringify(tmp.pageData));
+                        let { pageDocuments } = this.state;
+                        pageDocuments = pageDocuments || [];
+                        pageDocuments.push({ pageData, name: fileName });
+                        // this.pageDesigner.setState({ pageData });
+                        // this.pageDesigner.pageData = pageData;
+                        this.setState({
+                            pageDocuments,
+                            acitveDocumentIndex: pageDocuments.length - 1
+                        });
+                    });
+                });
+            }
+            componentDidMount() {
+                this.pageDesigner.changed.add(() => {
+                    this.setState({
+                        changed: true,
+                        canRedo: false,
+                        canUndo: false,
+                    });
+                });
+            }
+            render() {
+                let { changed, canRedo, canUndo, acitveDocumentIndex, pageDocuments } = this.state;
+                let { componets, title } = this.props;
+                pageDocuments = pageDocuments || [];
+                console.assert(pageDocuments != null);
+                let pageDocument = acitveDocumentIndex != null ? pageDocuments[acitveDocumentIndex] : null;
+                return h(jueying.PageDesigner, { pageData: pageDocument ? pageDocument.pageData : null, ref: (e) => this.pageDesigner = e || this.pageDesigner },
+                    h("ul", null,
+                        h("li", { className: "pull-left" },
+                            h("h3", { style: { margin: 0, padding: '0 0 0 10px' } }, title || '')),
+                        h("li", { className: "pull-right" },
+                            h("button", { className: "btn btn-primary", disabled: !changed, ref: (e) => {
+                                    if (!e)
+                                        return;
+                                    // ui.buttonOnClick(e, (event) => {
+                                    //     return this.save()
+                                    // }, { toast: '保存成功' })
+                                } },
+                                h("i", { className: "icon-save" }),
+                                h("span", { style: { paddingLeft: 4 } }, "\u4FDD\u5B58"))),
+                        h("li", { className: "pull-right" },
+                            h("button", { className: "btn btn-primary", disabled: !canRedo, onClick: () => this.redo() },
+                                h("i", { className: "icon-repeat" }),
+                                h("span", { style: { paddingLeft: 4 } }, "\u91CD\u505A"))),
+                        h("li", { className: "pull-right" },
+                            h("button", { className: "btn btn-primary", disabled: !canUndo, onClick: () => this.undo() },
+                                h("i", { className: "icon-undo" }),
+                                h("span", { style: { paddingLeft: 4 } }, "\u64A4\u9500"))),
+                        h("li", { className: "pull-right" },
+                            h("button", { className: "btn btn-primary", disabled: changed },
+                                h("i", { className: "icon-eye-open" }),
+                                h("span", { style: { paddingLeft: 4 } }, "\u9884\u89C8"))),
+                        h("li", { className: "pull-right" },
+                            h("button", { className: "btn btn-primary", onClick: () => this.newFile() },
+                                h("i", { className: "icon-file" }),
+                                h("span", { style: { paddingLeft: 4 } }, "\u65B0\u5EFA"))),
+                        h("li", { className: "pull-right" },
+                            h("button", { className: "btn btn-primary", ref: (e) => {
+                                    if (!e)
+                                        return;
+                                    // ui.buttonOnClick(e, (event) => {
+                                    //     return this.save()
+                                    // }, { toast: '保存成功' })
+                                } },
+                                h("i", { className: "icon-folder-open" }),
+                                h("span", { style: { paddingLeft: 4 } }, "\u6253\u5F00")))),
+                    h("div", { className: "clearfix" }),
+                    h("hr", { style: { margin: 0, borderWidth: 4 } }),
+                    h(jueying.ComponentToolbar, { className: "component-panel", componets: componets }),
+                    h(jueying.EditorPanel, { emptyText: "未选中控件，点击页面控件，可以编辑选中控件的属性" }),
+                    h(jueying.DesignerContext.Consumer, null, context => {
+                        let designer = context.designer;
+                        let element;
+                        if (designer.pageData) {
+                            this.namedControl(designer.pageData);
+                            element = jueying.Control.create(designer.pageData);
+                        }
+                        return h("div", { className: "main-panel", onClick: (e) => {
+                                if (designer.pageData) {
+                                    let pageViewId = designer.pageData.props.id;
+                                    designer.selectControlById(pageViewId);
+                                }
+                            } }, element ?
+                            h(React.Fragment, null,
+                                h("ul", { className: "nav nav-tabs" }, pageDocuments.map((o, i) => h("li", { key: i, role: "presentation", className: i == acitveDocumentIndex ? 'active' : null },
+                                    h("a", { href: "#" }, o.name)))),
+                                h("div", { className: "page-container" }, element)) :
+                            h("div", { className: extentions.classNames.emptyDocument }, "\u6682\u65E0\u6253\u5F00\u7684\u6587\u6863\uFF0C\u70B9\u51FB\u6253\u5F00\u6587\u6863"));
+                    }));
+            }
+        }
+        extentions.DesignerFramework = DesignerFramework;
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        class LocalDocumentStorage {
+            list() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    // throw new Error("Method not implemented.");
+                    let items = new Array();
+                    for (let i = 0; i < localStorage.length; i++) {
+                        let key = localStorage.key(i);
+                        if (!key.startsWith(LocalDocumentStorage.prefix)) {
+                            continue;
+                        }
+                        let text = localStorage.getItem(key);
+                        items.push(JSON.parse(text));
+                    }
+                    return items;
+                });
+            }
+            load(name) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let key = `${LocalDocumentStorage.prefix}_${name}`;
+                    let text = localStorage.getItem(name);
+                    if (text == null)
+                        return null;
+                    return JSON.parse(text);
+                });
+            }
+            save(name, doc) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let key = `${LocalDocumentStorage.prefix}_${name}`;
+                    let value = JSON.stringify(doc);
+                    localStorage.setItem(key, value);
+                });
+            }
+            remove(name) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let key = `${LocalDocumentStorage.prefix}_${name}`;
+                    localStorage.removeItem(key);
+                });
+            }
+        }
+        LocalDocumentStorage.prefix = 'pdc';
+        extentions.LocalDocumentStorage = LocalDocumentStorage;
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
 /// <reference path="comon.tsx"/>
-var pdesigner;
-(function (pdesigner) {
-    // let scale = 0.8
-    class PageViewContainer extends React.Component {
-        render() {
-            let { phone_screen_width, phone_screen_height } = PageViewContainer;
-            let transform = `translateX(-${phone_screen_width * 0.2}px) translateY(-${phone_screen_height * 0.2}px) scale(0.6)`; // `scale(0.6)`; //
-            let style = { width: phone_screen_width, height: phone_screen_height, minWidth: 'unset', transform };
-            return h("div", { style: style }, this.props.children);
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        // let pd = jueying;
+        class PageViewContainer extends React.Component {
+            render() {
+                let { phone_screen_width, phone_screen_height, scale } = PageViewContainer;
+                let transform = `translateX(-${phone_screen_width * (1 - scale) / 2}px) translateY(-${phone_screen_height * (1 - scale) / 2}px) scale(${scale})`;
+                let style = { width: phone_screen_width, height: phone_screen_height, minWidth: 'unset', transform };
+                return h("div", { style: style }, this.props.children);
+            }
         }
-    }
-    PageViewContainer.phone_screen_width = 320;
-    PageViewContainer.phone_screen_height = 568;
-    PageViewContainer.scale = 0.6;
-    PageViewContainer.phone_height = PageViewContainer.phone_screen_height * PageViewContainer.scale;
-    PageViewContainer.phone_width = PageViewContainer.phone_screen_width * PageViewContainer.scale;
-    class TemplateDialog extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = { templates: null, pageIndex: 0, selectedTemplateIndex: 0 };
-        }
-        selectTemplate(templateIndex) {
-            // if (this.callback) {
-            //     this.callback(template);
-            //     this.close();
-            // }
-            this.setState({ selectedTemplateIndex: templateIndex });
-        }
-        loadTemplates(pageIndex) {
-            return __awaiter(this, void 0, void 0, function* () {
-                if (!this.fetchTemplates)
-                    return;
-                if (this.currentPageIndex == pageIndex)
-                    return;
-                let tmps = yield this.fetchTemplates();
-                this.setState({ templates: tmps });
-                this.currentPageIndex = pageIndex;
-            });
-        }
-        render() {
-            let { pageIndex, templates, selectedTemplateIndex } = this.state;
-            this.loadTemplates(pageIndex);
-            let height = PageViewContainer.phone_height;
-            let width = PageViewContainer.phone_width;
-            let style = {
-                float: 'left', height, width,
-            };
-            let margin = 15; // 间距
-            let count = 3;
-            let dialog_header_height = 50;
-            let dialog_footer_height = 70;
-            let dialog_content_width = width * count + margin * (count + 1);
-            // let dialog_content_height = height + dialog_header_height + dialog_footer_height + margin * 2;
-            return h("div", { className: "modal fade", ref: (e) => this.element = e || this.element },
-                h("div", { className: "modal-dialog" },
+        PageViewContainer.phone_screen_width = 320;
+        PageViewContainer.phone_screen_height = 568;
+        PageViewContainer.scale = 0.6;
+        PageViewContainer.phone_height = PageViewContainer.phone_screen_height * PageViewContainer.scale;
+        PageViewContainer.phone_width = PageViewContainer.phone_screen_width * PageViewContainer.scale;
+        class TemplateDialog extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { templates: null, pageIndex: 0, selectedTemplateIndex: 0 };
+            }
+            selectTemplate(templateIndex) {
+                this.setState({ selectedTemplateIndex: templateIndex });
+            }
+            confirm() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let isValid = yield this.validator.check();
+                    if (!isValid)
+                        return Promise.reject();
+                    if (this.callback) {
+                        let { templates, selectedTemplateIndex, fileName } = this.state;
+                        let template = templates[selectedTemplateIndex];
+                        this.callback(template, fileName);
+                        this.close();
+                    }
+                });
+            }
+            loadTemplates(pageIndex) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (!this.fetchTemplates)
+                        return;
+                    if (this.currentPageIndex == pageIndex)
+                        return;
+                    let tmps = yield this.fetchTemplates();
+                    this.setState({ templates: tmps });
+                    this.currentPageIndex = pageIndex;
+                });
+            }
+            componentDidMount() {
+                this.validator = new dilu.FormValidator(dialog_element, { name: 'fileName', rules: [dilu.rules.required('请输入文件名')] });
+            }
+            render() {
+                let { pageIndex, templates, selectedTemplateIndex, fileName } = this.state;
+                this.loadTemplates(pageIndex);
+                let height = PageViewContainer.phone_height;
+                let width = PageViewContainer.phone_width;
+                let style = {
+                    float: 'left', height, width,
+                };
+                let margin = 15; // 间距
+                let count = 3;
+                let dialog_header_height = 50;
+                let dialog_footer_height = 70;
+                let dialog_content_width = width * count + margin * (count + 1);
+                return h("div", { className: "modal-dialog" },
                     h("div", { className: "modal-content", style: { width: dialog_content_width } },
                         h("div", { className: "modal-header" },
-                            h("button", { type: "button", className: "close", onClick: () => ui.hideDialog(this.element) },
+                            h("button", { type: "button", className: "close", onClick: () => ui.hideDialog(dialog_element) },
                                 h("span", { "aria-hidden": "true" }, "\u00D7")),
                             h("h4", { className: "modal-title" }, "\u9009\u62E9\u6A21\u677F")),
                         h("div", { className: "modal-body clearfix" },
                             h("div", { className: "form-group" }, templates == null ?
-                                h("div", { className: pdesigner.classNames.loadingTemplates }, "\u6570\u636E\u6B63\u5728\u52A0\u8F7D\u4E2D") :
+                                h("div", { className: extentions.classNames.loadingTemplates }, "\u6570\u636E\u6B63\u5728\u52A0\u8F7D\u4E2D") :
                                 templates.length == 0 ?
-                                    h("div", { className: pdesigner.classNames.emptyTemplates }, "\u6682\u65E0\u6A21\u7248\u6570\u636E") :
+                                    h("div", { className: extentions.classNames.emptyTemplates }, "\u6682\u65E0\u6A21\u7248\u6570\u636E") :
                                     h(React.Fragment, null,
-                                        templates.map((o, i) => h("div", { key: i, style: { width, height, float: i == templates.length - 1 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null }, onClick: () => this.selectTemplate(i), className: i == selectedTemplateIndex ? pdesigner.classNames.templateSelected : null },
+                                        templates.map((o, i) => h("div", { key: i, style: { width, height, float: i == templates.length - 1 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null }, onClick: () => this.selectTemplate(i), className: i == selectedTemplateIndex ? extentions.classNames.templateSelected : null },
                                             h(PageViewContainer, null,
-                                                pdesigner.ControlFactory.create(o),
-                                                h("h3", { style: { marginTop: -36, height: 36, textAlign: 'center' } }, "\u7A7A\u767D\u6A21\u7248")))),
+                                                jueying.ControlFactory.create(o.pageData),
+                                                h("div", { className: "name" },
+                                                    h("span", null, o.name))))),
                                         h("div", { className: "clearfix" }))),
                             h("div", { className: "form-group", style: { marginBottom: 0 } },
                                 h("label", { className: "pull-left" }, "\u6587\u4EF6\u540D"),
                                 h("div", { style: { marginLeft: 100 } },
-                                    h("input", { className: "form-control" })))),
+                                    h("input", { name: "fileName", className: "form-control", value: fileName || '', onChange: (e) => {
+                                            fileName = e.target.value;
+                                            this.setState({ fileName });
+                                        } })))),
                         h("div", { className: "modal-footer" },
                             h("button", { className: "btn btn-default", onClick: () => this.close() }, "\u53D6\u6D88"),
-                            h("button", { className: "btn btn-primary" }, "\u786E\u5B9A")))));
+                            h("button", { className: "btn btn-primary", onClick: () => this.confirm() }, "\u786E\u5B9A"))));
+            }
+            open() {
+                this.setState({ pageIndex: 0, selectedTemplateIndex: 0, fileName: '' });
+                ui.showDialog(dialog_element);
+            }
+            close() {
+                ui.hideDialog(dialog_element);
+            }
+            static show(fetchTemplates, callback) {
+                defaultInstance.callback = callback;
+                defaultInstance.fetchTemplates = fetchTemplates;
+                defaultInstance.open();
+            }
         }
-        open() {
-            this.setState({ pageIndex: 0 });
-            ui.showDialog(this.element);
-        }
-        close() {
-            ui.hideDialog(this.element);
-        }
-        static show(fetchTemplates, callback) {
-            defaultInstance.callback = callback;
-            defaultInstance.fetchTemplates = fetchTemplates;
-            defaultInstance.open();
-        }
-    }
-    TemplateDialog.loadingElement = h("div", { className: pdesigner.classNames.emptyTemplates }, "\u6570\u636E\u6B63\u5728\u52A0\u8F7D\u4E2D...");
-    pdesigner.TemplateDialog = TemplateDialog;
-    let element = document.createElement('div');
-    document.body.appendChild(element);
-    let defaultInstance;
-    ReactDOM.render(h(TemplateDialog, { ref: (e) => defaultInstance = e || defaultInstance }), element);
-})(pdesigner || (pdesigner = {}));
+        extentions.TemplateDialog = TemplateDialog;
+        let dialog_element = document.createElement('div');
+        dialog_element.className = `modal fade ${extentions.classNames.templateDialog}`;
+        document.body.appendChild(dialog_element);
+        let defaultInstance;
+        ReactDOM.render(h(TemplateDialog, { ref: (e) => defaultInstance = e || defaultInstance }), dialog_element);
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        let style = { width: '100%', height: '100%', minWidth: 'unset' };
+        let template0 = {
+            pageData: {
+                type: 'PageView',
+                props: {
+                    "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+                    "className": "page-view",
+                    style,
+                    "componentName": "PageView"
+                },
+                children: [
+                    {
+                        type: "ControlPlaceholder",
+                        props: {
+                            "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
+                            id: extentions.guid(),
+                            htmlTag: 'section',
+                            style: { height: '100%', margin: 0 }
+                        },
+                        children: [
+                            {
+                                type: 'TextHeader',
+                                props: {
+                                    id: extentions.guid(),
+                                    text: '商品订购',
+                                    size: 3,
+                                },
+                            },
+                            {
+                                type: 'ValueInput',
+                                props: {
+                                    id: extentions.guid(),
+                                    dataField: '商品名称'
+                                }
+                            },
+                            {
+                                type: 'ValueInput',
+                                props: {
+                                    id: extentions.guid(),
+                                    dataField: '商品数量'
+                                }
+                            },
+                            {
+                                type: 'ValueInput',
+                                props: {
+                                    id: extentions.guid(),
+                                    dataField: '收件人'
+                                }
+                            },
+                            {
+                                type: 'ValueInput',
+                                props: {
+                                    id: extentions.guid(),
+                                    dataField: '联系电话'
+                                }
+                            },
+                            {
+                                type: 'ValueInput',
+                                props: {
+                                    id: extentions.guid(),
+                                    dataField: '收件地址'
+                                }
+                            },
+                            {
+                                type: 'SubmitButton',
+                                props: {
+                                    id: extentions.guid(),
+                                    text: '提交订单'
+                                }
+                            },
+                        ]
+                    }
+                ]
+            },
+            name: '商品订购'
+        };
+        let template1 = {
+            pageData: {
+                type: 'PageView',
+                props: {
+                    "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+                    "className": "page-view",
+                    style,
+                    "componentName": "PageView"
+                },
+                "children": [
+                    {
+                        type: "ControlPlaceholder",
+                        props: {
+                            "emptyText": "页面中部，可以从工具栏拖拉控件到这里",
+                            "key": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                            "id": "181c33a2-e2fd-9d79-ae08-c8a97cfb1f04",
+                            htmlTag: 'section',
+                            style: { height: '100%', margin: 0 }
+                        }
+                    }
+                ]
+            },
+            name: '空白模板(流式定位)'
+        };
+        let template2 = {
+            pageData: {
+                type: 'PageView',
+                props: {
+                    id: extentions.guid(),
+                    className: "page-view",
+                    style,
+                    componentName: "PageView",
+                    layout: 'absolute'
+                },
+                children: [
+                    {
+                        type: "ControlPlaceholder",
+                        props: {
+                            id: extentions.guid(),
+                            emptyText: "页面中部，可以从工具栏拖拉控件到这里",
+                            htmlTag: 'section',
+                            style: { height: '100%', margin: 0 }
+                        }
+                    }
+                ]
+            },
+            name: '空白模板(绝对定位)'
+        };
+        extentions.templates = [template1, template2, template0,];
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
 //# sourceMappingURL=pdesigner.js.map

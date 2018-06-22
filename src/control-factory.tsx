@@ -1,4 +1,4 @@
-namespace pdesigner {
+namespace jueying {
 
     let customControlTypes: { [key: string]: React.ComponentClass<any> | string } = {}
     let allInstance: { [key: string]: Control<any, any> } = {};

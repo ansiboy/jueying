@@ -1,4 +1,12 @@
-namespace jueying {
+namespace jueying.extentions {
+    export let classNames = {
+        controlSelected: `control-selected `,
+        emptyTemplates: `empty-templates`,
+        loadingTemplates: `loading-templates`,
+        templateSelected: `template-selected`,
+        templateDialog: `template-dialog`,
+        emptyDocument: `empty-document`,
+    }
     export function guid() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -9,18 +17,11 @@ namespace jueying {
             s4() + '-' + s4() + s4() + s4();
     }
 
-    export let classNames = {
-        controlSelected: `control-selected `,
-        emptyTemplates: `empty-templates`,
-        loadingTemplates: `loading-templates`,
-        templateSelected: `template-selected`,
-        templateDialog: `template-dialog`,
+    let templateDialog = {
+        nameHeight: 40,
+        fontSize: 22
     }
 
-    // let templateDialog = {
-    //     nameHeight: 40,
-    //     fontSize: 22
-    // }
     let element = document.createElement('style');
     element.type = 'text/css';
     element.innerHTML = `
@@ -38,27 +39,22 @@ namespace jueying {
         .${classNames.templateSelected} .page-view {
             border: solid 1px #337ab7!important;
         }
+        .${classNames.templateDialog} .name {
+            margin-top: -${templateDialog.nameHeight}px;
+            height: ${templateDialog.nameHeight}px;
+            font-size: ${templateDialog.fontSize}px;
+            text-align: center;
+            padding-top: 6px;
+            background-color: black;
+            opacity: 0.5;
+        }
         .${classNames.templateDialog} .name span {
             color: white;
         }
-        .validationMessage {
-            position: absolute;
-            margin-top: -60px;
-            background-color: red;
-            color: white;
-            padding: 4px 10px;
+        .${classNames.emptyDocument} {
+            text-align: center;
+            padding: 100px 0;
         }
     `;
-/*
-    .${classNames.templateDialog} .name {
-        margin-top: -${templateDialog.nameHeight}px;
-        height: ${templateDialog.nameHeight}px;
-        font-size: ${templateDialog.fontSize}px;
-        text-align: center;
-        padding-top: 6px;
-        background-color: black;
-        opacity: 0.5;
-    }
-*/
     document.head.appendChild(element);
 }

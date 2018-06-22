@@ -14,7 +14,10 @@ requirejs.config({
             ]
         },
         'pdesigner': {
-            exports: 'pdesigner',
+            exports: 'jueying',
+            deps: [
+                'dilu'
+            ]
         }
     },
     paths: {
@@ -24,6 +27,7 @@ requirejs.config({
         normalize: 'lib/require-less-0.1.5/normalize',
         bootstrap: 'lib/bootstrap',
         'chitu': 'lib/chitu',
+        'dilu': 'lib/dilu',
         'jquery': 'lib/jquery-2.1.3',
         'jquery-ui': 'lib/jquery-ui',
         'react': 'lib/react.development',

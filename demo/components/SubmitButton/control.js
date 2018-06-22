@@ -7,10 +7,11 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
             let props = {
                 className: "btn btn-primary btn-block",
             };
-            let child = this.isDesignMode ?
-                h("div", Object.assign({}, props), text) :
-                h("button", Object.assign({}, props), text);
-            return this.Element(child);
+            // let child = this.isDesignMode ?
+            //     <div {...props}>{text}</div> :
+            //     <button {...props}>{text}</button>;
+            let tagName = this.isDesignMode ? 'div' : 'button';
+            return this.Element(tagName, props, text);
         }
     }
     SubmitButton.defaultProps = {

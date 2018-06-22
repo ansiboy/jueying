@@ -136,7 +136,7 @@ interface Require {
 
 declare var requirejs: Require;
 declare module 'pdesigner' {
-	export = pdesigner;
+	export = jueying;
 }
 
 
