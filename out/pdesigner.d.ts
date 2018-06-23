@@ -136,7 +136,6 @@ declare namespace jueying {
         private snapshootVersion;
         controlSelected: Callback<Control<ControlProps<any>, any>>;
         controlComponentDidMount: Callback<Control<any, any>>;
-        changed: Callback<ElementData>;
         constructor(props: any);
         componentWillReceiveProps(props: PageDesignerProps): void;
         pageData: ElementData;
@@ -302,15 +301,8 @@ declare namespace jueying {
     }
 }
 declare namespace jueying.extentions {
-    let classNames: {
-        controlSelected: string;
-        emptyTemplates: string;
-        loadingTemplates: string;
-        templateSelected: string;
-        templateDialog: string;
-        emptyDocument: string;
-    };
     function guid(): string;
+    function isEquals(obj1: object, obj2: object): boolean;
 }
 declare namespace jueying.extentions {
     interface DesignerFrameworkProps {
@@ -327,15 +319,21 @@ declare namespace jueying.extentions {
     class DesignerFramework extends React.Component<DesignerFrameworkProps, DesignerFrameworkState> {
         private pageDesigner;
         private names;
+        private _storage;
+        private acitveDocumentIndex;
         constructor(props: any);
         namedControl(control: jueying.ElementData): void;
+        readonly storage: DocumentStorage;
         static readonly dialogsElement: HTMLElement;
         undo(): void;
         redo(): void;
-        save(): void;
+        save(): Promise<void>;
         assingControlIds(data: jueying.ElementData): void;
         fetchTemplates(): Promise<PageDocument[]>;
         newFile(): Promise<void>;
+        activeDocument(index: number): void;
+        setState<K extends keyof DesignerFrameworkState>(state: (Pick<DesignerFrameworkState, K> | DesignerFrameworkState)): void;
+        closeDocument(index: number): void;
         componentDidMount(): void;
         render(): JSX.Element;
     }
@@ -344,18 +342,42 @@ declare namespace pdesigner_extentions {
 }
 declare namespace jueying.extentions {
     interface DocumentStorage {
-        list(): Promise<PageDocument[]>;
-        load(name: string): Promise<PageDocument>;
-        save(name: string, doc: PageDocument): Promise<any>;
+        list(): Promise<string[]>;
+        load(name: string): Promise<ElementData>;
+        save(name: string, pageData: ElementData): Promise<any>;
         remove(name: string): Promise<any>;
     }
     class LocalDocumentStorage implements DocumentStorage {
         private static prefix;
-        list(): Promise<PageDocument[]>;
+        list(): Promise<string[]>;
         load(name: string): Promise<any>;
-        save(name: string, doc: PageDocument): Promise<void>;
+        save(name: string, pageData: ElementData): Promise<void>;
         remove(name: string): Promise<any>;
     }
+}
+declare namespace jueying.extentions {
+    class DocumentHandler {
+        private static instances;
+        private storage;
+        private doc;
+        private originalPageData;
+        constructor(doc: PageDocument, storage: DocumentStorage);
+        save(): Promise<any>;
+        readonly isChanged: boolean;
+        private static getHandler;
+        static save(doc: PageDocument): void;
+        static isChanged(doc: PageDocument): boolean;
+    }
+}
+declare namespace jueying.extentions {
+    let classNames: {
+        controlSelected: string;
+        emptyTemplates: string;
+        loadingTemplates: string;
+        templateSelected: string;
+        templateDialog: string;
+        emptyDocument: string;
+    };
 }
 declare namespace jueying.extentions {
     interface TemplateDialogProps {

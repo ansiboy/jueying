@@ -45,10 +45,10 @@ template {
 a {
   background-color: transparent;
 }
-a:active,
+/* a:active,
 a:hover {
   outline: 0;
-}
+} */
 abbr[title] {
   border-bottom: 1px dotted;
 }
@@ -3990,11 +3990,11 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   border: 1px solid transparent;
   border-radius: 0px 0px 0 0;
 }
-.nav-tabs > li > a:hover {
+/* .nav-tabs > li > a:hover {
   border-color: #eeeeee #eeeeee #ddd;
-}
+} */
 .nav-tabs > li.active > a,
-.nav-tabs > li.active > a:hover,
+/* .nav-tabs > li.active > a:hover, */
 .nav-tabs > li.active > a:focus {
   color: #555555;
   background-color: #fff;

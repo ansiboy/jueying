@@ -492,6 +492,7 @@ var jueying;
     }
     jueying.Callback = Callback;
     class PageDesigner extends React.Component {
+        // changed = Callback.create<ElementData>();
         constructor(props) {
             super(props);
             // private undoStack = new Array<Snapshoot>();
@@ -506,14 +507,12 @@ var jueying;
             this.snapshootVersion = 0;
             this.controlSelected = Callback.create();
             this.controlComponentDidMount = Callback.create();
-            this.changed = Callback.create();
             // if (this.props.pageData == null)
             //     throw new Error('Prop of pageData cannt be null.');
             this.state = { pageData: this.props.pageData };
             // this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData)) as ElementData;
         }
         componentWillReceiveProps(props) {
-            debugger;
             this.setState({ pageData: props.pageData });
         }
         // private set_state(
@@ -1016,6 +1015,8 @@ var jueying;
 (function (jueying) {
     class ComponentToolbar extends React.Component {
         componentDidMount() {
+            if (!this.designer)
+                return;
             this.draggable($(`.${jueying.Control.connectorElementClassName}`));
             this.designer.controlComponentDidMount.add((control) => {
                 console.assert(control.element != null);
@@ -1065,6 +1066,8 @@ var jueying;
             this.state = { editor: null };
         }
         componentDidMount() {
+            if (!this.designer)
+                return;
             this.designer.controlSelected.add((control) => __awaiter(this, void 0, void 0, function* () {
                 if (control == null) {
                     this.setState({ editor: null });
@@ -1154,14 +1157,6 @@ var jueying;
 (function (jueying) {
     var extentions;
     (function (extentions) {
-        extentions.classNames = {
-            controlSelected: `control-selected `,
-            emptyTemplates: `empty-templates`,
-            loadingTemplates: `loading-templates`,
-            templateSelected: `template-selected`,
-            templateDialog: `template-dialog`,
-            emptyDocument: `empty-document`,
-        };
         function guid() {
             function s4() {
                 return Math.floor((1 + Math.random()) * 0x10000)
@@ -1172,6 +1167,340 @@ var jueying;
                 s4() + '-' + s4() + s4() + s4();
         }
         extentions.guid = guid;
+        function isEquals(obj1, obj2) {
+            if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
+                return false;
+            if (obj1 == null && obj2 == null)
+                return true;
+            var type = typeof obj1;
+            if (type == 'number' || type == 'string' || obj1 instanceof Date) {
+                return obj1 == obj2;
+            }
+            if (Array.isArray(obj1)) {
+                if (!Array.isArray(obj2))
+                    return false;
+                if (obj1.length != obj2.length)
+                    return false;
+                for (let i = 0; i < obj1.length; i++) {
+                    if (!isEquals(obj1[i], obj2[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            let keys1 = Object.getOwnPropertyNames(obj1)
+                .filter(o => !skipField(obj1, o))
+                .sort();
+            let keys2 = Object.getOwnPropertyNames(obj2)
+                .filter(o => !skipField(obj2, o))
+                .sort();
+            if (!isEquals(keys1, keys2))
+                return false;
+            for (let i = 0; i < keys1.length; i++) {
+                let key = keys1[i];
+                let value1 = obj1[key];
+                let value2 = obj2[key];
+                if (!isEquals(value1, value2)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        extentions.isEquals = isEquals;
+        function skipField(obj, field) {
+            return typeof obj[field] == 'function';
+        }
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        class DesignerFramework extends React.Component {
+            constructor(props) {
+                super(props);
+                this.names = [];
+                let self = this;
+                this.state = {
+                    changed: false,
+                    canUndo: false,
+                    canRedo: false
+                };
+            }
+            namedControl(control) {
+                let props = control.props;
+                if (!props.name) {
+                    let num = 0;
+                    let name;
+                    do {
+                        num = num + 1;
+                        name = `${control.type}${num}`;
+                    } while (this.names.indexOf(name) >= 0);
+                    this.names.push(name);
+                    props.name = name;
+                }
+                if (!control.children || control.children.length == 0) {
+                    return;
+                }
+                for (let i = 0; i < control.children.length; i++) {
+                    this.namedControl(control.children[i]);
+                }
+            }
+            get storage() {
+                if (this._storage == null)
+                    this._storage = new extentions.LocalDocumentStorage();
+                return this._storage;
+            }
+            static get dialogsElement() {
+                let id = 'designer-framework-dialogs';
+                let element = document.getElementById(id);
+                if (!element) {
+                    element = document.createElement('div');
+                    element.id = id;
+                    document.body.appendChild(element);
+                }
+                return element;
+            }
+            undo() {
+                // this.pageDesigner.undo();
+            }
+            redo() {
+                // this.pageDesigner.redo();
+            }
+            save() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let { acitveDocumentIndex, pageDocuments } = this.state;
+                    let pageDocument = pageDocuments[acitveDocumentIndex];
+                    console.assert(pageDocument != null);
+                    extentions.DocumentHandler.save(pageDocument);
+                    this.setState({ pageDocuments });
+                });
+            }
+            assingControlIds(data) {
+                // data.props.id = guid();
+                let stack = new Array();
+                stack.push(data);
+                while (stack.length > 0) {
+                    let item = stack.pop();
+                    item.props.id = extentions.guid();
+                    if (item.children != null && item.children.length > 0) {
+                        for (let i = 0; i < item.children.length; i++)
+                            stack.push(item.children[i]);
+                    }
+                }
+            }
+            fetchTemplates() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    return extentions.templates;
+                });
+            }
+            newFile() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    extentions.TemplateDialog.show(() => this.fetchTemplates(), (tmp, fileName) => {
+                        let pageData = JSON.parse(JSON.stringify(tmp.pageData));
+                        let { pageDocuments } = this.state;
+                        pageDocuments = pageDocuments || [];
+                        pageDocuments.push({ pageData, name: fileName });
+                        this.setState({
+                            pageDocuments,
+                            acitveDocumentIndex: pageDocuments.length - 1
+                        });
+                    });
+                });
+            }
+            activeDocument(index) {
+                this.setState({ acitveDocumentIndex: index });
+            }
+            setState(state) {
+                super.setState(state);
+            }
+            closeDocument(index) {
+                let { pageDocuments, acitveDocumentIndex } = this.state;
+                console.assert(pageDocuments != null);
+                pageDocuments.splice(index, 1);
+                if (pageDocuments.length == 0) {
+                    acitveDocumentIndex = null;
+                }
+                else if (acitveDocumentIndex > pageDocuments.length - 1) {
+                    acitveDocumentIndex = 0;
+                }
+                this.setState({ pageDocuments, acitveDocumentIndex });
+            }
+            componentDidMount() {
+            }
+            render() {
+                let { acitveDocumentIndex, pageDocuments } = this.state;
+                let { componets, title } = this.props;
+                pageDocuments = pageDocuments || [];
+                console.assert(pageDocuments != null);
+                let pageDocument = acitveDocumentIndex != null ? pageDocuments[acitveDocumentIndex] : null;
+                let toolbarElement;
+                return h(jueying.PageDesigner, { pageData: pageDocument ? pageDocument.pageData : null, ref: (e) => this.pageDesigner = e || this.pageDesigner },
+                    h(jueying.DesignerContext.Consumer, null, c => {
+                        let designer = c.designer;
+                        let element;
+                        if (designer.pageData) {
+                            this.namedControl(designer.pageData);
+                            element = jueying.Control.create(designer.pageData);
+                        }
+                        let isChanged = pageDocument ? extentions.DocumentHandler.isChanged(pageDocument) : false;
+                        return h(React.Fragment, null,
+                            h("ul", null,
+                                h("li", { className: "pull-left" },
+                                    h("h3", { style: { margin: 0, padding: '0 0 0 10px' } }, title || '')),
+                                h("li", { className: "pull-right" },
+                                    h("button", { className: "btn btn-primary", disabled: !isChanged, onClick: () => this.save() },
+                                        h("i", { className: "icon-save" }),
+                                        h("span", { style: { paddingLeft: 4 } }, "\u4FDD\u5B58"))),
+                                h("li", { className: "pull-right" },
+                                    h("button", { className: "btn btn-primary", onClick: () => this.redo() },
+                                        h("i", { className: "icon-repeat" }),
+                                        h("span", { style: { paddingLeft: 4 } }, "\u91CD\u505A"))),
+                                h("li", { className: "pull-right" },
+                                    h("button", { className: "btn btn-primary", onClick: () => this.undo() },
+                                        h("i", { className: "icon-undo" }),
+                                        h("span", { style: { paddingLeft: 4 } }, "\u64A4\u9500"))),
+                                h("li", { className: "pull-right" },
+                                    h("button", { className: "btn btn-primary" },
+                                        h("i", { className: "icon-eye-open" }),
+                                        h("span", { style: { paddingLeft: 4 } }, "\u9884\u89C8"))),
+                                h("li", { className: "pull-right" },
+                                    h("button", { className: "btn btn-primary", onClick: () => this.newFile() },
+                                        h("i", { className: "icon-file" }),
+                                        h("span", { style: { paddingLeft: 4 } }, "\u65B0\u5EFA"))),
+                                h("li", { className: "pull-right" },
+                                    h("button", { className: "btn btn-primary" },
+                                        h("i", { className: "icon-folder-open" }),
+                                        h("span", { style: { paddingLeft: 4 } }, "\u6253\u5F00")))),
+                            h("div", { className: "clearfix" }),
+                            h("hr", { style: { margin: 0, borderWidth: 4 } }),
+                            h(jueying.ComponentToolbar, { className: "component-panel", componets: componets }),
+                            h(jueying.EditorPanel, { emptyText: "未选中控件，点击页面控件，可以编辑选中控件的属性" }),
+                            h("div", { className: "main-panel", onClick: (e) => {
+                                    if (designer.pageData) {
+                                        let pageViewId = designer.pageData.props.id;
+                                        designer.selectControlById(pageViewId);
+                                    }
+                                } }, element ?
+                                h(React.Fragment, null,
+                                    h("ul", { className: "nav nav-tabs" }, pageDocuments.map((o, i) => h("li", { key: i, role: "presentation", className: i == acitveDocumentIndex ? 'active' : null, onClick: () => this.activeDocument(i) },
+                                        h("a", { href: "javascript:" },
+                                            o.name,
+                                            h("i", { className: "pull-right icon-remove", style: { cursor: 'pointer' }, onClick: (e) => {
+                                                    e.cancelable = true;
+                                                    e.stopPropagation();
+                                                    this.closeDocument(i);
+                                                } }))))),
+                                    h("div", { className: "page-container" }, element)) :
+                                h("div", { className: extentions.classNames.emptyDocument }, "\u6682\u65E0\u6253\u5F00\u7684\u6587\u6863\uFF0C\u70B9\u51FB\u6253\u5F00\u6587\u6863")));
+                    }));
+            }
+        }
+        extentions.DesignerFramework = DesignerFramework;
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        class LocalDocumentStorage {
+            list() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    // throw new Error("Method not implemented.");
+                    let items = new Array();
+                    for (let i = 0; i < localStorage.length; i++) {
+                        let key = localStorage.key(i);
+                        if (!key.startsWith(LocalDocumentStorage.prefix)) {
+                            continue;
+                        }
+                        key = key.substr(LocalDocumentStorage.prefix.length);
+                        items.push(key);
+                    }
+                    return items;
+                });
+            }
+            load(name) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let key = `${LocalDocumentStorage.prefix}${name}`;
+                    let text = localStorage.getItem(name);
+                    if (text == null)
+                        return null;
+                    return JSON.parse(text);
+                });
+            }
+            save(name, pageData) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let key = `${LocalDocumentStorage.prefix}${name}`;
+                    let value = JSON.stringify(pageData);
+                    localStorage.setItem(key, value);
+                });
+            }
+            remove(name) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let key = `${LocalDocumentStorage.prefix}${name}`;
+                    localStorage.removeItem(key);
+                });
+            }
+        }
+        LocalDocumentStorage.prefix = 'pdc_';
+        extentions.LocalDocumentStorage = LocalDocumentStorage;
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        class DocumentHandler {
+            constructor(doc, storage) {
+                this.storage = storage;
+                this.doc = doc;
+                this.originalPageData = JSON.parse(JSON.stringify(this.doc.pageData));
+            }
+            save() {
+                this.originalPageData = JSON.parse(JSON.stringify(this.doc.pageData));
+                return this.storage.save(this.doc.name, this.originalPageData);
+            }
+            get isChanged() {
+                let equals = extentions.isEquals(this.originalPageData, this.doc.pageData);
+                return !equals;
+            }
+            static getHandler(doc) {
+                let instance = this.instances[doc.name];
+                if (instance == null) {
+                    instance = new DocumentHandler(doc, new extentions.LocalDocumentStorage());
+                    this.instances[doc.name] = instance;
+                }
+                return instance;
+            }
+            static save(doc) {
+                if (!doc)
+                    throw jueying.Errors.argumentNull('doc');
+                let handler = this.getHandler(doc);
+                handler.save();
+            }
+            static isChanged(doc) {
+                if (!doc)
+                    throw jueying.Errors.argumentNull('doc');
+                let handler = this.getHandler(doc);
+                return handler.isChanged;
+            }
+        }
+        DocumentHandler.instances = {};
+        extentions.DocumentHandler = DocumentHandler;
+    })(extentions = jueying.extentions || (jueying.extentions = {}));
+})(jueying || (jueying = {}));
+var jueying;
+(function (jueying) {
+    var extentions;
+    (function (extentions) {
+        extentions.classNames = {
+            controlSelected: `control-selected `,
+            emptyTemplates: `empty-templates`,
+            loadingTemplates: `loading-templates`,
+            templateSelected: `template-selected`,
+            templateDialog: `template-dialog`,
+            emptyDocument: `empty-document`,
+        };
         let templateDialog = {
             nameHeight: 40,
             fontSize: 22
@@ -1209,223 +1538,13 @@ var jueying;
             text-align: center;
             padding: 100px 0;
         }
+        ul.nav-tabs li i {
+            position: relative;
+            top: 4px;
+            right: -6px;
+        }
     `;
         document.head.appendChild(element);
-    })(extentions = jueying.extentions || (jueying.extentions = {}));
-})(jueying || (jueying = {}));
-var jueying;
-(function (jueying) {
-    var extentions;
-    (function (extentions) {
-        class DesignerFramework extends React.Component {
-            constructor(props) {
-                super(props);
-                this.names = [];
-                this.state = { changed: false, canUndo: false, canRedo: false };
-            }
-            namedControl(control) {
-                let props = control.props;
-                if (!props.name) {
-                    let num = 0;
-                    let name;
-                    do {
-                        num = num + 1;
-                        name = `${control.type}${num}`;
-                    } while (this.names.indexOf(name) >= 0);
-                    this.names.push(name);
-                    props.name = name;
-                }
-                if (!control.children || control.children.length == 0) {
-                    return;
-                }
-                for (let i = 0; i < control.children.length; i++) {
-                    this.namedControl(control.children[i]);
-                }
-            }
-            static get dialogsElement() {
-                let id = 'designer-framework-dialogs';
-                let element = document.getElementById(id);
-                if (!element) {
-                    element = document.createElement('div');
-                    element.id = id;
-                    document.body.appendChild(element);
-                }
-                return element;
-            }
-            undo() {
-                // this.pageDesigner.undo();
-            }
-            redo() {
-                // this.pageDesigner.redo();
-            }
-            save() {
-                // return this.pageDesigner.save(((pageData) => {
-                //     localStorage.setItem(pageData.props.id, JSON.stringify(pageData));
-                //     return Promise.resolve(pageData);
-                // }));
-            }
-            assingControlIds(data) {
-                // data.props.id = guid();
-                let stack = new Array();
-                stack.push(data);
-                while (stack.length > 0) {
-                    let item = stack.pop();
-                    item.props.id = extentions.guid();
-                    if (item.children != null && item.children.length > 0) {
-                        for (let i = 0; i < item.children.length; i++)
-                            stack.push(item.children[i]);
-                    }
-                }
-            }
-            fetchTemplates() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    return extentions.templates;
-                });
-            }
-            newFile() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    extentions.TemplateDialog.show(() => this.fetchTemplates(), (tmp, fileName) => {
-                        let pageData = JSON.parse(JSON.stringify(tmp.pageData));
-                        let { pageDocuments } = this.state;
-                        pageDocuments = pageDocuments || [];
-                        pageDocuments.push({ pageData, name: fileName });
-                        // this.pageDesigner.setState({ pageData });
-                        // this.pageDesigner.pageData = pageData;
-                        this.setState({
-                            pageDocuments,
-                            acitveDocumentIndex: pageDocuments.length - 1
-                        });
-                    });
-                });
-            }
-            componentDidMount() {
-                this.pageDesigner.changed.add(() => {
-                    this.setState({
-                        changed: true,
-                        canRedo: false,
-                        canUndo: false,
-                    });
-                });
-            }
-            render() {
-                let { changed, canRedo, canUndo, acitveDocumentIndex, pageDocuments } = this.state;
-                let { componets, title } = this.props;
-                pageDocuments = pageDocuments || [];
-                console.assert(pageDocuments != null);
-                let pageDocument = acitveDocumentIndex != null ? pageDocuments[acitveDocumentIndex] : null;
-                return h(jueying.PageDesigner, { pageData: pageDocument ? pageDocument.pageData : null, ref: (e) => this.pageDesigner = e || this.pageDesigner },
-                    h("ul", null,
-                        h("li", { className: "pull-left" },
-                            h("h3", { style: { margin: 0, padding: '0 0 0 10px' } }, title || '')),
-                        h("li", { className: "pull-right" },
-                            h("button", { className: "btn btn-primary", disabled: !changed, ref: (e) => {
-                                    if (!e)
-                                        return;
-                                    // ui.buttonOnClick(e, (event) => {
-                                    //     return this.save()
-                                    // }, { toast: '保存成功' })
-                                } },
-                                h("i", { className: "icon-save" }),
-                                h("span", { style: { paddingLeft: 4 } }, "\u4FDD\u5B58"))),
-                        h("li", { className: "pull-right" },
-                            h("button", { className: "btn btn-primary", disabled: !canRedo, onClick: () => this.redo() },
-                                h("i", { className: "icon-repeat" }),
-                                h("span", { style: { paddingLeft: 4 } }, "\u91CD\u505A"))),
-                        h("li", { className: "pull-right" },
-                            h("button", { className: "btn btn-primary", disabled: !canUndo, onClick: () => this.undo() },
-                                h("i", { className: "icon-undo" }),
-                                h("span", { style: { paddingLeft: 4 } }, "\u64A4\u9500"))),
-                        h("li", { className: "pull-right" },
-                            h("button", { className: "btn btn-primary", disabled: changed },
-                                h("i", { className: "icon-eye-open" }),
-                                h("span", { style: { paddingLeft: 4 } }, "\u9884\u89C8"))),
-                        h("li", { className: "pull-right" },
-                            h("button", { className: "btn btn-primary", onClick: () => this.newFile() },
-                                h("i", { className: "icon-file" }),
-                                h("span", { style: { paddingLeft: 4 } }, "\u65B0\u5EFA"))),
-                        h("li", { className: "pull-right" },
-                            h("button", { className: "btn btn-primary", ref: (e) => {
-                                    if (!e)
-                                        return;
-                                    // ui.buttonOnClick(e, (event) => {
-                                    //     return this.save()
-                                    // }, { toast: '保存成功' })
-                                } },
-                                h("i", { className: "icon-folder-open" }),
-                                h("span", { style: { paddingLeft: 4 } }, "\u6253\u5F00")))),
-                    h("div", { className: "clearfix" }),
-                    h("hr", { style: { margin: 0, borderWidth: 4 } }),
-                    h(jueying.ComponentToolbar, { className: "component-panel", componets: componets }),
-                    h(jueying.EditorPanel, { emptyText: "未选中控件，点击页面控件，可以编辑选中控件的属性" }),
-                    h(jueying.DesignerContext.Consumer, null, context => {
-                        let designer = context.designer;
-                        let element;
-                        if (designer.pageData) {
-                            this.namedControl(designer.pageData);
-                            element = jueying.Control.create(designer.pageData);
-                        }
-                        return h("div", { className: "main-panel", onClick: (e) => {
-                                if (designer.pageData) {
-                                    let pageViewId = designer.pageData.props.id;
-                                    designer.selectControlById(pageViewId);
-                                }
-                            } }, element ?
-                            h(React.Fragment, null,
-                                h("ul", { className: "nav nav-tabs" }, pageDocuments.map((o, i) => h("li", { key: i, role: "presentation", className: i == acitveDocumentIndex ? 'active' : null },
-                                    h("a", { href: "#" }, o.name)))),
-                                h("div", { className: "page-container" }, element)) :
-                            h("div", { className: extentions.classNames.emptyDocument }, "\u6682\u65E0\u6253\u5F00\u7684\u6587\u6863\uFF0C\u70B9\u51FB\u6253\u5F00\u6587\u6863"));
-                    }));
-            }
-        }
-        extentions.DesignerFramework = DesignerFramework;
-    })(extentions = jueying.extentions || (jueying.extentions = {}));
-})(jueying || (jueying = {}));
-var jueying;
-(function (jueying) {
-    var extentions;
-    (function (extentions) {
-        class LocalDocumentStorage {
-            list() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    // throw new Error("Method not implemented.");
-                    let items = new Array();
-                    for (let i = 0; i < localStorage.length; i++) {
-                        let key = localStorage.key(i);
-                        if (!key.startsWith(LocalDocumentStorage.prefix)) {
-                            continue;
-                        }
-                        let text = localStorage.getItem(key);
-                        items.push(JSON.parse(text));
-                    }
-                    return items;
-                });
-            }
-            load(name) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let key = `${LocalDocumentStorage.prefix}_${name}`;
-                    let text = localStorage.getItem(name);
-                    if (text == null)
-                        return null;
-                    return JSON.parse(text);
-                });
-            }
-            save(name, doc) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let key = `${LocalDocumentStorage.prefix}_${name}`;
-                    let value = JSON.stringify(doc);
-                    localStorage.setItem(key, value);
-                });
-            }
-            remove(name) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let key = `${LocalDocumentStorage.prefix}_${name}`;
-                    localStorage.removeItem(key);
-                });
-            }
-        }
-        LocalDocumentStorage.prefix = 'pdc';
-        extentions.LocalDocumentStorage = LocalDocumentStorage;
     })(extentions = jueying.extentions || (jueying.extentions = {}));
 })(jueying || (jueying = {}));
 /// <reference path="comon.tsx"/>

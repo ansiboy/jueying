@@ -14,6 +14,9 @@ namespace jueying {
 
 
         componentDidMount() {
+            if (!this.designer)
+                return;
+
             this.draggable($(`.${Control.connectorElementClassName}`));
             this.designer.controlComponentDidMount.add((control) => {
                 console.assert(control.element != null);

@@ -2,10 +2,11 @@ namespace jueying.extentions {
 
     type ElementData = jueying.ElementData;
     type PageDesigner = jueying.PageDesigner;
-    
+
     export interface PageDocument {
         pageData: ElementData,
         name: string,
+        // changed?: boolean,
     }
 
     let style = { width: '100%', height: '100%', minWidth: 'unset' };

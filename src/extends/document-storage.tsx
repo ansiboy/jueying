@@ -1,43 +1,43 @@
 namespace jueying.extentions {
     export interface DocumentStorage {
-        list(): Promise<PageDocument[]>;
-        load(name: string): Promise<PageDocument>;
-        save(name: string, doc: PageDocument): Promise<any>;
+        list(): Promise<string[]>;
+        load(name: string): Promise<ElementData>;
+        save(name: string, pageData: ElementData): Promise<any>;
         remove(name: string): Promise<any>;
     }
 
     export class LocalDocumentStorage implements DocumentStorage {
-        private static prefix = 'pdc';
-        async list(): Promise<PageDocument[]> {
+        private static prefix = 'pdc_';
+        async list(): Promise<string[]> {
             // throw new Error("Method not implemented.");
-            let items = new Array<PageDocument>();
+            let items = new Array<string>();
             for (let i = 0; i < localStorage.length; i++) {
                 let key = localStorage.key(i);
                 if (!key.startsWith(LocalDocumentStorage.prefix)) {
                     continue;
                 }
 
-                let text = localStorage.getItem(key);
-                items.push(JSON.parse(text));
+                key = key.substr(LocalDocumentStorage.prefix.length)
+                items.push(key);
             }
 
             return items;
         }
         async load(name: string) {
-            let key = `${LocalDocumentStorage.prefix}_${name}`;
+            let key = `${LocalDocumentStorage.prefix}${name}`;
             let text = localStorage.getItem(name);
             if (text == null)
                 return null;
 
             return JSON.parse(text);
         }
-        async save(name: string, doc: PageDocument) {
-            let key = `${LocalDocumentStorage.prefix}_${name}`;
-            let value = JSON.stringify(doc);
+        async save(name: string, pageData: ElementData) {
+            let key = `${LocalDocumentStorage.prefix}${name}`;
+            let value = JSON.stringify(pageData);
             localStorage.setItem(key, value);
         }
         async remove(name: string): Promise<any> {
-            let key = `${LocalDocumentStorage.prefix}_${name}`;
+            let key = `${LocalDocumentStorage.prefix}${name}`;
             localStorage.removeItem(key);
         }
 

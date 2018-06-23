@@ -19,6 +19,9 @@ namespace jueying {
             this.state = { editor: null };
         }
         componentDidMount() {
+            if (!this.designer)
+                return;
+
             this.designer.controlSelected.add(async (control) => {
                 if (control == null) {
                     this.setState({ editor: null });

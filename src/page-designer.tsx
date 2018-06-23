@@ -66,7 +66,7 @@ namespace jueying {
 
         controlSelected = Callback.create<Control<ControlProps<any>, any>>();
         controlComponentDidMount = Callback.create<Control<any, any>>();
-        changed = Callback.create<ElementData>();
+        // changed = Callback.create<ElementData>();
 
         constructor(props) {
             super(props);
@@ -80,7 +80,6 @@ namespace jueying {
         }
 
         componentWillReceiveProps(props: PageDesignerProps) {
-            debugger;
             this.setState({ pageData: props.pageData });
         }
 

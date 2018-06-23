@@ -1,12 +1,5 @@
 namespace jueying.extentions {
-    export let classNames = {
-        controlSelected: `control-selected `,
-        emptyTemplates: `empty-templates`,
-        loadingTemplates: `loading-templates`,
-        templateSelected: `template-selected`,
-        templateDialog: `template-dialog`,
-        emptyDocument: `empty-document`,
-    }
+
     export function guid() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -17,44 +10,63 @@ namespace jueying.extentions {
             s4() + '-' + s4() + s4() + s4();
     }
 
-    let templateDialog = {
-        nameHeight: 40,
-        fontSize: 22
+    export function isEquals(obj1: object, obj2: object) {
+
+        if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
+            return false;
+
+        if (obj1 == null && obj2 == null)
+            return true;
+
+        var type = typeof obj1;
+        if (type == 'number' || type == 'string' || obj1 instanceof Date) {
+            return obj1 == obj2;
+        }
+
+        if (Array.isArray(obj1)) {
+            if (!Array.isArray(obj2))
+                return false;
+
+            if (obj1.length != obj2.length)
+                return false;
+
+            for (let i = 0; i < obj1.length; i++) {
+                if (!isEquals(obj1[i], obj2[i])) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        let keys1 = Object.getOwnPropertyNames(obj1)
+            .filter(o => !skipField(obj1, o))
+            .sort();
+        let keys2 = Object.getOwnPropertyNames(obj2)
+            .filter(o => !skipField(obj2, o))
+            .sort();
+
+        if (!isEquals(keys1, keys2))
+            return false;
+
+        for (let i = 0; i < keys1.length; i++) {
+            let key = keys1[i];
+            let value1 = obj1[key];
+            let value2 = obj2[key];
+
+            if (!isEquals(value1, value2)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    let element = document.createElement('style');
-    element.type = 'text/css';
-    element.innerHTML = `
-        .${classNames.controlSelected} {
-            border: solid 1px #337ab7!important;
-        }
-        .${classNames.emptyTemplates} {
-            padding:50px 0;
-            text-align: center;
-        }
-        .${classNames.loadingTemplates} {
-            padding:50px 0;
-            text-align: center;
-        }
-        .${classNames.templateSelected} .page-view {
-            border: solid 1px #337ab7!important;
-        }
-        .${classNames.templateDialog} .name {
-            margin-top: -${templateDialog.nameHeight}px;
-            height: ${templateDialog.nameHeight}px;
-            font-size: ${templateDialog.fontSize}px;
-            text-align: center;
-            padding-top: 6px;
-            background-color: black;
-            opacity: 0.5;
-        }
-        .${classNames.templateDialog} .name span {
-            color: white;
-        }
-        .${classNames.emptyDocument} {
-            text-align: center;
-            padding: 100px 0;
-        }
-    `;
-    document.head.appendChild(element);
+    function skipField(obj: any, field: string): boolean {
+        return typeof obj[field] == 'function';
+    }
+
+
+
+
 }
