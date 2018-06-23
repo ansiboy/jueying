@@ -39,6 +39,8 @@ namespace jueying.extentions {
                 props.name = name;
             }
 
+            props.id = guid();
+
             if (!control.children || control.children.length == 0) {
                 return;
             }
@@ -92,6 +94,11 @@ namespace jueying.extentions {
                 }
             }
         }
+        createPageDataFromSource(source: ElementData) {
+            let pageData: ElementData = JSON.parse(JSON.stringify(source));
+            this.namedControl(pageData);
+            return pageData;
+        }
         async fetchTemplates(): Promise<PageDocument[]> {
             return templates;
         }
@@ -99,7 +106,7 @@ namespace jueying.extentions {
             TemplateDialog.show(
                 () => this.fetchTemplates(),
                 (tmp, fileName) => {
-                    let pageData: ElementData = JSON.parse(JSON.stringify(tmp.pageData));
+                    let pageData: ElementData = this.createPageDataFromSource(tmp.pageData);
                     let { pageDocuments } = this.state;
                     pageDocuments = pageDocuments || [];
                     pageDocuments.push({ pageData, name: fileName });
@@ -110,7 +117,19 @@ namespace jueying.extentions {
                 });
         }
         activeDocument(index: number) {
+            let { pageDocuments } = this.state;
+            let doc = pageDocuments[index];
+            console.assert(doc != null);
+
             this.setState({ acitveDocumentIndex: index });
+
+            setTimeout(() => {
+                let pageViewId = doc.pageData.props.id;
+                console.assert(pageViewId != null, 'pageView id is null');
+                console.assert(doc.pageData.type == 'PageView');
+
+                this.pageDesigner.selectControlById(pageViewId);
+            }, 50);
         }
         setState<K extends keyof DesignerFrameworkState>(
             state: (Pick<DesignerFrameworkState, K> | DesignerFrameworkState),
@@ -149,7 +168,6 @@ namespace jueying.extentions {
                         let designer = c.designer;
                         let element: React.ReactElement<any>;
                         if (designer.pageData) {
-                            this.namedControl(designer.pageData);
                             element = Control.create(designer.pageData);
                         }
 

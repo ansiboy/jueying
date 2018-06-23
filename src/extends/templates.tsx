@@ -15,10 +15,10 @@ namespace jueying.extentions {
         pageData: {
             type: 'PageView',
             props: {
-                "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
-                "className": "page-view",
+                id: guid(),
+                className: "page-view",
                 style,
-                "componentName": "PageView"
+                componentName: "PageView"
             },
             children: [
                 {
@@ -91,7 +91,7 @@ namespace jueying.extentions {
         pageData: {
             type: 'PageView',
             props: {
-                "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+                "id": guid(),
                 "className": "page-view",
                 style,
                 "componentName": "PageView"

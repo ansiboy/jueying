@@ -17,7 +17,7 @@ let style = { width: '100%', height: '100%', minWidth: 'unset' };
 let template0: ElementData = {
     type: 'PageView',
     props: {
-        "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+        "id": guid(),
         "className": "page-view",
         style,
         "componentName": "PageView"
@@ -90,7 +90,7 @@ let template0: ElementData = {
 let template1: ElementData = {
     type: 'PageView',
     props: {
-        "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+        "id": guid(),
         "className": "page-view",
         style,
         "componentName": "PageView"

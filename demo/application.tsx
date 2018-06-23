@@ -17,7 +17,7 @@ let container = document.getElementById('container');
 let controlDescription: ElementData = {
     type: 'PageView',
     props: {
-        "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+        "id": guid(),
         "className": "page-view",
         "style": {
             position: 'absolute',
