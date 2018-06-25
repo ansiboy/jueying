@@ -1,6 +1,6 @@
 namespace jueying.extentions {
     export interface DocumentStorage {
-        list(): Promise<string[]>;
+        list(pageIndex, pageSize): Promise<{ items: [string, ElementData][], count: number }>;
         load(name: string): Promise<ElementData>;
         save(name: string, pageData: ElementData): Promise<any>;
         remove(name: string): Promise<any>;
@@ -8,24 +8,31 @@ namespace jueying.extentions {
 
     export class LocalDocumentStorage implements DocumentStorage {
         private static prefix = 'pdc_';
-        async list(): Promise<string[]> {
-            // throw new Error("Method not implemented.");
-            let items = new Array<string>();
+        async list(pageIndex, pageSize) {
+            if (pageIndex == null) throw Errors.argumentNull('pageIndex');
+            if (pageSize == null) throw Errors.argumentNull('pageSize');
+
+            let allItems = new Array<[string, ElementData]>();
             for (let i = 0; i < localStorage.length; i++) {
                 let key = localStorage.key(i);
                 if (!key.startsWith(LocalDocumentStorage.prefix)) {
                     continue;
                 }
 
-                key = key.substr(LocalDocumentStorage.prefix.length)
-                items.push(key);
+                let name = key.substr(LocalDocumentStorage.prefix.length);
+                let value = localStorage[key];
+                let doc = JSON.parse(value);
+                allItems.push([name, doc]);
             }
 
-            return items;
+            let count = allItems.length;
+            let items = allItems.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
+            return { items, count };
         }
         async load(name: string) {
+            debugger;
             let key = `${LocalDocumentStorage.prefix}${name}`;
-            let text = localStorage.getItem(name);
+            let text = localStorage.getItem(key);
             if (text == null)
                 return null;
 

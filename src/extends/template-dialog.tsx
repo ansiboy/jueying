@@ -21,31 +21,40 @@ namespace jueying.extentions {
         }
     }
 
+    const PAGE_SIZE = 3;
+    type LoadDocuments = (pageIndex: number, pageSize: number) => Promise<{ items: DocumentData[], count: number }>;
+
     export interface TemplateDialogProps {
     }
+
     export interface TemplateDialogState {
-        templates: PageDocument[],
+        templates: DocumentData[],
+        templatesCount?: number,
         pageIndex: number,
         selectedTemplateIndex: number,
         fileName?: string,
+        showFileNameInput: boolean,
     }
+
     export class TemplateDialog extends React.Component<TemplateDialogProps, TemplateDialogState> {
-        private fetchTemplates: () => Promise<PageDocument[]>;
-        private callback: (template: PageDocument, fileName: string) => void;
+        private fetchTemplates: LoadDocuments;
+        private callback: (template: DocumentData, fileName: string) => void;
         private currentPageIndex: number;
         private validator: dilu.FormValidator;
 
         constructor(props) {
             super(props);
-            this.state = { templates: null, pageIndex: 0, selectedTemplateIndex: 0 };
+            this.state = { templates: null, pageIndex: 0, selectedTemplateIndex: 0, showFileNameInput: true };
         }
         private selectTemplate(templateIndex: number) {
             this.setState({ selectedTemplateIndex: templateIndex })
         }
         private async confirm() {
-            let isValid = await this.validator.check();
-            if (!isValid)
-                return Promise.reject();
+            if (this.state.showFileNameInput) {
+                let isValid = await this.validator.check();
+                if (!isValid)
+                    return Promise.reject();
+            }
 
             if (this.callback) {
                 let { templates, selectedTemplateIndex, fileName } = this.state;
@@ -55,15 +64,15 @@ namespace jueying.extentions {
             }
         }
         async loadTemplates(pageIndex: number) {
-            if (!this.fetchTemplates)
-                return;
-
-            if (this.currentPageIndex == pageIndex)
-                return;
-
-            let tmps = await this.fetchTemplates();
-            this.setState({ templates: tmps });
+            console.assert(this.fetchTemplates != null);
+            let tmps = await this.fetchTemplates(pageIndex, PAGE_SIZE);
+            console.assert(tmps != null);
+            console.assert(tmps.count > 0);
+            this.setState({ templates: tmps.items, templatesCount: tmps.count });
             this.currentPageIndex = pageIndex;
+        }
+        setState(state) {
+            super.setState(state);
         }
         componentDidMount() {
             this.validator = new dilu.FormValidator(dialog_element,
@@ -72,8 +81,7 @@ namespace jueying.extentions {
         }
         render() {
 
-            let { pageIndex, templates, selectedTemplateIndex, fileName } = this.state;
-            this.loadTemplates(pageIndex);
+            let { pageIndex, templates, templatesCount, selectedTemplateIndex, fileName, showFileNameInput, } = this.state;
 
             let height = PageViewContainer.phone_height;
             let width = PageViewContainer.phone_width;
@@ -86,7 +94,15 @@ namespace jueying.extentions {
             let dialog_header_height = 50;
             let dialog_footer_height = 70;
             let dialog_content_width = width * count + margin * (count + 1);
-
+            let pagingBar: JSX.Element;
+            if (templatesCount != null) {
+                let pagesCount = Math.ceil(templatesCount / PAGE_SIZE);
+                let children = []
+                for (let i = 0; i < pagesCount; i++) {
+                    children.push(<li key={i}><a href="javascript:">{i + 1}</a></li>);
+                }
+                pagingBar = React.createElement("ul", { className: 'pagination', style: { margin: 0 } }, children);
+            }
             return <div className="modal-dialog">
                 <div className="modal-content" style={{ width: dialog_content_width }}>
                     <div className="modal-header">
@@ -103,7 +119,7 @@ namespace jueying.extentions {
                                     <div className={classNames.emptyTemplates}>暂无模版数据</div> :
                                     <React.Fragment>
                                         {templates.map((o, i) =>
-                                            <div key={i} style={{ width, height, float: i == templates.length - 1 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null }} //i == templates.length - 1 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null 
+                                            <div key={i} style={{ width, height, float: i == 2 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null }} //i == templates.length - 1 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null 
                                                 onClick={() => this.selectTemplate(i)}
                                                 className={i == selectedTemplateIndex ? classNames.templateSelected : null}>
                                                 <PageViewContainer>
@@ -118,7 +134,7 @@ namespace jueying.extentions {
                                     </React.Fragment>
                             }
                         </div>
-                        <div className="form-group" style={{ marginBottom: 0 }}>
+                        {showFileNameInput ? <div className="form-group" style={{ marginBottom: 0 }}>
                             <label className="pull-left">文件名</label>
                             <div style={{ marginLeft: 100 }} >
                                 <input name="fileName" className="form-control" value={fileName || ''}
@@ -127,32 +143,48 @@ namespace jueying.extentions {
                                         this.setState({ fileName });
                                     }} />
                             </div>
-                        </div>
+                        </div> : null}
                     </div>
                     <div className="modal-footer">
-                        <button className="btn btn-default"
-                            onClick={() => this.close()}>取消</button>
-                        <button className="btn btn-primary"
-                            onClick={() => this.confirm()}>确定</button>
+                        <div className="pull-left">
+                            {pagingBar}
+                        </div>
+                        <div className="pull-right">
+                            <button className="btn btn-default"
+                                onClick={() => this.close()}>取消</button>
+                            <button className="btn btn-primary"
+                                onClick={() => this.confirm()}>确定</button>
+                        </div>
                     </div>
                 </div>
             </div>
         }
 
-        open() {
-            this.setState({ pageIndex: 0, selectedTemplateIndex: 0, fileName: '' });
+        open(requiredFileName?: boolean) {
+            requiredFileName == null ? true : requiredFileName;
+            this.setState({
+                pageIndex: 0, selectedTemplateIndex: 0, fileName: '',
+                showFileNameInput: requiredFileName, templates: [],
+            });
+            this.currentPageIndex = null;
             ui.showDialog(dialog_element);
+            this.loadTemplates(0);
         }
 
         close() {
             ui.hideDialog(dialog_element);
         }
 
-        static show(fetchTemplates: () => Promise<PageDocument[]>,
-            callback: (tmp: PageDocument, fileName?: string) => void) {
+        static show(args: {
+            fetch: LoadDocuments,
+            requiredFileName?: boolean,
+            callback?: (tmp: DocumentData, fileName?: string) => void
+        }) {
+
+            let { fetch, callback, requiredFileName } = args;
             defaultInstance.callback = callback;
-            defaultInstance.fetchTemplates = fetchTemplates;
-            defaultInstance.open();
+            defaultInstance.fetchTemplates = fetch;
+            defaultInstance.open(requiredFileName);
         }
     }
 

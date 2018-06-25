@@ -3,15 +3,14 @@ namespace jueying.extentions {
     type ElementData = jueying.ElementData;
     type PageDesigner = jueying.PageDesigner;
 
-    export interface PageDocument {
+    export interface DocumentData {
         pageData: ElementData,
         name: string,
-        // changed?: boolean,
     }
 
     let style = { width: '100%', height: '100%', minWidth: 'unset' };
 
-    let template0: PageDocument = {
+    let template0: DocumentData = {
         pageData: {
             type: 'PageView',
             props: {
@@ -87,7 +86,7 @@ namespace jueying.extentions {
         name: '商品订购'
     }
 
-    let template1: PageDocument = {
+    let template1: DocumentData = {
         pageData: {
             type: 'PageView',
             props: {
@@ -112,7 +111,7 @@ namespace jueying.extentions {
         name: '空白模板(流式定位)'
     }
 
-    let template2: PageDocument = {
+    let template2: DocumentData = {
         pageData: {
             type: 'PageView',
             props: {

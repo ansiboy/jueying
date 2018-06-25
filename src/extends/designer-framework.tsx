@@ -78,7 +78,8 @@ namespace jueying.extentions {
             let { acitveDocumentIndex, pageDocuments } = this.state;
             let pageDocument = pageDocuments[acitveDocumentIndex];
             console.assert(pageDocument != null);
-            DocumentHandler.save(pageDocument);
+            // PageDocument.save(pageDocument);
+            pageDocument.save();
             this.setState({ pageDocuments });
         }
         assingControlIds(data: jueying.ElementData) {
@@ -99,22 +100,51 @@ namespace jueying.extentions {
             this.namedControl(pageData);
             return pageData;
         }
-        async fetchTemplates(): Promise<PageDocument[]> {
-            return templates;
+        async createDocuemnt(fileName: string, pageData: ElementData, isNew: boolean) {
+            console.assert(fileName);
+            let { pageDocuments } = this.state;
+            let pageDocument = isNew ? PageDocument.new(fileName, pageData) : await PageDocument.load(fileName);
+            pageDocuments = pageDocuments || [];
+            pageDocuments.push(pageDocument);
+            this.setState({
+                pageDocuments,
+                acitveDocumentIndex: pageDocuments.length - 1
+            })
+        }
+        async fetchTemplates() {
+            return { items: templates, count: templates.length };
         }
         async newFile() {
-            TemplateDialog.show(
-                () => this.fetchTemplates(),
-                (tmp, fileName) => {
-                    let pageData: ElementData = this.createPageDataFromSource(tmp.pageData);
-                    let { pageDocuments } = this.state;
-                    pageDocuments = pageDocuments || [];
-                    pageDocuments.push({ pageData, name: fileName });
-                    this.setState({
-                        pageDocuments,
-                        acitveDocumentIndex: pageDocuments.length - 1
-                    })
-                });
+            TemplateDialog.show({
+                fetch: () => this.fetchTemplates(),
+                requiredFileName: true,
+                callback: (tmp, fileName) => {
+                    this.createDocuemnt(fileName, tmp.pageData, true);
+                }
+            });
+        }
+        open() {
+            TemplateDialog.show({
+                fetch: async (pageIndex, pageSize) => {
+                    let result = await this.storage.list(pageIndex, pageSize);
+                    let items = result.items.map(a => ({ name: a[0], pageData: a[1] }));
+                    let count = result.count;
+                    return { items, count };
+                },
+                callback: (tmp) => {
+                    let fileName = tmp.name;
+                    let docs = this.state.pageDocuments || [];
+                    let existDoc = docs.filter(o => o.name == tmp.name)[0];
+                    if (existDoc) {
+                        let index = docs.indexOf(existDoc);
+                        this.activeDocument(index);
+                        return;
+                    }
+
+                    this.createDocuemnt(fileName, tmp.pageData, false);
+
+                }
+            })
         }
         activeDocument(index: number) {
             let { pageDocuments } = this.state;
@@ -159,8 +189,6 @@ namespace jueying.extentions {
             pageDocuments = pageDocuments || [];
             console.assert(pageDocuments != null);
             let pageDocument = acitveDocumentIndex != null ? pageDocuments[acitveDocumentIndex] : null;
-
-            let toolbarElement: HTMLElement;
             return <PageDesigner pageData={pageDocument ? pageDocument.pageData : null}
                 ref={(e) => this.pageDesigner = e || this.pageDesigner} >
                 <DesignerContext.Consumer>
@@ -171,7 +199,7 @@ namespace jueying.extentions {
                             element = Control.create(designer.pageData);
                         }
 
-                        let isChanged = pageDocument ? DocumentHandler.isChanged(pageDocument) : false;
+                        let isChanged = pageDocument ? pageDocument.isChanged : false; //? PageDocument.isChanged(pageDocument) : false;
 
 
                         return <React.Fragment>
@@ -213,7 +241,7 @@ namespace jueying.extentions {
                                     </button>
                                 </li>
                                 <li className="pull-right">
-                                    <button className="btn btn-primary">
+                                    <button className="btn btn-primary" onClick={() => this.open()}>
                                         <i className="icon-folder-open" />
                                         <span style={{ paddingLeft: 4 }}>打开</span>
                                     </button>
