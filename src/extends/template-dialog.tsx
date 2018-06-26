@@ -71,13 +71,17 @@ namespace jueying.extentions {
             this.setState({ templates: tmps.items, templatesCount: tmps.count });
             this.currentPageIndex = pageIndex;
         }
-        setState(state) {
-            super.setState(state);
-        }
+        // setState(state) {
+        //     super.setState(state);
+        // }
         componentDidMount() {
             this.validator = new dilu.FormValidator(dialog_element,
                 { name: 'fileName', rules: [dilu.rules.required('请输入文件名')] }
             );
+        }
+        async showPage(pageIndex: number) {
+            let result = await this.fetchTemplates(pageIndex, PAGE_SIZE);
+            this.setState({ templates: result.items, templatesCount: result.count, pageIndex });
         }
         render() {
 
@@ -85,21 +89,19 @@ namespace jueying.extentions {
 
             let height = PageViewContainer.phone_height;
             let width = PageViewContainer.phone_width;
-            let style: React.CSSProperties = {
-                float: 'left', height, width,
-            };
-
             let margin = 15;    // 间距
-            let count = 3;
-            let dialog_header_height = 50;
-            let dialog_footer_height = 70;
+            let count = PAGE_SIZE;
             let dialog_content_width = width * count + margin * (count + 1);
             let pagingBar: JSX.Element;
             if (templatesCount != null) {
                 let pagesCount = Math.ceil(templatesCount / PAGE_SIZE);
                 let children = []
                 for (let i = 0; i < pagesCount; i++) {
-                    children.push(<li key={i}><a href="javascript:">{i + 1}</a></li>);
+                    children.push(
+                        <li key={i} className={i == pageIndex ? 'active' : null}>
+                            <a href="javascript:" onClick={() => this.showPage(i)}>{i + 1}</a>
+                        </li>
+                    );
                 }
                 pagingBar = React.createElement("ul", { className: 'pagination', style: { margin: 0 } }, children);
             }
