@@ -5,7 +5,7 @@ define(["require", "exports", "pdesigner", "react-dom", "./components/componenDe
     let controlDescription = {
         type: 'PageView',
         props: {
-            "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+            "id": pdesigner_1.guid(),
             "className": "page-view",
             "style": {
                 position: 'absolute',

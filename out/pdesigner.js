@@ -1098,6 +1098,9 @@ var jueying;
 var jueying;
 (function (jueying) {
     class Errors {
+        static fileNotExists(fileName) {
+            return new Error(`File '${fileName}' is not exists.`);
+        }
         static argumentNull(argumentName) {
             return new Error(`Argument ${argumentName} is null or empty.`);
         }
@@ -1239,6 +1242,8 @@ var jueying;
                     this.names.push(name);
                     props.name = name;
                 }
+                if (!props.id)
+                    props.id = extentions.guid();
                 if (!control.children || control.children.length == 0) {
                     return;
                 }
@@ -1272,7 +1277,8 @@ var jueying;
                     let { acitveDocumentIndex, pageDocuments } = this.state;
                     let pageDocument = pageDocuments[acitveDocumentIndex];
                     console.assert(pageDocument != null);
-                    extentions.DocumentHandler.save(pageDocument);
+                    // PageDocument.save(pageDocument);
+                    pageDocument.save();
                     this.setState({ pageDocuments });
                 });
             }
@@ -1289,27 +1295,72 @@ var jueying;
                     }
                 }
             }
+            createPageDataFromSource(source) {
+                let pageData = JSON.parse(JSON.stringify(source));
+                this.namedControl(pageData);
+                return pageData;
+            }
+            createDocuemnt(fileName, pageData, isNew) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    console.assert(fileName);
+                    let { pageDocuments } = this.state;
+                    let pageDocument = isNew ? extentions.PageDocument.new(fileName, pageData) : yield extentions.PageDocument.load(fileName);
+                    pageDocuments = pageDocuments || [];
+                    pageDocuments.push(pageDocument);
+                    this.setState({
+                        pageDocuments,
+                        acitveDocumentIndex: pageDocuments.length - 1
+                    });
+                });
+            }
             fetchTemplates() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    return extentions.templates;
+                    return { items: extentions.templates, count: extentions.templates.length };
                 });
             }
             newFile() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    extentions.TemplateDialog.show(() => this.fetchTemplates(), (tmp, fileName) => {
-                        let pageData = JSON.parse(JSON.stringify(tmp.pageData));
-                        let { pageDocuments } = this.state;
-                        pageDocuments = pageDocuments || [];
-                        pageDocuments.push({ pageData, name: fileName });
-                        this.setState({
-                            pageDocuments,
-                            acitveDocumentIndex: pageDocuments.length - 1
-                        });
+                    extentions.TemplateDialog.show({
+                        fetch: () => this.fetchTemplates(),
+                        requiredFileName: true,
+                        callback: (tmp, fileName) => {
+                            this.createDocuemnt(fileName, tmp.pageData, true);
+                        }
                     });
                 });
             }
+            open() {
+                extentions.TemplateDialog.show({
+                    fetch: (pageIndex, pageSize) => __awaiter(this, void 0, void 0, function* () {
+                        let result = yield this.storage.list(pageIndex, pageSize);
+                        let items = result.items.map(a => ({ name: a[0], pageData: a[1] }));
+                        let count = result.count;
+                        return { items, count };
+                    }),
+                    callback: (tmp) => {
+                        let fileName = tmp.name;
+                        let docs = this.state.pageDocuments || [];
+                        let existDoc = docs.filter(o => o.name == tmp.name)[0];
+                        if (existDoc) {
+                            let index = docs.indexOf(existDoc);
+                            this.activeDocument(index);
+                            return;
+                        }
+                        this.createDocuemnt(fileName, tmp.pageData, false);
+                    }
+                });
+            }
             activeDocument(index) {
+                let { pageDocuments } = this.state;
+                let doc = pageDocuments[index];
+                console.assert(doc != null);
                 this.setState({ acitveDocumentIndex: index });
+                setTimeout(() => {
+                    let pageViewId = doc.pageData.props.id;
+                    console.assert(pageViewId != null, 'pageView id is null');
+                    console.assert(doc.pageData.type == 'PageView');
+                    this.pageDesigner.selectControlById(pageViewId);
+                }, 50);
             }
             setState(state) {
                 super.setState(state);
@@ -1317,14 +1368,33 @@ var jueying;
             closeDocument(index) {
                 let { pageDocuments, acitveDocumentIndex } = this.state;
                 console.assert(pageDocuments != null);
-                pageDocuments.splice(index, 1);
-                if (pageDocuments.length == 0) {
-                    acitveDocumentIndex = null;
+                let doc = pageDocuments[index];
+                console.assert(doc != null);
+                let close = () => {
+                    pageDocuments.splice(index, 1);
+                    if (pageDocuments.length == 0) {
+                        acitveDocumentIndex = null;
+                    }
+                    else if (acitveDocumentIndex > pageDocuments.length - 1) {
+                        acitveDocumentIndex = 0;
+                    }
+                    this.setState({ pageDocuments, acitveDocumentIndex });
+                };
+                if (!doc.isChanged) {
+                    close();
+                    return;
                 }
-                else if (acitveDocumentIndex > pageDocuments.length - 1) {
-                    acitveDocumentIndex = 0;
-                }
-                this.setState({ pageDocuments, acitveDocumentIndex });
+                ui.confirm({
+                    title: '提示',
+                    message: '该页面尚未保存，是否保存?',
+                    confirm: () => __awaiter(this, void 0, void 0, function* () {
+                        yield doc.save();
+                        close();
+                    }),
+                    cancle: () => {
+                        close();
+                    }
+                });
             }
             componentDidMount() {
             }
@@ -1334,7 +1404,6 @@ var jueying;
                 pageDocuments = pageDocuments || [];
                 console.assert(pageDocuments != null);
                 let pageDocument = acitveDocumentIndex != null ? pageDocuments[acitveDocumentIndex] : null;
-                let toolbarElement;
                 return h(jueying.PageDesigner, { pageData: pageDocument ? pageDocument.pageData : null, ref: (e) => this.pageDesigner = e || this.pageDesigner },
                     h(jueying.DesignerContext.Consumer, null, c => {
                         let designer = c.designer;
@@ -1343,7 +1412,7 @@ var jueying;
                             this.namedControl(designer.pageData);
                             element = jueying.Control.create(designer.pageData);
                         }
-                        let isChanged = pageDocument ? extentions.DocumentHandler.isChanged(pageDocument) : false;
+                        let isChanged = pageDocument ? pageDocument.isChanged : false; //? PageDocument.isChanged(pageDocument) : false;
                         return h(React.Fragment, null,
                             h("ul", null,
                                 h("li", { className: "pull-left" },
@@ -1369,7 +1438,7 @@ var jueying;
                                         h("i", { className: "icon-file" }),
                                         h("span", { style: { paddingLeft: 4 } }, "\u65B0\u5EFA"))),
                                 h("li", { className: "pull-right" },
-                                    h("button", { className: "btn btn-primary" },
+                                    h("button", { className: "btn btn-primary", onClick: () => this.open() },
                                         h("i", { className: "icon-folder-open" }),
                                         h("span", { style: { paddingLeft: 4 } }, "\u6253\u5F00")))),
                             h("div", { className: "clearfix" }),
@@ -1404,25 +1473,33 @@ var jueying;
     var extentions;
     (function (extentions) {
         class LocalDocumentStorage {
-            list() {
+            list(pageIndex, pageSize) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    // throw new Error("Method not implemented.");
-                    let items = new Array();
+                    if (pageIndex == null)
+                        throw jueying.Errors.argumentNull('pageIndex');
+                    if (pageSize == null)
+                        throw jueying.Errors.argumentNull('pageSize');
+                    let allItems = new Array();
                     for (let i = 0; i < localStorage.length; i++) {
                         let key = localStorage.key(i);
                         if (!key.startsWith(LocalDocumentStorage.prefix)) {
                             continue;
                         }
-                        key = key.substr(LocalDocumentStorage.prefix.length);
-                        items.push(key);
+                        let name = key.substr(LocalDocumentStorage.prefix.length);
+                        let value = localStorage[key];
+                        let doc = JSON.parse(value);
+                        allItems.push([name, doc]);
                     }
-                    return items;
+                    let count = allItems.length;
+                    let items = allItems.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+                    return { items, count };
                 });
             }
             load(name) {
                 return __awaiter(this, void 0, void 0, function* () {
+                    debugger;
                     let key = `${LocalDocumentStorage.prefix}${name}`;
-                    let text = localStorage.getItem(name);
+                    let text = localStorage.getItem(key);
                     if (text == null)
                         return null;
                     return JSON.parse(text);
@@ -1450,43 +1527,66 @@ var jueying;
 (function (jueying) {
     var extentions;
     (function (extentions) {
-        class DocumentHandler {
-            constructor(doc, storage) {
+        class PageDocument {
+            constructor(fileName, storage, pageData, isNew) {
                 this.storage = storage;
-                this.doc = doc;
-                this.originalPageData = JSON.parse(JSON.stringify(this.doc.pageData));
+                this._pageData = pageData;
+                isNew = isNew == null ? false : isNew;
+                if (isNew)
+                    this.originalPageData = { type: 'PageView', props: {} };
+                else
+                    this.originalPageData = JSON.parse(JSON.stringify(pageData));
+                this.fileName = fileName;
             }
             save() {
-                this.originalPageData = JSON.parse(JSON.stringify(this.doc.pageData));
-                return this.storage.save(this.doc.name, this.originalPageData);
+                this.originalPageData = JSON.parse(JSON.stringify(this._pageData));
+                return this.storage.save(this.fileName, this.originalPageData);
             }
             get isChanged() {
-                let equals = extentions.isEquals(this.originalPageData, this.doc.pageData);
+                let equals = extentions.isEquals(this.originalPageData, this._pageData);
                 return !equals;
             }
-            static getHandler(doc) {
-                let instance = this.instances[doc.name];
-                if (instance == null) {
-                    instance = new DocumentHandler(doc, new extentions.LocalDocumentStorage());
-                    this.instances[doc.name] = instance;
-                }
-                return instance;
+            get name() {
+                return this.fileName;
             }
-            static save(doc) {
-                if (!doc)
-                    throw jueying.Errors.argumentNull('doc');
-                let handler = this.getHandler(doc);
-                handler.save();
+            get pageData() {
+                return this._pageData;
             }
-            static isChanged(doc) {
-                if (!doc)
-                    throw jueying.Errors.argumentNull('doc');
-                let handler = this.getHandler(doc);
-                return handler.isChanged;
+            // private static getHandler(doc: DocumentData) {
+            //     let instance = this.instances[doc.name];
+            //     if (instance == null) {
+            //         instance = new PageDocument(doc, new LocalDocumentStorage());
+            //         this.instances[doc.name] = instance;
+            //     }
+            //     return instance;
+            // }
+            // static save(doc: DocumentData) {
+            //     if (!doc) throw Errors.argumentNull('doc');
+            //     let handler = this.getHandler(doc);
+            //     handler.save();
+            // }
+            // static isChanged(doc: DocumentData) {
+            //     if (!doc) throw Errors.argumentNull('doc');
+            //     let handler = this.getHandler(doc);
+            //     return handler.isChanged;
+            // }
+            static load(fileName) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let storage = new extentions.LocalDocumentStorage();
+                    let data = yield storage.load(fileName);
+                    if (data == null) {
+                        throw jueying.Errors.fileNotExists(fileName);
+                    }
+                    return new PageDocument(fileName, storage, data);
+                });
+            }
+            static new(fileName, init) {
+                let storage = new extentions.LocalDocumentStorage();
+                return new PageDocument(fileName, storage, init, true);
             }
         }
-        DocumentHandler.instances = {};
-        extentions.DocumentHandler = DocumentHandler;
+        PageDocument.instances = {};
+        extentions.PageDocument = PageDocument;
     })(extentions = jueying.extentions || (jueying.extentions = {}));
 })(jueying || (jueying = {}));
 var jueying;
@@ -1566,19 +1666,22 @@ var jueying;
         PageViewContainer.scale = 0.6;
         PageViewContainer.phone_height = PageViewContainer.phone_screen_height * PageViewContainer.scale;
         PageViewContainer.phone_width = PageViewContainer.phone_screen_width * PageViewContainer.scale;
+        const PAGE_SIZE = 3;
         class TemplateDialog extends React.Component {
             constructor(props) {
                 super(props);
-                this.state = { templates: null, pageIndex: 0, selectedTemplateIndex: 0 };
+                this.state = { templates: null, pageIndex: 0, selectedTemplateIndex: 0, showFileNameInput: true };
             }
             selectTemplate(templateIndex) {
                 this.setState({ selectedTemplateIndex: templateIndex });
             }
             confirm() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    let isValid = yield this.validator.check();
-                    if (!isValid)
-                        return Promise.reject();
+                    if (this.state.showFileNameInput) {
+                        let isValid = yield this.validator.check();
+                        if (!isValid)
+                            return Promise.reject();
+                    }
                     if (this.callback) {
                         let { templates, selectedTemplateIndex, fileName } = this.state;
                         let template = templates[selectedTemplateIndex];
@@ -1589,31 +1692,40 @@ var jueying;
             }
             loadTemplates(pageIndex) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    if (!this.fetchTemplates)
-                        return;
-                    if (this.currentPageIndex == pageIndex)
-                        return;
-                    let tmps = yield this.fetchTemplates();
-                    this.setState({ templates: tmps });
+                    console.assert(this.fetchTemplates != null);
+                    let tmps = yield this.fetchTemplates(pageIndex, PAGE_SIZE);
+                    console.assert(tmps != null);
+                    console.assert(tmps.count > 0);
+                    this.setState({ templates: tmps.items, templatesCount: tmps.count });
                     this.currentPageIndex = pageIndex;
                 });
             }
             componentDidMount() {
                 this.validator = new dilu.FormValidator(dialog_element, { name: 'fileName', rules: [dilu.rules.required('请输入文件名')] });
             }
+            showPage(pageIndex) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let result = yield this.fetchTemplates(pageIndex, PAGE_SIZE);
+                    this.setState({ templates: result.items, templatesCount: result.count, pageIndex });
+                });
+            }
             render() {
-                let { pageIndex, templates, selectedTemplateIndex, fileName } = this.state;
-                this.loadTemplates(pageIndex);
+                let { pageIndex, templates, templatesCount, selectedTemplateIndex, fileName, showFileNameInput, } = this.state;
                 let height = PageViewContainer.phone_height;
                 let width = PageViewContainer.phone_width;
-                let style = {
-                    float: 'left', height, width,
-                };
                 let margin = 15; // 间距
-                let count = 3;
-                let dialog_header_height = 50;
-                let dialog_footer_height = 70;
+                let count = PAGE_SIZE;
                 let dialog_content_width = width * count + margin * (count + 1);
+                let pagingBar;
+                if (templatesCount != null) {
+                    let pagesCount = Math.ceil(templatesCount / PAGE_SIZE);
+                    let children = [];
+                    for (let i = 0; i < pagesCount; i++) {
+                        children.push(h("li", { key: i, className: i == pageIndex ? 'active' : null },
+                            h("a", { href: "javascript:", onClick: () => this.showPage(i) }, i + 1)));
+                    }
+                    pagingBar = React.createElement("ul", { className: 'pagination', style: { margin: 0 } }, children);
+                }
                 return h("div", { className: "modal-dialog" },
                     h("div", { className: "modal-content", style: { width: dialog_content_width } },
                         h("div", { className: "modal-header" },
@@ -1626,34 +1738,43 @@ var jueying;
                                 templates.length == 0 ?
                                     h("div", { className: extentions.classNames.emptyTemplates }, "\u6682\u65E0\u6A21\u7248\u6570\u636E") :
                                     h(React.Fragment, null,
-                                        templates.map((o, i) => h("div", { key: i, style: { width, height, float: i == templates.length - 1 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null }, onClick: () => this.selectTemplate(i), className: i == selectedTemplateIndex ? extentions.classNames.templateSelected : null },
+                                        templates.map((o, i) => h("div", { key: i, style: { width, height, float: i == 2 ? 'right' : 'left', margin: i == 1 ? '0 0 0 15px' : null }, onClick: () => this.selectTemplate(i), className: i == selectedTemplateIndex ? extentions.classNames.templateSelected : null },
                                             h(PageViewContainer, null,
                                                 jueying.ControlFactory.create(o.pageData),
                                                 h("div", { className: "name" },
                                                     h("span", null, o.name))))),
                                         h("div", { className: "clearfix" }))),
-                            h("div", { className: "form-group", style: { marginBottom: 0 } },
+                            showFileNameInput ? h("div", { className: "form-group", style: { marginBottom: 0 } },
                                 h("label", { className: "pull-left" }, "\u6587\u4EF6\u540D"),
                                 h("div", { style: { marginLeft: 100 } },
                                     h("input", { name: "fileName", className: "form-control", value: fileName || '', onChange: (e) => {
                                             fileName = e.target.value;
                                             this.setState({ fileName });
-                                        } })))),
+                                        } }))) : null),
                         h("div", { className: "modal-footer" },
-                            h("button", { className: "btn btn-default", onClick: () => this.close() }, "\u53D6\u6D88"),
-                            h("button", { className: "btn btn-primary", onClick: () => this.confirm() }, "\u786E\u5B9A"))));
+                            h("div", { className: "pull-left" }, pagingBar),
+                            h("div", { className: "pull-right" },
+                                h("button", { className: "btn btn-default", onClick: () => this.close() }, "\u53D6\u6D88"),
+                                h("button", { className: "btn btn-primary", onClick: () => this.confirm() }, "\u786E\u5B9A")))));
             }
-            open() {
-                this.setState({ pageIndex: 0, selectedTemplateIndex: 0, fileName: '' });
+            open(requiredFileName) {
+                requiredFileName == null ? true : requiredFileName;
+                this.setState({
+                    pageIndex: 0, selectedTemplateIndex: 0, fileName: '',
+                    showFileNameInput: requiredFileName, templates: [],
+                });
+                this.currentPageIndex = null;
                 ui.showDialog(dialog_element);
+                this.loadTemplates(0);
             }
             close() {
                 ui.hideDialog(dialog_element);
             }
-            static show(fetchTemplates, callback) {
+            static show(args) {
+                let { fetch, callback, requiredFileName } = args;
                 defaultInstance.callback = callback;
-                defaultInstance.fetchTemplates = fetchTemplates;
-                defaultInstance.open();
+                defaultInstance.fetchTemplates = fetch;
+                defaultInstance.open(requiredFileName);
             }
         }
         extentions.TemplateDialog = TemplateDialog;
@@ -1673,10 +1794,10 @@ var jueying;
             pageData: {
                 type: 'PageView',
                 props: {
-                    "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
-                    "className": "page-view",
+                    id: extentions.guid(),
+                    className: "page-view",
                     style,
-                    "componentName": "PageView"
+                    componentName: "PageView"
                 },
                 children: [
                     {
@@ -1735,7 +1856,10 @@ var jueying;
                                 type: 'SubmitButton',
                                 props: {
                                     id: extentions.guid(),
-                                    text: '提交订单'
+                                    text: '提交订单',
+                                    style: {
+                                        width: '100%'
+                                    }
                                 }
                             },
                         ]
@@ -1748,7 +1872,7 @@ var jueying;
             pageData: {
                 type: 'PageView',
                 props: {
-                    "id": "c9289d06-abcc-134e-b6a9-8e2eddab8bf2",
+                    "id": extentions.guid(),
                     "className": "page-view",
                     style,
                     "componentName": "PageView"

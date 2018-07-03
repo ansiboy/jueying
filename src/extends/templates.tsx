@@ -76,7 +76,10 @@ namespace jueying.extentions {
                             type: 'SubmitButton',
                             props: {
                                 id: guid(),
-                                text: '提交订单'
+                                text: '提交订单',
+                                style: {
+                                    width: '100%'
+                                }
                             }
                         },
                     ]

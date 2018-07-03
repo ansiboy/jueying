@@ -235,6 +235,7 @@ declare namespace jueying {
 }
 declare namespace jueying {
     class Errors {
+        static fileNotExists(fileName: string): any;
         static argumentNull(argumentName: string): Error;
         static pageDataIsNull(): Error;
     }
@@ -329,8 +330,14 @@ declare namespace jueying.extentions {
         redo(): void;
         save(): Promise<void>;
         assingControlIds(data: jueying.ElementData): void;
-        fetchTemplates(): Promise<PageDocument[]>;
+        createPageDataFromSource(source: ElementData): ElementData;
+        createDocuemnt(fileName: string, pageData: ElementData, isNew: boolean): Promise<void>;
+        fetchTemplates(): Promise<{
+            items: DocumentData[];
+            count: number;
+        }>;
         newFile(): Promise<void>;
+        open(): void;
         activeDocument(index: number): void;
         setState<K extends keyof DesignerFrameworkState>(state: (Pick<DesignerFrameworkState, K> | DesignerFrameworkState)): void;
         closeDocument(index: number): void;
@@ -342,31 +349,39 @@ declare namespace pdesigner_extentions {
 }
 declare namespace jueying.extentions {
     interface DocumentStorage {
-        list(): Promise<string[]>;
+        list(pageIndex: any, pageSize: any): Promise<{
+            items: [string, ElementData][];
+            count: number;
+        }>;
         load(name: string): Promise<ElementData>;
         save(name: string, pageData: ElementData): Promise<any>;
         remove(name: string): Promise<any>;
     }
     class LocalDocumentStorage implements DocumentStorage {
         private static prefix;
-        list(): Promise<string[]>;
+        list(pageIndex: any, pageSize: any): Promise<{
+            items: [string, ElementData][];
+            count: number;
+        }>;
         load(name: string): Promise<any>;
         save(name: string, pageData: ElementData): Promise<void>;
         remove(name: string): Promise<any>;
     }
 }
 declare namespace jueying.extentions {
-    class DocumentHandler {
+    class PageDocument {
         private static instances;
         private storage;
-        private doc;
+        private _pageData;
         private originalPageData;
-        constructor(doc: PageDocument, storage: DocumentStorage);
+        private fileName;
+        constructor(fileName: any, storage: DocumentStorage, pageData: ElementData, isNew?: boolean);
         save(): Promise<any>;
         readonly isChanged: boolean;
-        private static getHandler;
-        static save(doc: PageDocument): void;
-        static isChanged(doc: PageDocument): boolean;
+        readonly name: string;
+        readonly pageData: ElementData;
+        static load(fileName: string): Promise<PageDocument>;
+        static new(fileName: string, init: ElementData): PageDocument;
     }
 }
 declare namespace jueying.extentions {
@@ -380,13 +395,19 @@ declare namespace jueying.extentions {
     };
 }
 declare namespace jueying.extentions {
+    type LoadDocuments = (pageIndex: number, pageSize: number) => Promise<{
+        items: DocumentData[];
+        count: number;
+    }>;
     interface TemplateDialogProps {
     }
     interface TemplateDialogState {
-        templates: PageDocument[];
+        templates: DocumentData[];
+        templatesCount?: number;
         pageIndex: number;
         selectedTemplateIndex: number;
         fileName?: string;
+        showFileNameInput: boolean;
     }
     class TemplateDialog extends React.Component<TemplateDialogProps, TemplateDialogState> {
         private fetchTemplates;
@@ -398,17 +419,22 @@ declare namespace jueying.extentions {
         private confirm;
         loadTemplates(pageIndex: number): Promise<void>;
         componentDidMount(): void;
+        showPage(pageIndex: number): Promise<void>;
         render(): JSX.Element;
-        open(): void;
+        open(requiredFileName?: boolean): void;
         close(): void;
-        static show(fetchTemplates: () => Promise<PageDocument[]>, callback: (tmp: PageDocument, fileName?: string) => void): void;
+        static show(args: {
+            fetch: LoadDocuments;
+            requiredFileName?: boolean;
+            callback?: (tmp: DocumentData, fileName?: string) => void;
+        }): void;
     }
 }
 declare namespace jueying.extentions {
     type ElementData = jueying.ElementData;
-    interface PageDocument {
+    interface DocumentData {
         pageData: ElementData;
         name: string;
     }
-    let templates: PageDocument[];
+    let templates: DocumentData[];
 }

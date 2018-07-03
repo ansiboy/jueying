@@ -71,9 +71,6 @@ namespace jueying.extentions {
             this.setState({ templates: tmps.items, templatesCount: tmps.count });
             this.currentPageIndex = pageIndex;
         }
-        // setState(state) {
-        //     super.setState(state);
-        // }
         componentDidMount() {
             this.validator = new dilu.FormValidator(dialog_element,
                 { name: 'fileName', rules: [dilu.rules.required('请输入文件名')] }

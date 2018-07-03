@@ -12,9 +12,10 @@ export default class SubmitButton extends Control<any, {}> {
         tabIndex: Control.tabIndex++
     }
     render(h?: (type, props, ...children) => JSX.Element) {
-        let { text } = this.props;
+        let { text, style } = this.props;
         let props = {
-            className: "btn btn-primary btn-block",
+            className: "btn btn-primary",
+            style
         }
 
         // let child = this.isDesignMode ?

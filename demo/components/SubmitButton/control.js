@@ -3,9 +3,10 @@ define(["require", "exports", "pdesigner"], function (require, exports, pdesigne
     Object.defineProperty(exports, "__esModule", { value: true });
     class SubmitButton extends pdesigner_1.Control {
         render(h) {
-            let { text } = this.props;
+            let { text, style } = this.props;
             let props = {
-                className: "btn btn-primary btn-block",
+                className: "btn btn-primary",
+                style
             };
             // let child = this.isDesignMode ?
             //     <div {...props}>{text}</div> :

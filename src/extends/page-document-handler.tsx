@@ -65,8 +65,6 @@ namespace jueying.extentions {
             let storage = new LocalDocumentStorage()
             let data = await storage.load(fileName);
             if (data == null) {
-                // debugger;
-                // return new PageDocument(fileName, storage, data, { type: 'PageView', props: {} });
                 throw Errors.fileNotExists(fileName);
             }
 

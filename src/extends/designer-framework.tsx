@@ -39,7 +39,8 @@ namespace jueying.extentions {
                 props.name = name;
             }
 
-            props.id = guid();
+            if (!props.id)
+                props.id = guid();
 
             if (!control.children || control.children.length == 0) {
                 return;
@@ -169,16 +170,39 @@ namespace jueying.extentions {
         closeDocument(index: number) {
             let { pageDocuments, acitveDocumentIndex } = this.state;
             console.assert(pageDocuments != null);
-            pageDocuments.splice(index, 1);
 
-            if (pageDocuments.length == 0) {
-                acitveDocumentIndex = null;
-            }
-            else if (acitveDocumentIndex > pageDocuments.length - 1) {
-                acitveDocumentIndex = 0;
+            let doc = pageDocuments[index];
+            console.assert(doc != null);
+
+            let close = () => {
+                pageDocuments.splice(index, 1);
+
+                if (pageDocuments.length == 0) {
+                    acitveDocumentIndex = null;
+                }
+                else if (acitveDocumentIndex > pageDocuments.length - 1) {
+                    acitveDocumentIndex = 0;
+                }
+
+                this.setState({ pageDocuments, acitveDocumentIndex });
             }
 
-            this.setState({ pageDocuments, acitveDocumentIndex });
+            if (!doc.isChanged) {
+                close();
+                return;
+            }
+
+            ui.confirm({
+                title: '提示',
+                message: '该页面尚未保存，是否保存?',
+                confirm: async () => {
+                    await doc.save();
+                    close();
+                },
+                cancle: () => {
+                    close();
+                }
+            })
         }
         componentDidMount() {
         }
@@ -196,6 +220,7 @@ namespace jueying.extentions {
                         let designer = c.designer;
                         let element: React.ReactElement<any>;
                         if (designer.pageData) {
+                            this.namedControl(designer.pageData);
                             element = Control.create(designer.pageData);
                         }
 
