@@ -1,10 +1,9 @@
 {
+    "compileOnSave": true,
     "compilerOptions": {
-        "target": "es6",
         "module": "amd",
-        "sourceMap": true,
-        "rootDir": ".",
-        "jsx": "react",
-        "jsxFactory": "h"
+        "target": "es6",
+        "outDir": "dist",
+        "jsx": "react"
     }
 }

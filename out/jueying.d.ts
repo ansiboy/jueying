@@ -1,22 +1,20 @@
 /// <reference types="react" />
-declare namespace jueying {
-    let constants: {
-        componentsDir: string;
-        connectorElementClassName: string;
-        componentTypeName: string;
-        componentData: string;
-    };
-    let strings: {
-        [key: string]: string;
-    };
-    function guid(): string;
-    class Callback<T> {
-        private funcs;
-        add(func: (args: T) => void): void;
-        remove(func: (args: T) => any): void;
-        fire(args: T): void;
-        static create<T>(): Callback<T>;
-    }
+declare let constants: {
+    componentsDir: string;
+    connectorElementClassName: string;
+    componentTypeName: string;
+    componentData: string;
+};
+declare let strings: {
+    [key: string]: string;
+};
+declare function guid(): string;
+declare class Callback<T> {
+    private funcs;
+    add(func: (args: T) => void): void;
+    remove(func: (args: T) => any): void;
+    fire(args: T): void;
+    static create<T>(): Callback<T>;
 }
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
@@ -31,7 +29,7 @@ declare namespace jueying {
  * QQ 讨论组：  119038574
  *
  ********************************************************************************/
-declare namespace jueying {
+declare module jueying {
     interface EditorProps extends React.Props<ComponentEditor> {
         designer: PageDesigner;
     }
@@ -53,7 +51,7 @@ declare namespace jueying {
         readonly element: HTMLElement;
     }
 }
-declare namespace jueying {
+declare module jueying {
     interface ComponentToolbarProps extends React.Props<ComponentPanel> {
         style?: React.CSSProperties;
         className?: string;
@@ -76,7 +74,7 @@ declare namespace jueying {
         render(): JSX.Element;
     }
 }
-declare namespace jueying {
+declare module jueying {
     type ComponentWrapperProps = {
         designer: PageDesigner;
         source: {
@@ -146,9 +144,8 @@ declare namespace jueying {
  * component.tsx 文件用于运行时加载，所以要控制此文件的大小，用于在运行时创建页面
  *
  ********************************************************************************/
-declare namespace jueying {
+declare module jueying {
     type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element;
-    let NotDomPropPrefix: string;
     interface ComponentProps<T> extends React.Props<T> {
         id?: string;
         name?: string;
@@ -170,7 +167,7 @@ declare namespace jueying {
     }
     function component<T extends React.Component>(args?: ComponentAttribute): (constructor: new (...args: any[]) => T) => new (...args: any[]) => T;
     class Component {
-        static readonly Fragment: string;
+        static readonly Fragment = "";
         private static defaultComponentAttribute;
         private static componentAttributes;
         /**
@@ -201,10 +198,6 @@ declare namespace jueying {
         private static componentTypes;
         static register(componentName: string, componentType: React.ComponentClass<any>, attr?: ComponentAttribute): void;
     }
-    type FormContextValue = {
-        form: ContainerHost | null;
-    };
-    const FormContext: React.Context<FormContextValue>;
     class ContainerHost extends React.Component<ComponentProps<ContainerHost>, {
         children: React.ReactElement<ComponentProps<ContainerHost>>[];
     }> {
@@ -228,7 +221,7 @@ declare namespace jueying {
     }
     const ContainerHostName = "ContainerHost";
 }
-declare namespace jueying {
+declare module jueying {
     interface EditorPanelState {
         componentDatas: ComponentData[];
         designer?: PageDesigner;
@@ -242,25 +235,26 @@ declare namespace jueying {
     class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
         element: HTMLElement;
         private editor;
+        private _designer;
+        private designerComponentChanged;
         constructor(props: any);
         componentWillReceiveProps(props: EditorPanelProps): void;
         private getComponentData;
+        designer: PageDesigner;
         componentDidMount(): void;
         render(): JSX.Element;
     }
 }
-declare namespace jueying {
-    class Errors {
-        static fileNotExists(fileName: string): any;
-        static argumentNull(argumentName: string): Error;
-        static pageDataIsNull(): Error;
-        static toolbarRequiredKey(): Error;
-        static loadPluginFail(pluginId: string): Error;
-        static idRequired(): Error;
-        static canntFindHost(componentId: string): Error;
-    }
+declare class Errors {
+    static fileNotExists(fileName: string): any;
+    static argumentNull(argumentName: string): Error;
+    static pageDataIsNull(): Error;
+    static toolbarRequiredKey(): Error;
+    static loadPluginFail(pluginId: string): Error;
+    static idRequired(): Error;
+    static canntFindHost(componentId: string): Error;
 }
-declare namespace jueying {
+declare module jueying {
     interface ComponentData {
         type: string;
         props?: ComponentProps<any>;
@@ -286,7 +280,7 @@ declare namespace jueying {
  * QQ 讨论组：  119038574
  *
  ********************************************************************************/
-declare namespace jueying {
+declare module jueying {
     interface PageDesignerProps extends React.Props<PageDesigner> {
         pageData: ComponentData | null;
         style?: React.CSSProperties;
@@ -361,7 +355,7 @@ declare namespace jueying {
         render(): JSX.Element;
     }
 }
-declare namespace jueying {
+declare module jueying {
     interface PropEditorConstructor {
         new (props: PropEditorProps<any>): any;
     }
@@ -432,7 +426,7 @@ declare namespace jueying {
         contextType?: React.Context<any>;
     };
 }
-declare namespace jueying {
+declare module jueying {
     let classNames: {
         componentSelected: string;
         emptyTemplates: string;

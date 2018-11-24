@@ -1,4 +1,6 @@
-namespace jueying {
+// import { ComponentProps } from "./component";
+
+module jueying {
     export interface ComponentData {
         type: string;
         props?: ComponentProps<any>;
@@ -9,5 +11,4 @@ namespace jueying {
         componentData: ComponentData,
         displayName: string, icon: string, introduce: string,
     }
-
 }

@@ -1,51 +1,93 @@
 module.exports = function (grunt) {
-    let livereload = 20224;
-    let port = 2015;
+
+    require('load-grunt-tasks')(grunt);
+
+    let pkg = grunt.file.readJSON('package.json');
+    let module_name = 'jueying'
+    let license = `
+/*!
+ * JUEYING v${pkg.version}
+ * https://github.com/ansiboy/jueying
+ *
+ * 可视化页面设计器
+ * 
+ * 作者: 寒烟
+ * 
+ * 个人博客：   http://www.cnblogs.com/ansiboy/
+ * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
+ * 
+ * Copyright (c) 2016-2018, mai.shu <ansiboy@163.com>
+ * Licensed under the MIT License.
+ *
+ */
+`
+
+    let module_js_banner = `
+${license}
+(function(factory) { 
+    if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') { 
+        // [1] CommonJS/Node.js 
+        var target = module['exports'] || exports;
+        var result = factory(target, require);
+        Object.assign(target,result);
+    } else if (typeof define === 'function' && define['amd']) {
+        define(factory); 
+    } else { 
+        factory();
+    } 
+})(function() {
+`;
+    let module_js_footer =
+        `\n\window[\'${module_name}\'] = window[\'${module_name}\'] || ${module_name} \n\
+                            \n return ${module_name};\n\
+            });`
+
     grunt.initConfig({
-        // 通过connect任务，创建一个静态服务器
-        connect: {
-            www: {
+        shell: {
+            stand: {
+                command: 'tsc -p ./src',
                 options: {
-                    // 服务器端口号
-                    port,
-                    // 服务器地址(可以使用主机名localhost，也能使用IP)
-                    // hostname: '192.168.1.7',
-                    hostname: '0.0.0.0',
-                    // keepalive: true,
-                    livereload: livereload,
-                    // 物理路径(默认为. 即根目录) 注：使用'.'或'..'为路径的时，可能会返回403 Forbidden. 此时将该值改为相对路径 如：/grunt/reloard。
-                    base: './',
-                    open: {
-                        target: `http://localhost:${port}/demo/`
-                    },
-                    // protocol: 'https'
+                    failOnError: false
                 }
             }
         },
-        watch: {
-            livereload: {
+        babel: {
+            source: {
                 options: {
-                    livereload: livereload //监听前面声明的端口  35729
+                    sourceMap: false,
+                    presets: ["es2015"],
                 },
-                files: [
-                    `deom/**`
-                ]
+                files: [{
+                    src: [`dist/jueying.js`],
+                    dest: `dist/jueying.es5.js`
+                }]
             }
         },
-        // copy: {
-        //     client: {
-        //         files: [{
-        //             expand: true,
-        //             cwd: `out`,
-        //             src: [`*.js`],
-        //             dest: `docs/demo/lib`
-        //         }]
-        //     },
-        // }
+        concat: {
+            options: {
+                banner: module_js_banner,
+                footer: module_js_footer,
+            },
+            jueying: {
+                src: ['lib/jquery.event.drag-2.2.js', 'lib/jquery.event.drag.live-2.2.js',
+                    'lib/jquery.event.drop-2.2.js', 'lib/jquery.event.drop.live-2.2.js', 'out/jueying.js'],
+                dest: 'dist/jueying.js'
+            }
+        },
+        uglify: {
+            out: {
+                options: {
+                    mangle: false,
+                    beautify: false,
+                },
+                files: [{
+                    src: 'dist/jueying.es5.js',
+                    dest: `dist/jueying.min.js`
+                }]
+            }
+        },
     })
 
-    grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.registerTask('dev', ['connect', 'watch']);
+    grunt.registerTask('default', ['shell', 'concat', 'babel', 'uglify']);
 }

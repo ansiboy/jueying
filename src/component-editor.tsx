@@ -12,13 +12,12 @@
  *
  ********************************************************************************/
 
-namespace jueying {
-
-    export interface EditorProps extends React.Props<ComponentEditor> {
+module jueying {
+    interface EditorProps extends React.Props<ComponentEditor> {
         designer: PageDesigner
     }
 
-    export interface EditorState {
+    interface EditorState {
         editors: { group: string, prop: string, editor: React.ReactElement<any> }[]
         designer?: PageDesigner
     }
@@ -95,7 +94,7 @@ namespace jueying {
                 let propName = propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
                 let editorType = propEditorInfo.editorType
                 let propNames = propEditorInfo.propNames
-                let editor = h(editorType, {
+                let editor = React.createElement(editorType as any, {
                     value: commonFlatProps[propNames.join('.')],
                     onChange: (value) => {
                         for (let i = 0; i < componentDatas.length; i++) {
@@ -104,7 +103,7 @@ namespace jueying {
                             designer.updateControlProps(c.props.id, propNames, value)
                         }
                     }
-                })
+                } as any)
                 editors.push({ prop: propName, editor, group: propEditorInfo.group })
             }
 
@@ -129,12 +128,12 @@ namespace jueying {
 
         render() {
             let { designer } = this.state
-            let editors = this.getEditors(designer) 
+            let editors = this.getEditors(designer)
             if (editors.length == 0) {
                 return <div className="text-center">暂无可用的属性</div>
             }
 
-            let groupEditorsArray: { group: string, editors: { prop: string, editor: React.ReactElement<any> }[] }[] = [] 
+            let groupEditorsArray: { group: string, editors: { prop: string, editor: React.ReactElement<any> }[] }[] = []
             for (let i = 0; i < editors.length; i++) {
                 let group = editors[i].group || ''
                 let groupEditors = groupEditorsArray.filter(o => o.group == group)[0]

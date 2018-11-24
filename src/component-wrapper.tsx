@@ -1,5 +1,11 @@
-namespace jueying {
+// import { PageDesigner } from "./page-designer";
+// import { ComponentProps, ComponentWrapperContext, ContainerHost } from "./component";
+// import * as React from "react";
+// import { constants } from "./comon";
+// import { ComponentPanel } from "./component-toolbar";
+// import { classNames, appendClassName } from "./style";
 
+module jueying {
     type ComponentWrapperProps = {
         designer: PageDesigner,
         source: {
@@ -351,7 +357,6 @@ namespace jueying {
         showHandler?: boolean,
         resize?: boolean,
     }
-
-
-
 }
+
+

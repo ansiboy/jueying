@@ -1,20 +1,57 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
-    <title></title>
-    <meta http-equiv="X-UA-Compatible" content="IE=10" />
-    <meta name="description" content="overview &amp; stats" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        .designer {
+            width: 400px;
+            height: 400px;
+            border: 1px gray solid;
+            float: left;
+            margin: 0 10px 0 10px;
+        }
 
-    <link rel="stylesheet" href="lib/Font-Awesome-3.2.1/css/font-awesome.css" />
-    <link rel="stylesheet" href="lib/bootstrap-3.3.7/bootstrap.css" />
-    <script src="lib/require.js" data-main="index"></script>
+        .component-panel {
+            float: left;
+            border: 1px gray solid;
+        }
+
+        .component-panel .panel-body ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .editor-panel {
+            width: 180px;
+            border: 1px gray solid;
+        }
+
+        .editor-panel .form-control {
+            width: 100%;
+        }
+
+        .editor-panel .text-center {
+            text-align: center;
+        }
+
+        #container {
+            padding: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
 </head>
 
 <body>
-    <div id="container" class="admin-pc dialog-container">
+    <div id="container">
+
     </div>
+    <!-- <script src="dist/index.js"></script> -->
+    <script src="../node_modules/react/umd/react.development.js"></script>
+    <script src="../node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../dist/jueying.js"></script>
+    <script type="text/babel" src="index.jsx"></script>
 </body>
 
 </html>
