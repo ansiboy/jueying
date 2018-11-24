@@ -15,340 +15,296 @@
 namespace jueying {
 
     export interface PageDesignerProps extends React.Props<PageDesigner> {
-        pageData?: ElementData,
+        pageData: ComponentData | null,
+        style?: React.CSSProperties
     }
 
     export interface PageDesignerState {
-        pageData?: ElementData
-    }
-
-    interface Snapshoot {
-        data: string,
-        version: number,
-    }
-
-    export class Callback<T> {
-        private funcs = new Array<(...args: Array<any>) => void>();
-
-        constructor() {
-        }
-
-        add(func: (args: T) => void) {
-            this.funcs.push(func);
-        }
-        remove(func: (args: T) => any) {
-            this.funcs = this.funcs.filter(o => o != func);
-        }
-        fire(args: T) {
-            this.funcs.forEach(o => o(args));
-        }
-
-        static create<T>() {
-            return new Callback<T>();
-        }
+        pageData: ComponentData | null
     }
 
     export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
-
-        selectedControlId1: string;
-        // selectedControlId: any;
         private element: HTMLElement;
-        // private undoStack = new Array<Snapshoot>();
-        // private redoStack = new Array<Snapshoot>();
-        //======================================
-        // 未保存时的页面数据
-        // private originalPageData: ElementData;
-        //======================================
-        // 未保存时的页面数据
-        // private previouPageData: string;
-        //======================================
-        private snapshootVersion = 0;
 
-        controlSelected = Callback.create<Control<ControlProps<any>, any>>();
-        controlComponentDidMount = Callback.create<Control<any, any>>();
-        // changed = Callback.create<ElementData>();
+        componentSelected = Callback.create<string[]>();
+        componentRemoved = Callback.create<string[]>()
+        componentAppend = Callback.create<PageDesigner>()
+        componentUpdated = Callback.create<ComponentData[]>()
 
-        constructor(props) {
+        designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
+        private namedComponents: { [key: string]: ComponentData } = {}
+        private _root: React.ReactElement<any>
+
+        constructor(props: PageDesignerProps) {
             super(props);
 
-            // if (this.props.pageData == null)
-            //     throw new Error('Prop of pageData cannt be null.');
-
-            this.state = { pageData: this.props.pageData };
-            // this.originalPageData = JSON.parse(JSON.stringify(this.props.pageData)) as ElementData;
-
+            this.initPageData(props.pageData)
+            this.state = { pageData: props.pageData };
+            this.designtimeComponentDidMount.add((args) => {
+                console.log(`this:designer event:controlComponentDidMount`)
+            })
         }
 
-        componentWillReceiveProps(props: PageDesignerProps) {
-            this.setState({ pageData: props.pageData });
+        initPageData(pageData: ComponentData) {
+            if (pageData == null) {
+                return
+            }
+
+            pageData.children = pageData.children || []
+            let hostCtrl = pageData.children.filter(o => o.type == ContainerHostName)[0]
+            if (hostCtrl == null) {
+                hostCtrl = {
+                    type: ContainerHostName,
+                    props: { id: guid() }
+                }
+                pageData.children.push(hostCtrl)
+            }
+
+            this.nameComponent(pageData)
         }
 
-        // private set_state(
-        //     state: PageDesignerState,
-        //     isUndoData?: boolean
-        // ): void {
-
-        //     super.setState(state);
-        //     let { pageData } = state;
-
-        //     if (pageData) {
-        //         isUndoData = isUndoData == null ? false : isUndoData;
-        //         if (this.pageDataIsChanged(pageData)) {
-        //             if (!isUndoData) {
-        //                 this.undoStack.push({ data: JSON.stringify(pageData), version: this.snapshootVersion++ });
-        //             }
-        //             this.changed.fire(pageData);
-        //         }
-        //     }
-        // }
-
-        // async save(callback: (pageData: ElementData) => Promise<any>) {
-        //     if (!callback) throw Errors.argumentNull('callback');
-        //     await callback(this.state.pageData);
-
-        //     this.originalPageData = JSON.parse(JSON.stringify(this.state.pageData));
-        //     return;
-        // }
+        get root(): React.ReactElement<any> {
+            return this._root
+        }
 
         get pageData() {
             return this.state.pageData;
         }
-        set pageData(value: ElementData) {
-            this.setState({ pageData: value });
+
+        get selectedComponentIds() {
+            return this.selectedComponents.map(o => o.props.id)
         }
 
-        // get canUndo() {
-        //     return this.undoStack.length > 1;
-        // }
+        get selectedComponents(): ComponentData[] {
+            let arr = new Array<ComponentData>()
+            let stack = new Array<ComponentData>()
+            stack.push(this.pageData)
+            while (stack.length > 0) {
+                let item = stack.pop()
+                if (item.props.selected == true)
+                    arr.push(item)
 
-        // undo() {
-        //     if (!this.canUndo)
-        //         return;
-
-        //     let snapshoot = this.undoStack.pop();
-        //     console.assert(this.undoStack.length > 0);
-
-        //     let pageData: ElementData = JSON.parse(this.undoStack[this.undoStack.length - 1].data);
-        //     console.assert(typeof pageData == 'object');
-
-        //     this.redoStack.push(snapshoot);
-
-        //     this.set_state({ pageData }, true);
-        // }
-
-        // get canRedo() {
-        //     return this.redoStack.length > 0;
-        // }
-
-        // redo() {
-        //     if (!this.canRedo)
-        //         return;
-
-        //     let snapshoot = this.redoStack.pop();
-
-        //     type PageDataType = this['state']['pageData']
-        //     let pageData: PageDataType = JSON.parse(snapshoot.data);
-        //     console.assert(typeof pageData == 'object');
-        //     this.set_state({ pageData });
-        // }
-
-        // private pageDataIsChanged(pageData: ElementData) {
-        //     type PageData = this['state']['pageData'];
-        //     let copy = JSON.parse(this.undoStack[this.undoStack.length - 1].data) as PageData;
-        //     let isChanged = !this.isEquals(copy, pageData);
-        //     return isChanged;
-        // }
-
-        // private isEquals(obj1: object, obj2: object) {
-        //     if ((obj1 == null && obj2 != null) || (obj1 != null && obj2 == null))
-        //         return false;
-
-        //     if (obj1 == null && obj2 == null)
-        //         return true;
-
-        //     var type = typeof obj1;
-        //     if (type == 'number' || type == 'string' || obj1 instanceof Date) {
-        //         return obj1 == obj2;
-        //     }
-
-        //     if (Array.isArray(obj1)) {
-        //         if (!Array.isArray(obj2))
-        //             return false;
-
-        //         if (obj1.length != obj2.length)
-        //             return false;
-
-        //         for (let i = 0; i < obj1.length; i++) {
-        //             if (!this.isEquals(obj1[i], obj2[i])) {
-        //                 return false;
-        //             }
-        //         }
-
-        //         return true;
-        //     }
-
-        //     let keys1 = Object.getOwnPropertyNames(obj1)
-        //         .filter(o => !this.skipField(obj1, o))
-        //         .sort();
-        //     let keys2 = Object.getOwnPropertyNames(obj2)
-        //         .filter(o => !this.skipField(obj2, o))
-        //         .sort();
-
-        //     if (!this.isEquals(keys1, keys2))
-        //         return false;
-
-        //     for (let i = 0; i < keys1.length; i++) {
-        //         let key = keys1[i];
-        //         let value1 = obj1[key];
-        //         let value2 = obj2[key];
-
-        //         if (!this.isEquals(value1, value2)) {
-        //             return false;
-        //         }
-        //     }
-
-        //     return true;
-        // }
-
-        // private skipField(obj: any, field: string): boolean {
-        //     return typeof obj[field] == 'function';
-        // }
-
-        updateControlProps(controlId: string, props: any): any {
-            let controlDescription = this.findControlData(controlId);
-            console.assert(controlDescription != null);
-            console.assert(props != null, 'props is null');
-
-            controlDescription.props = controlDescription.props || {};
-            for (let key in props) {
-                controlDescription.props[key] = props[key];
+                let children = item.children || []
+                for (let i = 0; i < children.length; i++)
+                    stack.push(children[i])
             }
 
+            return arr
+        }
+
+        updateControlProps(controlId: string, navPropsNames: string[], value: any): any {
+            let componentData = this.findComponentData(controlId);
+            if (componentData == null)
+                return
+
+            console.assert(componentData != null);
+            console.assert(navPropsNames != null, 'props is null');
+
+            componentData.props = componentData.props || {};
+
+            let obj = componentData.props
+            for (let i = 0; i < navPropsNames.length - 1; i++) {
+                obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
+            }
+
+            obj[navPropsNames[navPropsNames.length - 1]] = value
             this.setState(this.state);
+            this.componentUpdated.fire([componentData])
         }
 
-        sortControlChildren(controlId: string, childIds: string[]): any {
-            let c = this.findControlData(controlId);
-            c.children = childIds.map(o => c.children.filter(a => a.props.id == o)[0]).filter(o => o != null);
-
-            let { pageData } = this.state;
-            this.setState({ pageData });
-        }
-
-        async sortChildren(parentId: string, childIds: string[]) {
+        private sortChildren(parentId: string, childIds: string[]) {
             if (!parentId) throw Errors.argumentNull('parentId');
             if (!childIds) throw Errors.argumentNull('childIds');
 
             let pageData = this.state.pageData;
-            let parentControl = this.findControlData(parentId);
+            let parentControl = this.findComponentData(parentId);
+            if (parentControl == null)
+                throw new Error('Parent is not exists')
+
             console.assert(parentControl != null);
             console.assert(parentControl.children != null);
-            console.assert(parentControl.children.length == childIds.length);
+            console.assert((parentControl.children || []).length == childIds.length);
 
+            let p = parentControl
             parentControl.children = childIds.map(o => {
-                let child = parentControl.children.filter(a => a.props.id == o)[0];
+                let child = p.children.filter(a => a.props.id == o)[0];
                 console.assert(child != null, `child ${o} is null`);
                 return child;
             });
 
             this.setState({ pageData });
         }
-        async appendControl(parentId: string, childControl: ElementData, childIds?: string[]) {
+
+        /**
+         * 对组件及其子控件进行命名
+         * @param component 
+         */
+        private nameComponent(component: ComponentData) {
+            let props = component.props = component.props || {};
+            if (!props.name) {
+                let num = 0;
+                let name: string;
+                do {
+                    num = num + 1;
+                    name = `${component.type}${num}`;
+                } while (this.namedComponents[name]);
+
+                this.namedComponents[name] = component
+                props.name = name;
+            }
+
+            if (!props.id)
+                props.id = guid();
+
+            if (!component.children || component.children.length == 0) {
+                return;
+            }
+            for (let i = 0; i < component.children.length; i++) {
+                this.nameComponent(component.children[i]);
+            }
+        }
+
+        /** 添加控件 */
+        appendComponent(parentId: string, childControl: ComponentData, childIds?: string[]) {
             if (!parentId) throw Errors.argumentNull('parentId');
             if (!childControl) throw Errors.argumentNull('childControl');
-            // if (!childIds) throw Errors.argumentNull('childIds');
 
-            let parentControl = this.findControlData(parentId);
+            this.nameComponent(childControl)
+            let parentControl = this.findComponentData(parentId);
+            if (parentControl == null)
+                throw new Error('Parent is not exists')
+
             console.assert(parentControl != null);
             parentControl.children = parentControl.children || [];
             parentControl.children.push(childControl);
-
             if (childIds)
                 this.sortChildren(parentId, childIds);
             else {
                 let { pageData } = this.state;
                 this.setState({ pageData });
             }
-            let control = Control.getInstance(childControl.props.id);
-            console.assert(control != null);
-            this.selectControl(control);
+
+            this.selectComponent(childControl.props.id);
+            this.componentAppend.fire(this)
         }
 
-        async setControlPosition(controlId: string, left: number, top: number) {
-            let control = this.findControlData(controlId);
-            if (!control)
-                throw new Error(`Control ${controlId} is not exits.`);
+        /** 设置控件位置 */
+        setComponentPosition(componentId: string, position: { left: number | string, top: number | string }) {
+            return this.setComponentsPosition([{ componentId, position }])
+        }
 
-            let style: React.CSSProperties = control.props.style = (control.props.style || {});
-            style.left = left;
-            style.top = top;
+        setComponentSize(componentId: string, size: { width?: number | string, height?: number | string }) {
+            console.assert(componentId)
+            console.assert(size)
+
+            let componentData = this.findComponentData(componentId);
+            if (!componentData)
+                throw new Error(`Control ${componentId} is not exits.`);
+
+            let style = componentData.props.style = (componentData.props.style || {});
+            if (size.height)
+                style.height = size.height
+
+            if (size.width)
+                style.width = size.width
 
             let { pageData } = this.state;
             this.setState({ pageData });
+
+            this.componentUpdated.fire([componentData])
         }
 
-        selectControlById(controlId: string) {
-            let control = Control.getInstance(controlId);
-            this.selectControl(control);
+        setComponentsPosition(positions: { componentId: string, position: { left: number | string, top: number | string } }[]) {
+            let componentDatas = new Array<ComponentData>()
+            positions.forEach(o => {
+                let { componentId } = o
+                let { left, top } = o.position
+                let componentData = this.findComponentData(componentId);
+                if (!componentData)
+                    throw new Error(`Control ${componentId} is not exits.`);
+
+                let style = componentData.props.style = (componentData.props.style || {});
+                if (left)
+                    style.left = left;
+
+                if (top)
+                    style.top = top;
+
+                let { pageData } = this.state;
+                this.setState({ pageData });
+                componentDatas.push(componentData)
+            })
+
+            this.componentUpdated.fire(componentDatas)
         }
 
         /**
          * 选择指定的控件
-         * @param control 指定的控件，可以为空，为空表示清空选择。
+         * @param control 指定的控件
          */
-        selectControl(control: Control<any, any>): void {
-            if (!control) throw Errors.argumentNull('control');
+        selectComponent(componentIds: string[] | string): void {
 
-            this.controlSelected.fire(control)
-            let selectedControlId1 = control ? control.id : null;
-            this.selectedControlId1 = selectedControlId1;
+            if (typeof componentIds == 'string')
+                componentIds = [componentIds]
 
-            if (!control.hasEditor) {
-                console.log(`Control ${control.constructor.name} has none editor.`);
-                return;
+            var stack: ComponentData[] = []
+            stack.push(this.pageData)
+            while (stack.length > 0) {
+                let item = stack.pop()
+                let isSelectedControl = componentIds.indexOf(item.props.id) >= 0
+                item.props.selected = isSelectedControl
+
+                let children = item.children || []
+                for (let i = 0; i < children.length; i++) {
+                    stack.push(children[i])
+                }
             }
 
-            $(`.${classNames.controlSelected}`).removeClass(classNames.controlSelected);
-            $(control.element).addClass(classNames.controlSelected);
-
-            if (selectedControlId1) {
-                setTimeout(() => {
-                    $(`#${selectedControlId1}`).focus();
-                    console.log(`focuse ${selectedControlId1} element`);
-                }, 100);
-            }
+            this.setState({ pageData: this.pageData })
+            this.componentSelected.fire(this.selectedComponentIds)
+            //====================================================
+            // 设置焦点，以便获取键盘事件
+            this.element.focus()
+            //====================================================
         }
 
-        clearSelectControl() {
-
-            $(`.${classNames.controlSelected}`).removeClass(classNames.controlSelected);
-            this.selectedControlId1 = null;
-            this.controlSelected.fire(null);
-        }
-
-        removeControl(controlId: string) {
+        /** 移除控件 */
+        removeControl(...controlIds: string[]) {
             let pageData = this.state.pageData;
             if (!pageData || !pageData.children || pageData.children.length == 0)
                 return;
 
-            let isRemoved = this.removeControlFrom(controlId, pageData.children);
-            if (isRemoved) {
-                this.setState({ pageData });
-            }
+
+            controlIds.forEach(controlId => {
+                this.removeControlFrom(controlId, pageData.children);
+            })
+
+
+            this.setState({ pageData });
+            this.componentRemoved.fire(controlIds)
         }
 
-        moveControl(controlId: string, parentId: string, childIds: string[]) {
-            let control = this.findControlData(controlId);
-            console.assert(control != null, `Cannt find control by id ${controlId}`);
+        /** 
+         * 移动控件到另外一个控件容器 
+         * @param componentId 要移动的组件编号
+         * @param parentId 目标组件编号
+         * @param childIds 目标组件子组件的编号，用于排序子组件
+         */
+        moveControl(componentId: string, parentId: string, childIds?: string[]) {
+            let control = this.findComponentData(componentId);
+            if (control == null)
+                throw new Error(`Cannt find control by id ${componentId}`)
+
+            console.assert(control != null, `Cannt find control by id ${componentId}`);
 
             let pageData = this.state.pageData;
             console.assert(pageData.children);
-            this.removeControlFrom(controlId, pageData.children);
-            this.appendControl(parentId, control, childIds);
+            this.removeControlFrom(componentId, pageData.children);
+            this.appendComponent(parentId, control, childIds);
         }
 
-        private removeControlFrom(controlId: string, collection: ElementData[]): boolean {
-            let controlIndex: number;
+        private removeControlFrom(controlId: string, collection: ComponentData[]): boolean {
+            let controlIndex: number | null = null;
             for (let i = 0; i < collection.length; i++) {
                 if (controlId == collection[i].props.id) {
                     controlIndex = i;
@@ -383,19 +339,23 @@ namespace jueying {
             return true;
         }
 
-        private findControlData(controlId: string) {
+        findComponentData(controlId: string): ComponentData | null {
             let pageData = this.state.pageData;
             if (!pageData)
                 throw Errors.pageDataIsNull();
 
-            let stack = new Array<ElementData>();
+            let stack = new Array<ComponentData>();
             stack.push(pageData);
             while (stack.length > 0) {
                 let item = stack.pop();
+                if (item == null)
+                    continue
+
                 if (item.props.id == controlId)
                     return item;
 
-                stack.push(...(item.children || []));
+                let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
+                stack.push(...children);
             }
 
             return null;
@@ -404,37 +364,74 @@ namespace jueying {
         private onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
             const DELETE_KEY_CODE = 46;
             if (e.keyCode == DELETE_KEY_CODE) {
-                let selectedControlId = this.selectedControlId1
-                let element = selectedControlId ? this.findControlData(selectedControlId) : null;
-                if (element == null) {
-                    return;
-                }
+                if (this.selectedComponents.length == 0)
+                    return
 
-                console.assert(element.props.id);
-                this.removeControl(element.props.id);
+                this.removeControl(...this.selectedComponentIds)
             }
         }
 
-        componentDidMount() {
-            // console.assert(this.state.pageData != null);
-            // this.undoStack.push({
-            //     data: JSON.stringify(this.state.pageData),
-            //     version: this.snapshootVersion++
-            // });
+        designTimeEmptyElement(type: string | React.ComponentClass, props: ComponentProps<any>) {
+            let typename = typeof type == 'string' ? type : type.name
+            let text: string = this.designTimeText(typename, props)
+            return text
+        }
+
+        private designTimeText(type: string, props: ComponentProps<any>) {
+            let text: string = props.text
+            if (text) {
+                return text
+            }
+
+            text = text || props.name || type
+
+            return text
+        }
+
+        private createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]) {
+
+            console.assert(props.id)
+            if (props.id != null)
+                props.key = props.id;
+
+            if (type == 'a' && (props as any).href) {
+                (props as any).href = 'javascript:';
+            }
+            else if (type == 'input' || type == 'button') {
+                delete (props as any).onClick;
+                (props as any).readOnly = true;
+            }
+
+            let attr = Component.getAttribute(type)
+            console.assert(attr != null)
+            let className = props.selected ? appendClassName(props.className || '', classNames.componentSelected) : props.className
+            return <ComponentWrapper {...Object.assign({}, props, { className })} designer={this}
+                source={{ type, attr, props, children }}>
+            </ComponentWrapper>
+        }
+
+        componentWillReceiveProps(props: PageDesignerProps) {
+            this.initPageData(props.pageData)
+            this.setState({ pageData: props.pageData });
         }
 
         render() {
             let designer = this;
-            return <div className="pdesigner" ref={(e: HTMLElement) => this.element = e || this.element}
+            let { pageData } = this.state
+            let style = this.props.style
+
+            let result = <div className="designer" tabIndex={1} style={style}
+                ref={e => this.element = e || this.element}
                 onKeyDown={(e) => this.onKeyDown(e)}>
                 <DesignerContext.Provider value={{ designer }}>
-                    {this.props.children}
+                    {(() => {
+                        this._root = pageData ? Component.createElement(pageData, this.createDesignTimeElement.bind(this)) : null
+                        return this._root
+                    })()}
                 </DesignerContext.Provider>
-            </div >;
+            </div >
+
+            return result
         }
     }
-
-    export type DesignerContextValue = { designer: PageDesigner };
-    let value: DesignerContextValue = { designer: null };
-    export const DesignerContext = React.createContext(value);
 }

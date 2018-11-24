@@ -4,9 +4,10 @@
         "module": "none",
         "sourceMap": true,
         "declaration": true,
-        "outFile": "../out/pdesigner.js",
+        "outFile": "../out/jueying.js",
         "rootDir": ".",
         "jsx": "react",
-        "jsxFactory": "h",
+        "strict": false,
+        "experimentalDecorators": true,
     }
 }

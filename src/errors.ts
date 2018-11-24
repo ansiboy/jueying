@@ -9,5 +9,17 @@ namespace jueying {
         static pageDataIsNull() {
             return new Error(`Page data is null.`);
         }
+        static toolbarRequiredKey() {
+            return new Error(`Toolbar has not a key prop.`);
+        }
+        static loadPluginFail(pluginId: string) {
+            return new Error(`Load plugin '${pluginId}' fail.`);
+        }
+        static idRequired() {
+            return new Error(`Property id is required.`)
+        }
+        static canntFindHost(componentId: string) {
+            return new Error(`Can not find host element for component container ${componentId}.`)
+        }
     }
 }
