@@ -1,16 +1,17 @@
-namespace jueying {
+// import * as React from "react";
 
+module jueying {
     export interface PropEditorConstructor {
         new(props: PropEditorProps<any>)
     }
-    export interface PropEditorProps<T> {
+    interface PropEditorProps<T> {
         value: T,
         onChange: (value: T) => void
     }
-    export interface PropEditorState<T> {
+    interface PropEditorState<T> {
         value: T
     }
-    export abstract class PropEditor<S extends PropEditorState<T>, T> extends React.Component<PropEditorProps<T>, S> {
+    abstract class PropEditor<S extends PropEditorState<T>, T> extends React.Component<PropEditorProps<T>, S> {
         constructor(props: PropEditorProps<T>) {
             super(props)
 

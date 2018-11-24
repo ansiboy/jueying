@@ -1,11 +1,17 @@
+// import { DesignerContext } from './component'
+// import { ComponentDefine, ComponentData } from './models';
+// import * as React from 'react';
+// import { PageDesigner } from './page-designer';
+// import { constants } from './comon';
+// import { classNames } from './style';
 
-namespace jueying {
-    export interface ComponentToolbarProps extends React.Props<ComponentPanel> {
+module jueying {
+    interface ComponentToolbarProps extends React.Props<ComponentPanel> {
         // componets: ComponentDefine[],
         style?: React.CSSProperties,
         className?: string,
     }
-    export interface ComponentToolbarState {
+    interface ComponentToolbarState {
         componets: ComponentDefine[],
     }
     export class ComponentPanel extends React.Component<ComponentToolbarProps, ComponentToolbarState> {

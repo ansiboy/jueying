@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
  * 
@@ -13,13 +12,24 @@
  * 
  ********************************************************************************/
 
-namespace jueying {
 
+// import * as React from "react";
+// import { PageDesigner } from "./page-designer";
+// import { ComponentWrapper, ComponentAttribute, ComponentWrapperDrapData } from "./component-wrapper";
+// import { PropEditorConstructor } from "./prop-editor";
+// import { ComponentData } from "./models";
+// import { appendClassName, removeClassName, classNames } from "./style";
+// import { constants } from "./comon";
+// import { ComponentPanel } from "./component-toolbar";
+// import { Errors } from './errors'
+
+
+module jueying {
     type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element
 
 
     // 非 dom 的 prop，以 ctrl 开大，以便于处理
-    export let NotDomPropPrefix = 'ctrl_'
+    let NotDomPropPrefix = 'ctrl_'
     export interface ComponentProps<T> extends React.Props<T> {
         id?: string,
         name?: string,
@@ -30,7 +40,7 @@ namespace jueying {
         parent_id?: string;
     }
 
-    export type DesignerContextValue = { designer: PageDesigner | null };
+    type DesignerContextValue = { designer: PageDesigner | null };
     export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
     export const ComponentWrapperContext = React.createContext<ComponentWrapper>(null);
 
@@ -203,8 +213,8 @@ namespace jueying {
 
     }
 
-    export type FormContextValue = { form: ContainerHost | null };
-    export const FormContext = React.createContext<FormContextValue>({ form: null });
+    type FormContextValue = { form: ContainerHost | null };
+    const FormContext = React.createContext<FormContextValue>({ form: null });
 
     export class ContainerHost extends React.Component<ComponentProps<ContainerHost>, { children: React.ReactElement<ComponentProps<ContainerHost>>[] }> {
         constructor(props: ComponentProps<ContainerHost>) {

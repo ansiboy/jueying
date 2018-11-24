@@ -12,7 +12,7 @@
  * 
  ********************************************************************************/
 
-namespace jueying {
+ module jueying {
 
     export interface PageDesignerProps extends React.Props<PageDesigner> {
         pageData: ComponentData | null,
