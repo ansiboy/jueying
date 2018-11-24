@@ -1,6 +1,6 @@
 {
     "name": "maishu-jueying",
-    "version": "1.0",
+    "version": "1.0.0",
     "author": "mai.shu",
     "main": "out/jueying.js",
     "dependencies": {
