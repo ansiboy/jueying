@@ -27,6 +27,65 @@ module jueying {
             .${classNames.componentSelected} {
                 border: solid 1px #337ab7!important;
             }
+            .${classNames.componentSelected} > :first-child {
+                border-color: blue;
+              }
+              .${classNames.componentSelected} .resize_handle {
+                position: absolute;
+                height: 6px;
+                width: 6px;
+                border: 1px solid #89B;
+                background: #9AC;
+              }
+              .${classNames.componentSelected} .move_handle {
+                height: 12px;
+                width: 12px;
+                top: 6px;
+                left: 8px;
+                border: solid 1px black;
+                position: relative;
+                margin-top: -12px;
+              }
+              .${classNames.componentSelected} .NW,
+              .${classNames.componentSelected} .NN,
+              .${classNames.componentSelected} .NE {
+                top: -4px;
+              }
+              .${classNames.componentSelected} .NE,
+              .${classNames.componentSelected} .EE,
+              .${classNames.componentSelected} .SE {
+                right: -4px;
+              }
+              .${classNames.componentSelected} .SW,
+              .${classNames.componentSelected}.SS,
+              .${classNames.componentSelected} .SE {
+                bottom: -4px;
+              }
+              .${classNames.componentSelected} .NW,
+              .${classNames.componentSelected} .WW,
+              .${classNames.componentSelected} .SW {
+                left: -4px;
+              }
+              .${classNames.componentSelected} .SE,
+              .${classNames.componentSelected} .NW {
+                cursor: nw-resize;
+              }
+              .${classNames.componentSelected} .SW,
+              .${classNames.componentSelected} .NE {
+                cursor: ne-resize;
+              }
+              .${classNames.componentSelected} .NN,
+              .${classNames.componentSelected} .SS {
+                cursor: n-resize;
+                left: 50%;
+                margin-left: -4px;
+              }
+              .${classNames.componentSelected} .EE,
+              .${classNames.componentSelected} .WW {
+                cursor: e-resize;
+                top: 50%;
+                margin-top: -4px;
+              }
             .${classNames.emptyTemplates} {
                 padding:50px 0;
                 text-align: center;
@@ -53,6 +112,26 @@ module jueying {
             .${classNames.emptyDocument} {
                 text-align: center;
                 padding: 100px 0;
+            }
+            .${classNames.component} > .NW,
+            .${classNames.component} > .NN,
+            .${classNames.component} > .NE,
+            .${classNames.component} > .EE,
+            .${classNames.component} > .SE,
+            .${classNames.component} > .SW,
+            .${classNames.component} > .SS,
+            .${classNames.component} > .WW {
+                display: none;
+            }
+            .${classNames.componentSelected}.component > .NW,
+            .${classNames.componentSelected}.component > .NN,
+            .${classNames.componentSelected}.component > .NE,
+            .${classNames.componentSelected}.component > .EE,
+            .${classNames.componentSelected}.component > .SE,
+            .${classNames.componentSelected}.component > .SW,
+            .${classNames.componentSelected}.component > .SS,
+            .${classNames.componentSelected}.component > .WW {
+                display: block;
             }
             ul.nav-tabs li i {
                 position: relative;

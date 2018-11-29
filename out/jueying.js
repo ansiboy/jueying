@@ -156,9 +156,7 @@ var jueying;
             return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
                 g.group ? React.createElement("div", { className: "panel-heading" }, strings[g.group] || g.group) : null,
                 React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group" },
-                    React.createElement("label", { key: guid() },
-                        strings[o.prop] || o.prop,
-                        "C"),
+                    React.createElement("label", { key: guid() }, strings[o.prop] || o.prop),
                     " ",
                     React.createElement("div", { className: "control" }, o.editor)))))));
         }
