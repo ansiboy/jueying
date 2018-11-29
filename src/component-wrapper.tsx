@@ -292,8 +292,12 @@ module jueying {
                 delete props.style.left
                 delete props.style.top
                 delete props.style.position
-                props.style.width = '100%'
-                props.style.height = '100%'
+
+                if (wrapperProps.style.width && wrapperProps.style.width != 'unset')
+                    props.style.width = '100%'
+
+                if (wrapperProps.style.height && wrapperProps.style.height != 'unset')
+                    props.style.height = '100%'
             }
             return <ComponentWrapperContext.Provider value={this}>
                 <div {...wrapperProps}>
