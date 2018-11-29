@@ -20,9 +20,10 @@ let components = [
     },
 ]
 
-Component.setPropEditor('label', 'text', TextInput, 'appearance')
-Component.setPropEditor('label', 'style.position', TextInput, 'style')
-Component.setPropEditor('div', 'style.position', TextInput, 'style')
+Component.setPropEditor('label', 'text', TextInput)
+Component.setPropEditor('label', 'style.position', TextInput)
+Component.setPropEditor('div', 'text', TextInput)
+Component.setPropEditor('div', 'style.position', TextInput)
 
 let container = document.getElementById('container')
 
@@ -41,9 +42,11 @@ class MainPage extends React.Component {
     render() {
         return <React.Fragment>
             <ComponentPanel ref={e => this.componentPanel = e || this.componentPanel} />
-            <PageDesigner pageData={{ type: "div", props: { style: { position: 'absolute', width: '400px', height: '400px' } } }} ref={e => this.designer = e || this.designer} />
-            <EditorPanel ref={e => this.editorPanel = e || this.editorPanel} />
-        </React.Fragment>
+            <div style={{ display: 'table' }}>
+                <PageDesigner pageData={{ type: "div", props: { style: { position: 'absolute', width: 400, height: 400 } } }} ref={e => this.designer = e || this.designer} />
+                <EditorPanel ref={e => this.editorPanel = e || this.editorPanel} />
+            </div>
+        </React.Fragment >
     }
 }
 

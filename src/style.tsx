@@ -105,15 +105,16 @@ module jueying {
             .${classNames.componentPanel} {
                 background: white;
                 color: black;
-                width: 90px;
                 font-size: 14px;
                 z-index: 100;
+                list-style: none;
+                padding: 0;
+                text-align: center
             }
             .${classNames.componentPanel} .panel-heading {
                 text-align: center;
             }
-            .${classNames.componentPanel} ul li {
-                width: 64px;
+            .${classNames.componentPanel} li {
                 text-align: center;
                 padding: 8px;
             }

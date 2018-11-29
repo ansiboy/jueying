@@ -2,23 +2,23 @@
     width: 400px;
     height: 400px;
     border: 1px gray solid;
-    float: left;
-    margin: 0 10px 0 10px;
+    display: table-cell;
 }
 
 .component-panel {
-    float: left;
     border: 1px gray solid;
+    display: table
 }
 
-.component-panel .panel-body ul {
-    list-style: none;
-    padding: 0;
+.component-panel li {
+    display: table-cell;
+    width: 80px;
 }
 
 .editor-panel {
     width: 180px;
     border: 1px gray solid;
+    display: table-cell;
 }
 
 .editor-panel .form-control {

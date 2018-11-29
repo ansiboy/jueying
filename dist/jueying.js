@@ -1070,7 +1070,8 @@ var jueying;
             }
             return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
                 g.group ? React.createElement("div", { className: "panel-heading" }, strings[g.group] || g.group) : null,
-                React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: i, className: "form-group" },
+                React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: guid(), className: "form-group" },
+                    " ",
                     React.createElement("label", null, strings[o.prop] || o.prop),
                     React.createElement("div", { className: "control" }, o.editor)))))));
         }
@@ -1123,21 +1124,23 @@ var jueying;
             let componets = this.state.componets || [];
             return React.createElement(jueying.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return React.createElement("div", Object.assign({}, props, { className: `${jueying.classNames.componentPanel} panel panel-primary` }),
-                    React.createElement("div", { className: "panel-heading" }, "\u5DE5\u5177\u680F"),
-                    React.createElement("div", { className: "panel-body" },
-                        React.createElement("ul", { ref: (e) => this.toolbarElement = this.toolbarElement || e }, componets.map((c, i) => {
-                            let props = { key: i };
-                            return React.createElement("li", Object.assign({}, props),
-                                React.createElement("div", { className: "btn-link" },
-                                    React.createElement("i", { className: c.icon, style: { fontSize: 44, color: 'black' }, ref: e => {
-                                            if (!e)
-                                                return;
-                                            let ctrl = c.componentData;
-                                            this.componentDraggable(e, ctrl);
-                                        } })),
-                                React.createElement("div", null, c.displayName));
-                        }))));
+                return React.createElement("ul", Object.assign({}, props, { className: `${jueying.classNames.componentPanel}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.map((c, i) => {
+                    let props = { key: i };
+                    return React.createElement("li", Object.assign({}, props),
+                        React.createElement("div", { className: "btn-link" },
+                            React.createElement("i", { className: c.icon, style: { fontSize: 44, color: 'black' }, ref: e => {
+                                    if (!e)
+                                        return;
+                                    let ctrl = c.componentData;
+                                    this.componentDraggable(e, ctrl);
+                                } })),
+                        React.createElement("div", null, c.displayName));
+                }));
+                // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
+                //     <div className="panel-heading">工具栏</div>
+                //     <div className="panel-body">
+                //     </div>
+                // </div>
             });
         }
     }
@@ -2315,15 +2318,16 @@ var jueying;
             .${jueying.classNames.componentPanel} {
                 background: white;
                 color: black;
-                width: 90px;
                 font-size: 14px;
                 z-index: 100;
+                list-style: none;
+                padding: 0;
+                text-align: center
             }
             .${jueying.classNames.componentPanel} .panel-heading {
                 text-align: center;
             }
-            .${jueying.classNames.componentPanel} ul li {
-                width: 64px;
+            .${jueying.classNames.componentPanel} li {
                 text-align: center;
                 padding: 8px;
             }

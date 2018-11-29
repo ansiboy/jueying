@@ -60,30 +60,31 @@ module jueying {
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
-                    return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
-                        <div className="panel-heading">工具栏</div>
-                        <div className="panel-body">
-                            <ul ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
-                                {componets.map((c, i) => {
-                                    let props = { key: i };
-                                    return <li {...props}>
-                                        <div className="btn-link">
-                                            <i className={c.icon} style={{ fontSize: 44, color: 'black' }}
-                                                ref={e => {
-                                                    if (!e) return
+                    return <ul {...props as any} className={`${classNames.componentPanel}`} ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
+                        {componets.map((c, i) => {
+                            let props = { key: i };
+                            return <li {...props}>
+                                <div className="btn-link">
+                                    <i className={c.icon} style={{ fontSize: 44, color: 'black' }}
+                                        ref={e => {
+                                            if (!e) return
 
-                                                    let ctrl = c.componentData
-                                                    this.componentDraggable(e, ctrl)
-                                                }} />
-                                        </div>
-                                        <div>
-                                            {c.displayName}
-                                        </div>
-                                    </li>
-                                })}
-                            </ul>
-                        </div>
-                    </div>
+                                            let ctrl = c.componentData
+                                            this.componentDraggable(e, ctrl)
+                                        }} />
+                                </div>
+                                <div>
+                                    {c.displayName}
+                                </div>
+                            </li>
+                        })}
+                    </ul>
+                    // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
+                    //     <div className="panel-heading">工具栏</div>
+                    //     <div className="panel-body">
+
+                    //     </div>
+                    // </div>
                 }}
             </DesignerContext.Consumer>
         }
