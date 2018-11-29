@@ -151,8 +151,8 @@ module jueying {
                         {g.group ? <div className="panel-heading">{strings[g.group] || g.group}</div> : null}
                         <div className="panel-body">
                             {g.editors.map((o, i) =>
-                                <div key={guid()} className="form-group"> {/* KEY 为 guid，强制更新 */}
-                                    <label>{strings[o.prop] || o.prop}</label>
+                                <div key={o.prop} className="form-group"> 
+                                    <label key={guid()}>{strings[o.prop] || o.prop}C</label> {/* KEY 为 guid，强制更新 */}
                                     <div className="control">
                                         {o.editor}
                                     </div>
