@@ -28,8 +28,6 @@ module jueying {
     type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element
 
 
-    // 非 dom 的 prop，以 ctrl 开大，以便于处理
-    let NotDomPropPrefix = 'ctrl_'
     export interface ComponentProps<T> extends React.Props<T> {
         id?: string,
         name?: string,
@@ -38,6 +36,7 @@ module jueying {
         selected?: boolean,
         text?: string,
         parent_id?: string;
+        attr?: ComponentAttribute
     }
 
     type DesignerContextValue = { designer: PageDesigner | null };

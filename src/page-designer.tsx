@@ -12,7 +12,7 @@
  * 
  ********************************************************************************/
 
- module jueying {
+module jueying {
 
     export interface PageDesignerProps extends React.Props<PageDesigner> {
         pageData: ComponentData | null,
@@ -402,8 +402,17 @@
                 (props as any).readOnly = true;
             }
 
-            let attr = Component.getAttribute(type)
-            console.assert(attr != null)
+            //===================================================
+            // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
+
+            let attr1 = Component.getAttribute(type)
+            console.assert(attr1 != null)
+
+            let attr2 = props.attr || {}
+            let attr = Object.assign({}, attr1, attr2)
+            delete props.attr
+             //===================================================
+
             let className = props.selected ? appendClassName(props.className || '', classNames.componentSelected) : props.className
             return <ComponentWrapper {...Object.assign({}, props, { className })} designer={this}
                 source={{ type, attr, props, children }}>
