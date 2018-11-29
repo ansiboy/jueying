@@ -1,20 +1,22 @@
 /// <reference types="react" />
-declare let constants: {
-    componentsDir: string;
-    connectorElementClassName: string;
-    componentTypeName: string;
-    componentData: string;
-};
-declare let strings: {
-    [key: string]: string;
-};
-declare function guid(): string;
-declare class Callback<T> {
-    private funcs;
-    add(func: (args: T) => void): void;
-    remove(func: (args: T) => any): void;
-    fire(args: T): void;
-    static create<T>(): Callback<T>;
+declare module jueying {
+    let constants: {
+        componentsDir: string;
+        connectorElementClassName: string;
+        componentTypeName: string;
+        componentData: string;
+    };
+    let strings: {
+        [key: string]: string;
+    };
+    function guid(): string;
+    class Callback<T> {
+        private funcs;
+        add(func: (args: T) => void): void;
+        remove(func: (args: T) => any): void;
+        fire(args: T): void;
+        static create<T>(): Callback<T>;
+    }
 }
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
@@ -199,19 +201,23 @@ declare module jueying {
         private static componentTypes;
         static register(componentName: string, componentType: React.ComponentClass<any>, attr?: ComponentAttribute): void;
     }
-    class ContainerHost extends React.Component<ComponentProps<ContainerHost>, {
-        children: React.ReactElement<ComponentProps<ContainerHost>>[];
+    const MasterPageName = "MasterPage";
+    class MasterPage extends React.Component<ComponentProps<MasterPage>, {
+        children: React.ReactElement<ComponentProps<MasterPage>>[];
     }> {
-        constructor(props: ComponentProps<ContainerHost>);
+        constructor(props: ComponentProps<MasterPage>);
         private children;
-        componentWillReceiveProps(props: ComponentProps<ContainerHost>): void;
+        componentWillReceiveProps(props: ComponentProps<MasterPage>): void;
         render(): JSX.Element;
     }
-    class ComponentContainer extends React.Component<{
+    /**
+     * 占位符，用于放置控件
+     */
+    class PlaceHolder extends React.Component<{
         id: string;
     }, {}> {
+        constructor(props: any);
         private designer;
-        private host;
         wraper: ComponentWrapper;
         /**
          * 启用拖放操作，以便通过拖放图标添加控件
@@ -220,7 +226,6 @@ declare module jueying {
         private enableMoveDroppable;
         render(): JSX.Element;
     }
-    const ContainerHostName = "ContainerHost";
 }
 declare module jueying {
     interface EditorPanelState {
@@ -246,14 +251,17 @@ declare module jueying {
         render(): JSX.Element;
     }
 }
-declare class Errors {
-    static fileNotExists(fileName: string): any;
-    static argumentNull(argumentName: string): Error;
-    static pageDataIsNull(): Error;
-    static toolbarRequiredKey(): Error;
-    static loadPluginFail(pluginId: string): Error;
-    static idRequired(): Error;
-    static canntFindHost(componentId: string): Error;
+declare module jueying {
+    class Errors {
+        static placeHolderIdNull(): any;
+        static fileNotExists(fileName: string): any;
+        static argumentNull(argumentName: string): Error;
+        static pageDataIsNull(): Error;
+        static toolbarRequiredKey(): Error;
+        static loadPluginFail(pluginId: string): Error;
+        static idRequired(): Error;
+        static canntFindHost(componentId: string): Error;
+    }
 }
 declare module jueying {
     interface ComponentData {

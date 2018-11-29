@@ -116,6 +116,6 @@ ${license}
         },
     })
 
-    // grunt.registerTask('default', ['shell', 'concat', 'babel', 'uglify']);
-    grunt.registerTask('build', ['shell', 'concat', 'babel', 'uglify', 'copy']);
+    let buildTask = ['shell', 'concat', 'babel', 'uglify', 'copy']
+    grunt.registerTask('build', buildTask);
 }

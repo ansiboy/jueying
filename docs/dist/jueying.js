@@ -913,39 +913,44 @@ drop.delegate = function( event, dd ){
 };
 
 })( jQuery ); // confine scope	
-let constants = {
-    componentsDir: 'components',
-    connectorElementClassName: 'component-container',
-    componentTypeName: 'data-component-name',
-    componentData: 'component-data'
-};
-let strings = {};
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
+var jueying;
+(function (jueying) {
+    jueying.constants = {
+        componentsDir: 'components',
+        connectorElementClassName: 'component-container',
+        componentTypeName: 'data-component-name',
+        componentData: 'component-data'
+    };
+    jueying.strings = {};
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
     }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-class Callback {
-    constructor() {
-        this.funcs = new Array();
+    jueying.guid = guid;
+    class Callback {
+        constructor() {
+            this.funcs = new Array();
+        }
+        add(func) {
+            this.funcs.push(func);
+        }
+        remove(func) {
+            this.funcs = this.funcs.filter(o => o != func);
+        }
+        fire(args) {
+            this.funcs.forEach(o => o(args));
+        }
+        static create() {
+            return new Callback();
+        }
     }
-    add(func) {
-        this.funcs.push(func);
-    }
-    remove(func) {
-        this.funcs = this.funcs.filter(o => o != func);
-    }
-    fire(args) {
-        this.funcs.forEach(o => o(args));
-    }
-    static create() {
-        return new Callback();
-    }
-}
+    jueying.Callback = Callback;
+})(jueying || (jueying = {}));
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
  *
@@ -1069,9 +1074,9 @@ var jueying;
                 groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor });
             }
             return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
-                g.group ? React.createElement("div", { className: "panel-heading" }, strings[g.group] || g.group) : null,
+                g.group ? React.createElement("div", { className: "panel-heading" }, jueying.strings[g.group] || g.group) : null,
                 React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group" },
-                    React.createElement("label", { key: guid() }, strings[o.prop] || o.prop),
+                    React.createElement("label", { key: jueying.guid() }, jueying.strings[o.prop] || o.prop),
                     " ",
                     React.createElement("div", { className: "control" }, o.editor)))))));
         }
@@ -1099,7 +1104,7 @@ var jueying;
             toolItemElement.draggable = true;
             toolItemElement.addEventListener('dragstart', function (ev) {
                 componentData.props = componentData.props || {};
-                ev.dataTransfer.setData(constants.componentData, JSON.stringify(componentData));
+                ev.dataTransfer.setData(jueying.constants.componentData, JSON.stringify(componentData));
                 ev.dataTransfer.setData('mousePosition', JSON.stringify({ x: ev.offsetX, y: ev.offsetY }));
             });
         }
@@ -1107,7 +1112,7 @@ var jueying;
             this.setState({ componets });
         }
         static getComponentData(dataTransfer) {
-            var str = dataTransfer.getData(constants.componentData);
+            var str = dataTransfer.getData(jueying.constants.componentData);
             if (!str)
                 return;
             return JSON.parse(str);
@@ -1162,9 +1167,9 @@ var jueying;
     class ComponentWrapper extends React.Component {
         designtimeBehavior(element, attr) {
             if (!element)
-                throw Errors.argumentNull('element');
+                throw jueying.Errors.argumentNull('element');
             if (!attr)
-                throw Errors.argumentNull('args');
+                throw jueying.Errors.argumentNull('args');
             if (element.getAttribute('data-behavior')) {
                 return;
             }
@@ -1193,7 +1198,7 @@ var jueying;
             element.addEventListener('dragover', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
-                let componentName = event.dataTransfer.getData(constants.componentData);
+                let componentName = event.dataTransfer.getData(jueying.constants.componentData);
                 if (componentName)
                     event.dataTransfer.dropEffect = "copy";
                 else
@@ -1230,9 +1235,9 @@ var jueying;
         }
         static draggable(designer, element, handler) {
             if (!designer)
-                throw Errors.argumentNull('designer');
+                throw jueying.Errors.argumentNull('designer');
             if (!element)
-                throw Errors.argumentNull('element');
+                throw jueying.Errors.argumentNull('element');
             console.assert(element.id);
             handler = handler || element;
             let componentId = element.id;
@@ -1353,14 +1358,13 @@ var jueying;
         }
         render() {
             console.assert(!Array.isArray(this.props.children));
-            let shouldWrapper = true;
             let attr = this.props.source.attr;
-            shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != jueying.ContainerHost);
+            let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != jueying.MasterPage);
             if (!shouldWrapper) {
                 return this.renderWidthoutWrapper();
             }
             let props = this.props.source.props;
-            let style = props.style = props.style || {};
+            let style = props.style = JSON.parse(JSON.stringify(props.style || {})); // 深复制 style
             let { top, left, position, width, height, display, visibility } = style;
             let className = jueying.appendClassName(props.className || '', jueying.classNames.componentWrapper);
             className = props.selected ? jueying.appendClassName(className, jueying.classNames.componentSelected) : className;
@@ -1437,15 +1441,6 @@ var jueying;
  * component.tsx 文件用于运行时加载，所以要控制此文件的大小，用于在运行时创建页面
  *
  ********************************************************************************/
-// import * as React from "react";
-// import { PageDesigner } from "./page-designer";
-// import { ComponentWrapper, ComponentAttribute, ComponentWrapperDrapData } from "./component-wrapper";
-// import { PropEditorConstructor } from "./prop-editor";
-// import { ComponentData } from "./models";
-// import { appendClassName, removeClassName, classNames } from "./style";
-// import { constants } from "./comon";
-// import { ComponentPanel } from "./component-toolbar";
-// import { Errors } from './errors'
 var jueying;
 (function (jueying) {
     jueying.DesignerContext = React.createContext({ designer: null });
@@ -1547,9 +1542,9 @@ var jueying;
                 componentType['componentName'] = componentName;
             }
             if (!componentName)
-                throw Errors.argumentNull('componentName');
+                throw jueying.Errors.argumentNull('componentName');
             if (!componentType)
-                throw Errors.argumentNull('componentType');
+                throw jueying.Errors.argumentNull('componentType');
             Component.componentTypes[componentName] = componentType;
             if (attr)
                 Component.setAttribute(componentName, attr);
@@ -1578,8 +1573,9 @@ var jueying;
     Component.controlPropEditors = {};
     Component.componentTypes = {};
     jueying.Component = Component;
-    const FormContext = React.createContext({ form: null });
-    class ContainerHost extends React.Component {
+    jueying.MasterPageName = 'MasterPage';
+    const MasterPageContext = React.createContext({ form: null });
+    class MasterPage extends React.Component {
         constructor(props) {
             super(props);
             let children = this.children(props);
@@ -1609,15 +1605,25 @@ var jueying;
             }
             props.style = Object.assign({ minHeight: 40 }, props.style);
             let children = this.state.children.filter(o => o.props.parent_id == null);
-            return React.createElement(FormContext.Provider, { value: { form: this } }, children);
+            return React.createElement(MasterPageContext.Provider, { value: { form: this } }, children);
         }
     }
-    jueying.ContainerHost = ContainerHost;
-    class ComponentContainer extends React.Component {
+    jueying.MasterPage = MasterPage;
+    Component.register(jueying.MasterPageName, MasterPage, { container: false });
+    /**
+     * 占位符，用于放置控件
+     */
+    class PlaceHolder extends React.Component {
+        constructor(props) {
+            super(props);
+            if (!this.props.id) {
+                throw jueying.Errors.placeHolderIdNull();
+            }
+        }
         /**
          * 启用拖放操作，以便通过拖放图标添加控件
          */
-        enableAppendDroppable(element) {
+        enableAppendDroppable(element, host) {
             if (element.getAttribute('enable-append-droppable'))
                 return;
             element.setAttribute('enable-append-droppable', 'true');
@@ -1626,7 +1632,7 @@ var jueying;
                 event.preventDefault();
                 event.stopPropagation();
                 element.className = jueying.appendClassName(element.className || '', 'active');
-                let componentName = event.dataTransfer.getData(constants.componentData);
+                let componentName = event.dataTransfer.getData(jueying.constants.componentData);
                 if (componentName)
                     event.dataTransfer.dropEffect = "copy";
                 else
@@ -1651,11 +1657,11 @@ var jueying;
                 console.assert(this.props.id);
                 console.assert(this.designer);
                 ctrl.props.parent_id = this.props.id;
-                console.assert(this.host != null, 'host is null');
-                this.designer.appendComponent(this.host.props.id, ctrl);
+                console.assert(host != null, 'host is null');
+                this.designer.appendComponent(host.props.id, ctrl);
             };
         }
-        enableMoveDroppable(element) {
+        enableMoveDroppable(element, host) {
             if (element.getAttribute('enable-move-droppable'))
                 return;
             element.setAttribute('enable-move-droppable', 'true');
@@ -1671,7 +1677,7 @@ var jueying;
                 let componentData = this.designer.findComponentData(dd.sourceElement.id);
                 console.assert(componentData != null);
                 let propName = 'parent_id';
-                this.designer.moveControl(dd.sourceElement.id, this.host.props.id);
+                this.designer.moveControl(dd.sourceElement.id, host.props.id);
                 this.designer.updateControlProps(dd.sourceElement.id, [propName], this.props.id);
             })
                 .drop('end', (event, dd) => {
@@ -1681,10 +1687,10 @@ var jueying;
             });
         }
         render() {
-            return React.createElement(FormContext.Consumer, null, (args) => {
-                let host = this.host = args.form;
+            return React.createElement(MasterPageContext.Consumer, null, (args) => {
+                let host = args.form;
                 if (host == null)
-                    throw Errors.canntFindHost(this.props.id);
+                    throw jueying.Errors.canntFindHost(this.props.id);
                 let children = [];
                 if (host.props && host.props.children) {
                     let arr;
@@ -1694,7 +1700,7 @@ var jueying;
                     else {
                         arr = [host.props.children];
                     }
-                    children = arr.filter((o) => o.props.parent_id == this.props.id);
+                    children = arr.filter((o) => o.props.parent_id != null && o.props.parent_id == this.props.id);
                 }
                 return React.createElement(jueying.DesignerContext.Consumer, null, args => React.createElement(jueying.ComponentWrapperContext.Consumer, null, wraper => {
                     this.wraper = wraper;
@@ -1707,8 +1713,8 @@ var jueying;
                         element = React.createElement("div", { className: jueying.classNames.formItem, ref: e => {
                                 if (!e)
                                     return;
-                                this.enableAppendDroppable(e);
-                                this.enableMoveDroppable(e);
+                                this.enableAppendDroppable(e, host);
+                                this.enableMoveDroppable(e, host);
                             } }, element);
                     }
                     return element;
@@ -1716,9 +1722,8 @@ var jueying;
             });
         }
     }
-    jueying.ComponentContainer = ComponentContainer;
-    jueying.ContainerHostName = 'ContainerHost';
-    Component.register(jueying.ContainerHostName, ContainerHost, { container: false });
+    jueying.PlaceHolder = PlaceHolder;
+    Component.register('PlaceHolder', PlaceHolder);
 })(jueying || (jueying = {}));
 // import { classNames } from "./style";
 // import * as React from "react";
@@ -1800,29 +1805,37 @@ var jueying;
     }
     jueying.EditorPanel = EditorPanel;
 })(jueying || (jueying = {}));
-class Errors {
-    static fileNotExists(fileName) {
-        return new Error(`File '${fileName}' is not exists.`);
+var jueying;
+(function (jueying) {
+    class Errors {
+        static placeHolderIdNull() {
+            let msg = `Place holder property id cannt be null or empty.`;
+            return new Error(msg);
+        }
+        static fileNotExists(fileName) {
+            return new Error(`File '${fileName}' is not exists.`);
+        }
+        static argumentNull(argumentName) {
+            return new Error(`Argument ${argumentName} is null or empty.`);
+        }
+        static pageDataIsNull() {
+            return new Error(`Page data is null.`);
+        }
+        static toolbarRequiredKey() {
+            return new Error(`Toolbar has not a key prop.`);
+        }
+        static loadPluginFail(pluginId) {
+            return new Error(`Load plugin '${pluginId}' fail.`);
+        }
+        static idRequired() {
+            return new Error(`Property id is required.`);
+        }
+        static canntFindHost(componentId) {
+            return new Error(`Can not find host element for component container ${componentId}.`);
+        }
     }
-    static argumentNull(argumentName) {
-        return new Error(`Argument ${argumentName} is null or empty.`);
-    }
-    static pageDataIsNull() {
-        return new Error(`Page data is null.`);
-    }
-    static toolbarRequiredKey() {
-        return new Error(`Toolbar has not a key prop.`);
-    }
-    static loadPluginFail(pluginId) {
-        return new Error(`Load plugin '${pluginId}' fail.`);
-    }
-    static idRequired() {
-        return new Error(`Property id is required.`);
-    }
-    static canntFindHost(componentId) {
-        return new Error(`Can not find host element for component container ${componentId}.`);
-    }
-}
+    jueying.Errors = Errors;
+})(jueying || (jueying = {}));
 // import { ComponentProps } from "./component";
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
@@ -1842,11 +1855,11 @@ var jueying;
     class PageDesigner extends React.Component {
         constructor(props) {
             super(props);
-            this.componentSelected = Callback.create();
-            this.componentRemoved = Callback.create();
-            this.componentAppend = Callback.create();
-            this.componentUpdated = Callback.create();
-            this.designtimeComponentDidMount = Callback.create();
+            this.componentSelected = jueying.Callback.create();
+            this.componentRemoved = jueying.Callback.create();
+            this.componentAppend = jueying.Callback.create();
+            this.componentUpdated = jueying.Callback.create();
+            this.designtimeComponentDidMount = jueying.Callback.create();
             this.namedComponents = {};
             this.initPageData(props.pageData);
             this.state = { pageData: props.pageData };
@@ -1859,14 +1872,6 @@ var jueying;
                 return;
             }
             pageData.children = pageData.children || [];
-            let hostCtrl = pageData.children.filter(o => o.type == jueying.ContainerHostName)[0];
-            if (hostCtrl == null) {
-                hostCtrl = {
-                    type: jueying.ContainerHostName,
-                    props: { id: guid() }
-                };
-                pageData.children.push(hostCtrl);
-            }
             this.nameComponent(pageData);
         }
         get root() {
@@ -1909,9 +1914,9 @@ var jueying;
         }
         sortChildren(parentId, childIds) {
             if (!parentId)
-                throw Errors.argumentNull('parentId');
+                throw jueying.Errors.argumentNull('parentId');
             if (!childIds)
-                throw Errors.argumentNull('childIds');
+                throw jueying.Errors.argumentNull('childIds');
             let pageData = this.state.pageData;
             let parentControl = this.findComponentData(parentId);
             if (parentControl == null)
@@ -1944,7 +1949,7 @@ var jueying;
                 props.name = name;
             }
             if (!props.id)
-                props.id = guid();
+                props.id = jueying.guid();
             if (!component.children || component.children.length == 0) {
                 return;
             }
@@ -1955,9 +1960,9 @@ var jueying;
         /** 添加控件 */
         appendComponent(parentId, childControl, childIds) {
             if (!parentId)
-                throw Errors.argumentNull('parentId');
+                throw jueying.Errors.argumentNull('parentId');
             if (!childControl)
-                throw Errors.argumentNull('childControl');
+                throw jueying.Errors.argumentNull('childControl');
             this.nameComponent(childControl);
             let parentControl = this.findComponentData(parentId);
             if (parentControl == null)
@@ -2098,7 +2103,7 @@ var jueying;
         findComponentData(controlId) {
             let pageData = this.state.pageData;
             if (!pageData)
-                throw Errors.pageDataIsNull();
+                throw jueying.Errors.pageDataIsNull();
             let stack = new Array();
             stack.push(pageData);
             while (stack.length > 0) {
@@ -2419,9 +2424,9 @@ var jueying;
     document.head.appendChild(element);
     function appendClassName(element, addonClassName) {
         if (element == null)
-            throw Errors.argumentNull('element');
+            throw jueying.Errors.argumentNull('element');
         if (!addonClassName)
-            throw Errors.argumentNull('addonClassName');
+            throw jueying.Errors.argumentNull('addonClassName');
         let sourceClassName;
         if (typeof element == 'string')
             sourceClassName = element;

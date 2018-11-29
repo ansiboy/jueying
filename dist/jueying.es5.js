@@ -908,55 +908,61 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             return elems.length ? $(elems) : false;
         };
     })(jQuery); // confine scope	
-    var constants = {
-        componentsDir: 'components',
-        connectorElementClassName: 'component-container',
-        componentTypeName: 'data-component-name',
-        componentData: 'component-data'
-    };
-    var strings = {};
-    function guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    var jueying;
+    (function (jueying) {
+        jueying.constants = {
+            componentsDir: 'components',
+            connectorElementClassName: 'component-container',
+            componentTypeName: 'data-component-name',
+            componentData: 'component-data'
+        };
+        jueying.strings = {};
+        function guid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
         }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
+        jueying.guid = guid;
 
-    var Callback = function () {
-        function Callback() {
-            _classCallCheck(this, Callback);
+        var Callback = function () {
+            function Callback() {
+                _classCallCheck(this, Callback);
 
-            this.funcs = new Array();
-        }
+                this.funcs = new Array();
+            }
 
-        _createClass(Callback, [{
-            key: 'add',
-            value: function add(func) {
-                this.funcs.push(func);
-            }
-        }, {
-            key: 'remove',
-            value: function remove(func) {
-                this.funcs = this.funcs.filter(function (o) {
-                    return o != func;
-                });
-            }
-        }, {
-            key: 'fire',
-            value: function fire(args) {
-                this.funcs.forEach(function (o) {
-                    return o(args);
-                });
-            }
-        }], [{
-            key: 'create',
-            value: function create() {
-                return new Callback();
-            }
-        }]);
+            _createClass(Callback, [{
+                key: 'add',
+                value: function add(func) {
+                    this.funcs.push(func);
+                }
+            }, {
+                key: 'remove',
+                value: function remove(func) {
+                    this.funcs = this.funcs.filter(function (o) {
+                        return o != func;
+                    });
+                }
+            }, {
+                key: 'fire',
+                value: function fire(args) {
+                    this.funcs.forEach(function (o) {
+                        return o(args);
+                    });
+                }
+            }], [{
+                key: 'create',
+                value: function create() {
+                    return new Callback();
+                }
+            }]);
 
-        return Callback;
-    }();
+            return Callback;
+        }();
+
+        jueying.Callback = Callback;
+    })(jueying || (jueying = {}));
     /*******************************************************************************
      * Copyright (C) maishu All rights reserved.
      *
@@ -970,8 +976,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * QQ 讨论组：  119038574
      *
      ********************************************************************************/
-
-
     var jueying;
     (function (jueying) {
         var ComponentEditor = function (_React$Component) {
@@ -1111,8 +1115,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         _loop3(i);
                     }
                     return React.createElement(React.Fragment, null, groupEditorsArray.map(function (g) {
-                        return React.createElement("div", { key: g.group, className: "panel panel-default" }, g.group ? React.createElement("div", { className: "panel-heading" }, strings[g.group] || g.group) : null, React.createElement("div", { className: "panel-body" }, g.editors.map(function (o, i) {
-                            return React.createElement("div", { key: o.prop, className: "form-group" }, React.createElement("label", { key: guid() }, strings[o.prop] || o.prop), " ", React.createElement("div", { className: "control" }, o.editor));
+                        return React.createElement("div", { key: g.group, className: "panel panel-default" }, g.group ? React.createElement("div", { className: "panel-heading" }, jueying.strings[g.group] || g.group) : null, React.createElement("div", { className: "panel-body" }, g.editors.map(function (o, i) {
+                            return React.createElement("div", { key: o.prop, className: "form-group" }, React.createElement("label", { key: jueying.guid() }, jueying.strings[o.prop] || o.prop), " ", React.createElement("div", { className: "control" }, o.editor));
                         })));
                     }));
                 }
@@ -1155,7 +1159,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     toolItemElement.draggable = true;
                     toolItemElement.addEventListener('dragstart', function (ev) {
                         componentData.props = componentData.props || {};
-                        ev.dataTransfer.setData(constants.componentData, JSON.stringify(componentData));
+                        ev.dataTransfer.setData(jueying.constants.componentData, JSON.stringify(componentData));
                         ev.dataTransfer.setData('mousePosition', JSON.stringify({ x: ev.offsetX, y: ev.offsetY }));
                     });
                 }
@@ -1193,7 +1197,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }], [{
                 key: 'getComponentData',
                 value: function getComponentData(dataTransfer) {
-                    var str = dataTransfer.getData(constants.componentData);
+                    var str = dataTransfer.getData(jueying.constants.componentData);
                     if (!str) return;
                     return JSON.parse(str);
                 }
@@ -1238,8 +1242,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _createClass(ComponentWrapper, [{
                 key: 'designtimeBehavior',
                 value: function designtimeBehavior(element, attr) {
-                    if (!element) throw Errors.argumentNull('element');
-                    if (!attr) throw Errors.argumentNull('args');
+                    if (!element) throw jueying.Errors.argumentNull('element');
+                    if (!attr) throw jueying.Errors.argumentNull('args');
                     if (element.getAttribute('data-behavior')) {
                         return;
                     }
@@ -1279,14 +1283,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     var _this5 = this;
 
                     console.assert(!Array.isArray(this.props.children));
-                    var shouldWrapper = true;
                     var attr = this.props.source.attr;
-                    shouldWrapper = attr.resize || typeof this.props.source.type != 'string' && this.props.source.type != jueying.ContainerHost;
+                    var shouldWrapper = attr.resize || typeof this.props.source.type != 'string' && this.props.source.type != jueying.MasterPage;
                     if (!shouldWrapper) {
                         return this.renderWidthoutWrapper();
                     }
                     var props = this.props.source.props;
-                    var style = props.style = props.style || {};
+                    var style = props.style = JSON.parse(JSON.stringify(props.style || {})); // 深复制 style
                     var top = style.top,
                         left = style.left,
                         position = style.position,
@@ -1362,7 +1365,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     element.addEventListener('dragover', function (event) {
                         event.preventDefault();
                         event.stopPropagation();
-                        var componentName = event.dataTransfer.getData(constants.componentData);
+                        var componentName = event.dataTransfer.getData(jueying.constants.componentData);
                         if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
                         console.log('dragover: left:' + event.layerX + ' top:' + event.layerX);
                     });
@@ -1394,8 +1397,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'draggable',
                 value: function draggable(designer, element, handler) {
-                    if (!designer) throw Errors.argumentNull('designer');
-                    if (!element) throw Errors.argumentNull('element');
+                    if (!designer) throw jueying.Errors.argumentNull('designer');
+                    if (!element) throw jueying.Errors.argumentNull('element');
                     console.assert(element.id);
                     handler = handler || element;
                     var componentId = element.id;
@@ -1519,15 +1522,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * component.tsx 文件用于运行时加载，所以要控制此文件的大小，用于在运行时创建页面
      *
      ********************************************************************************/
-    // import * as React from "react";
-    // import { PageDesigner } from "./page-designer";
-    // import { ComponentWrapper, ComponentAttribute, ComponentWrapperDrapData } from "./component-wrapper";
-    // import { PropEditorConstructor } from "./prop-editor";
-    // import { ComponentData } from "./models";
-    // import { appendClassName, removeClassName, classNames } from "./style";
-    // import { constants } from "./comon";
-    // import { ComponentPanel } from "./component-toolbar";
-    // import { Errors } from './errors'
     var jueying;
     (function (jueying) {
         jueying.DesignerContext = React.createContext({ designer: null });
@@ -1660,8 +1654,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         componentName = componentType.name;
                         componentType['componentName'] = componentName;
                     }
-                    if (!componentName) throw Errors.argumentNull('componentName');
-                    if (!componentType) throw Errors.argumentNull('componentType');
+                    if (!componentName) throw jueying.Errors.argumentNull('componentName');
+                    if (!componentType) throw jueying.Errors.argumentNull('componentType');
                     Component.componentTypes[componentName] = componentType;
                     if (attr) Component.setAttribute(componentName, attr);
                 }
@@ -1694,22 +1688,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         Component.controlPropEditors = {};
         Component.componentTypes = {};
         jueying.Component = Component;
-        var FormContext = React.createContext({ form: null });
+        jueying.MasterPageName = 'MasterPage';
+        var MasterPageContext = React.createContext({ form: null });
 
-        var ContainerHost = function (_React$Component4) {
-            _inherits(ContainerHost, _React$Component4);
+        var MasterPage = function (_React$Component4) {
+            _inherits(MasterPage, _React$Component4);
 
-            function ContainerHost(props) {
-                _classCallCheck(this, ContainerHost);
+            function MasterPage(props) {
+                _classCallCheck(this, MasterPage);
 
-                var _this7 = _possibleConstructorReturn(this, (ContainerHost.__proto__ || Object.getPrototypeOf(ContainerHost)).call(this, props));
+                var _this7 = _possibleConstructorReturn(this, (MasterPage.__proto__ || Object.getPrototypeOf(MasterPage)).call(this, props));
 
                 var children = _this7.children(props);
                 _this7.state = { children: children };
                 return _this7;
             }
 
-            _createClass(ContainerHost, [{
+            _createClass(MasterPage, [{
                 key: 'children',
                 value: function children(props) {
                     var arr = props.children == null ? [] : Array.isArray(props.children) ? props.children : [props.children];
@@ -1738,31 +1733,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     var children = this.state.children.filter(function (o) {
                         return o.props.parent_id == null;
                     });
-                    return React.createElement(FormContext.Provider, { value: { form: this } }, children);
+                    return React.createElement(MasterPageContext.Provider, { value: { form: this } }, children);
                 }
             }]);
 
-            return ContainerHost;
+            return MasterPage;
         }(React.Component);
 
-        jueying.ContainerHost = ContainerHost;
+        jueying.MasterPage = MasterPage;
+        Component.register(jueying.MasterPageName, MasterPage, { container: false });
+        /**
+         * 占位符，用于放置控件
+         */
 
-        var ComponentContainer = function (_React$Component5) {
-            _inherits(ComponentContainer, _React$Component5);
+        var PlaceHolder = function (_React$Component5) {
+            _inherits(PlaceHolder, _React$Component5);
 
-            function ComponentContainer() {
-                _classCallCheck(this, ComponentContainer);
+            function PlaceHolder(props) {
+                _classCallCheck(this, PlaceHolder);
 
-                return _possibleConstructorReturn(this, (ComponentContainer.__proto__ || Object.getPrototypeOf(ComponentContainer)).apply(this, arguments));
+                var _this8 = _possibleConstructorReturn(this, (PlaceHolder.__proto__ || Object.getPrototypeOf(PlaceHolder)).call(this, props));
+
+                if (!_this8.props.id) {
+                    throw jueying.Errors.placeHolderIdNull();
+                }
+                return _this8;
             }
+            /**
+             * 启用拖放操作，以便通过拖放图标添加控件
+             */
 
-            _createClass(ComponentContainer, [{
+
+            _createClass(PlaceHolder, [{
                 key: 'enableAppendDroppable',
-
-                /**
-                 * 启用拖放操作，以便通过拖放图标添加控件
-                 */
-                value: function enableAppendDroppable(element) {
+                value: function enableAppendDroppable(element, host) {
                     var _this9 = this;
 
                     if (element.getAttribute('enable-append-droppable')) return;
@@ -1772,7 +1776,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         event.preventDefault();
                         event.stopPropagation();
                         element.className = jueying.appendClassName(element.className || '', 'active');
-                        var componentName = event.dataTransfer.getData(constants.componentData);
+                        var componentName = event.dataTransfer.getData(jueying.constants.componentData);
                         if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
                         console.log('dragover: left:' + event.layerX + ' top:' + event.layerX);
                     });
@@ -1793,13 +1797,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         console.assert(_this9.props.id);
                         console.assert(_this9.designer);
                         ctrl.props.parent_id = _this9.props.id;
-                        console.assert(_this9.host != null, 'host is null');
-                        _this9.designer.appendComponent(_this9.host.props.id, ctrl);
+                        console.assert(host != null, 'host is null');
+                        _this9.designer.appendComponent(host.props.id, ctrl);
                     };
                 }
             }, {
                 key: 'enableMoveDroppable',
-                value: function enableMoveDroppable(element) {
+                value: function enableMoveDroppable(element, host) {
                     var _this10 = this;
 
                     if (element.getAttribute('enable-move-droppable')) return;
@@ -1812,7 +1816,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         var componentData = _this10.designer.findComponentData(dd.sourceElement.id);
                         console.assert(componentData != null);
                         var propName = 'parent_id';
-                        _this10.designer.moveControl(dd.sourceElement.id, _this10.host.props.id);
+                        _this10.designer.moveControl(dd.sourceElement.id, host.props.id);
                         _this10.designer.updateControlProps(dd.sourceElement.id, [propName], _this10.props.id);
                     }).drop('end', function (event, dd) {
                         if (dd.sourceElement.id == _this10.wraper.props.source.props.id) return;
@@ -1824,9 +1828,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 value: function render() {
                     var _this11 = this;
 
-                    return React.createElement(FormContext.Consumer, null, function (args) {
-                        var host = _this11.host = args.form;
-                        if (host == null) throw Errors.canntFindHost(_this11.props.id);
+                    return React.createElement(MasterPageContext.Consumer, null, function (args) {
+                        var host = args.form;
+                        if (host == null) throw jueying.Errors.canntFindHost(_this11.props.id);
                         var children = [];
                         if (host.props && host.props.children) {
                             var arr = void 0;
@@ -1836,7 +1840,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                 arr = [host.props.children];
                             }
                             children = arr.filter(function (o) {
-                                return o.props.parent_id == _this11.props.id;
+                                return o.props.parent_id != null && o.props.parent_id == _this11.props.id;
                             });
                         }
                         return React.createElement(jueying.DesignerContext.Consumer, null, function (args) {
@@ -1848,8 +1852,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                     _this11.designer = args.designer;
                                     element = React.createElement("div", { className: jueying.classNames.formItem, ref: function ref(e) {
                                             if (!e) return;
-                                            _this11.enableAppendDroppable(e);
-                                            _this11.enableMoveDroppable(e);
+                                            _this11.enableAppendDroppable(e, host);
+                                            _this11.enableMoveDroppable(e, host);
                                         } }, element);
                                 }
                                 return element;
@@ -1859,12 +1863,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
             }]);
 
-            return ComponentContainer;
+            return PlaceHolder;
         }(React.Component);
 
-        jueying.ComponentContainer = ComponentContainer;
-        jueying.ContainerHostName = 'ContainerHost';
-        Component.register(jueying.ContainerHostName, ContainerHost, { container: false });
+        jueying.PlaceHolder = PlaceHolder;
+        Component.register('PlaceHolder', PlaceHolder);
     })(jueying || (jueying = {}));
     // import { classNames } from "./style";
     // import * as React from "react";
@@ -1972,51 +1975,61 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         jueying.EditorPanel = EditorPanel;
     })(jueying || (jueying = {}));
+    var jueying;
+    (function (jueying) {
+        var Errors = function () {
+            function Errors() {
+                _classCallCheck(this, Errors);
+            }
 
-    var Errors = function () {
-        function Errors() {
-            _classCallCheck(this, Errors);
-        }
+            _createClass(Errors, null, [{
+                key: 'placeHolderIdNull',
+                value: function placeHolderIdNull() {
+                    var msg = 'Place holder property id cannt be null or empty.';
+                    return new Error(msg);
+                }
+            }, {
+                key: 'fileNotExists',
+                value: function fileNotExists(fileName) {
+                    return new Error('File \'' + fileName + '\' is not exists.');
+                }
+            }, {
+                key: 'argumentNull',
+                value: function argumentNull(argumentName) {
+                    return new Error('Argument ' + argumentName + ' is null or empty.');
+                }
+            }, {
+                key: 'pageDataIsNull',
+                value: function pageDataIsNull() {
+                    return new Error('Page data is null.');
+                }
+            }, {
+                key: 'toolbarRequiredKey',
+                value: function toolbarRequiredKey() {
+                    return new Error('Toolbar has not a key prop.');
+                }
+            }, {
+                key: 'loadPluginFail',
+                value: function loadPluginFail(pluginId) {
+                    return new Error('Load plugin \'' + pluginId + '\' fail.');
+                }
+            }, {
+                key: 'idRequired',
+                value: function idRequired() {
+                    return new Error('Property id is required.');
+                }
+            }, {
+                key: 'canntFindHost',
+                value: function canntFindHost(componentId) {
+                    return new Error('Can not find host element for component container ' + componentId + '.');
+                }
+            }]);
 
-        _createClass(Errors, null, [{
-            key: 'fileNotExists',
-            value: function fileNotExists(fileName) {
-                return new Error('File \'' + fileName + '\' is not exists.');
-            }
-        }, {
-            key: 'argumentNull',
-            value: function argumentNull(argumentName) {
-                return new Error('Argument ' + argumentName + ' is null or empty.');
-            }
-        }, {
-            key: 'pageDataIsNull',
-            value: function pageDataIsNull() {
-                return new Error('Page data is null.');
-            }
-        }, {
-            key: 'toolbarRequiredKey',
-            value: function toolbarRequiredKey() {
-                return new Error('Toolbar has not a key prop.');
-            }
-        }, {
-            key: 'loadPluginFail',
-            value: function loadPluginFail(pluginId) {
-                return new Error('Load plugin \'' + pluginId + '\' fail.');
-            }
-        }, {
-            key: 'idRequired',
-            value: function idRequired() {
-                return new Error('Property id is required.');
-            }
-        }, {
-            key: 'canntFindHost',
-            value: function canntFindHost(componentId) {
-                return new Error('Can not find host element for component container ' + componentId + '.');
-            }
-        }]);
+            return Errors;
+        }();
 
-        return Errors;
-    }();
+        jueying.Errors = Errors;
+    })(jueying || (jueying = {}));
     // import { ComponentProps } from "./component";
     /*******************************************************************************
      * Copyright (C) maishu All rights reserved.
@@ -2031,8 +2044,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * QQ 讨论组：  119038574
      *
      ********************************************************************************/
-
-
     var jueying;
     (function (jueying) {
         var PageDesigner = function (_React$Component7) {
@@ -2043,11 +2054,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 var _this14 = _possibleConstructorReturn(this, (PageDesigner.__proto__ || Object.getPrototypeOf(PageDesigner)).call(this, props));
 
-                _this14.componentSelected = Callback.create();
-                _this14.componentRemoved = Callback.create();
-                _this14.componentAppend = Callback.create();
-                _this14.componentUpdated = Callback.create();
-                _this14.designtimeComponentDidMount = Callback.create();
+                _this14.componentSelected = jueying.Callback.create();
+                _this14.componentRemoved = jueying.Callback.create();
+                _this14.componentAppend = jueying.Callback.create();
+                _this14.componentUpdated = jueying.Callback.create();
+                _this14.designtimeComponentDidMount = jueying.Callback.create();
                 _this14.namedComponents = {};
                 _this14.initPageData(props.pageData);
                 _this14.state = { pageData: props.pageData };
@@ -2064,16 +2075,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         return;
                     }
                     pageData.children = pageData.children || [];
-                    var hostCtrl = pageData.children.filter(function (o) {
-                        return o.type == jueying.ContainerHostName;
-                    })[0];
-                    if (hostCtrl == null) {
-                        hostCtrl = {
-                            type: jueying.ContainerHostName,
-                            props: { id: guid() }
-                        };
-                        pageData.children.push(hostCtrl);
-                    }
                     this.nameComponent(pageData);
                 }
             }, {
@@ -2095,8 +2096,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'sortChildren',
                 value: function sortChildren(parentId, childIds) {
-                    if (!parentId) throw Errors.argumentNull('parentId');
-                    if (!childIds) throw Errors.argumentNull('childIds');
+                    if (!parentId) throw jueying.Errors.argumentNull('parentId');
+                    if (!childIds) throw jueying.Errors.argumentNull('childIds');
                     var pageData = this.state.pageData;
                     var parentControl = this.findComponentData(parentId);
                     if (parentControl == null) throw new Error('Parent is not exists');
@@ -2132,7 +2133,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         this.namedComponents[name] = component;
                         props.name = name;
                     }
-                    if (!props.id) props.id = guid();
+                    if (!props.id) props.id = jueying.guid();
                     if (!component.children || component.children.length == 0) {
                         return;
                     }
@@ -2145,8 +2146,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'appendComponent',
                 value: function appendComponent(parentId, childControl, childIds) {
-                    if (!parentId) throw Errors.argumentNull('parentId');
-                    if (!childControl) throw Errors.argumentNull('childControl');
+                    if (!parentId) throw jueying.Errors.argumentNull('parentId');
+                    if (!childControl) throw jueying.Errors.argumentNull('childControl');
                     this.nameComponent(childControl);
                     var parentControl = this.findComponentData(parentId);
                     if (parentControl == null) throw new Error('Parent is not exists');
@@ -2307,7 +2308,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 key: 'findComponentData',
                 value: function findComponentData(controlId) {
                     var pageData = this.state.pageData;
-                    if (!pageData) throw Errors.pageDataIsNull();
+                    if (!pageData) throw jueying.Errors.pageDataIsNull();
                     var stack = new Array();
                     stack.push(pageData);
                     while (stack.length > 0) {
@@ -2556,8 +2557,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         element.innerHTML = '\n            .' + jueying.classNames.componentSelected + ' {\n                border: solid 1px #337ab7!important;\n            }\n            .' + jueying.classNames.componentSelected + ' > :first-child {\n                border-color: blue;\n              }\n              .' + jueying.classNames.componentSelected + ' .resize_handle {\n                position: absolute;\n                height: 6px;\n                width: 6px;\n                border: 1px solid #89B;\n                background: #9AC;\n              }\n              .' + jueying.classNames.componentSelected + ' .move_handle {\n                height: 12px;\n                width: 12px;\n                top: 6px;\n                left: 8px;\n                border: solid 1px black;\n                position: relative;\n                margin-top: -12px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NW,\n              .' + jueying.classNames.componentSelected + ' .NN,\n              .' + jueying.classNames.componentSelected + ' .NE {\n                top: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NE,\n              .' + jueying.classNames.componentSelected + ' .EE,\n              .' + jueying.classNames.componentSelected + ' .SE {\n                right: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .SW,\n              .' + jueying.classNames.componentSelected + '.SS,\n              .' + jueying.classNames.componentSelected + ' .SE {\n                bottom: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NW,\n              .' + jueying.classNames.componentSelected + ' .WW,\n              .' + jueying.classNames.componentSelected + ' .SW {\n                left: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .SE,\n              .' + jueying.classNames.componentSelected + ' .NW {\n                cursor: nw-resize;\n              }\n              .' + jueying.classNames.componentSelected + ' .SW,\n              .' + jueying.classNames.componentSelected + ' .NE {\n                cursor: ne-resize;\n              }\n              .' + jueying.classNames.componentSelected + ' .NN,\n              .' + jueying.classNames.componentSelected + ' .SS {\n                cursor: n-resize;\n                left: 50%;\n                margin-left: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .EE,\n              .' + jueying.classNames.componentSelected + ' .WW {\n                cursor: e-resize;\n                top: 50%;\n                margin-top: -4px;\n              }\n            .' + jueying.classNames.emptyTemplates + ' {\n                padding:50px 0;\n                text-align: center;\n            }\n            .' + jueying.classNames.loadingTemplates + ' {\n                padding:50px 0;\n                text-align: center;\n            }\n            .' + jueying.classNames.templateSelected + ' .page-view {\n                border: solid 1px #337ab7!important;\n            }\n            .' + jueying.classNames.templateDialog + ' .name {\n                margin-top: -' + templateDialog.nameHeight + 'px;\n                height: ' + templateDialog.nameHeight + 'px;\n                font-size: ' + templateDialog.fontSize + 'px;\n                text-align: center;\n                padding-top: 6px;\n                background-color: black;\n                opacity: 0.5;\n            }\n            .' + jueying.classNames.templateDialog + ' .name span {\n                color: white;\n            }\n            .' + jueying.classNames.emptyDocument + ' {\n                text-align: center;\n                padding: 100px 0;\n            }\n            .' + jueying.classNames.component + ' > .NW,\n            .' + jueying.classNames.component + ' > .NN,\n            .' + jueying.classNames.component + ' > .NE,\n            .' + jueying.classNames.component + ' > .EE,\n            .' + jueying.classNames.component + ' > .SE,\n            .' + jueying.classNames.component + ' > .SW,\n            .' + jueying.classNames.component + ' > .SS,\n            .' + jueying.classNames.component + ' > .WW {\n                display: none;\n            }\n            .' + jueying.classNames.componentSelected + '.component > .NW,\n            .' + jueying.classNames.componentSelected + '.component > .NN,\n            .' + jueying.classNames.componentSelected + '.component > .NE,\n            .' + jueying.classNames.componentSelected + '.component > .EE,\n            .' + jueying.classNames.componentSelected + '.component > .SE,\n            .' + jueying.classNames.componentSelected + '.component > .SW,\n            .' + jueying.classNames.componentSelected + '.component > .SS,\n            .' + jueying.classNames.componentSelected + '.component > .WW {\n                display: block;\n            }\n            ul.nav-tabs li i {\n                position: relative;\n                top: 4px;\n                right: -6px;\n            }\n            .validationMessage {\n                position: absolute;\n                margin-top: -60px;\n                background-color: red;\n                color: white;\n                padding: 4px 10px;\n            }\n            .' + jueying.classNames.form + ' {\n                min-height: 40px;\n                width: 100%;\n            }\n            .' + jueying.classNames.formItem + ' {\n                min-height: 40px;\n                width: 100%;\n            }\n            .' + jueying.classNames.formItem + '.active,\n            .' + jueying.classNames.componentWrapper + '.active,\n            .' + jueying.classNames.componentWrapper + '.' + jueying.classNames.componentSelected + '.active {\n                border: 1px solid green;\n            }\n            .' + jueying.classNames.editorPanel + ' {\n                width: 300px;\n                background: white;\n                color: black;\n                margin: 0;\n                font-size: 14px;\n                z-index: 100;\n                overflow: auto;\n            }\n            .' + jueying.classNames.editorPanel + ' label {\n                width: 80px;\n                float: left;\n                padding: 4px;\n                text-overflow: ellipsis;\n                overflow: hidden;\n            }\n            .' + jueying.classNames.editorPanel + ' .control {\n                padding-left: 90px;\n            }\n            .' + jueying.classNames.editorPanel + ' .empty {\n                padding-top: 200px;\n                text-align: center;\n            }\n            .' + jueying.classNames.componentPanel + ' {\n                background: white;\n                color: black;\n                font-size: 14px;\n                z-index: 100;\n                list-style: none;\n                padding: 0;\n                text-align: center\n            }\n            .' + jueying.classNames.componentPanel + ' .panel-heading {\n                text-align: center;\n            }\n            .' + jueying.classNames.componentPanel + ' li {\n                text-align: center;\n                padding: 8px;\n            }\n        ';
         document.head.appendChild(element);
         function appendClassName(element, addonClassName) {
-            if (element == null) throw Errors.argumentNull('element');
-            if (!addonClassName) throw Errors.argumentNull('addonClassName');
+            if (element == null) throw jueying.Errors.argumentNull('element');
+            if (!addonClassName) throw jueying.Errors.argumentNull('addonClassName');
             var sourceClassName = void 0;
             if (typeof element == 'string') sourceClassName = element;else sourceClassName = element.className;
             sourceClassName = sourceClassName || '';
