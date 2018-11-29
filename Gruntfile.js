@@ -95,6 +95,13 @@ ${license}
                 })()
             }
         },
+        copy: {
+            dist: {
+                files: [
+                    { expand: true, src: 'dist/*', dest: 'docs/' },
+                ]
+            }
+        },
         uglify: {
             out: {
                 options: {
@@ -109,6 +116,6 @@ ${license}
         },
     })
 
-    grunt.registerTask('default', ['shell', 'concat', 'babel', 'uglify']);
-    grunt.registerTask('build', ['shell', 'concat', 'babel', 'uglify']);
+    // grunt.registerTask('default', ['shell', 'concat', 'babel', 'uglify']);
+    grunt.registerTask('build', ['shell', 'concat', 'babel', 'uglify', 'copy']);
 }
