@@ -1270,6 +1270,7 @@ var jueying;
             this.setState({ value: props.value });
         }
     }
+    jueying.PropEditor = PropEditor;
     class TextInput extends PropEditor {
         render() {
             let { value } = this.state;
@@ -1433,7 +1434,7 @@ var jueying;
             .${jueying.classNames.componentSelected}.component > .SW,
             .${jueying.classNames.componentSelected}.component > .SS,
             .${jueying.classNames.componentSelected}.component > .WW {
-            display: block;
+                display: block;
             }
             ul.nav-tabs li i {
                 position: relative;
