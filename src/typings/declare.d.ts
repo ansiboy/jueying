@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-=======
-
-declare function h(type, props, ...children);
-declare function requirejs(modules: string[], ready?: Function, errback?: Function): void;
-
-declare function h(type, props, ...children): JSX.Element;
-interface Window {
-    webkitURL: string
-}
-
-declare namespace JQueryUI {
-    interface DroppableOptions {
-        multiple: boolean,
-    }
-}
-
->>>>>>> 301b4a911cbc135e4e22f02af4b326a563eac0a6
 interface DragData {
     available: any[]
     deltaX: number
