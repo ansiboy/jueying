@@ -1,9 +1,0 @@
-{
-    "compileOnSave": true,
-    "compilerOptions": {
-        "module": "amd",
-        "target": "es6",
-        "outDir": "dist",
-        "jsx": "react"
-    }
-}

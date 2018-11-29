@@ -9,15 +9,22 @@ http://threedubmedia.com/code/event/drag
 
 ## 使用
 
+1. 依赖的框架
+
+    * React
+    * jQuery (建议使用 2.1.3 版本)
+    * jquery.event.drag & jquery.event.drop
+
 1. 引用下面 lib 文件夹中的 JS
 
     * react.js
     * react-dom.js
     * jquery-2.1.3.js
-    * jquery.event.drag-2.2.js
-    * jquery.event.drag.live-2.2.js
-    * jquery.event.drop-2.2.js
-    * jquery.event.drop.live-2.2.js
+    * jueying.js
+
+说明： jquery.event.drag & jquery.event.drop 已打包到 jueying.js，无需独立引用
+
+
 
 ## 控件面板，设计器与属性面板
 

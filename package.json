@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "author": "mai.shu",
     "main": "out/jueying.js",
+    "scripts": {
+        "build": "grunt build"
+    },
     "dependencies": {
         "bootstrap": "^3.3.7",
         "jquery": "^2.1.3",
