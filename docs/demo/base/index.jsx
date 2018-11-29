@@ -47,12 +47,8 @@ class MainPage extends React.Component {
                     pageData={{
                         type: "div",
                         props: {
-<<<<<<< HEAD
                             style: { position: 'absolute', width: 400, height: 400 },
                             attr: { movable: false, resize: false }
-=======
-                            style: { position: 'absolute', width: 400, height: 400 }
->>>>>>> b0d30543ee66146c9e4e4a6c22046cfc0aa4eddc
                         }
                     }} />
                 <EditorPanel ref={e => this.editorPanel = e || this.editorPanel} />
