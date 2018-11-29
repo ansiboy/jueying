@@ -533,8 +533,6 @@ var jueying;
 // import { Errors } from './errors'
 var jueying;
 (function (jueying) {
-    // 非 dom 的 prop，以 ctrl 开大，以便于处理
-    let NotDomPropPrefix = 'ctrl_';
     jueying.DesignerContext = React.createContext({ designer: null });
     jueying.ComponentWrapperContext = React.createContext(null);
     function component(args) {
@@ -1231,8 +1229,14 @@ var jueying;
                 delete props.onClick;
                 props.readOnly = true;
             }
-            let attr = jueying.Component.getAttribute(type);
-            console.assert(attr != null);
+            //===================================================
+            // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
+            let attr1 = jueying.Component.getAttribute(type);
+            console.assert(attr1 != null);
+            let attr2 = props.attr || {};
+            let attr = Object.assign({}, attr1, attr2);
+            delete props.attr;
+            //===================================================
             let className = props.selected ? jueying.appendClassName(props.className || '', jueying.classNames.componentSelected) : props.className;
             return React.createElement(jueying.ComponentWrapper, Object.assign({}, Object.assign({}, props, { className }), { designer: this, source: { type, attr, props, children } }));
         }
@@ -1325,6 +1329,65 @@ var jueying;
             .${jueying.classNames.componentSelected} {
                 border: solid 1px #337ab7!important;
             }
+            .${jueying.classNames.componentSelected} > :first-child {
+                border-color: blue;
+              }
+              .${jueying.classNames.componentSelected} .resize_handle {
+                position: absolute;
+                height: 6px;
+                width: 6px;
+                border: 1px solid #89B;
+                background: #9AC;
+              }
+              .${jueying.classNames.componentSelected} .move_handle {
+                height: 12px;
+                width: 12px;
+                top: 6px;
+                left: 8px;
+                border: solid 1px black;
+                position: relative;
+                margin-top: -12px;
+              }
+              .${jueying.classNames.componentSelected} .NW,
+              .${jueying.classNames.componentSelected} .NN,
+              .${jueying.classNames.componentSelected} .NE {
+                top: -4px;
+              }
+              .${jueying.classNames.componentSelected} .NE,
+              .${jueying.classNames.componentSelected} .EE,
+              .${jueying.classNames.componentSelected} .SE {
+                right: -4px;
+              }
+              .${jueying.classNames.componentSelected} .SW,
+              .${jueying.classNames.componentSelected}.SS,
+              .${jueying.classNames.componentSelected} .SE {
+                bottom: -4px;
+              }
+              .${jueying.classNames.componentSelected} .NW,
+              .${jueying.classNames.componentSelected} .WW,
+              .${jueying.classNames.componentSelected} .SW {
+                left: -4px;
+              }
+              .${jueying.classNames.componentSelected} .SE,
+              .${jueying.classNames.componentSelected} .NW {
+                cursor: nw-resize;
+              }
+              .${jueying.classNames.componentSelected} .SW,
+              .${jueying.classNames.componentSelected} .NE {
+                cursor: ne-resize;
+              }
+              .${jueying.classNames.componentSelected} .NN,
+              .${jueying.classNames.componentSelected} .SS {
+                cursor: n-resize;
+                left: 50%;
+                margin-left: -4px;
+              }
+              .${jueying.classNames.componentSelected} .EE,
+              .${jueying.classNames.componentSelected} .WW {
+                cursor: e-resize;
+                top: 50%;
+                margin-top: -4px;
+              }
             .${jueying.classNames.emptyTemplates} {
                 padding:50px 0;
                 text-align: center;
@@ -1351,6 +1414,26 @@ var jueying;
             .${jueying.classNames.emptyDocument} {
                 text-align: center;
                 padding: 100px 0;
+            }
+            .${jueying.classNames.component} > .NW,
+            .${jueying.classNames.component} > .NN,
+            .${jueying.classNames.component} > .NE,
+            .${jueying.classNames.component} > .EE,
+            .${jueying.classNames.component} > .SE,
+            .${jueying.classNames.component} > .SW,
+            .${jueying.classNames.component} > .SS,
+            .${jueying.classNames.component} > .WW {
+                display: none;
+            }
+            .${jueying.classNames.componentSelected}.component > .NW,
+            .${jueying.classNames.componentSelected}.component > .NN,
+            .${jueying.classNames.componentSelected}.component > .NE,
+            .${jueying.classNames.componentSelected}.component > .EE,
+            .${jueying.classNames.componentSelected}.component > .SE,
+            .${jueying.classNames.componentSelected}.component > .SW,
+            .${jueying.classNames.componentSelected}.component > .SS,
+            .${jueying.classNames.componentSelected}.component > .WW {
+            display: block;
             }
             ul.nav-tabs li i {
                 position: relative;

@@ -88,7 +88,7 @@ ${license}
                         keepalive: true,
                         // livereload: 17024,
                         // 物理路径(默认为. 即根目录) 注：使用'.'或'..'为路径的时，可能会返回403 Forbidden. 此时将该值改为相对路径 如：/grunt/reloard。
-                        base: '.',
+                        base: 'docs',
                         open: { target: `http://localhost:${port}/demo` },
                         // protocol: 'https'
                     }

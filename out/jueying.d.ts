@@ -154,6 +154,7 @@ declare module jueying {
         selected?: boolean;
         text?: string;
         parent_id?: string;
+        attr?: ComponentAttribute;
     }
     type DesignerContextValue = {
         designer: PageDesigner | null;
