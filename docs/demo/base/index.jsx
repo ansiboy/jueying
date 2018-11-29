@@ -1,4 +1,4 @@
-/// <reference path="../../out/jueying.d.ts"/>
+/// <reference path="../../../out/jueying.d.ts"/>
 
 const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput } = jueying
 let components = [
@@ -43,13 +43,17 @@ class MainPage extends React.Component {
         return <React.Fragment>
             <ComponentPanel ref={e => this.componentPanel = e || this.componentPanel} />
             <div style={{ display: 'table' }}>
-                <PageDesigner pageData={{ type: "div", props: { style: { position: 'absolute', width: 400, height: 400 } } }} ref={e => this.designer = e || this.designer} />
+                <PageDesigner ref={e => this.designer = e || this.designer}
+                    pageData={{
+                        type: "div",
+                        props: {
+                            style: { position: 'absolute', width: 400, height: 400 }
+                        }
+                    }} />
                 <EditorPanel ref={e => this.editorPanel = e || this.editorPanel} />
             </div>
         </React.Fragment >
     }
 }
-
-
 
 ReactDOM.render(<MainPage />, container)

@@ -1112,7 +1112,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     }
                     return React.createElement(React.Fragment, null, groupEditorsArray.map(function (g) {
                         return React.createElement("div", { key: g.group, className: "panel panel-default" }, g.group ? React.createElement("div", { className: "panel-heading" }, strings[g.group] || g.group) : null, React.createElement("div", { className: "panel-body" }, g.editors.map(function (o, i) {
-                            return React.createElement("div", { key: o.prop, className: "form-group" }, React.createElement("label", { key: guid() }, strings[o.prop] || o.prop, "C"), " ", React.createElement("div", { className: "control" }, o.editor));
+                            return React.createElement("div", { key: o.prop, className: "form-group" }, React.createElement("label", { key: guid() }, strings[o.prop] || o.prop), " ", React.createElement("div", { className: "control" }, o.editor));
                         })));
                     }));
                 }
