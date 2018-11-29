@@ -11,7 +11,7 @@ module jueying {
     interface PropEditorState<T> {
         value: T
     }
-    abstract class PropEditor<S extends PropEditorState<T>, T> extends React.Component<PropEditorProps<T>, S> {
+    export abstract class PropEditor<S extends PropEditorState<T>, T> extends React.Component<PropEditorProps<T>, S> {
         constructor(props: PropEditorProps<T>) {
             super(props)
 
