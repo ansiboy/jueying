@@ -13,15 +13,6 @@
  ********************************************************************************/
 
 
-// import * as React from "react";
-// import { PageDesigner } from "./page-designer";
-// import { ComponentWrapper, ComponentAttribute, ComponentWrapperDrapData } from "./component-wrapper";
-// import { PropEditorConstructor } from "./prop-editor";
-// import { ComponentData } from "./models";
-// import { appendClassName, removeClassName, classNames } from "./style";
-// import { constants } from "./comon";
-// import { ComponentPanel } from "./component-toolbar";
-// import { Errors } from './errors'
 
 
 module jueying {
@@ -212,17 +203,19 @@ module jueying {
 
     }
 
-    type FormContextValue = { form: ContainerHost | null };
-    const FormContext = React.createContext<FormContextValue>({ form: null });
 
-    export class ContainerHost extends React.Component<ComponentProps<ContainerHost>, { children: React.ReactElement<ComponentProps<ContainerHost>>[] }> {
-        constructor(props: ComponentProps<ContainerHost>) {
+    export const MasterPageName = 'MasterPage'
+    type MasterPageContextValue = { form: MasterPage | null };
+    const MasterPageContext = React.createContext<MasterPageContextValue>({ form: null });
+
+    export class MasterPage extends React.Component<ComponentProps<MasterPage>, { children: React.ReactElement<ComponentProps<MasterPage>>[] }> {
+        constructor(props: ComponentProps<MasterPage>) {
             super(props)
 
             let children: React.ReactElement<ComponentProps<any>>[] = this.children(props)
             this.state = { children }
         }
-        private children(props: ComponentProps<ContainerHost>): React.ReactElement<ComponentProps<any>>[] {
+        private children(props: ComponentProps<MasterPage>): React.ReactElement<ComponentProps<any>>[] {
             let arr = props.children == null ? [] :
                 Array.isArray(props.children) ? props.children : [props.children];
 
@@ -236,7 +229,7 @@ module jueying {
 
             return children
         }
-        componentWillReceiveProps(props: ComponentProps<ContainerHost>) {
+        componentWillReceiveProps(props: ComponentProps<MasterPage>) {
             let children: React.ReactElement<ComponentProps<any>>[] = this.children(props)
             this.setState({ children })
         }
@@ -251,21 +244,34 @@ module jueying {
 
             props.style = Object.assign({ minHeight: 40 }, props.style)
             let children = this.state.children.filter(o => o.props.parent_id == null);
-            return <FormContext.Provider value={{ form: this }}>
+            return <MasterPageContext.Provider value={{ form: this }}>
                 {children}
-            </FormContext.Provider>
+            </MasterPageContext.Provider>
         }
     }
+    Component.register(MasterPageName, MasterPage, { container: false })
 
-    export class ComponentContainer extends React.Component<{ id: string }, {}>{
+    /**
+     * 占位符，用于放置控件
+     */
+    export class PlaceHolder extends React.Component<{ id: string }, {}>{
+
+        constructor(props) {
+            super(props)
+
+            if (!this.props.id) {
+                throw Errors.placeHolderIdNull()
+            }
+        }
+
         private designer: PageDesigner;
-        private host: ContainerHost;
+        // private host: MasterPage;
         wraper: ComponentWrapper;
 
         /**
          * 启用拖放操作，以便通过拖放图标添加控件
          */
-        private enableAppendDroppable(element: HTMLElement) {
+        private enableAppendDroppable(element: HTMLElement, host: MasterPage) {
             if (element.getAttribute('enable-append-droppable'))
                 return
 
@@ -309,11 +315,11 @@ module jueying {
                 console.assert(this.props.id);
                 console.assert(this.designer);
                 ctrl.props.parent_id = this.props.id;
-                console.assert(this.host != null, 'host is null')
-                this.designer.appendComponent(this.host.props.id, ctrl)
+                console.assert(host != null, 'host is null')
+                this.designer.appendComponent(host.props.id, ctrl)
             }
         }
-        private enableMoveDroppable(element: HTMLElement) {
+        private enableMoveDroppable(element: HTMLElement, host: MasterPage) {
             if (element.getAttribute('enable-move-droppable'))
                 return
 
@@ -334,7 +340,7 @@ module jueying {
                     console.assert(componentData != null)
 
                     let propName: keyof ComponentProps<any> = 'parent_id'
-                    this.designer.moveControl(dd.sourceElement.id, this.host.props.id)
+                    this.designer.moveControl(dd.sourceElement.id, host.props.id)
                     this.designer.updateControlProps(dd.sourceElement.id, [propName], this.props.id)
 
                 })
@@ -347,9 +353,9 @@ module jueying {
         }
 
         render() {
-            return <FormContext.Consumer>
+            return <MasterPageContext.Consumer>
                 {(args) => {
-                    let host = this.host = args.form
+                    let host = args.form
                     if (host == null) throw Errors.canntFindHost(this.props.id)
 
                     let children: React.ReactElement<ComponentProps<any>>[] = []
@@ -361,7 +367,7 @@ module jueying {
                         else {
                             arr = [host.props.children as any]
                         }
-                        children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parent_id == this.props.id)
+                        children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parent_id != null && o.props.parent_id == this.props.id)
                     }
 
                     return <DesignerContext.Consumer>
@@ -380,8 +386,8 @@ module jueying {
                                     element = <div className={classNames.formItem}
                                         ref={e => {
                                             if (!e) return
-                                            this.enableAppendDroppable(e)
-                                            this.enableMoveDroppable(e)
+                                            this.enableAppendDroppable(e, host)
+                                            this.enableMoveDroppable(e, host)
                                         }}>
                                         {element}
                                     </div>
@@ -393,11 +399,10 @@ module jueying {
                         }
                     </DesignerContext.Consumer>
                 }}
-            </FormContext.Consumer>
+            </MasterPageContext.Consumer>
 
         }
     }
 
-    export const ContainerHostName = 'ContainerHost'
-    Component.register(ContainerHostName, ContainerHost, { container: false })
+    Component.register('PlaceHolder', PlaceHolder)
 }

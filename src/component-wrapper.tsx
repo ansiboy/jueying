@@ -263,15 +263,14 @@ module jueying {
         render() {
             console.assert(!Array.isArray(this.props.children))
 
-            let shouldWrapper: boolean = true
             let attr = this.props.source.attr
-            shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != ContainerHost)
+            let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
             if (!shouldWrapper) {
                 return this.renderWidthoutWrapper()
             }
 
             let props = this.props.source.props
-            let style = props.style = props.style || {}
+            let style = props.style = JSON.parse(JSON.stringify(props.style || {})) // 深复制 style
             let { top, left, position, width, height, display, visibility } = style
 
             let className = appendClassName(props.className || '', classNames.componentWrapper)

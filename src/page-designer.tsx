@@ -51,15 +51,6 @@ module jueying {
             }
 
             pageData.children = pageData.children || []
-            let hostCtrl = pageData.children.filter(o => o.type == ContainerHostName)[0]
-            if (hostCtrl == null) {
-                hostCtrl = {
-                    type: ContainerHostName,
-                    props: { id: guid() }
-                }
-                pageData.children.push(hostCtrl)
-            }
-
             this.nameComponent(pageData)
         }
 
