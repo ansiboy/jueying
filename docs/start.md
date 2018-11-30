@@ -15,7 +15,7 @@ jueying 依赖下面几个库
 
 所以在使用中，需要引用 React 和 jQuery，例如：
 
-```js
+```html
 <script src="https://cdn.bootcss.com/react/16.6.0/umd/react.development.js"></script>
 <script src="https://cdn.bootcss.com/react-dom/16.6.0/umd/react-dom.development.js"></script>
 <script src="https://cdn.bootcss.com/jquery/2.1.2/jquery.min.js"></script>
@@ -43,7 +43,23 @@ jueying 依赖下面几个库
     <script src="https://ansiboy.gitee.io/jueying/dist/jueying.js"></script>
     ```
 
+**注意：** 如果直接在浏览器使用 JSX，还需要引用 babel，例如：
+
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+另外，如果转换的是 ES5 语法，引用的 jueying 脚本文件应该为 jueying.es5.js 或者 jueying.min.js 
+
 ## 3. 创建组件面板，设计器，属性编辑器 
 
+可视化的组件编辑器由三部分组成，组件面板，设计器，属性编辑器。组件面板显示可用的组件，设计器用于组装各个组件，属性编辑器用于对组件的属性进行设置。如下图所示：
 
+![](images/app4.jpg)
 
+下面的代码演示组件面板，设计器，属性编辑器的创建。
+
+<p data-height="400" data-theme-id="light" data-slug-hash="zMyLLO" data-default-tab="js,result" data-user="ansiboy" data-pen-title="create component-panel designer editor-panel" class="codepen">See the Pen <a href="https://codepen.io/ansiboy/pen/zMyLLO/">create component-panel designer editor-panel</a> by Shu Mai (<a href="https://codepen.io/ansiboy">@ansiboy</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+<p>
+    <h1 class="text-center"><a href="({{site.baseurl}}/demo">查看演示了解更多</a></h1>
+</p>
