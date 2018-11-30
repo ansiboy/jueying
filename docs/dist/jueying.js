@@ -1,7 +1,7 @@
 
 
 /*!
- * JUEYING v1.0.0
+ * JUEYING v1.1.0
  * https://github.com/ansiboy/jueying
  *
  * 可视化页面设计器
@@ -1381,8 +1381,10 @@ var jueying;
                 delete props.style.left;
                 delete props.style.top;
                 delete props.style.position;
-                props.style.width = '100%';
-                props.style.height = '100%';
+                if (wrapperProps.style.width && wrapperProps.style.width != 'unset')
+                    props.style.width = '100%';
+                if (wrapperProps.style.height && wrapperProps.style.height != 'unset')
+                    props.style.height = '100%';
             }
             return React.createElement(jueying.ComponentWrapperContext.Provider, { value: this },
                 React.createElement("div", Object.assign({}, wrapperProps),
@@ -1724,6 +1726,18 @@ var jueying;
     }
     jueying.PlaceHolder = PlaceHolder;
     Component.register('PlaceHolder', PlaceHolder);
+    class PageView extends React.Component {
+        constructor(props) {
+            super(props);
+            if (!this.props.pageData)
+                throw jueying.Errors.propertyCanntNull(PageView.name, 'pageData');
+        }
+        render() {
+            let element = Component.createElement(this.props.pageData);
+            return element;
+        }
+    }
+    jueying.PageView = PageView;
 })(jueying || (jueying = {}));
 // import { classNames } from "./style";
 // import * as React from "react";
@@ -1832,6 +1846,10 @@ var jueying;
         }
         static canntFindHost(componentId) {
             return new Error(`Can not find host element for component container ${componentId}.`);
+        }
+        static propertyCanntNull(componentName, property) {
+            let msg = `${componentName} property ${property} cannt be null or empty.`;
+            return new Error(msg);
         }
     }
     jueying.Errors = Errors;

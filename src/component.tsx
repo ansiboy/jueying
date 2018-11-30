@@ -405,4 +405,17 @@ module jueying {
     }
 
     Component.register('PlaceHolder', PlaceHolder)
+
+    export class PageView extends React.Component<{ pageData: ComponentData }, {}> {
+        constructor(props) {
+            super(props)
+
+            if (!this.props.pageData)
+                throw Errors.propertyCanntNull(PageView.name, 'pageData')
+        }
+        render() {
+            let element = Component.createElement(this.props.pageData)
+            return element
+        }
+    }
 }

@@ -226,6 +226,12 @@ declare module jueying {
         private enableMoveDroppable;
         render(): JSX.Element;
     }
+    class PageView extends React.Component<{
+        pageData: ComponentData;
+    }, {}> {
+        constructor(props: any);
+        render(): React.ReactElement<any>;
+    }
 }
 declare module jueying {
     interface EditorPanelState {
@@ -261,6 +267,7 @@ declare module jueying {
         static loadPluginFail(pluginId: string): Error;
         static idRequired(): Error;
         static canntFindHost(componentId: string): Error;
+        static propertyCanntNull(componentName: string, property: string): Error;
     }
 }
 declare module jueying {

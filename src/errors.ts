@@ -25,5 +25,9 @@ module jueying {
         static canntFindHost(componentId: string) {
             return new Error(`Can not find host element for component container ${componentId}.`)
         }
+        static propertyCanntNull(componentName: string, property: string) {
+            let msg = `${componentName} property ${property} cannt be null or empty.`
+            return new Error(msg)
+        }
     }
 }
