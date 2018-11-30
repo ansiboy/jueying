@@ -13,7 +13,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /*!
- * JUEYING v1.0.0
+ * JUEYING v1.1.0
  * https://github.com/ansiboy/jueying
  *
  * 可视化页面设计器
@@ -1317,8 +1317,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         delete props.style.left;
                         delete props.style.top;
                         delete props.style.position;
-                        props.style.width = '100%';
-                        props.style.height = '100%';
+                        if (wrapperProps.style.width && wrapperProps.style.width != 'unset') props.style.width = '100%';
+                        if (wrapperProps.style.height && wrapperProps.style.height != 'unset') props.style.height = '100%';
                     }
                     return React.createElement(jueying.ComponentWrapperContext.Provider, { value: this }, React.createElement("div", Object.assign({}, wrapperProps), move_handle, showResizeHandle ? React.createElement(React.Fragment, null, React.createElement("div", { className: "resize_handle NE" }), React.createElement("div", { className: "resize_handle NN" }), React.createElement("div", { className: "resize_handle NW" }), React.createElement("div", { className: "resize_handle WW" }), React.createElement("div", { className: "resize_handle EE" }), React.createElement("div", { className: "resize_handle SW" }), React.createElement("div", { className: "resize_handle SS" }), React.createElement("div", { className: "resize_handle SE" })) : null, this.createRawElement(source.type, source.props, source.children)));
                 }
@@ -1868,6 +1868,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         jueying.PlaceHolder = PlaceHolder;
         Component.register('PlaceHolder', PlaceHolder);
+
+        var PageView = function (_React$Component6) {
+            _inherits(PageView, _React$Component6);
+
+            function PageView(props) {
+                _classCallCheck(this, PageView);
+
+                var _this12 = _possibleConstructorReturn(this, (PageView.__proto__ || Object.getPrototypeOf(PageView)).call(this, props));
+
+                if (!_this12.props.pageData) throw jueying.Errors.propertyCanntNull(PageView.name, 'pageData');
+                return _this12;
+            }
+
+            _createClass(PageView, [{
+                key: 'render',
+                value: function render() {
+                    var element = Component.createElement(this.props.pageData);
+                    return element;
+                }
+            }]);
+
+            return PageView;
+        }(React.Component);
+
+        jueying.PageView = PageView;
     })(jueying || (jueying = {}));
     // import { classNames } from "./style";
     // import * as React from "react";
@@ -1876,20 +1901,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     // import { PageDesigner } from "./page-designer";
     var jueying;
     (function (jueying) {
-        var EditorPanel = function (_React$Component6) {
-            _inherits(EditorPanel, _React$Component6);
+        var EditorPanel = function (_React$Component7) {
+            _inherits(EditorPanel, _React$Component7);
 
             function EditorPanel(props) {
                 _classCallCheck(this, EditorPanel);
 
-                var _this12 = _possibleConstructorReturn(this, (EditorPanel.__proto__ || Object.getPrototypeOf(EditorPanel)).call(this, props));
+                var _this13 = _possibleConstructorReturn(this, (EditorPanel.__proto__ || Object.getPrototypeOf(EditorPanel)).call(this, props));
 
-                _this12.state = { componentDatas: [] };
-                _this12.designerComponentChanged = function () {
-                    console.assert(_this12.designer != null);
-                    _this12.setState({ designer: _this12.designer });
+                _this13.state = { componentDatas: [] };
+                _this13.designerComponentChanged = function () {
+                    console.assert(_this13.designer != null);
+                    _this13.setState({ designer: _this13.designer });
                 };
-                return _this12;
+                return _this13;
             }
 
             _createClass(EditorPanel, [{
@@ -1922,7 +1947,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'render',
                 value: function render() {
-                    var _this13 = this;
+                    var _this14 = this;
 
                     var emptyText = this.props.emptyText;
 
@@ -1935,7 +1960,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         selectedComponentIds = designer.selectedComponentIds || [];
                     }
                     return React.createElement("div", { className: jueying.classNames.editorPanel, ref: function ref(e) {
-                            return _this13.element = e || _this13.element;
+                            return _this14.element = e || _this14.element;
                         } }, React.createElement("select", { className: "form-control", ref: function ref(e) {
                             if (!e) return;
                             e.value = selectedComponentIds.length == 1 ? selectedComponentIds[0] : '';
@@ -1945,7 +1970,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         } }, componentDatas.map(function (o) {
                         return React.createElement("option", { key: o.props.id, id: o.props.id, value: o.props.id }, o.props.name);
                     })), React.createElement(jueying.ComponentEditor, { designer: designer, ref: function ref(e) {
-                            return _this13.editor = e || _this13.editor;
+                            return _this14.editor = e || _this14.editor;
                         } }));
                 }
             }, {
@@ -2023,6 +2048,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 value: function canntFindHost(componentId) {
                     return new Error('Can not find host element for component container ' + componentId + '.');
                 }
+            }, {
+                key: 'propertyCanntNull',
+                value: function propertyCanntNull(componentName, property) {
+                    var msg = componentName + ' property ' + property + ' cannt be null or empty.';
+                    return new Error(msg);
+                }
             }]);
 
             return Errors;
@@ -2046,26 +2077,26 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      ********************************************************************************/
     var jueying;
     (function (jueying) {
-        var PageDesigner = function (_React$Component7) {
-            _inherits(PageDesigner, _React$Component7);
+        var PageDesigner = function (_React$Component8) {
+            _inherits(PageDesigner, _React$Component8);
 
             function PageDesigner(props) {
                 _classCallCheck(this, PageDesigner);
 
-                var _this14 = _possibleConstructorReturn(this, (PageDesigner.__proto__ || Object.getPrototypeOf(PageDesigner)).call(this, props));
+                var _this15 = _possibleConstructorReturn(this, (PageDesigner.__proto__ || Object.getPrototypeOf(PageDesigner)).call(this, props));
 
-                _this14.componentSelected = jueying.Callback.create();
-                _this14.componentRemoved = jueying.Callback.create();
-                _this14.componentAppend = jueying.Callback.create();
-                _this14.componentUpdated = jueying.Callback.create();
-                _this14.designtimeComponentDidMount = jueying.Callback.create();
-                _this14.namedComponents = {};
-                _this14.initPageData(props.pageData);
-                _this14.state = { pageData: props.pageData };
-                _this14.designtimeComponentDidMount.add(function (args) {
+                _this15.componentSelected = jueying.Callback.create();
+                _this15.componentRemoved = jueying.Callback.create();
+                _this15.componentAppend = jueying.Callback.create();
+                _this15.componentUpdated = jueying.Callback.create();
+                _this15.designtimeComponentDidMount = jueying.Callback.create();
+                _this15.namedComponents = {};
+                _this15.initPageData(props.pageData);
+                _this15.state = { pageData: props.pageData };
+                _this15.designtimeComponentDidMount.add(function (args) {
                     console.log('this:designer event:controlComponentDidMount');
                 });
-                return _this14;
+                return _this15;
             }
 
             _createClass(PageDesigner, [{
@@ -2187,7 +2218,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'setComponentsPosition',
                 value: function setComponentsPosition(positions) {
-                    var _this15 = this;
+                    var _this16 = this;
 
                     var componentDatas = new Array();
                     positions.forEach(function (o) {
@@ -2196,14 +2227,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                             left = _o$position.left,
                             top = _o$position.top;
 
-                        var componentData = _this15.findComponentData(componentId);
+                        var componentData = _this16.findComponentData(componentId);
                         if (!componentData) throw new Error('Control ' + componentId + ' is not exits.');
                         var style = componentData.props.style = componentData.props.style || {};
                         if (left) style.left = left;
                         if (top) style.top = top;
-                        var pageData = _this15.state.pageData;
+                        var pageData = _this16.state.pageData;
 
-                        _this15.setState({ pageData: pageData });
+                        _this16.setState({ pageData: pageData });
                         componentDatas.push(componentData);
                     });
                     this.componentUpdated.fire(componentDatas);
@@ -2240,7 +2271,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'removeControl',
                 value: function removeControl() {
-                    var _this16 = this;
+                    var _this17 = this;
 
                     var pageData = this.state.pageData;
                     if (!pageData || !pageData.children || pageData.children.length == 0) return;
@@ -2250,7 +2281,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     }
 
                     controlIds.forEach(function (controlId) {
-                        _this16.removeControlFrom(controlId, pageData.children);
+                        _this17.removeControlFrom(controlId, pageData.children);
                     });
                     this.setState({ pageData: pageData });
                     this.componentRemoved.fire(controlIds);
@@ -2383,19 +2414,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'render',
                 value: function render() {
-                    var _this17 = this;
+                    var _this18 = this;
 
                     var designer = this;
                     var pageData = this.state.pageData;
 
                     var style = this.props.style;
                     var result = React.createElement("div", { className: "designer", tabIndex: 1, style: style, ref: function ref(e) {
-                            return _this17.element = e || _this17.element;
+                            return _this18.element = e || _this18.element;
                         }, onKeyDown: function onKeyDown(e) {
-                            return _this17.onKeyDown(e);
+                            return _this18.onKeyDown(e);
                         } }, React.createElement(jueying.DesignerContext.Provider, { value: { designer: designer } }, function () {
-                        _this17._root = pageData ? jueying.Component.createElement(pageData, _this17.createDesignTimeElement.bind(_this17)) : null;
-                        return _this17._root;
+                        _this18._root = pageData ? jueying.Component.createElement(pageData, _this18.createDesignTimeElement.bind(_this18)) : null;
+                        return _this18._root;
                     }()));
                     return result;
                 }
@@ -2442,16 +2473,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     // import * as React from "react";
     var jueying;
     (function (jueying) {
-        var PropEditor = function (_React$Component8) {
-            _inherits(PropEditor, _React$Component8);
+        var PropEditor = function (_React$Component9) {
+            _inherits(PropEditor, _React$Component9);
 
             function PropEditor(props) {
                 _classCallCheck(this, PropEditor);
 
-                var _this18 = _possibleConstructorReturn(this, (PropEditor.__proto__ || Object.getPrototypeOf(PropEditor)).call(this, props));
+                var _this19 = _possibleConstructorReturn(this, (PropEditor.__proto__ || Object.getPrototypeOf(PropEditor)).call(this, props));
 
-                _this18.state = { value: props.value };
-                return _this18;
+                _this19.state = { value: props.value };
+                return _this19;
             }
 
             _createClass(PropEditor, [{
@@ -2478,13 +2509,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _createClass(TextInput, [{
                 key: 'render',
                 value: function render() {
-                    var _this20 = this;
+                    var _this21 = this;
 
                     var value = this.state.value;
 
                     return React.createElement("input", { className: 'form-control', value: value || '', onChange: function onChange(e) {
-                            _this20.setState({ value: e.target.value });
-                            _this20.props.onChange(e.target.value);
+                            _this21.setState({ value: e.target.value });
+                            _this21.props.onChange(e.target.value);
                         } });
                 }
             }]);
@@ -2506,7 +2537,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 _createClass(Dropdown, [{
                     key: 'render',
                     value: function render() {
-                        var _this22 = this;
+                        var _this23 = this;
 
                         var value = this.state.value;
 
@@ -2519,8 +2550,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         }
                         return React.createElement("select", { className: 'form-control', value: value || '', onChange: function onChange(e) {
                                 value = e.target.value;
-                                _this22.setState({ value: value });
-                                _this22.props.onChange(value);
+                                _this23.setState({ value: value });
+                                _this23.props.onChange(value);
                             } }, emptyText ? React.createElement("option", { value: "" }, emptyText) : null, Object.getOwnPropertyNames(items).map(function (o) {
                             return React.createElement("option", { key: o, value: o }, items[o]);
                         }));
