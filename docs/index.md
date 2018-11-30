@@ -10,9 +10,18 @@ title: 首页
 
 # 应用实例
 
-
-![](images/app1.png)
-
-![](images/app2.png)
-
-![](images/app3.jpg)
+<div class="row">
+    <div class="col-md-6">
+        <img src="images/app1.png"/>
+    </div>
+    <div class="col-md-6">
+        <img src="images/app2.png"/>
+    </div>
+</div>
+<p>
+    <div class="row">
+        <div class="col-md-6">
+        <img src="images/app3.jpg"/>
+        </div>
+    </div>
+</p>
