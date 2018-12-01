@@ -3,7 +3,7 @@ layout: page
 title: 开始
 ---
 
-# Jueying 的使用步骤
+# JUEYING 的使用步骤
 
 ## 1. 依赖的引用
 
@@ -21,31 +21,33 @@ jueying 依赖下面几个库
 <script src="https://cdn.bootcss.com/jquery/2.1.2/jquery.min.js"></script>
 ```
 
-## 2. Jueying JS 文件的引用
+## 2. JUEYING JS 文件的引用
 
 * 如果使用 ES5
 
     引用 jueying.es5.js 或者 jueying.min.js 文件，例如
 
     ```js
-    <script src="https://ansiboy.gitee.io/jueying/dist/jueying.es5.js"></script>
+<script src="https://ansiboy.gitee.io/jueying/dist/jueying.es5.js"></script>
     ```
+
+    或者
 
     ```js
-    <script src="https://ansiboy.gitee.io/jueying/dist/jueying.min.js"></script>
+<script src="https://ansiboy.gitee.io/jueying/dist/jueying.min.js"></script>
     ```
 
-* 如果使用 ES6
-
-    引用 jueying.js 文件
+* 如果使用 ES6，引用 jueying.js 文件
 
     ```js
-    <script src="https://ansiboy.gitee.io/jueying/dist/jueying.js"></script>
+<script src="https://ansiboy.gitee.io/jueying/dist/jueying.js"></script>
     ```
 
-**注意：** 如果直接在浏览器使用 JSX，还需要引用 babel，例如：
+* **注意：** 如果直接在浏览器使用 JSX，还需要引用 babel，例如：
 
+    ```js
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    ```
 
 另外，如果转换的是 ES5 语法，引用的 jueying 脚本文件应该为 jueying.es5.js 或者 jueying.min.js 
 

@@ -118,4 +118,5 @@ ${license}
 
     let buildTask = ['shell', 'concat', 'babel', 'uglify', 'copy']
     grunt.registerTask('build', buildTask);
+    
 }
