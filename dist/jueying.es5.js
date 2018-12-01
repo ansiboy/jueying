@@ -978,20 +978,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      ********************************************************************************/
     var jueying;
     (function (jueying) {
-        var ComponentEditor = function (_React$Component) {
-            _inherits(ComponentEditor, _React$Component);
+        var PropertyEditor = function (_React$Component) {
+            _inherits(PropertyEditor, _React$Component);
 
-            function ComponentEditor(props) {
-                _classCallCheck(this, ComponentEditor);
+            function PropertyEditor(props) {
+                _classCallCheck(this, PropertyEditor);
 
-                var _this = _possibleConstructorReturn(this, (ComponentEditor.__proto__ || Object.getPrototypeOf(ComponentEditor)).call(this, props));
+                var _this = _possibleConstructorReturn(this, (PropertyEditor.__proto__ || Object.getPrototypeOf(PropertyEditor)).call(this, props));
 
                 _this._element = null;
                 _this.state = { editors: [] };
                 return _this;
             }
 
-            _createClass(ComponentEditor, [{
+            _createClass(PropertyEditor, [{
                 key: 'componentWillReceiveProps',
                 value: function componentWillReceiveProps(props) {
                     this.setState({
@@ -1128,10 +1128,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
             }]);
 
-            return ComponentEditor;
+            return PropertyEditor;
         }(React.Component);
 
-        jueying.ComponentEditor = ComponentEditor;
+        jueying.PropertyEditor = PropertyEditor;
     })(jueying || (jueying = {}));
     // import { DesignerContext } from './component'
     // import { ComponentDefine, ComponentData } from './models';
@@ -1952,7 +1952,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                     var empty = this.props.empty;
 
-                    empty = empty || '暂无可用的属性';
+                    empty = empty || React.createElement("div", { className: "empty" }, '\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027');
                     var componentDatas = [];
                     var selectedComponentIds = [];
                     var designer = this.state.designer;
@@ -1960,10 +1960,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         componentDatas = this.getComponentData(designer);
                         selectedComponentIds = designer.selectedComponentIds || [];
                     }
-                    // let empty = this.props.empty || '暂无可用的属性'
                     return React.createElement("div", { className: jueying.classNames.editorPanel, ref: function ref(e) {
                             return _this14.element = e || _this14.element;
-                        } }, React.createElement(jueying.ComponentEditor, { designer: designer, ref: function ref(e) {
+                        } }, React.createElement(jueying.PropertyEditor, { designer: designer, ref: function ref(e) {
                             return _this14.editor = e || _this14.editor;
                         }, empty: empty }));
                 }

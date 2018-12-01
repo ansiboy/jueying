@@ -966,7 +966,7 @@ var jueying;
  ********************************************************************************/
 var jueying;
 (function (jueying) {
-    class ComponentEditor extends React.Component {
+    class PropertyEditor extends React.Component {
         constructor(props) {
             super(props);
             this._element = null;
@@ -1085,7 +1085,7 @@ var jueying;
             return this._element;
         }
     }
-    jueying.ComponentEditor = ComponentEditor;
+    jueying.PropertyEditor = PropertyEditor;
 })(jueying || (jueying = {}));
 // import { DesignerContext } from './component'
 // import { ComponentDefine, ComponentData } from './models';
@@ -1797,7 +1797,7 @@ var jueying;
         }
         render() {
             let { empty } = this.props;
-            empty = empty || '暂无可用的属性';
+            empty = empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
             let componentDatas = [];
             let selectedComponentIds = [];
             let designer = this.state.designer;
@@ -1805,9 +1805,8 @@ var jueying;
                 componentDatas = this.getComponentData(designer);
                 selectedComponentIds = designer.selectedComponentIds || [];
             }
-            // let empty = this.props.empty || '暂无可用的属性'
             return React.createElement("div", { className: jueying.classNames.editorPanel, ref: (e) => this.element = e || this.element },
-                React.createElement(jueying.ComponentEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
+                React.createElement(jueying.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
         }
     }
     jueying.EditorPanel = EditorPanel;
