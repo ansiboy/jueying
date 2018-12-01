@@ -34,6 +34,7 @@ declare module jueying {
 declare module jueying {
     interface EditorProps extends React.Props<ComponentEditor> {
         designer: PageDesigner;
+        empty: string | JSX.Element;
     }
     interface EditorState {
         editors: {
@@ -241,7 +242,7 @@ declare module jueying {
     interface EditorPanelProps {
         className?: string;
         style?: React.CSSProperties;
-        emptyText?: string;
+        empty?: string | JSX.Element;
         designer?: PageDesigner;
     }
     class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {

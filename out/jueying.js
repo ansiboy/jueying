@@ -146,7 +146,8 @@ var jueying;
             let { designer } = this.state;
             let editors = this.getEditors(designer);
             if (editors.length == 0) {
-                return React.createElement("div", { className: "text-center" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
+                let empty = this.props.empty;
+                return React.createElement("div", { className: "text-center" }, empty);
             }
             let groupEditorsArray = [];
             for (let i = 0; i < editors.length; i++) {
@@ -880,8 +881,8 @@ var jueying;
         componentDidMount() {
         }
         render() {
-            let { emptyText } = this.props;
-            emptyText = emptyText || '';
+            let { empty } = this.props;
+            empty = empty || '暂无可用的属性';
             let componentDatas = [];
             let selectedComponentIds = [];
             let designer = this.state.designer;
@@ -889,17 +890,9 @@ var jueying;
                 componentDatas = this.getComponentData(designer);
                 selectedComponentIds = designer.selectedComponentIds || [];
             }
+            // let empty = this.props.empty || '暂无可用的属性'
             return React.createElement("div", { className: jueying.classNames.editorPanel, ref: (e) => this.element = e || this.element },
-                React.createElement("select", { className: "form-control", ref: e => {
-                        if (!e)
-                            return;
-                        e.value = selectedComponentIds.length == 1 ? selectedComponentIds[0] : '';
-                        e.onchange = () => {
-                            if (designer && e.value)
-                                designer.selectComponent(e.value);
-                        };
-                    } }, componentDatas.map(o => React.createElement("option", { key: o.props.id, id: o.props.id, value: o.props.id }, o.props.name))),
-                React.createElement(jueying.ComponentEditor, { designer: designer, ref: e => this.editor = e || this.editor }));
+                React.createElement(jueying.ComponentEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
         }
     }
     jueying.EditorPanel = EditorPanel;

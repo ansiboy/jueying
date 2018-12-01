@@ -1095,7 +1095,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                     var editors = this.getEditors(designer);
                     if (editors.length == 0) {
-                        return React.createElement("div", { className: "text-center" }, '\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027');
+                        var empty = this.props.empty;
+                        return React.createElement("div", { className: "text-center" }, empty);
                     }
                     var groupEditorsArray = [];
 
@@ -1949,9 +1950,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 value: function render() {
                     var _this14 = this;
 
-                    var emptyText = this.props.emptyText;
+                    var empty = this.props.empty;
 
-                    emptyText = emptyText || '';
+                    empty = empty || '暂无可用的属性';
                     var componentDatas = [];
                     var selectedComponentIds = [];
                     var designer = this.state.designer;
@@ -1959,19 +1960,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         componentDatas = this.getComponentData(designer);
                         selectedComponentIds = designer.selectedComponentIds || [];
                     }
+                    // let empty = this.props.empty || '暂无可用的属性'
                     return React.createElement("div", { className: jueying.classNames.editorPanel, ref: function ref(e) {
                             return _this14.element = e || _this14.element;
-                        } }, React.createElement("select", { className: "form-control", ref: function ref(e) {
-                            if (!e) return;
-                            e.value = selectedComponentIds.length == 1 ? selectedComponentIds[0] : '';
-                            e.onchange = function () {
-                                if (designer && e.value) designer.selectComponent(e.value);
-                            };
-                        } }, componentDatas.map(function (o) {
-                        return React.createElement("option", { key: o.props.id, id: o.props.id, value: o.props.id }, o.props.name);
-                    })), React.createElement(jueying.ComponentEditor, { designer: designer, ref: function ref(e) {
+                        } }, React.createElement(jueying.ComponentEditor, { designer: designer, ref: function ref(e) {
                             return _this14.editor = e || _this14.editor;
-                        } }));
+                        }, empty: empty }));
                 }
             }, {
                 key: 'designer',
