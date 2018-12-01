@@ -82,7 +82,7 @@ module jueying {
         }
         render() {
             let { empty } = this.props;
-            empty = empty || '暂无可用的属性';
+            empty = empty || <div className="empty">暂无可用的属性</div>;
 
             let componentDatas: ComponentData[] = []
             let selectedComponentIds = []
