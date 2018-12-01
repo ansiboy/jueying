@@ -1,6 +1,7 @@
 ---
 layout: index
 title: 首页
+permalink: /
 ---
 
 # 特点
