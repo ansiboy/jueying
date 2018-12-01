@@ -13,13 +13,13 @@ module jueying {
     interface EditorPanelProps {
         className?: string;
         style?: React.CSSProperties;
-        emptyText?: string
+        empty?: string | JSX.Element;
         designer?: PageDesigner
     }
 
     export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
         element: HTMLElement;
-        private editor: ComponentEditor;
+        private editor: PropertyEditor;
         private _designer: PageDesigner;
 
         private designerComponentChanged: (args: any) => void
@@ -81,8 +81,8 @@ module jueying {
 
         }
         render() {
-            let { emptyText } = this.props;
-            emptyText = emptyText || '';
+            let { empty } = this.props;
+            empty = empty || '暂无可用的属性';
 
             let componentDatas: ComponentData[] = []
             let selectedComponentIds = []
@@ -93,7 +93,7 @@ module jueying {
             }
 
             return <div className={classNames.editorPanel} ref={(e: HTMLElement) => this.element = e || this.element}>
-                <select className="form-control"
+                {/* <select className="form-control"
                     ref={e => {
                         if (!e) return
                         e.value = selectedComponentIds.length == 1 ? selectedComponentIds[0] : ''
@@ -105,8 +105,9 @@ module jueying {
                     {componentDatas.map(o =>
                         <option key={o.props.id} id={o.props.id} value={o.props.id}>{o.props.name}</option>
                     )}
-                </select>
-                <ComponentEditor designer={designer} ref={e => this.editor = e || this.editor} />
+                </select> */}
+
+                <PropertyEditor designer={designer} ref={e => this.editor = e || this.editor} empty={empty} />
             </div>
         }
     }

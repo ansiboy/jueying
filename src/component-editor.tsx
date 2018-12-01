@@ -13,8 +13,9 @@
  ********************************************************************************/
 
 module jueying {
-    interface EditorProps extends React.Props<ComponentEditor> {
-        designer: PageDesigner
+    interface EditorProps extends React.Props<PropertyEditor> {
+        designer: PageDesigner,
+        empty: string | JSX.Element
     }
 
     interface EditorState {
@@ -22,7 +23,7 @@ module jueying {
         designer?: PageDesigner
     }
 
-    export class ComponentEditor extends React.Component<EditorProps, EditorState>{
+    export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
         private _element: HTMLElement | null = null;
 
@@ -130,7 +131,8 @@ module jueying {
             let { designer } = this.state
             let editors = this.getEditors(designer)
             if (editors.length == 0) {
-                return <div className="text-center">暂无可用的属性</div>
+                let empty = this.props.empty
+                return <div className="text-center">{empty}</div>
             }
 
             let groupEditorsArray: { group: string, editors: { prop: string, editor: React.ReactElement<any> }[] }[] = []
@@ -151,7 +153,7 @@ module jueying {
                         {g.group ? <div className="panel-heading">{strings[g.group] || g.group}</div> : null}
                         <div className="panel-body">
                             {g.editors.map((o, i) =>
-                                <div key={o.prop} className="form-group"> 
+                                <div key={o.prop} className="form-group">
                                     <label key={guid()}>{strings[o.prop] || o.prop}</label> {/* KEY 为 guid，强制更新 */}
                                     <div className="control">
                                         {o.editor}
