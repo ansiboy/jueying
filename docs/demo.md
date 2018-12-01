@@ -1,9 +1,0 @@
----
-layout: demo
-title: 演示
-permalink: /demos
----
-
-{% for demo in site.demos %}
-* ## [{{demo.title}}]({{site.baseurl}}/{{demo.url}})
-{% endfor %}
