@@ -1606,24 +1606,25 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
                 /**
                  * 将持久化的元素数据转换为 ReactElement
-                 * @param args 元素数据
+                 * @param componentData 元素数据
                  */
 
             }, {
                 key: 'createElement',
-                value: function createElement(args, h) {
+                value: function createElement(componentData, h) {
+                    if (!componentData) throw jueying.Errors.argumentNull('componentData');
                     h = h || React.createElement;
                     try {
-                        var type = args.type;
-                        var componentName = args.type;
+                        var type = componentData.type;
+                        var componentName = componentData.type;
                         var controlType = Component.componentTypes[componentName];
                         if (controlType) {
                             type = controlType;
                         }
-                        var children = args.children ? args.children.map(function (o) {
+                        var children = componentData.children ? componentData.children.map(function (o) {
                             return Component.createElement(o, h);
                         }) : [];
-                        var props = args.props == null ? {} : JSON.parse(JSON.stringify(args.props));
+                        var props = componentData.props == null ? {} : JSON.parse(JSON.stringify(componentData.props));
                         var result = void 0;
                         if (typeof type == 'string') {
                             if (props.text) {

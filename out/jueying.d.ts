@@ -197,9 +197,9 @@ declare module jueying {
         static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
         /**
          * 将持久化的元素数据转换为 ReactElement
-         * @param args 元素数据
+         * @param componentData 元素数据
          */
-        static createElement(args: ComponentData, h?: ReactFactory): React.ReactElement<any> | null;
+        static createElement(componentData: ComponentData, h?: ReactFactory): React.ReactElement<any> | null;
         private static componentTypes;
         static register(componentName: string, componentType: React.ComponentClass<any>, attr?: ComponentAttribute): void;
     }

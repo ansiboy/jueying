@@ -1502,19 +1502,21 @@ var jueying;
         }
         /**
          * 将持久化的元素数据转换为 ReactElement
-         * @param args 元素数据
+         * @param componentData 元素数据
          */
-        static createElement(args, h) {
+        static createElement(componentData, h) {
+            if (!componentData)
+                throw jueying.Errors.argumentNull('componentData');
             h = h || React.createElement;
             try {
-                let type = args.type;
-                let componentName = args.type;
+                let type = componentData.type;
+                let componentName = componentData.type;
                 let controlType = Component.componentTypes[componentName];
                 if (controlType) {
                     type = controlType;
                 }
-                let children = args.children ? args.children.map(o => Component.createElement(o, h)) : [];
-                let props = args.props == null ? {} : JSON.parse(JSON.stringify(args.props));
+                let children = componentData.children ? componentData.children.map(o => Component.createElement(o, h)) : [];
+                let props = componentData.props == null ? {} : JSON.parse(JSON.stringify(componentData.props));
                 let result;
                 if (typeof type == 'string') {
                     if (props.text) {
