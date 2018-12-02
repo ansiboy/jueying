@@ -363,6 +363,9 @@ module jueying {
         }
 
         designTimeEmptyElement(type: string | React.ComponentClass, props: ComponentProps<any>) {
+            if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
+                return null
+
             let typename = typeof type == 'string' ? type : type.name
             let text: string = this.designTimeText(typename, props)
             return text
@@ -402,7 +405,7 @@ module jueying {
             let attr2 = props.attr || {}
             let attr = Object.assign({}, attr1, attr2)
             delete props.attr
-             //===================================================
+            //===================================================
 
             let className = props.selected ? appendClassName(props.className || '', classNames.componentSelected) : props.className
             return <ComponentWrapper {...Object.assign({}, props, { className })} designer={this}
