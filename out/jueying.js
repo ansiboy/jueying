@@ -771,7 +771,7 @@ var jueying;
             });
         }
         render() {
-            let empty = this.props.empty || React.createElement("div", { className: "empty" }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
+            let empty = this.props.empty || React.createElement("div", { key: jueying.guid(), className: "empty" }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
             return React.createElement(MasterPageContext.Consumer, null, (args) => {
                 let host = args.form;
                 if (host == null)
@@ -798,7 +798,7 @@ var jueying;
                         children);
                     if (args.designer) {
                         this.designer = args.designer;
-                        element = React.createElement("div", { className: jueying.classNames.formItem, ref: e => {
+                        element = React.createElement("div", { key: jueying.guid(), className: jueying.classNames.placeholderItem, ref: e => {
                                 if (!e)
                                     return;
                                 this.enableAppendDroppable(e, host);
@@ -1333,8 +1333,8 @@ var jueying;
         component: 'component',
         componentWrapper: 'component-wrapper',
         componentPanel: 'component-panel',
-        form: 'form',
-        formItem: 'form-item',
+        placeholder: 'placeholder',
+        placeholderItem: 'placeholder-item',
         editorPanel: 'editor-panel'
     };
     let templateDialog = {
@@ -1465,15 +1465,15 @@ var jueying;
                 color: white;
                 padding: 4px 10px;
             }
-            .${jueying.classNames.form} {
+            .${jueying.classNames.placeholder} {
                 min-height: 40px;
                 width: 100%;
             }
-            .${jueying.classNames.formItem} {
+            .${jueying.classNames.placeholderItem} {
                 min-height: 40px;
                 width: 100%;
             }
-            .${jueying.classNames.formItem}.active,
+            .${jueying.classNames.placeholderItem}.active,
             .${jueying.classNames.componentWrapper}.active,
             .${jueying.classNames.componentWrapper}.${jueying.classNames.componentSelected}.active {
                 border: 1px solid green;

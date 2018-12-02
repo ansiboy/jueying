@@ -32,7 +32,7 @@ declare module jueying {
  *
  ********************************************************************************/
 declare module jueying {
-    interface EditorProps extends React.Props<ComponentEditor> {
+    interface EditorProps extends React.Props<PropertyEditor> {
         designer: PageDesigner;
         empty: string | JSX.Element;
     }
@@ -44,7 +44,7 @@ declare module jueying {
         }[];
         designer?: PageDesigner;
     }
-    class ComponentEditor extends React.Component<EditorProps, EditorState> {
+    class PropertyEditor extends React.Component<EditorProps, EditorState> {
         private _element;
         constructor(props: EditorProps);
         componentWillReceiveProps(props: EditorProps): void;
@@ -58,6 +58,7 @@ declare module jueying {
     interface ComponentToolbarProps extends React.Props<ComponentPanel> {
         style?: React.CSSProperties;
         className?: string;
+        empty?: string | JSX.Element;
     }
     interface ComponentToolbarState {
         componets: ComponentDefine[];
@@ -216,6 +217,7 @@ declare module jueying {
      */
     class PlaceHolder extends React.Component<{
         id: string;
+        empty?: string | JSX.Element;
     }, {}> {
         constructor(props: any);
         private designer;
@@ -454,8 +456,8 @@ declare module jueying {
         component: string;
         componentWrapper: string;
         componentPanel: string;
-        form: string;
-        formItem: string;
+        placeholder: string;
+        placeholderItem: string;
         editorPanel: string;
     };
     function appendClassName(sourceClassName: string, addonClassName: any): any;
