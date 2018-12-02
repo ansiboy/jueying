@@ -966,7 +966,7 @@ var jueying;
  ********************************************************************************/
 var jueying;
 (function (jueying) {
-    class ComponentEditor extends React.Component {
+    class PropertyEditor extends React.Component {
         constructor(props) {
             super(props);
             this._element = null;
@@ -1085,14 +1085,8 @@ var jueying;
             return this._element;
         }
     }
-    jueying.ComponentEditor = ComponentEditor;
+    jueying.PropertyEditor = PropertyEditor;
 })(jueying || (jueying = {}));
-// import { DesignerContext } from './component'
-// import { ComponentDefine, ComponentData } from './models';
-// import * as React from 'react';
-// import { PageDesigner } from './page-designer';
-// import { constants } from './comon';
-// import { classNames } from './style';
 var jueying;
 (function (jueying) {
     class ComponentPanel extends React.Component {
@@ -1126,11 +1120,12 @@ var jueying;
             return JSON.parse(str);
         }
         render() {
+            let empty = this.props.empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
             let props = Object.assign({}, this.props);
             let componets = this.state.componets || [];
             return React.createElement(jueying.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return React.createElement("ul", Object.assign({}, props, { className: `${jueying.classNames.componentPanel}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.map((c, i) => {
+                return React.createElement("ul", Object.assign({}, props, { className: `${jueying.classNames.componentPanel}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
                     let props = { key: i };
                     return React.createElement("li", Object.assign({}, props),
                         React.createElement("div", { className: "btn-link" },
@@ -1423,7 +1418,8 @@ var jueying;
             let isEmptyElement = (children || []).length == 0;
             if (isEmptyElement) {
                 let emtpy = this.props.designer.designTimeEmptyElement(type, props);
-                children = [emtpy];
+                if (emtpy != null)
+                    children = [emtpy];
             }
             return React.createElement(type, props, ...children);
         }
@@ -1690,6 +1686,7 @@ var jueying;
             });
         }
         render() {
+            let empty = this.props.empty || React.createElement("div", { className: "empty" }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
             return React.createElement(MasterPageContext.Consumer, null, (args) => {
                 let host = args.form;
                 if (host == null)
@@ -1708,6 +1705,9 @@ var jueying;
                 return React.createElement(jueying.DesignerContext.Consumer, null, args => React.createElement(jueying.ComponentWrapperContext.Consumer, null, wraper => {
                     this.wraper = wraper;
                     console.assert(this.wraper != null);
+                    if (args.designer != null && children.length == 0) {
+                        children = [empty];
+                    }
                     let element = React.createElement(React.Fragment, null,
                         this.props.children,
                         children);
@@ -1797,7 +1797,7 @@ var jueying;
         }
         render() {
             let { empty } = this.props;
-            empty = empty || '暂无可用的属性';
+            empty = empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
             let componentDatas = [];
             let selectedComponentIds = [];
             let designer = this.state.designer;
@@ -1805,9 +1805,8 @@ var jueying;
                 componentDatas = this.getComponentData(designer);
                 selectedComponentIds = designer.selectedComponentIds || [];
             }
-            // let empty = this.props.empty || '暂无可用的属性'
             return React.createElement("div", { className: jueying.classNames.editorPanel, ref: (e) => this.element = e || this.element },
-                React.createElement(jueying.ComponentEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
+                React.createElement(jueying.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
         }
     }
     jueying.EditorPanel = EditorPanel;
@@ -2137,6 +2136,8 @@ var jueying;
             }
         }
         designTimeEmptyElement(type, props) {
+            if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
+                return null;
             let typename = typeof type == 'string' ? type : type.name;
             let text = this.designTimeText(typename, props);
             return text;

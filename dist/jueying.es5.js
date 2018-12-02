@@ -1133,12 +1133,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         jueying.PropertyEditor = PropertyEditor;
     })(jueying || (jueying = {}));
-    // import { DesignerContext } from './component'
-    // import { ComponentDefine, ComponentData } from './models';
-    // import * as React from 'react';
-    // import { PageDesigner } from './page-designer';
-    // import { constants } from './comon';
-    // import { classNames } from './style';
     var jueying;
     (function (jueying) {
         var ComponentPanel = function (_React$Component2) {
@@ -1174,13 +1168,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 value: function render() {
                     var _this3 = this;
 
+                    var empty = this.props.empty || React.createElement("div", { className: "empty" }, '\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6');
                     var props = Object.assign({}, this.props);
                     var componets = this.state.componets || [];
                     return React.createElement(jueying.DesignerContext.Consumer, null, function (context) {
                         _this3.designer = context.designer;
                         return React.createElement("ul", Object.assign({}, props, { className: '' + jueying.classNames.componentPanel, ref: function ref(e) {
                                 return _this3.toolbarElement = _this3.toolbarElement || e;
-                            } }), componets.map(function (c, i) {
+                            } }), componets.length == 0 ? empty : componets.map(function (c, i) {
                             var props = { key: i };
                             return React.createElement("li", Object.assign({}, props), React.createElement("div", { className: "btn-link" }, React.createElement("i", { className: c.icon, style: { fontSize: 44, color: 'black' }, ref: function ref(e) {
                                     if (!e) return;
@@ -1355,7 +1350,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     var isEmptyElement = (children || []).length == 0;
                     if (isEmptyElement) {
                         var emtpy = this.props.designer.designTimeEmptyElement(type, props);
-                        children = [emtpy];
+                        if (emtpy != null) children = [emtpy];
                     }
                     return (_React = React).createElement.apply(_React, [type, props].concat(_toConsumableArray(children)));
                 }
@@ -1829,6 +1824,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 value: function render() {
                     var _this11 = this;
 
+                    var empty = this.props.empty || React.createElement("div", { className: "empty" }, '\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC');
                     return React.createElement(MasterPageContext.Consumer, null, function (args) {
                         var host = args.form;
                         if (host == null) throw jueying.Errors.canntFindHost(_this11.props.id);
@@ -1848,6 +1844,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                             return React.createElement(jueying.ComponentWrapperContext.Consumer, null, function (wraper) {
                                 _this11.wraper = wraper;
                                 console.assert(_this11.wraper != null);
+                                if (args.designer != null && children.length == 0) {
+                                    children = [empty];
+                                }
                                 var element = React.createElement(React.Fragment, null, _this11.props.children, children);
                                 if (args.designer) {
                                     _this11.designer = args.designer;
@@ -2358,6 +2357,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'designTimeEmptyElement',
                 value: function designTimeEmptyElement(type, props) {
+                    if (type == 'input' || type == 'img' || type == 'meta' || type == 'link') return null;
                     var typename = typeof type == 'string' ? type : type.name;
                     var text = this.designTimeText(typename, props);
                     return text;
