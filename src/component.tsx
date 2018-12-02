@@ -389,7 +389,7 @@ module jueying {
 
                                 if (args.designer) {
                                     this.designer = args.designer
-                                    element = <div className={classNames.formItem}
+                                    element = <div key={guid()} className={classNames.placeholderItem}
                                         ref={e => {
                                             if (!e) return
                                             this.enableAppendDroppable(e, host)
