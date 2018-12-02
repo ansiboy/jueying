@@ -10,8 +10,8 @@ module jueying {
         component: 'component',
         componentWrapper: 'component-wrapper',
         componentPanel: 'component-panel',
-        form: 'form',
-        formItem: 'form-item',
+        placeholder: 'placeholder',
+        placeholderItem: 'placeholder-item',
 
         editorPanel: 'editor-panel'
     }
@@ -145,15 +145,15 @@ module jueying {
                 color: white;
                 padding: 4px 10px;
             }
-            .${classNames.form} {
+            .${classNames.placeholder} {
                 min-height: 40px;
                 width: 100%;
             }
-            .${classNames.formItem} {
+            .${classNames.placeholderItem} {
                 min-height: 40px;
                 width: 100%;
             }
-            .${classNames.formItem}.active,
+            .${classNames.placeholderItem}.active,
             .${classNames.componentWrapper}.active,
             .${classNames.componentWrapper}.${classNames.componentSelected}.active {
                 border: 1px solid green;

@@ -29,7 +29,10 @@ class ThemeSelector extends PropEditor {
         return <div>
             {themes.map(t =>
                 <span key={t} className={`label label-${t}`} style={{ border: value == t ? '1px solid' : null }}
-                    onClick={() => this.selectTheme(t)}>{t}</span>
+                    onClick={(e) => {
+                        e.cancelable = true
+                        this.selectTheme(t)
+                    }}>{t}</span>
             )}
         </div>
     }

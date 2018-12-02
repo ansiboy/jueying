@@ -1,75 +1,64 @@
 /// <reference path="../../../out/jueying.d.ts"/>
 
-const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, PropEditor, PlaceHolder } = jueying
+const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, PropEditor, PlaceHolder, guid } = jueying
 
 
-class Container extends React.Component {
-    static defaultTheme = 'primary'
+class Login extends React.Component {
     constructor(props) {
         super(props)
     }
     render() {
-        let theme = this.props.theme || Container.defaultTheme
-        return <div style={{}}>
-            <div>This is a container</div>
-            <PlaceHolder id={`${this.props.id}-placeholder`} />
+        return <div style={{ width: 280 }}
+            ref={e => {
+                if (!e) return
+                e.onclick = (ev) => {
+                    ev.cancelBubble = true
+                }
+            }}>
+            <div className="form-group">
+                <input className="form-control" placeholder="请输入用户名" />
+            </div>
+            <div className="form-group">
+                <input type="password" className="form-control" placeholder="请输密码" />
+            </div>
+            <PlaceHolder id={this.props.id + '-inputs'}>
+
+            </PlaceHolder>
+            <div className="form-group">
+                <button className="btn btn-block btn-primary">登录</button>
+            </div>
         </div>
     }
 }
 
-Component.register('Container', Container, { movable: true, showHandler: true, resize: true })
-
-class ThemeSelector extends PropEditor {
-    selectTheme(value) {
-        this.props.onChange(value)
-    }
-    render() {
-        let { value } = this.state
-        value = value || Container.defaultTheme
-        let themes = ['primary', 'success', 'info', 'warning', 'danger']
-        return <div>
-            {themes.map(t =>
-                <span key={t} className={`label label-${t}`} style={{ border: value == t ? '1px solid' : null }}
-                    onClick={() => this.selectTheme(t)}>{t}</span>
-            )}
-        </div>
-    }
-}
-
-Component.setPropEditor('Button', 'theme', ThemeSelector)
-
+Component.register('Login', Login, { movable: true })
 
 let components = [
     {
         componentData: {
-            type: 'label'
+            type: 'div',
+            props: {
+                key: guid(),
+                className: 'form-group'
+            },
+            children: [
+                {
+                    type: 'input',
+                    props: {
+                        className: 'form-control',
+                    }
+                }
+            ]
         },
-        displayName: "标签",
+        displayName: "输入框",
         icon: "glyphicon glyphicon-tag",
-        introduce: "标签",
-    },
-    {
-        componentData: {
-            type: 'div'
-        },
-        displayName: "DIV",
-        icon: "glyphicon glyphicon-book",
-        introduce: "DIV",
-    },
-    {
-        componentData: {
-            type: 'Container'
-        },
-        displayName: "Container",
-        icon: "glyphicon glyphicon-tag"
+        introduce: "输入框",
     }
 ]
 
-let container = document.getElementById('container')
 
 class MainPage extends React.Component {
     designer;
-    editorPanel;
     componentPanel;
 
     constructor(props) {
@@ -77,7 +66,6 @@ class MainPage extends React.Component {
     }
     componentDidMount() {
         this.componentPanel.setComponets(components)
-        this.editorPanel.designer = this.designer
     }
     render() {
         return <React.Fragment>
@@ -91,7 +79,7 @@ class MainPage extends React.Component {
                         },
                         children: [
                             {
-                                type: "div",
+                                type: "Login",
                                 props: {
                                     style: { position: 'absolute', width: 400, height: 400 },
                                     attr: { movable: false, resize: false },
@@ -101,7 +89,6 @@ class MainPage extends React.Component {
                         ]
 
                     }} />
-                <EditorPanel ref={e => this.editorPanel = e || this.editorPanel} />
             </div>
         </React.Fragment >
     }
