@@ -254,7 +254,7 @@ module jueying {
     /**
      * 占位符，用于放置控件
      */
-    export class PlaceHolder extends React.Component<{ id: string }, {}>{
+    export class PlaceHolder extends React.Component<{ id: string, empty?: string | JSX.Element }, {}>{
 
         constructor(props) {
             super(props)
@@ -353,12 +353,13 @@ module jueying {
         }
 
         render() {
+            let empty = this.props.empty || <div key={guid()} className="empty">可以拖拉控件到这里</div>
             return <MasterPageContext.Consumer>
                 {(args) => {
                     let host = args.form
                     if (host == null) throw Errors.canntFindHost(this.props.id)
 
-                    let children: React.ReactElement<ComponentProps<any>>[] = []
+                    let children: (React.ReactElement<ComponentProps<any>> | string)[] = []
                     if (host.props && host.props.children) {
                         let arr: React.ReactElement<ComponentProps<any>>[]
                         if (Array.isArray(host.props.children)) {
@@ -370,11 +371,16 @@ module jueying {
                         children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parent_id != null && o.props.parent_id == this.props.id)
                     }
 
+
                     return <DesignerContext.Consumer>
                         {args => <ComponentWrapperContext.Consumer>
                             {wraper => {
                                 this.wraper = wraper
                                 console.assert(this.wraper != null)
+
+                                if (args.designer != null && children.length == 0) {
+                                    children = [empty]
+                                }
 
                                 let element = <React.Fragment>
                                     {this.props.children}

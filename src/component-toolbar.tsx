@@ -1,15 +1,9 @@
-// import { DesignerContext } from './component'
-// import { ComponentDefine, ComponentData } from './models';
-// import * as React from 'react';
-// import { PageDesigner } from './page-designer';
-// import { constants } from './comon';
-// import { classNames } from './style';
-
 module jueying {
     interface ComponentToolbarProps extends React.Props<ComponentPanel> {
         // componets: ComponentDefine[],
         style?: React.CSSProperties,
         className?: string,
+        empty?: string | JSX.Element,
     }
     interface ComponentToolbarState {
         componets: ComponentDefine[],
@@ -55,13 +49,15 @@ module jueying {
         }
 
         render() {
+            let empty = this.props.empty || <div className="empty">暂无可用组件</div>
             let props: ComponentToolbarProps = Object.assign({}, this.props);
             let componets = this.state.componets || [];
             return <DesignerContext.Consumer>
                 {context => {
                     this.designer = context.designer;
-                    return <ul {...props as any} className={`${classNames.componentPanel}`} ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
-                        {componets.map((c, i) => {
+                    return <ul {...props as any} className={`${classNames.componentPanel}`}
+                        ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
+                        {componets.length == 0 ? empty : componets.map((c, i) => {
                             let props = { key: i };
                             return <li {...props}>
                                 <div className="btn-link">

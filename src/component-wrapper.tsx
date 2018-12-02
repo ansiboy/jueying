@@ -345,7 +345,8 @@ module jueying {
             let isEmptyElement = (children || []).length == 0
             if (isEmptyElement) {
                 let emtpy = this.props.designer.designTimeEmptyElement(type, props)
-                children = [emtpy]
+                if (emtpy != null)
+                    children = [emtpy]
             }
             return React.createElement(type, props, ...children)
         }
