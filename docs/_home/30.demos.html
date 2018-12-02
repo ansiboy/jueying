@@ -1,3 +1,24 @@
+---
+layout: page
+title: 演示
+permalink: demos
+---
+
+
+<h1>演示</h1>
+<div class="clearfix">
+    <div class="pull-left">
+        <ul class="demo-list">
+            {% for demo in site.demos %}
+            <li>
+                <h2><a href="{{site.baseurl}}{{demo.url}}" target="demo">{{demo.title}}</a></h2>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% comment %}
 <html>
 
 <head>
@@ -6,9 +27,11 @@
         .main-content {
             max-width: unset;
         }
-        ul {
+
+        .demo-list {
+            list-style-type: none;
             padding: 0;
-            list-style: none;
+            width: 220px;
         }
     </style>
 </head>
@@ -16,7 +39,7 @@
 <body>
     {% include header.html %}
     <section class="main-content">
-        <h1>{{page.title}}</h1>
+        <h1>演示</h1>
         <div class="clearfix">
             <div class="pull-left" style="width:200px;">
                 <ul class="demo-list">
@@ -27,13 +50,14 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div name="demo" class="pull-left" style="width:calc(100% - 200px);border: 0;height: 1000px;">
-                {{content}}
-            </div>
+            <iframe name="demo" class="pull-left" style="width:calc(100% - 200px);border: 0;height: 1000px;">
+
+            </iframe>
         </div>
 
+        {% include footer.html %}
     </section>
-    {% include footer.html %}
 </body>
 
 </html>
+{% endcomment %}

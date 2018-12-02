@@ -978,20 +978,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      ********************************************************************************/
     var jueying;
     (function (jueying) {
-        var ComponentEditor = function (_React$Component) {
-            _inherits(ComponentEditor, _React$Component);
+        var PropertyEditor = function (_React$Component) {
+            _inherits(PropertyEditor, _React$Component);
 
-            function ComponentEditor(props) {
-                _classCallCheck(this, ComponentEditor);
+            function PropertyEditor(props) {
+                _classCallCheck(this, PropertyEditor);
 
-                var _this = _possibleConstructorReturn(this, (ComponentEditor.__proto__ || Object.getPrototypeOf(ComponentEditor)).call(this, props));
+                var _this = _possibleConstructorReturn(this, (PropertyEditor.__proto__ || Object.getPrototypeOf(PropertyEditor)).call(this, props));
 
                 _this._element = null;
                 _this.state = { editors: [] };
                 return _this;
             }
 
-            _createClass(ComponentEditor, [{
+            _createClass(PropertyEditor, [{
                 key: 'componentWillReceiveProps',
                 value: function componentWillReceiveProps(props) {
                     this.setState({
@@ -1128,17 +1128,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
             }]);
 
-            return ComponentEditor;
+            return PropertyEditor;
         }(React.Component);
 
-        jueying.ComponentEditor = ComponentEditor;
+        jueying.PropertyEditor = PropertyEditor;
     })(jueying || (jueying = {}));
-    // import { DesignerContext } from './component'
-    // import { ComponentDefine, ComponentData } from './models';
-    // import * as React from 'react';
-    // import { PageDesigner } from './page-designer';
-    // import { constants } from './comon';
-    // import { classNames } from './style';
     var jueying;
     (function (jueying) {
         var ComponentPanel = function (_React$Component2) {
@@ -1174,13 +1168,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 value: function render() {
                     var _this3 = this;
 
+                    var empty = this.props.empty || React.createElement("div", { className: "empty" }, '\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6');
                     var props = Object.assign({}, this.props);
                     var componets = this.state.componets || [];
                     return React.createElement(jueying.DesignerContext.Consumer, null, function (context) {
                         _this3.designer = context.designer;
                         return React.createElement("ul", Object.assign({}, props, { className: '' + jueying.classNames.componentPanel, ref: function ref(e) {
                                 return _this3.toolbarElement = _this3.toolbarElement || e;
-                            } }), componets.map(function (c, i) {
+                            } }), componets.length == 0 ? empty : componets.map(function (c, i) {
                             var props = { key: i };
                             return React.createElement("li", Object.assign({}, props), React.createElement("div", { className: "btn-link" }, React.createElement("i", { className: c.icon, style: { fontSize: 44, color: 'black' }, ref: function ref(e) {
                                     if (!e) return;
@@ -1355,7 +1350,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     var isEmptyElement = (children || []).length == 0;
                     if (isEmptyElement) {
                         var emtpy = this.props.designer.designTimeEmptyElement(type, props);
-                        children = [emtpy];
+                        if (emtpy != null) children = [emtpy];
                     }
                     return (_React = React).createElement.apply(_React, [type, props].concat(_toConsumableArray(children)));
                 }
@@ -1829,6 +1824,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 value: function render() {
                     var _this11 = this;
 
+                    var empty = this.props.empty || React.createElement("div", { key: jueying.guid(), className: "empty" }, '\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC');
                     return React.createElement(MasterPageContext.Consumer, null, function (args) {
                         var host = args.form;
                         if (host == null) throw jueying.Errors.canntFindHost(_this11.props.id);
@@ -1848,10 +1844,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                             return React.createElement(jueying.ComponentWrapperContext.Consumer, null, function (wraper) {
                                 _this11.wraper = wraper;
                                 console.assert(_this11.wraper != null);
+                                if (args.designer != null && children.length == 0) {
+                                    children = [empty];
+                                }
                                 var element = React.createElement(React.Fragment, null, _this11.props.children, children);
                                 if (args.designer) {
                                     _this11.designer = args.designer;
-                                    element = React.createElement("div", { className: jueying.classNames.formItem, ref: function ref(e) {
+                                    element = React.createElement("div", { key: jueying.guid(), className: jueying.classNames.placeholderItem, ref: function ref(e) {
                                             if (!e) return;
                                             _this11.enableAppendDroppable(e, host);
                                             _this11.enableMoveDroppable(e, host);
@@ -1952,7 +1951,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                     var empty = this.props.empty;
 
-                    empty = empty || '暂无可用的属性';
+                    empty = empty || React.createElement("div", { className: "empty" }, '\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027');
                     var componentDatas = [];
                     var selectedComponentIds = [];
                     var designer = this.state.designer;
@@ -1960,10 +1959,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         componentDatas = this.getComponentData(designer);
                         selectedComponentIds = designer.selectedComponentIds || [];
                     }
-                    // let empty = this.props.empty || '暂无可用的属性'
                     return React.createElement("div", { className: jueying.classNames.editorPanel, ref: function ref(e) {
                             return _this14.element = e || _this14.element;
-                        } }, React.createElement(jueying.ComponentEditor, { designer: designer, ref: function ref(e) {
+                        } }, React.createElement(jueying.PropertyEditor, { designer: designer, ref: function ref(e) {
                             return _this14.editor = e || _this14.editor;
                         }, empty: empty }));
                 }
@@ -2359,6 +2357,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'designTimeEmptyElement',
                 value: function designTimeEmptyElement(type, props) {
+                    if (type == 'input' || type == 'img' || type == 'meta' || type == 'link') return null;
                     var typename = typeof type == 'string' ? type : type.name;
                     var text = this.designTimeText(typename, props);
                     return text;
@@ -2569,8 +2568,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             component: 'component',
             componentWrapper: 'component-wrapper',
             componentPanel: 'component-panel',
-            form: 'form',
-            formItem: 'form-item',
+            placeholder: 'placeholder',
+            placeholderItem: 'placeholder-item',
             editorPanel: 'editor-panel'
         };
         var templateDialog = {
@@ -2579,7 +2578,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         };
         var element = document.createElement('style');
         element.type = 'text/css';
-        element.innerHTML = '\n            .' + jueying.classNames.componentSelected + ' {\n                border: solid 1px #337ab7!important;\n            }\n            .' + jueying.classNames.componentSelected + ' > :first-child {\n                border-color: blue;\n              }\n              .' + jueying.classNames.componentSelected + ' .resize_handle {\n                position: absolute;\n                height: 6px;\n                width: 6px;\n                border: 1px solid #89B;\n                background: #9AC;\n              }\n              .' + jueying.classNames.componentSelected + ' .move_handle {\n                height: 12px;\n                width: 12px;\n                top: 6px;\n                left: 8px;\n                border: solid 1px black;\n                position: relative;\n                margin-top: -12px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NW,\n              .' + jueying.classNames.componentSelected + ' .NN,\n              .' + jueying.classNames.componentSelected + ' .NE {\n                top: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NE,\n              .' + jueying.classNames.componentSelected + ' .EE,\n              .' + jueying.classNames.componentSelected + ' .SE {\n                right: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .SW,\n              .' + jueying.classNames.componentSelected + '.SS,\n              .' + jueying.classNames.componentSelected + ' .SE {\n                bottom: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NW,\n              .' + jueying.classNames.componentSelected + ' .WW,\n              .' + jueying.classNames.componentSelected + ' .SW {\n                left: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .SE,\n              .' + jueying.classNames.componentSelected + ' .NW {\n                cursor: nw-resize;\n              }\n              .' + jueying.classNames.componentSelected + ' .SW,\n              .' + jueying.classNames.componentSelected + ' .NE {\n                cursor: ne-resize;\n              }\n              .' + jueying.classNames.componentSelected + ' .NN,\n              .' + jueying.classNames.componentSelected + ' .SS {\n                cursor: n-resize;\n                left: 50%;\n                margin-left: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .EE,\n              .' + jueying.classNames.componentSelected + ' .WW {\n                cursor: e-resize;\n                top: 50%;\n                margin-top: -4px;\n              }\n            .' + jueying.classNames.emptyTemplates + ' {\n                padding:50px 0;\n                text-align: center;\n            }\n            .' + jueying.classNames.loadingTemplates + ' {\n                padding:50px 0;\n                text-align: center;\n            }\n            .' + jueying.classNames.templateSelected + ' .page-view {\n                border: solid 1px #337ab7!important;\n            }\n            .' + jueying.classNames.templateDialog + ' .name {\n                margin-top: -' + templateDialog.nameHeight + 'px;\n                height: ' + templateDialog.nameHeight + 'px;\n                font-size: ' + templateDialog.fontSize + 'px;\n                text-align: center;\n                padding-top: 6px;\n                background-color: black;\n                opacity: 0.5;\n            }\n            .' + jueying.classNames.templateDialog + ' .name span {\n                color: white;\n            }\n            .' + jueying.classNames.emptyDocument + ' {\n                text-align: center;\n                padding: 100px 0;\n            }\n            .' + jueying.classNames.component + ' > .NW,\n            .' + jueying.classNames.component + ' > .NN,\n            .' + jueying.classNames.component + ' > .NE,\n            .' + jueying.classNames.component + ' > .EE,\n            .' + jueying.classNames.component + ' > .SE,\n            .' + jueying.classNames.component + ' > .SW,\n            .' + jueying.classNames.component + ' > .SS,\n            .' + jueying.classNames.component + ' > .WW {\n                display: none;\n            }\n            .' + jueying.classNames.componentSelected + '.component > .NW,\n            .' + jueying.classNames.componentSelected + '.component > .NN,\n            .' + jueying.classNames.componentSelected + '.component > .NE,\n            .' + jueying.classNames.componentSelected + '.component > .EE,\n            .' + jueying.classNames.componentSelected + '.component > .SE,\n            .' + jueying.classNames.componentSelected + '.component > .SW,\n            .' + jueying.classNames.componentSelected + '.component > .SS,\n            .' + jueying.classNames.componentSelected + '.component > .WW {\n                display: block;\n            }\n            ul.nav-tabs li i {\n                position: relative;\n                top: 4px;\n                right: -6px;\n            }\n            .validationMessage {\n                position: absolute;\n                margin-top: -60px;\n                background-color: red;\n                color: white;\n                padding: 4px 10px;\n            }\n            .' + jueying.classNames.form + ' {\n                min-height: 40px;\n                width: 100%;\n            }\n            .' + jueying.classNames.formItem + ' {\n                min-height: 40px;\n                width: 100%;\n            }\n            .' + jueying.classNames.formItem + '.active,\n            .' + jueying.classNames.componentWrapper + '.active,\n            .' + jueying.classNames.componentWrapper + '.' + jueying.classNames.componentSelected + '.active {\n                border: 1px solid green;\n            }\n            .' + jueying.classNames.editorPanel + ' {\n                width: 300px;\n                background: white;\n                color: black;\n                margin: 0;\n                font-size: 14px;\n                z-index: 100;\n                overflow: auto;\n            }\n            .' + jueying.classNames.editorPanel + ' label {\n                width: 80px;\n                float: left;\n                padding: 4px;\n                text-overflow: ellipsis;\n                overflow: hidden;\n            }\n            .' + jueying.classNames.editorPanel + ' .control {\n                padding-left: 90px;\n            }\n            .' + jueying.classNames.editorPanel + ' .empty {\n                padding-top: 200px;\n                text-align: center;\n            }\n            .' + jueying.classNames.componentPanel + ' {\n                background: white;\n                color: black;\n                font-size: 14px;\n                z-index: 100;\n                list-style: none;\n                padding: 0;\n                text-align: center\n            }\n            .' + jueying.classNames.componentPanel + ' .panel-heading {\n                text-align: center;\n            }\n            .' + jueying.classNames.componentPanel + ' li {\n                text-align: center;\n                padding: 8px;\n            }\n        ';
+        element.innerHTML = '\n            .' + jueying.classNames.componentSelected + ' {\n                border: solid 1px #337ab7!important;\n            }\n            .' + jueying.classNames.componentSelected + ' > :first-child {\n                border-color: blue;\n              }\n              .' + jueying.classNames.componentSelected + ' .resize_handle {\n                position: absolute;\n                height: 6px;\n                width: 6px;\n                border: 1px solid #89B;\n                background: #9AC;\n              }\n              .' + jueying.classNames.componentSelected + ' .move_handle {\n                height: 12px;\n                width: 12px;\n                top: 6px;\n                left: 8px;\n                border: solid 1px black;\n                position: relative;\n                margin-top: -12px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NW,\n              .' + jueying.classNames.componentSelected + ' .NN,\n              .' + jueying.classNames.componentSelected + ' .NE {\n                top: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NE,\n              .' + jueying.classNames.componentSelected + ' .EE,\n              .' + jueying.classNames.componentSelected + ' .SE {\n                right: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .SW,\n              .' + jueying.classNames.componentSelected + '.SS,\n              .' + jueying.classNames.componentSelected + ' .SE {\n                bottom: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .NW,\n              .' + jueying.classNames.componentSelected + ' .WW,\n              .' + jueying.classNames.componentSelected + ' .SW {\n                left: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .SE,\n              .' + jueying.classNames.componentSelected + ' .NW {\n                cursor: nw-resize;\n              }\n              .' + jueying.classNames.componentSelected + ' .SW,\n              .' + jueying.classNames.componentSelected + ' .NE {\n                cursor: ne-resize;\n              }\n              .' + jueying.classNames.componentSelected + ' .NN,\n              .' + jueying.classNames.componentSelected + ' .SS {\n                cursor: n-resize;\n                left: 50%;\n                margin-left: -4px;\n              }\n              .' + jueying.classNames.componentSelected + ' .EE,\n              .' + jueying.classNames.componentSelected + ' .WW {\n                cursor: e-resize;\n                top: 50%;\n                margin-top: -4px;\n              }\n            .' + jueying.classNames.emptyTemplates + ' {\n                padding:50px 0;\n                text-align: center;\n            }\n            .' + jueying.classNames.loadingTemplates + ' {\n                padding:50px 0;\n                text-align: center;\n            }\n            .' + jueying.classNames.templateSelected + ' .page-view {\n                border: solid 1px #337ab7!important;\n            }\n            .' + jueying.classNames.templateDialog + ' .name {\n                margin-top: -' + templateDialog.nameHeight + 'px;\n                height: ' + templateDialog.nameHeight + 'px;\n                font-size: ' + templateDialog.fontSize + 'px;\n                text-align: center;\n                padding-top: 6px;\n                background-color: black;\n                opacity: 0.5;\n            }\n            .' + jueying.classNames.templateDialog + ' .name span {\n                color: white;\n            }\n            .' + jueying.classNames.emptyDocument + ' {\n                text-align: center;\n                padding: 100px 0;\n            }\n            .' + jueying.classNames.component + ' > .NW,\n            .' + jueying.classNames.component + ' > .NN,\n            .' + jueying.classNames.component + ' > .NE,\n            .' + jueying.classNames.component + ' > .EE,\n            .' + jueying.classNames.component + ' > .SE,\n            .' + jueying.classNames.component + ' > .SW,\n            .' + jueying.classNames.component + ' > .SS,\n            .' + jueying.classNames.component + ' > .WW {\n                display: none;\n            }\n            .' + jueying.classNames.componentSelected + '.component > .NW,\n            .' + jueying.classNames.componentSelected + '.component > .NN,\n            .' + jueying.classNames.componentSelected + '.component > .NE,\n            .' + jueying.classNames.componentSelected + '.component > .EE,\n            .' + jueying.classNames.componentSelected + '.component > .SE,\n            .' + jueying.classNames.componentSelected + '.component > .SW,\n            .' + jueying.classNames.componentSelected + '.component > .SS,\n            .' + jueying.classNames.componentSelected + '.component > .WW {\n                display: block;\n            }\n            ul.nav-tabs li i {\n                position: relative;\n                top: 4px;\n                right: -6px;\n            }\n            .validationMessage {\n                position: absolute;\n                margin-top: -60px;\n                background-color: red;\n                color: white;\n                padding: 4px 10px;\n            }\n            .' + jueying.classNames.placeholder + ' {\n                min-height: 40px;\n                width: 100%;\n            }\n            .' + jueying.classNames.placeholderItem + ' {\n                min-height: 40px;\n                width: 100%;\n            }\n            .' + jueying.classNames.placeholderItem + '.active,\n            .' + jueying.classNames.componentWrapper + '.active,\n            .' + jueying.classNames.componentWrapper + '.' + jueying.classNames.componentSelected + '.active {\n                border: 1px solid green;\n            }\n            .' + jueying.classNames.editorPanel + ' {\n                width: 300px;\n                background: white;\n                color: black;\n                margin: 0;\n                font-size: 14px;\n                z-index: 100;\n                overflow: auto;\n            }\n            .' + jueying.classNames.editorPanel + ' label {\n                width: 80px;\n                float: left;\n                padding: 4px;\n                text-overflow: ellipsis;\n                overflow: hidden;\n            }\n            .' + jueying.classNames.editorPanel + ' .control {\n                padding-left: 90px;\n            }\n            .' + jueying.classNames.editorPanel + ' .empty {\n                padding-top: 200px;\n                text-align: center;\n            }\n            .' + jueying.classNames.componentPanel + ' {\n                background: white;\n                color: black;\n                font-size: 14px;\n                z-index: 100;\n                list-style: none;\n                padding: 0;\n                text-align: center\n            }\n            .' + jueying.classNames.componentPanel + ' .panel-heading {\n                text-align: center;\n            }\n            .' + jueying.classNames.componentPanel + ' li {\n                text-align: center;\n                padding: 8px;\n            }\n        ';
         document.head.appendChild(element);
         function appendClassName(element, addonClassName) {
             if (element == null) throw jueying.Errors.argumentNull('element');
