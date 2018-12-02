@@ -140,23 +140,24 @@ module jueying {
 
         /**
          * 将持久化的元素数据转换为 ReactElement
-         * @param args 元素数据
+         * @param componentData 元素数据
          */
-        static createElement(args: ComponentData, h?: ReactFactory): React.ReactElement<any> | null {
-
+        static createElement(componentData: ComponentData, h?: ReactFactory): React.ReactElement<any> | null {
+            if (!componentData) throw Errors.argumentNull('componentData')
+            
             h = h || React.createElement
 
             try {
 
-                let type: string | React.ComponentClass | React.ComponentType = args.type;
-                let componentName = args.type;
+                let type: string | React.ComponentClass | React.ComponentType = componentData.type;
+                let componentName = componentData.type;
                 let controlType = Component.componentTypes[componentName];
                 if (controlType) {
                     type = controlType;
                 }
 
-                let children: (React.ReactElement<any> | string)[] = args.children ? args.children.map(o => Component.createElement(o, h)) : [];
-                let props: ComponentProps<any> = args.props == null ? {} : JSON.parse(JSON.stringify(args.props));
+                let children: (React.ReactElement<any> | string)[] = componentData.children ? componentData.children.map(o => Component.createElement(o, h)) : [];
+                let props: ComponentProps<any> = componentData.props == null ? {} : JSON.parse(JSON.stringify(componentData.props));
                 let result: JSX.Element
 
 
