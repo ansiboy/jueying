@@ -362,39 +362,16 @@ module jueying {
             }
         }
 
-        designTimeEmptyElement(type: string | React.ComponentClass, props: ComponentProps<any>) {
-            if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
-                return null
+        protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]) {
 
-            let typename = typeof type == 'string' ? type : type.name
-            let text: string = this.designTimeText(typename, props)
-            return text
-        }
+            if (type == null) throw Errors.argumentNull('type')
+            if (props == null) throw Errors.argumentNull('props')
+            if (props.id == null) throw Errors.argumentFieldCanntNull('id', 'props')
 
-        private designTimeText(type: string, props: ComponentProps<any>) {
-            let text: string = props.text
-            if (text) {
-                return text
-            }
-
-            text = text || props.name || type
-
-            return text
-        }
-
-        private createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]) {
 
             console.assert(props.id)
             if (props.id != null)
                 props.key = props.id;
-
-            if (type == 'a' && (props as any).href) {
-                (props as any).href = 'javascript:';
-            }
-            else if (type == 'input' || type == 'button') {
-                delete (props as any).onClick;
-                (props as any).readOnly = true;
-            }
 
             //===================================================
             // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
