@@ -1349,10 +1349,28 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                     var isEmptyElement = (children || []).length == 0;
                     if (isEmptyElement) {
-                        var emtpy = this.props.designer.designTimeEmptyElement(type, props);
+                        var emtpy = this.designTimeEmptyElement(type, props);
                         if (emtpy != null) children = [emtpy];
                     }
                     return (_React = React).createElement.apply(_React, [type, props].concat(_toConsumableArray(children)));
+                }
+            }, {
+                key: 'designTimeEmptyElement',
+                value: function designTimeEmptyElement(type, props) {
+                    if (type == 'input' || type == 'img' || type == 'meta' || type == 'link') return null;
+                    var typename = typeof type == 'string' ? type : type.name;
+                    var text = this.designTimeText(typename, props);
+                    return text;
+                }
+            }, {
+                key: 'designTimeText',
+                value: function designTimeText(type, props) {
+                    var text = props.text;
+                    if (text) {
+                        return text;
+                    }
+                    text = text || props.name || type;
+                    return text;
                 }
             }], [{
                 key: 'enableDroppable',
@@ -1475,8 +1493,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'invokeOnClick',
                 value: function invokeOnClick(ev, designer, element) {
-                    ev.preventDefault();
+                    // ev.preventDefault()
                     ev.stopPropagation();
+                    ev.cancelBubble = true;
                     if (ComponentWrapper.isDrag) {
                         ComponentWrapper.isDrag = false;
                         return;
@@ -1633,6 +1652,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                             //=========================================
                             // props.text 非 DOM 的 prop，并且已经使用完
                             delete props.text;
+                            if (h == React.createElement) {
+                                delete props.attr;
+                            }
                             //=========================================
                         }
                         type = type == Component.Fragment ? React.Fragment : type;
@@ -1878,7 +1900,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 var _this12 = _possibleConstructorReturn(this, (PageView.__proto__ || Object.getPrototypeOf(PageView)).call(this, props));
 
-                if (!_this12.props.pageData) throw jueying.Errors.propertyCanntNull(PageView.name, 'pageData');
+                if (!_this12.props.pageData) throw jueying.Errors.propCanntNull(PageView.name, 'pageData');
                 return _this12;
             }
 
@@ -2042,9 +2064,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     return new Error('Can not find host element for component container ' + componentId + '.');
                 }
             }, {
-                key: 'propertyCanntNull',
-                value: function propertyCanntNull(componentName, property) {
+                key: 'propCanntNull',
+                value: function propCanntNull(componentName, property) {
                     var msg = componentName + ' property ' + property + ' cannt be null or empty.';
+                    return new Error(msg);
+                }
+            }, {
+                key: 'argumentFieldCanntNull',
+                value: function argumentFieldCanntNull(fieldName, argumentName) {
+                    var msg = fieldName + ' of argument ' + argumentName + ' cannt be null or empty.';
                     return new Error(msg);
                 }
             }]);
@@ -2356,38 +2384,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     }
                 }
             }, {
-                key: 'designTimeEmptyElement',
-                value: function designTimeEmptyElement(type, props) {
-                    if (type == 'input' || type == 'img' || type == 'meta' || type == 'link') return null;
-                    var typename = typeof type == 'string' ? type : type.name;
-                    var text = this.designTimeText(typename, props);
-                    return text;
-                }
-            }, {
-                key: 'designTimeText',
-                value: function designTimeText(type, props) {
-                    var text = props.text;
-                    if (text) {
-                        return text;
-                    }
-                    text = text || props.name || type;
-                    return text;
-                }
-            }, {
                 key: 'createDesignTimeElement',
                 value: function createDesignTimeElement(type, props) {
                     for (var _len3 = arguments.length, children = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
                         children[_key3 - 2] = arguments[_key3];
                     }
 
+                    if (type == null) throw jueying.Errors.argumentNull('type');
+                    if (props == null) throw jueying.Errors.argumentNull('props');
+                    if (props.id == null) throw jueying.Errors.argumentFieldCanntNull('id', 'props');
                     console.assert(props.id);
                     if (props.id != null) props.key = props.id;
-                    if (type == 'a' && props.href) {
-                        props.href = 'javascript:';
-                    } else if (type == 'input' || type == 'button') {
-                        delete props.onClick;
-                        props.readOnly = true;
-                    }
                     //===================================================
                     // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
                     var attr1 = jueying.Component.getAttribute(type);
