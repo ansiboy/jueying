@@ -344,11 +344,31 @@ module jueying {
         private createRawElement(type: string | React.ComponentClass, props: ComponentProps<any>, children: any[]) {
             let isEmptyElement = (children || []).length == 0
             if (isEmptyElement) {
-                let emtpy = this.props.designer.designTimeEmptyElement(type, props)
+                let emtpy = this.designTimeEmptyElement(type, props)
                 if (emtpy != null)
                     children = [emtpy]
             }
             return React.createElement(type, props, ...children)
+        }
+
+        private designTimeEmptyElement(type: string | React.ComponentClass, props: ComponentProps<any>) {
+            if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
+                return null
+
+            let typename = typeof type == 'string' ? type : type.name
+            let text: string = this.designTimeText(typename, props)
+            return text
+        }
+
+        private designTimeText(type: string, props: ComponentProps<any>) {
+            let text: string = props.text
+            if (text) {
+                return text
+            }
+
+            text = text || props.name || type
+
+            return text
         }
     }
 

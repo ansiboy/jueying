@@ -144,9 +144,8 @@ module jueying {
          */
         static createElement(componentData: ComponentData, h?: ReactFactory): React.ReactElement<any> | null {
             if (!componentData) throw Errors.argumentNull('componentData')
-            
-            h = h || React.createElement
 
+            h = h || React.createElement
             try {
 
                 let type: string | React.ComponentClass | React.ComponentType = componentData.type;
@@ -169,8 +168,12 @@ module jueying {
                     //=========================================
                     // props.text 非 DOM 的 prop，并且已经使用完
                     delete props.text
+                    if (h == React.createElement) {
+                        delete props.attr
+                    }
                     //=========================================
                 }
+
 
                 type = type == Component.Fragment ? React.Fragment : type
                 result = h(type, props, ...children);
@@ -418,7 +421,7 @@ module jueying {
             super(props)
 
             if (!this.props.pageData)
-                throw Errors.propertyCanntNull(PageView.name, 'pageData')
+                throw Errors.propCanntNull(PageView.name, 'pageData')
         }
         render() {
             let element = Component.createElement(this.props.pageData)
