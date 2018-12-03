@@ -409,8 +409,9 @@ var jueying;
             };
         }
         static invokeOnClick(ev, designer, element) {
-            ev.preventDefault();
+            // ev.preventDefault()
             ev.stopPropagation();
+            ev.cancelBubble = true;
             if (ComponentWrapper.isDrag) {
                 ComponentWrapper.isDrag = false;
                 return;
@@ -502,11 +503,26 @@ var jueying;
         createRawElement(type, props, children) {
             let isEmptyElement = (children || []).length == 0;
             if (isEmptyElement) {
-                let emtpy = this.props.designer.designTimeEmptyElement(type, props);
+                let emtpy = this.designTimeEmptyElement(type, props);
                 if (emtpy != null)
                     children = [emtpy];
             }
             return React.createElement(type, props, ...children);
+        }
+        designTimeEmptyElement(type, props) {
+            if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
+                return null;
+            let typename = typeof type == 'string' ? type : type.name;
+            let text = this.designTimeText(typename, props);
+            return text;
+        }
+        designTimeText(type, props) {
+            let text = props.text;
+            if (text) {
+                return text;
+            }
+            text = text || props.name || type;
+            return text;
         }
     }
     ComponentWrapper.isDrag = false;
@@ -610,6 +626,9 @@ var jueying;
                     //=========================================
                     // props.text 非 DOM 的 prop，并且已经使用完
                     delete props.text;
+                    if (h == React.createElement) {
+                        delete props.attr;
+                    }
                     //=========================================
                 }
                 type = type == Component.Fragment ? React.Fragment : type;
@@ -818,7 +837,7 @@ var jueying;
         constructor(props) {
             super(props);
             if (!this.props.pageData)
-                throw jueying.Errors.propertyCanntNull(PageView.name, 'pageData');
+                throw jueying.Errors.propCanntNull(PageView.name, 'pageData');
         }
         render() {
             let element = Component.createElement(this.props.pageData);
@@ -926,8 +945,12 @@ var jueying;
         static canntFindHost(componentId) {
             return new Error(`Can not find host element for component container ${componentId}.`);
         }
-        static propertyCanntNull(componentName, property) {
+        static propCanntNull(componentName, property) {
             let msg = `${componentName} property ${property} cannt be null or empty.`;
+            return new Error(msg);
+        }
+        static argumentFieldCanntNull(fieldName, argumentName) {
+            let msg = `${fieldName} of argument ${argumentName} cannt be null or empty.`;
             return new Error(msg);
         }
     }
@@ -1222,32 +1245,16 @@ var jueying;
                 this.removeControl(...this.selectedComponentIds);
             }
         }
-        designTimeEmptyElement(type, props) {
-            if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
-                return null;
-            let typename = typeof type == 'string' ? type : type.name;
-            let text = this.designTimeText(typename, props);
-            return text;
-        }
-        designTimeText(type, props) {
-            let text = props.text;
-            if (text) {
-                return text;
-            }
-            text = text || props.name || type;
-            return text;
-        }
         createDesignTimeElement(type, props, ...children) {
+            if (type == null)
+                throw jueying.Errors.argumentNull('type');
+            if (props == null)
+                throw jueying.Errors.argumentNull('props');
+            if (props.id == null)
+                throw jueying.Errors.argumentFieldCanntNull('id', 'props');
             console.assert(props.id);
             if (props.id != null)
                 props.key = props.id;
-            if (type == 'a' && props.href) {
-                props.href = 'javascript:';
-            }
-            else if (type == 'input' || type == 'button') {
-                delete props.onClick;
-                props.readOnly = true;
-            }
             //===================================================
             // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
             let attr1 = jueying.Component.getAttribute(type);

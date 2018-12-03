@@ -125,6 +125,8 @@ declare module jueying {
         render(): JSX.Element;
         private renderWidthoutWrapper;
         private createRawElement;
+        private designTimeEmptyElement;
+        private designTimeText;
     }
     interface ComponentAttribute {
         /** 表示组件为容器，可以添加组件 */
@@ -270,7 +272,8 @@ declare module jueying {
         static loadPluginFail(pluginId: string): Error;
         static idRequired(): Error;
         static canntFindHost(componentId: string): Error;
-        static propertyCanntNull(componentName: string, property: string): Error;
+        static propCanntNull(componentName: string, property: string): Error;
+        static argumentFieldCanntNull(fieldName: string, argumentName: string): Error;
     }
 }
 declare module jueying {
@@ -367,9 +370,7 @@ declare module jueying {
         private removeControlFrom;
         findComponentData(controlId: string): ComponentData | null;
         private onKeyDown;
-        designTimeEmptyElement(type: string | React.ComponentClass, props: ComponentProps<any>): string;
-        private designTimeText;
-        private createDesignTimeElement;
+        protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
         componentWillReceiveProps(props: PageDesignerProps): void;
         render(): JSX.Element;
     }
