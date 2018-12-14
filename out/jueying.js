@@ -409,9 +409,8 @@ var jueying;
             };
         }
         static invokeOnClick(ev, designer, element) {
-            // ev.preventDefault()
+            ev.preventDefault();
             ev.stopPropagation();
-            ev.cancelBubble = true;
             if (ComponentWrapper.isDrag) {
                 ComponentWrapper.isDrag = false;
                 return;
@@ -1284,7 +1283,6 @@ var jueying;
     }
     jueying.PageDesigner = PageDesigner;
 })(jueying || (jueying = {}));
-// import * as React from "react";
 var jueying;
 (function (jueying) {
     class PropEditor extends React.Component {
@@ -1307,6 +1305,10 @@ var jueying;
         }
     }
     jueying.TextInput = TextInput;
+    function textInput() {
+        return TextInput;
+    }
+    jueying.textInput = textInput;
     function dropdown(items, emptyText) {
         return class Dropdown extends PropEditor {
             render() {

@@ -13,7 +13,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /*!
- * JUEYING v1.1.0
+ * JUEYING v1.1.3
  * https://github.com/ansiboy/jueying
  *
  * 可视化页面设计器
@@ -1493,9 +1493,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'invokeOnClick',
                 value: function invokeOnClick(ev, designer, element) {
-                    // ev.preventDefault()
+                    ev.preventDefault();
                     ev.stopPropagation();
-                    ev.cancelBubble = true;
                     if (ComponentWrapper.isDrag) {
                         ComponentWrapper.isDrag = false;
                         return;
@@ -2471,7 +2470,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         jueying.PageDesigner = PageDesigner;
     })(jueying || (jueying = {}));
-    // import * as React from "react";
     var jueying;
     (function (jueying) {
         var PropEditor = function (_React$Component9) {
@@ -2525,6 +2523,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }(PropEditor);
 
         jueying.TextInput = TextInput;
+        function textInput() {
+            return TextInput;
+        }
+        jueying.textInput = textInput;
         function dropdown(items, emptyText) {
             return function (_PropEditor2) {
                 _inherits(Dropdown, _PropEditor2);

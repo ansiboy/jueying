@@ -393,6 +393,7 @@ declare module jueying {
     class TextInput extends PropEditor<PropEditorState<string>, string> {
         render(): JSX.Element;
     }
+    function textInput(): typeof TextInput;
     function dropdown(items: {
         [value: string]: string;
     } | string[], emptyText?: string): {
