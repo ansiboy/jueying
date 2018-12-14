@@ -1,5 +1,3 @@
-// import * as React from "react";
-
 module jueying {
     export interface PropEditorConstructor {
         new(props: PropEditorProps<any>)
@@ -32,6 +30,10 @@ module jueying {
                     this.props.onChange(e.target.value)
                 }} />
         }
+    }
+
+    export function textInput(): typeof TextInput {
+        return TextInput
     }
 
     export function dropdown(items: { [value: string]: string } | string[], emptyText?: string) {
