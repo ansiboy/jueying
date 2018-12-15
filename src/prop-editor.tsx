@@ -19,6 +19,14 @@ module jueying {
         componentWillReceiveProps(props: PropEditorProps<T>) {
             this.setState({ value: props.value } as any)
         }
+
+        static dropdown(items: { [value: string]: string } | string[]) {
+            return dropdown(items)
+        }
+
+        static textInput() {
+            return TextInput
+        }
     }
 
     export class TextInput extends PropEditor<PropEditorState<string>, string> {
@@ -32,14 +40,12 @@ module jueying {
         }
     }
 
-    export function textInput(): typeof TextInput {
-        return TextInput
-    }
-
-    export function dropdown(items: { [value: string]: string } | string[], emptyText?: string) {
+    function dropdown(items: { [value: string]: string } | string[]) {
         return class Dropdown extends PropEditor<{ value: string }, string>{
             render() {
                 let { value } = this.state
+                value = value || ''
+
                 if (Array.isArray(items)) {
                     let tmp = items
                     items = {}
@@ -48,13 +54,12 @@ module jueying {
                     }
                 }
 
-                return <select className='form-control' value={value as any || ''}
+                return <select className='form-control' value={value}
                     onChange={e => {
                         value = e.target.value
                         this.setState({ value })
                         this.props.onChange(value)
                     }}>
-                    {emptyText ? <option value="">{emptyText}</option> : null}
                     {Object.getOwnPropertyNames(items).map(o =>
                         <option key={o} value={o}>{items[o]}</option>
                     )}
