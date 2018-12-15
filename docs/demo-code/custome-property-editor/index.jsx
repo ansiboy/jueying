@@ -1,6 +1,6 @@
 /// <reference path="../../../out/jueying.d.ts"/>
 
-const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, PropEditor } = jueying
+const { ComponentPanel, EditorPanel, PageDesigner, Component, PropEditor } = jueying
 
 
 class Button extends React.Component {
