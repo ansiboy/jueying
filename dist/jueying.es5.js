@@ -2489,6 +2489,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 value: function componentWillReceiveProps(props) {
                     this.setState({ value: props.value });
                 }
+            }], [{
+                key: 'dropdown',
+                value: function dropdown(items) {
+                    return _dropdown(items);
+                }
+            }, {
+                key: 'textInput',
+                value: function textInput() {
+                    return TextInput;
+                }
             }]);
 
             return PropEditor;
@@ -2523,11 +2533,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }(PropEditor);
 
         jueying.TextInput = TextInput;
-        function textInput() {
-            return TextInput;
-        }
-        jueying.textInput = textInput;
-        function dropdown(items, emptyText) {
+        function _dropdown(items) {
             return function (_PropEditor2) {
                 _inherits(Dropdown, _PropEditor2);
 
@@ -2544,6 +2550,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                         var value = this.state.value;
 
+                        value = value || '';
                         if (Array.isArray(items)) {
                             var tmp = items;
                             items = {};
@@ -2551,11 +2558,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                 items[tmp[i]] = tmp[i];
                             }
                         }
-                        return React.createElement("select", { className: 'form-control', value: value || '', onChange: function onChange(e) {
+                        return React.createElement("select", { className: 'form-control', value: value, onChange: function onChange(e) {
                                 value = e.target.value;
                                 _this23.setState({ value: value });
                                 _this23.props.onChange(value);
-                            } }, emptyText ? React.createElement("option", { value: "" }, emptyText) : null, Object.getOwnPropertyNames(items).map(function (o) {
+                            } }, Object.getOwnPropertyNames(items).map(function (o) {
                             return React.createElement("option", { key: o, value: o }, items[o]);
                         }));
                     }
@@ -2564,7 +2571,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 return Dropdown;
             }(PropEditor);
         }
-        jueying.dropdown = dropdown;
     })(jueying || (jueying = {}));
     var jueying;
     (function (jueying) {

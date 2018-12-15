@@ -1293,6 +1293,12 @@ var jueying;
         componentWillReceiveProps(props) {
             this.setState({ value: props.value });
         }
+        static dropdown(items) {
+            return dropdown(items);
+        }
+        static textInput() {
+            return TextInput;
+        }
     }
     jueying.PropEditor = PropEditor;
     class TextInput extends PropEditor {
@@ -1305,14 +1311,11 @@ var jueying;
         }
     }
     jueying.TextInput = TextInput;
-    function textInput() {
-        return TextInput;
-    }
-    jueying.textInput = textInput;
-    function dropdown(items, emptyText) {
+    function dropdown(items) {
         return class Dropdown extends PropEditor {
             render() {
                 let { value } = this.state;
+                value = value || '';
                 if (Array.isArray(items)) {
                     let tmp = items;
                     items = {};
@@ -1320,17 +1323,14 @@ var jueying;
                         items[tmp[i]] = tmp[i];
                     }
                 }
-                return React.createElement("select", { className: 'form-control', value: value || '', onChange: e => {
+                return React.createElement("select", { className: 'form-control', value: value, onChange: e => {
                         value = e.target.value;
                         this.setState({ value });
                         this.props.onChange(value);
-                    } },
-                    emptyText ? React.createElement("option", { value: "" }, emptyText) : null,
-                    Object.getOwnPropertyNames(items).map(o => React.createElement("option", { key: o, value: o }, items[o])));
+                    } }, Object.getOwnPropertyNames(items).map(o => React.createElement("option", { key: o, value: o }, items[o])));
             }
         };
     }
-    jueying.dropdown = dropdown;
 })(jueying || (jueying = {}));
 var jueying;
 (function (jueying) {
