@@ -185,8 +185,8 @@ module jueying {
         }
 
         setComponentSize(componentId: string, size: { width?: number | string, height?: number | string }) {
-            console.assert(componentId)
-            console.assert(size)
+            console.assert(componentId != null)
+            console.assert(size != null)
 
             let componentData = this.findComponentData(componentId);
             if (!componentData)
@@ -289,7 +289,7 @@ module jueying {
             console.assert(control != null, `Cannt find control by id ${componentId}`);
 
             let pageData = this.state.pageData;
-            console.assert(pageData.children);
+            console.assert(pageData.children != null);
             this.removeControlFrom(componentId, pageData.children);
             this.appendComponent(parentId, control, childIds);
         }
@@ -369,7 +369,7 @@ module jueying {
             if (props.id == null) throw Errors.argumentFieldCanntNull('id', 'props')
 
 
-            console.assert(props.id)
+            console.assert(props.id != null)
             if (props.id != null)
                 props.key = props.id;
 

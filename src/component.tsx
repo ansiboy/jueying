@@ -316,8 +316,8 @@ module jueying {
                 if (!ctrl)
                     return
 
-                console.assert(this.props.id);
-                console.assert(this.designer);
+                console.assert(this.props.id != null);
+                console.assert(this.designer != null);
                 ctrl.props.parent_id = this.props.id;
                 console.assert(host != null, 'host is null')
                 this.designer.appendComponent(host.props.id, ctrl)

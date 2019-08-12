@@ -100,7 +100,7 @@ module jueying {
                     onChange: (value) => {
                         for (let i = 0; i < componentDatas.length; i++) {
                             let c = componentDatas[i]
-                            console.assert(c.props.id)
+                            console.assert(c.props.id != null)
                             designer.updateControlProps(c.props.id, propNames, value)
                         }
                     }

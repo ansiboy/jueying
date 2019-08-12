@@ -9,5 +9,11 @@
         "jsx": "react",
         "strict": false,
         "experimentalDecorators": true,
+        "baseUrl": "./",
+        "paths": {
+            "csstype": [
+                "../node_modules/csstype/index.d.ts"
+            ]
+        }
     }
 }
