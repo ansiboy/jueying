@@ -1,29 +1,30 @@
-module jueying {
-    export let classNames = {
-        componentSelected: `component-selected`,
-        emptyTemplates: `empty-templates`,
-        loadingTemplates: `loading-templates`,
-        templateSelected: `template-selected`,
-        templateDialog: `template-dialog`,
-        emptyDocument: `empty-document`,
+import { Errors } from "./errors";
 
-        component: 'component',
-        componentWrapper: 'component-wrapper',
-        componentPanel: 'component-panel',
-        placeholder: 'placeholder',
-        placeholderItem: 'placeholder-item',
+export let classNames = {
+    componentSelected: `component-selected`,
+    emptyTemplates: `empty-templates`,
+    loadingTemplates: `loading-templates`,
+    templateSelected: `template-selected`,
+    templateDialog: `template-dialog`,
+    emptyDocument: `empty-document`,
 
-        editorPanel: 'editor-panel'
-    }
+    component: 'component',
+    componentWrapper: 'component-wrapper',
+    componentPanel: 'component-panel',
+    placeholder: 'placeholder',
+    placeholderItem: 'placeholder-item',
 
-    let templateDialog = {
-        nameHeight: 40,
-        fontSize: 22
-    }
+    editorPanel: 'editor-panel'
+}
 
-    let element = document.createElement('style');
-    element.type = 'text/css';
-    element.innerHTML = `
+let templateDialog = {
+    nameHeight: 40,
+    fontSize: 22
+}
+
+let element = document.createElement('style');
+element.type = 'text/css';
+element.innerHTML = `
             .${classNames.componentSelected} {
                 border: solid 1px #337ab7!important;
             }
@@ -198,52 +199,50 @@ module jueying {
                 padding: 8px;
             }
         `;
-    document.head.appendChild(element);
+document.head.appendChild(element);
 
-    export function appendClassName(sourceClassName: string, addonClassName)
-    export function appendClassName(element: HTMLElement, addonClassName)
-    export function appendClassName(element: string | HTMLElement, addonClassName) {
-        if (element == null) throw Errors.argumentNull('element')
-        if (!addonClassName) throw Errors.argumentNull('addonClassName')
+export function appendClassName(sourceClassName: string, addonClassName)
+export function appendClassName(element: HTMLElement, addonClassName)
+export function appendClassName(element: string | HTMLElement, addonClassName) {
+    if (element == null) throw Errors.argumentNull('element')
+    if (!addonClassName) throw Errors.argumentNull('addonClassName')
 
-        let sourceClassName: string
-        if (typeof element == 'string')
-            sourceClassName = element
-        else
-            sourceClassName = element.className
+    let sourceClassName: string
+    if (typeof element == 'string')
+        sourceClassName = element
+    else
+        sourceClassName = element.className
 
-        sourceClassName = sourceClassName || ''
-        console.assert(addonClassName)
+    sourceClassName = sourceClassName || ''
+    console.assert(addonClassName)
 
-        if (sourceClassName.indexOf(addonClassName) >= 0)
-            return sourceClassName
-
-        let className = `${sourceClassName} ${addonClassName}`
-        if (typeof element != 'string')
-            element.className = className
-
-        return className
-    }
-
-    export function removeClassName(sourceClassName: string, targetClassName)
-    export function removeClassName(element: HTMLElement, targetClassName)
-    export function removeClassName(element: string | HTMLElement, targetClassName) {
-        let sourceClassName: string
-        if (typeof element == 'string')
-            sourceClassName = element
-        else
-            sourceClassName = element.className || ''
-
-        if (sourceClassName.indexOf(targetClassName) < 0)
-            return sourceClassName
-
-        sourceClassName = sourceClassName || ''
-        sourceClassName = sourceClassName.replace(new RegExp(targetClassName, 'g'), '')
-        sourceClassName = sourceClassName.trim()
-        if (typeof element != 'string')
-            element.className = sourceClassName
-
+    if (sourceClassName.indexOf(addonClassName) >= 0)
         return sourceClassName
-    }
 
+    let className = `${sourceClassName} ${addonClassName}`
+    if (typeof element != 'string')
+        element.className = className
+
+    return className
+}
+
+export function removeClassName(sourceClassName: string, targetClassName)
+export function removeClassName(element: HTMLElement, targetClassName)
+export function removeClassName(element: string | HTMLElement, targetClassName) {
+    let sourceClassName: string
+    if (typeof element == 'string')
+        sourceClassName = element
+    else
+        sourceClassName = element.className || ''
+
+    if (sourceClassName.indexOf(targetClassName) < 0)
+        return sourceClassName
+
+    sourceClassName = sourceClassName || ''
+    sourceClassName = sourceClassName.replace(new RegExp(targetClassName, 'g'), '')
+    sourceClassName = sourceClassName.trim()
+    if (typeof element != 'string')
+        element.className = sourceClassName
+
+    return sourceClassName
 }
