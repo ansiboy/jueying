@@ -84,7 +84,10 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
             var props = {
               key: i
             };
-            return React.createElement("li", Object.assign({}, props), React.createElement("div", {
+            props[ComponentPanel.componentIndexName] = "".concat(i);
+            return React.createElement("li", Object.assign({}, props, {
+              className: style_1.classNames.componentIcon
+            }), React.createElement("div", {
               className: "btn-link"
             }, React.createElement("i", {
               className: c.icon,
@@ -105,6 +108,11 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
           //     </div>
           // </div>
         });
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.toolbarElement;
       }
     }], [{
       key: "getComponentData",
@@ -127,6 +135,7 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
     return ComponentPanel;
   }(React.Component);
 
+  ComponentPanel.componentIndexName = "data-component-index";
   exports.ComponentPanel = ComponentPanel;
 });
-//# sourceMappingURL=component-toolbar.js.map
+//# sourceMappingURL=component-panel.js.map

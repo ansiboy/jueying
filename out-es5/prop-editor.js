@@ -18,141 +18,143 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+define(["require", "exports", "react"], function (require, exports, React) {
+  "use strict";
 
-var React = require("react");
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
 
-var PropEditor =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(PropEditor, _React$Component);
+  var PropEditor =
+  /*#__PURE__*/
+  function (_React$Component) {
+    _inherits(PropEditor, _React$Component);
 
-  function PropEditor(props) {
-    var _this;
+    function PropEditor(props) {
+      var _this;
 
-    _classCallCheck(this, PropEditor);
+      _classCallCheck(this, PropEditor);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(PropEditor).call(this, props));
-    _this.state = {
-      value: props.value
-    };
-    return _this;
-  }
-
-  _createClass(PropEditor, [{
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(props) {
-      this.setState({
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(PropEditor).call(this, props));
+      _this.state = {
         value: props.value
-      });
+      };
+      return _this;
     }
-  }], [{
-    key: "dropdown",
-    value: function dropdown(items) {
-      return _dropdown(items);
-    }
-  }, {
-    key: "textInput",
-    value: function textInput() {
-      return TextInput;
-    }
-  }]);
 
-  return PropEditor;
-}(React.Component);
-
-exports.PropEditor = PropEditor;
-
-var TextInput =
-/*#__PURE__*/
-function (_PropEditor) {
-  _inherits(TextInput, _PropEditor);
-
-  function TextInput() {
-    _classCallCheck(this, TextInput);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(TextInput).apply(this, arguments));
-  }
-
-  _createClass(TextInput, [{
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var value = this.state.value;
-      return React.createElement("input", {
-        className: 'form-control',
-        value: value || '',
-        onChange: function onChange(e) {
-          _this2.setState({
-            value: e.target.value
-          });
-
-          _this2.props.onChange(e.target.value);
-        }
-      });
-    }
-  }]);
-
-  return TextInput;
-}(PropEditor);
-
-exports.TextInput = TextInput;
-
-function _dropdown(items) {
-  return (
-    /*#__PURE__*/
-    function (_PropEditor2) {
-      _inherits(Dropdown, _PropEditor2);
-
-      function Dropdown() {
-        _classCallCheck(this, Dropdown);
-
-        return _possibleConstructorReturn(this, _getPrototypeOf(Dropdown).apply(this, arguments));
+    _createClass(PropEditor, [{
+      key: "componentWillReceiveProps",
+      value: function componentWillReceiveProps(props) {
+        this.setState({
+          value: props.value
+        });
       }
+    }], [{
+      key: "dropdown",
+      value: function dropdown(items) {
+        return _dropdown(items);
+      }
+    }, {
+      key: "textInput",
+      value: function textInput() {
+        return TextInput;
+      }
+    }]);
 
-      _createClass(Dropdown, [{
-        key: "render",
-        value: function render() {
-          var _this3 = this;
+    return PropEditor;
+  }(React.Component);
 
-          var value = this.state.value;
-          value = value || '';
+  exports.PropEditor = PropEditor;
 
-          if (Array.isArray(items)) {
-            var tmp = items;
-            items = {};
+  var TextInput =
+  /*#__PURE__*/
+  function (_PropEditor) {
+    _inherits(TextInput, _PropEditor);
 
-            for (var i = 0; i < tmp.length; i++) {
-              items[tmp[i]] = tmp[i];
-            }
+    function TextInput() {
+      _classCallCheck(this, TextInput);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(TextInput).apply(this, arguments));
+    }
+
+    _createClass(TextInput, [{
+      key: "render",
+      value: function render() {
+        var _this2 = this;
+
+        var value = this.state.value;
+        return React.createElement("input", {
+          className: 'form-control',
+          value: value || '',
+          onChange: function onChange(e) {
+            _this2.setState({
+              value: e.target.value
+            });
+
+            _this2.props.onChange(e.target.value);
           }
+        });
+      }
+    }]);
 
-          return React.createElement("select", {
-            className: 'form-control',
-            value: value,
-            onChange: function onChange(e) {
-              value = e.target.value;
+    return TextInput;
+  }(PropEditor);
 
-              _this3.setState({
-                value: value
-              });
+  exports.TextInput = TextInput;
 
-              _this3.props.onChange(value);
-            }
-          }, Object.getOwnPropertyNames(items).map(function (o) {
-            return React.createElement("option", {
-              key: o,
-              value: o
-            }, items[o]);
-          }));
+  function _dropdown(items) {
+    return (
+      /*#__PURE__*/
+      function (_PropEditor2) {
+        _inherits(Dropdown, _PropEditor2);
+
+        function Dropdown() {
+          _classCallCheck(this, Dropdown);
+
+          return _possibleConstructorReturn(this, _getPrototypeOf(Dropdown).apply(this, arguments));
         }
-      }]);
 
-      return Dropdown;
-    }(PropEditor)
-  );
-}
+        _createClass(Dropdown, [{
+          key: "render",
+          value: function render() {
+            var _this3 = this;
+
+            var value = this.state.value;
+            value = value || '';
+
+            if (Array.isArray(items)) {
+              var tmp = items;
+              items = {};
+
+              for (var i = 0; i < tmp.length; i++) {
+                items[tmp[i]] = tmp[i];
+              }
+            }
+
+            return React.createElement("select", {
+              className: 'form-control',
+              value: value,
+              onChange: function onChange(e) {
+                value = e.target.value;
+
+                _this3.setState({
+                  value: value
+                });
+
+                _this3.props.onChange(value);
+              }
+            }, Object.getOwnPropertyNames(items).map(function (o) {
+              return React.createElement("option", {
+                key: o,
+                value: o
+              }, items[o]);
+            }));
+          }
+        }]);
+
+        return Dropdown;
+      }(PropEditor)
+    );
+  }
+});
 //# sourceMappingURL=prop-editor.js.map

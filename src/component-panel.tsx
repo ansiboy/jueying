@@ -16,11 +16,16 @@ interface ComponentToolbarState {
 }
 export class ComponentPanel extends React.Component<ComponentToolbarProps, ComponentToolbarState> {
     designer: PageDesigner;
+    static componentIndexName = "data-component-index";
     private toolbarElement: HTMLElement;
 
     constructor(props) {
         super(props)
         this.state = { componets: [] }
+    }
+
+    get element() {
+        return this.toolbarElement;
     }
 
     private componentDraggable(toolItemElement: HTMLElement, componentData: ComponentData) {
@@ -65,7 +70,8 @@ export class ComponentPanel extends React.Component<ComponentToolbarProps, Compo
                     ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
                     {componets.length == 0 ? empty : componets.map((c, i) => {
                         let props = { key: i };
-                        return <li {...props}>
+                        props[ComponentPanel.componentIndexName] = `${i}`;
+                        return <li {...props} className={classNames.componentIcon}>
                             <div className="btn-link">
                                 <i className={c.icon} style={{ fontSize: 44, color: 'black' }}
                                     ref={e => {

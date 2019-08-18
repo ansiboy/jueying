@@ -8,9 +8,11 @@ export declare let classNames: {
     component: string;
     componentWrapper: string;
     componentPanel: string;
+    componentIcon: string;
     placeholder: string;
-    placeholderItem: string;
     editorPanel: string;
+    designer: string;
+    moveDown: string;
 };
 export declare function appendClassName(sourceClassName: string, addonClassName: any): any;
 export declare function appendClassName(element: HTMLElement, addonClassName: any): any;

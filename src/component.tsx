@@ -6,7 +6,7 @@ import { ComponentData } from "./models";
 import { Errors } from "./errors";
 import { appendClassName, removeClassName, classNames } from "./style";
 import { constants, guid } from "./common";
-import { ComponentPanel } from "./component-toolbar";
+import { ComponentPanel } from "./component-panel";
 
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
@@ -268,6 +268,7 @@ Component.register(MasterPageName, MasterPage, { container: false })
  * 占位符，用于放置控件
  */
 export class PlaceHolder extends React.Component<{ id: string, empty?: string | JSX.Element }, {}>{
+    private element: HTMLElement;
 
     constructor(props) {
         super(props)
@@ -321,7 +322,10 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
 
             element.className = removeClassName(element.className, 'active')
 
-            let ctrl = ComponentPanel.getComponentData(event.dataTransfer)
+            let ctrl: ComponentData;
+            if (event.dataTransfer)
+                ctrl = ComponentPanel.getComponentData(event.dataTransfer);
+                
             if (!ctrl)
                 return
 
@@ -355,7 +359,6 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                 let propName: keyof ComponentProps<any> = 'parent_id'
                 this.designer.moveControl(dd.sourceElement.id, host.props.id)
                 this.designer.updateControlProps(dd.sourceElement.id, [propName], this.props.id)
-
             })
             .drop('end', (event, dd: ComponentWrapperDrapData) => {
                 if (dd.sourceElement.id == this.wraper.props.source.props.id)
@@ -364,7 +367,6 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                 removeClassName(element, 'active')
             })
     }
-
     render() {
         let empty = this.props.empty || <div key={guid()} className="empty">可以拖拉控件到这里</div>
         return <MasterPageContext.Consumer>
@@ -402,9 +404,10 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
 
                             if (args.designer) {
                                 this.designer = args.designer
-                                element = <div key={guid()} className={classNames.placeholderItem}
+                                element = <div key={guid()} className={classNames.placeholder}
                                     ref={e => {
                                         if (!e) return
+                                        this.element = e;
                                         this.enableAppendDroppable(e, host)
                                         this.enableMoveDroppable(e, host)
                                     }}>

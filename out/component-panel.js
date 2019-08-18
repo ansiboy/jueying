@@ -6,6 +6,9 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
             super(props);
             this.state = { componets: [] };
         }
+        get element() {
+            return this.toolbarElement;
+        }
         componentDraggable(toolItemElement, componentData) {
             console.assert(toolItemElement != null);
             toolItemElement.draggable = true;
@@ -39,7 +42,8 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
                 this.designer = context.designer;
                 return React.createElement("ul", Object.assign({}, props, { className: `${style_1.classNames.componentPanel}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
                     let props = { key: i };
-                    return React.createElement("li", Object.assign({}, props),
+                    props[ComponentPanel.componentIndexName] = `${i}`;
+                    return React.createElement("li", Object.assign({}, props, { className: style_1.classNames.componentIcon }),
                         React.createElement("div", { className: "btn-link" },
                             React.createElement("i", { className: c.icon, style: { fontSize: 44, color: 'black' }, ref: e => {
                                     if (!e)
@@ -57,6 +61,7 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
             });
         }
     }
+    ComponentPanel.componentIndexName = "data-component-index";
     exports.ComponentPanel = ComponentPanel;
 });
-//# sourceMappingURL=component-toolbar.js.map
+//# sourceMappingURL=component-panel.js.map

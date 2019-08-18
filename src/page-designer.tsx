@@ -408,7 +408,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let { pageData } = this.state
         let style = this.props.style
 
-        let result = <div className="designer" tabIndex={1} style={style}
+        let result = <div className={classNames.designer} tabIndex={1} style={style}
             ref={e => this.element = e || this.element}
             onKeyDown={(e) => this.onKeyDown(e)}>
             <DesignerContext.Provider value={{ designer }}>

@@ -3,6 +3,7 @@ export declare let constants: {
     connectorElementClassName: string;
     componentTypeName: string;
     componentData: string;
+    componentPosition: string;
 };
 export declare let strings: {
     [key: string]: string;

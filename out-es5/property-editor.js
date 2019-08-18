@@ -240,4 +240,4 @@ define(["require", "exports", "react", "./component", "./common"], function (req
 
   exports.PropertyEditor = PropertyEditor;
 });
-//# sourceMappingURL=component-editor.js.map
+//# sourceMappingURL=property-editor.js.map

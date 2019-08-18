@@ -1,27 +1,29 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("./errors");
-exports.classNames = {
-    componentSelected: `component-selected`,
-    emptyTemplates: `empty-templates`,
-    loadingTemplates: `loading-templates`,
-    templateSelected: `template-selected`,
-    templateDialog: `template-dialog`,
-    emptyDocument: `empty-document`,
-    component: 'component',
-    componentWrapper: 'component-wrapper',
-    componentPanel: 'component-panel',
-    placeholder: 'placeholder',
-    placeholderItem: 'placeholder-item',
-    editorPanel: 'editor-panel'
-};
-let templateDialog = {
-    nameHeight: 40,
-    fontSize: 22
-};
-let element = document.createElement('style');
-element.type = 'text/css';
-element.innerHTML = `
+define(["require", "exports", "./errors"], function (require, exports, errors_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.classNames = {
+        componentSelected: `component-selected`,
+        emptyTemplates: `empty-templates`,
+        loadingTemplates: `loading-templates`,
+        templateSelected: `template-selected`,
+        templateDialog: `template-dialog`,
+        emptyDocument: `empty-document`,
+        component: 'component',
+        componentWrapper: 'component-wrapper',
+        componentPanel: 'component-panel',
+        componentIcon: 'component-icon',
+        placeholder: 'placeholder',
+        editorPanel: 'editor-panel',
+        designer: 'designer',
+        moveDown: 'move-down',
+    };
+    let templateDialog = {
+        nameHeight: 40,
+        fontSize: 22
+    };
+    let element = document.createElement('style');
+    element.type = 'text/css';
+    element.innerHTML = `
             .${exports.classNames.componentSelected} {
                 border: solid 1px #337ab7!important;
             }
@@ -147,11 +149,7 @@ element.innerHTML = `
                 min-height: 40px;
                 width: 100%;
             }
-            .${exports.classNames.placeholderItem} {
-                min-height: 40px;
-                width: 100%;
-            }
-            .${exports.classNames.placeholderItem}.active,
+            .${exports.classNames.placeholder}.active,
             .${exports.classNames.componentWrapper}.active,
             .${exports.classNames.componentWrapper}.${exports.classNames.componentSelected}.active {
                 border: 1px solid green;
@@ -195,42 +193,46 @@ element.innerHTML = `
                 text-align: center;
                 padding: 8px;
             }
+            .${exports.classNames.componentWrapper}.${exports.classNames.moveDown} {
+         
+            }
         `;
-document.head.appendChild(element);
-function appendClassName(element, addonClassName) {
-    if (element == null)
-        throw errors_1.Errors.argumentNull('element');
-    if (!addonClassName)
-        throw errors_1.Errors.argumentNull('addonClassName');
-    let sourceClassName;
-    if (typeof element == 'string')
-        sourceClassName = element;
-    else
-        sourceClassName = element.className;
-    sourceClassName = sourceClassName || '';
-    console.assert(addonClassName);
-    if (sourceClassName.indexOf(addonClassName) >= 0)
+    document.head.appendChild(element);
+    function appendClassName(element, addonClassName) {
+        if (element == null)
+            throw errors_1.Errors.argumentNull('element');
+        if (!addonClassName)
+            throw errors_1.Errors.argumentNull('addonClassName');
+        let sourceClassName;
+        if (typeof element == 'string')
+            sourceClassName = element;
+        else
+            sourceClassName = element.className;
+        sourceClassName = sourceClassName || '';
+        console.assert(addonClassName);
+        if (sourceClassName.indexOf(addonClassName) >= 0)
+            return sourceClassName;
+        let className = `${sourceClassName} ${addonClassName}`;
+        if (typeof element != 'string')
+            element.className = className;
+        return className;
+    }
+    exports.appendClassName = appendClassName;
+    function removeClassName(element, targetClassName) {
+        let sourceClassName;
+        if (typeof element == 'string')
+            sourceClassName = element;
+        else
+            sourceClassName = element.className || '';
+        if (sourceClassName.indexOf(targetClassName) < 0)
+            return sourceClassName;
+        sourceClassName = sourceClassName || '';
+        sourceClassName = sourceClassName.replace(new RegExp(targetClassName, 'g'), '');
+        sourceClassName = sourceClassName.trim();
+        if (typeof element != 'string')
+            element.className = sourceClassName;
         return sourceClassName;
-    let className = `${sourceClassName} ${addonClassName}`;
-    if (typeof element != 'string')
-        element.className = className;
-    return className;
-}
-exports.appendClassName = appendClassName;
-function removeClassName(element, targetClassName) {
-    let sourceClassName;
-    if (typeof element == 'string')
-        sourceClassName = element;
-    else
-        sourceClassName = element.className || '';
-    if (sourceClassName.indexOf(targetClassName) < 0)
-        return sourceClassName;
-    sourceClassName = sourceClassName || '';
-    sourceClassName = sourceClassName.replace(new RegExp(targetClassName, 'g'), '');
-    sourceClassName = sourceClassName.trim();
-    if (typeof element != 'string')
-        element.className = sourceClassName;
-    return sourceClassName;
-}
-exports.removeClassName = removeClassName;
+    }
+    exports.removeClassName = removeClassName;
+});
 //# sourceMappingURL=style.js.map

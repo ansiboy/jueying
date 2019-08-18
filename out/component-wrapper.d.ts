@@ -1,3 +1,4 @@
+/// <reference path="../src/typings/declare.d.ts" />
 import { ComponentProps } from "react";
 import * as React from "react";
 import { PageDesigner } from "./page-designer";
@@ -10,16 +11,7 @@ declare type ComponentWrapperProps = {
         children: any[];
     };
 };
-export interface ComponentWrapperDrapData {
-    available: any[];
-    deltaX: number;
-    deltaY: number;
-    offsetX: number;
-    offsetY: number;
-    width: number;
-    height: number;
-    originalX: number;
-    originalY: number;
+export interface ComponentWrapperDrapData extends DragDropData {
     attr: string;
     sourceElement: HTMLElement;
 }
@@ -39,7 +31,7 @@ export declare class ComponentWrapper extends React.Component<ComponentWrapperPr
     /**
      * 启用拖放操作，以便通过拖放图标添加控件
      */
-    private static enableDroppable;
+    private static enableAppendDroppable;
     private static isResizeHandleClassName;
     private static draggable;
     static invokeOnClick(ev: MouseEvent, designer: PageDesigner, element: HTMLElement): void;

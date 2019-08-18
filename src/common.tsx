@@ -2,7 +2,8 @@ export let constants = {
     componentsDir: 'components',
     connectorElementClassName: 'component-container',
     componentTypeName: 'data-component-name',
-    componentData: 'component-data'
+    componentData: 'component-data',
+    componentPosition: "component-position"
 }
 
 export let strings: { [key: string]: string } = {

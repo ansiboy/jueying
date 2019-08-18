@@ -1,9 +1,11 @@
+/// <reference path="./typings/declare.d.ts"/>
+
 import { ComponentProps } from "react";
 import * as React from "react";
 import { PageDesigner } from "./page-designer";
 import { Errors } from "./errors";
 import { constants } from "./common";
-import { ComponentPanel } from "./component-toolbar";
+import { ComponentPanel } from "./component-panel";
 import { classNames, appendClassName } from "./style";
 import { MasterPage, ComponentWrapperContext } from "./component";
 
@@ -25,17 +27,7 @@ type ComponentWrapperProps = {
 
 }
 
-export interface ComponentWrapperDrapData {
-    available: any[]
-    deltaX: number
-    deltaY: number
-    offsetX: number
-    offsetY: number
-    width: number
-    height: number
-    originalX: number
-    originalY: number
-
+export interface ComponentWrapperDrapData extends DragDropData {
     attr: string, sourceElement: HTMLElement
 }
 
@@ -62,8 +54,9 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
         console.assert(attr.container != null)
         console.assert(attr.movable != null)
         if (attr.container) {
-            ComponentWrapper.enableDroppable(element, designer)
+            ComponentWrapper.enableAppendDroppable(element, designer)
         }
+
         if (attr.movable) {
             console.assert(element != null)
             ComponentWrapper.draggable(designer, element)
@@ -75,10 +68,11 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
         }
     }
 
+
     /**
      * 启用拖放操作，以便通过拖放图标添加控件
      */
-    private static enableDroppable(element: HTMLElement, designer: PageDesigner) {
+    private static enableAppendDroppable(element: HTMLElement, designer: PageDesigner) {
         console.assert(element != null)
         element.addEventListener('dragover', function (event) {
             event.preventDefault()
@@ -92,9 +86,17 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
 
             console.log(`dragover: left:${event.layerX} top:${event.layerX}`)
         })
-        element.ondrop = (event) => {
+        // element.ondrop = (event) => {
+
+        // }
+        element.addEventListener("drop", function (event) {
             event.preventDefault()
             event.stopPropagation()
+
+            let args1 = arguments[1]
+
+            if (!event.dataTransfer)
+                return;
 
             let ctrl = ComponentPanel.getComponentData(event.dataTransfer)
             if (!ctrl)
@@ -113,7 +115,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
                 ctrl.props.style.top = event.layerY - pos.y
             }
             designer.appendComponent(element.id, ctrl);
-        }
+        })
     }
     private static isResizeHandleClassName(className: string) {
         let classNames = [
@@ -150,9 +152,12 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
                 dragStart = Date.now()
 
             })
-            .drag(function (ev, dd: DragData & { attr: string }) {
+            .drag(function (ev, dd: DragDropData & { attr: string }) {
                 ev.preventDefault()
                 ev.stopPropagation()
+
+                console.log(`drop:`)
+                console.log(dd.drop);
 
                 rect = {}
                 if (dd.attr.indexOf("E") > -1) {
@@ -192,7 +197,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
                     $(this).css(rect);
 
             }, { click: true })
-            .drag('end', function (ev, dd: DragData & { attr: string }) {
+            .drag('end', function (ev, dd: DragDropData & { attr: string }) {
                 let interval = Date.now() - dragStart
                 ComponentWrapper.isDrag = interval >= 300
 
@@ -219,16 +224,16 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
                 ComponentWrapper.invokeOnClick(ev as any, designer, element)
             })
 
-        let setPosition = (dd: DragData) => {
+        let setPosition = (dd: DragDropData) => {
             console.log(['dd.offsetX, dd.offsetY', dd.offsetX, dd.offsetY])
             console.log(dd)
             element.style.transform = `translate(${dd.deltaX}px,${dd.deltaY}px)`
         }
 
-        let setTop = (dd: DragData) => {
+        let setTop = (dd: DragDropData) => {
             element.style.transform = `translateY(${dd.deltaY}px)`
         }
-        let setLeft = (dd: DragData) => {
+        let setLeft = (dd: DragDropData) => {
             element.style.transform = `translateX(${dd.deltaX}px)`
         }
     }
@@ -290,7 +295,6 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
             style: { top, left, position, width, height, display, visibility },
             ref: (e: HTMLElement) => this.element = e || this.element
         }
-
         let move_handle = props.selected && attr.showHandler ? <div className="move_handle" style={{}}
             ref={e => this.handler = e || this.handler} /> : null
 

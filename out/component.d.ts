@@ -86,6 +86,7 @@ export declare class PlaceHolder extends React.Component<{
     id: string;
     empty?: string | JSX.Element;
 }, {}> {
+    private element;
     constructor(props: any);
     private designer;
     wraper: ComponentWrapper;

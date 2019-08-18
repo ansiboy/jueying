@@ -11,10 +11,13 @@ export let classNames = {
     component: 'component',
     componentWrapper: 'component-wrapper',
     componentPanel: 'component-panel',
+    componentIcon: 'component-icon',
     placeholder: 'placeholder',
-    placeholderItem: 'placeholder-item',
 
-    editorPanel: 'editor-panel'
+    editorPanel: 'editor-panel',
+    designer: 'designer',
+    moveDown: 'move-down',
+
 }
 
 let templateDialog = {
@@ -150,11 +153,7 @@ element.innerHTML = `
                 min-height: 40px;
                 width: 100%;
             }
-            .${classNames.placeholderItem} {
-                min-height: 40px;
-                width: 100%;
-            }
-            .${classNames.placeholderItem}.active,
+            .${classNames.placeholder}.active,
             .${classNames.componentWrapper}.active,
             .${classNames.componentWrapper}.${classNames.componentSelected}.active {
                 border: 1px solid green;
@@ -197,6 +196,9 @@ element.innerHTML = `
             .${classNames.componentPanel} li {
                 text-align: center;
                 padding: 8px;
+            }
+            .${classNames.componentWrapper}.${classNames.moveDown} {
+         
             }
         `;
 document.head.appendChild(element);
