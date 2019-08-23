@@ -357,7 +357,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                 console.assert(componentData != null)
 
                 let propName: keyof ComponentProps<any> = 'parent_id'
-                this.designer.moveControl(dd.sourceElement.id, host.props.id)
+                this.designer.moveComponent(dd.sourceElement.id, host.props.id)
                 this.designer.updateControlProps(dd.sourceElement.id, [propName], this.props.id)
             })
             .drop('end', (event, dd: ComponentWrapperDrapData) => {

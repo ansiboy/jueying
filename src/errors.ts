@@ -9,6 +9,9 @@ export class Errors {
     static argumentNull(argumentName: string) {
         return new Error(`Argument ${argumentName} is null or empty.`);
     }
+    static argumentRangeError(argumentName: string){
+        return new Error(`Argument ${argumentName} range error.`);
+    }
     static pageDataIsNull() {
         return new Error(`Page data is null.`);
     }

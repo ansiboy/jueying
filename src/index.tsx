@@ -13,7 +13,7 @@ export { TextInput } from "./prop-editor";
 export { PropEditor } from "./prop-editor";
 export { classNames } from "./style"
 export { ComponentDefine, ComponentData } from "./models";
-
+export { strings } from "./common";
 
 
 

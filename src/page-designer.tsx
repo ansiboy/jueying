@@ -24,7 +24,8 @@ import { ComponentWrapper } from "./component-wrapper";
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null,
-    style?: React.CSSProperties
+    style?: React.CSSProperties,
+    wrapDesignTimeElement?: boolean
 }
 
 export interface PageDesignerState {
@@ -42,6 +43,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
     private namedComponents: { [key: string]: ComponentData } = {}
     private _root: React.ReactElement<any>
+
+    static defaultProps: PageDesignerProps = { pageData: null, wrapDesignTimeElement: true };
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -164,26 +167,38 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     /** 添加控件 */
-    appendComponent(parentId: string, childControl: ComponentData, childIds?: string[]) {
+    appendComponent(parentId: string, childComponent: ComponentData, childComponentIndex?: number) {
         if (!parentId) throw Errors.argumentNull('parentId');
-        if (!childControl) throw Errors.argumentNull('childControl');
+        if (!childComponent) throw Errors.argumentNull('childComponent');
+        // if(childComponentIndex!=null && childComponentIndex<0)
+        // throw Errors.ar
 
-        this.nameComponent(childControl)
+        this.nameComponent(childComponent)
         let parentControl = this.findComponentData(parentId);
         if (parentControl == null)
             throw new Error('Parent is not exists')
 
         console.assert(parentControl != null);
         parentControl.children = parentControl.children || [];
-        parentControl.children.push(childControl);
-        if (childIds)
-            this.sortChildren(parentId, childIds);
+        if (childComponentIndex != null) {
+            parentControl.children.splice(childComponentIndex, 0, childComponent);
+        }
         else {
-            let { pageData } = this.state;
-            this.setState({ pageData });
+            parentControl.children.push(childComponent);
         }
 
-        this.selectComponent(childControl.props.id);
+        let { pageData } = this.state;
+        this.setState({ pageData });
+
+        // parentControl.children.push(childControl);
+        // if (childIds)
+        //     this.sortChildren(parentId, childIds);
+        // else {
+        //     let { pageData } = this.state;
+        //     this.setState({ pageData });
+        // }
+
+        this.selectComponent(childComponent.props.id);
         this.componentAppend.fire(this)
     }
 
@@ -268,41 +283,41 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     /** 移除控件 */
-    removeControl(...controlIds: string[]) {
+    removeComponent(...componentIds: string[]) {
         let pageData = this.state.pageData;
         if (!pageData || !pageData.children || pageData.children.length == 0)
             return;
 
 
-        controlIds.forEach(controlId => {
-            this.removeControlFrom(controlId, pageData.children);
+        componentIds.forEach(controlId => {
+            this.removeComponentFrom(controlId, pageData.children);
         })
 
 
         this.setState({ pageData });
-        this.componentRemoved.fire(controlIds)
+        this.componentRemoved.fire(componentIds)
     }
 
     /** 
      * 移动控件到另外一个控件容器 
      * @param componentId 要移动的组件编号
      * @param parentId 目标组件编号
-     * @param childIds 目标组件子组件的编号，用于排序子组件
+     * @param beforeChildId 组件的前一个子组件编号
      */
-    moveControl(componentId: string, parentId: string, childIds?: string[]) {
-        let control = this.findComponentData(componentId);
-        if (control == null)
-            throw new Error(`Cannt find control by id ${componentId}`)
+    moveComponent(componentId: string, parentId: string, childComponentIndex?: number) {
+        let component = this.findComponentData(componentId);
+        if (component == null)
+            throw new Error(`Cannt find component by id ${componentId}`)
 
-        console.assert(control != null, `Cannt find control by id ${componentId}`);
+        console.assert(component != null, `Cannt find component by id ${componentId}`);
 
         let pageData = this.state.pageData;
         console.assert(pageData.children != null);
-        this.removeControlFrom(componentId, pageData.children);
-        this.appendComponent(parentId, control, childIds);
+        this.removeComponentFrom(componentId, pageData.children);
+        this.appendComponent(parentId, component, childComponentIndex);
     }
 
-    private removeControlFrom(controlId: string, collection: ComponentData[]): boolean {
+    private removeComponentFrom(controlId: string, collection: ComponentData[]): boolean {
         let controlIndex: number | null = null;
         for (let i = 0; i < collection.length; i++) {
             if (controlId == collection[i].props.id) {
@@ -315,7 +330,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             for (let i = 0; i < collection.length; i++) {
                 let o = collection[i];
                 if (o.children && o.children.length > 0) {
-                    let isRemoved = this.removeControlFrom(controlId, o.children)
+                    let isRemoved = this.removeComponentFrom(controlId, o.children)
                     if (isRemoved) {
                         return true;
                     }
@@ -366,7 +381,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             if (this.selectedComponents.length == 0)
                 return
 
-            this.removeControl(...this.selectedComponentIds)
+            this.removeComponent(...this.selectedComponentIds)
         }
     }
 

@@ -66,7 +66,7 @@ export class ComponentPanel extends React.Component<ComponentToolbarProps, Compo
         return <DesignerContext.Consumer>
             {context => {
                 this.designer = context.designer;
-                return <ul {...props as any} className={`${classNames.componentPanel}`}
+                return <ul {...props as any} className={`${classNames.componentPanel} ${this.props.className || ""}`}
                     ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
                     {componets.length == 0 ? empty : componets.map((c, i) => {
                         let props = { key: i };

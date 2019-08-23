@@ -1,6 +1,6 @@
-import { ComponentProps } from "react";
+// import { ComponentProps } from "react";
 
-// import { ComponentProps } from "./component";
+import { ComponentProps } from "./component";
 
 export interface ComponentData {
     type: string;

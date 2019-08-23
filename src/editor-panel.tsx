@@ -97,7 +97,7 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
             selectedComponentIds = designer.selectedComponentIds || []
         }
 
-        return <div className={classNames.editorPanel} ref={(e: HTMLElement) => this.element = e || this.element}>
+        return <div className={`${classNames.editorPanel} ${this.props.className || ""}`} ref={(e: HTMLElement) => this.element = e || this.element}>
             {/* <select className="form-control"
                     ref={e => {
                         if (!e) return
