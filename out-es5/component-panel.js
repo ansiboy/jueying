@@ -76,7 +76,7 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
         return React.createElement(component_1.DesignerContext.Consumer, null, function (context) {
           _this2.designer = context.designer;
           return React.createElement("ul", Object.assign({}, props, {
-            className: "".concat(style_1.classNames.componentPanel),
+            className: "".concat(style_1.classNames.componentPanel, " ").concat(_this2.props.className || ""),
             ref: function ref(e) {
               return _this2.toolbarElement = _this2.toolbarElement || e;
             }

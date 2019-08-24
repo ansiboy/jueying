@@ -20,10 +20,13 @@ define(["require", "exports", "react", "./component", "./common"], function (req
             this._element = null;
             this.state = { editors: [] };
         }
-        componentWillReceiveProps(props) {
-            this.setState({
-                designer: props.designer,
-            });
+        // componentWillReceiveProps(props: EditorProps) {
+        //     this.setState({
+        //         designer: props.designer,
+        //     })
+        // }
+        static getDerivedStateFromProps(props, state) {
+            return { designer: props.designer };
         }
         getEditors(designer) {
             if (designer == null) {
@@ -33,9 +36,8 @@ define(["require", "exports", "react", "./component", "./common"], function (req
             let commonPropEditorInfos = [];
             let componentDatas = designer.selectedComponents;
             for (let i = 0; i < componentDatas.length; i++) {
-                let control = componentDatas[i];
-                let className = control.type;
-                let propEditorInfos = component_1.Component.getPropEditors(className);
+                let componentData = componentDatas[i];
+                let propEditorInfos = component_1.Component.getPropEditors(componentData);
                 if (i == 0) {
                     commonPropEditorInfos = propEditorInfos || [];
                 }
@@ -43,8 +45,8 @@ define(["require", "exports", "react", "./component", "./common"], function (req
                     let items = [];
                     commonPropEditorInfos.forEach(propInfo1 => {
                         propEditorInfos.forEach(propInfo2 => {
-                            let propName1 = propInfo1.propNames.join('.');
-                            let propName2 = propInfo2.propNames.join('.');
+                            let propName1 = propInfo1.propName; //propInfo1.propNames.join('.')
+                            let propName2 = propInfo2.propName; //propInfo2.propNames.join('.')
                             if (propInfo1.editorType == propInfo2.editorType && propName1 == propName2) {
                                 items.push(propInfo1);
                             }
@@ -75,9 +77,10 @@ define(["require", "exports", "react", "./component", "./common"], function (req
             let editors = [];
             for (let i = 0; i < commonPropEditorInfos.length; i++) {
                 let propEditorInfo = commonPropEditorInfos[i];
-                let propName = propEditorInfo.propNames[propEditorInfo.propNames.length - 1];
+                let propNameParts = propEditorInfo.propName.split(".");
+                let propName = propNameParts[propNameParts.length - 1]; //propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
                 let editorType = propEditorInfo.editorType;
-                let propNames = propEditorInfo.propNames;
+                let propNames = propNameParts; //propEditorInfo.propNames;
                 let editor = React.createElement(editorType, {
                     value: commonFlatProps[propNames.join('.')],
                     onChange: (value) => {
@@ -123,9 +126,9 @@ define(["require", "exports", "react", "./component", "./common"], function (req
                 groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor });
             }
             return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
-                g.group ? React.createElement("div", { className: "panel-heading" }, common_1.strings[g.group] || g.group) : null,
+                g.group ? React.createElement("div", { className: "panel-heading" }, common_1.proptDisplayNames[g.group] || g.group) : null,
                 React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group" },
-                    React.createElement("label", { key: common_1.guid() }, common_1.strings[o.prop] || o.prop),
+                    React.createElement("label", { key: common_1.guid() }, common_1.proptDisplayNames[o.prop] || o.prop),
                     " ",
                     React.createElement("div", { className: "control" }, o.editor)))))));
         }

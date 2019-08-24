@@ -10253,7 +10253,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         componentData: 'component-data',
         componentPosition: "component-position"
     };
-    exports.strings = {};
+    exports.proptDisplayNames = {};
     function guid() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -10337,7 +10337,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             let componets = this.state.componets || [];
             return React.createElement(component_1.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return React.createElement("ul", Object.assign({}, props, { className: `${style_1.classNames.componentPanel}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
+                return React.createElement("ul", Object.assign({}, props, { className: `${style_1.classNames.componentPanel} ${this.props.className || ""}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
                     let props = { key: i };
                     props[ComponentPanel.componentIndexName] = `${i}`;
                     return React.createElement("li", Object.assign({}, props, { className: style_1.classNames.componentIcon }),
@@ -10461,10 +10461,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/// <reference p
                 throw errors_1.Errors.argumentNull('designer');
             if (!element)
                 throw errors_1.Errors.argumentNull('element');
-            console.assert(element.id);
+            console.assert(element.id != "");
             handler = handler || element;
             let componentId = element.id;
-            console.assert(componentId);
+            console.assert(componentId != "");
             let startPos;
             let rect;
             let dragStart;
@@ -10565,7 +10565,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/// <reference p
                 return;
             }
             let selectedControlIds = designer.selectedComponentIds;
-            console.assert(elementID);
+            console.assert(elementID != "");
             if (selectedControlIds.indexOf(elementID) >= 0) {
                 selectedControlIds = selectedControlIds.filter(o => o != elementID);
             }
@@ -10716,33 +10716,63 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             let attr = Component.componentAttributes[typename];
             return Object.assign({ type }, Component.defaultComponentAttribute, attr || {});
         }
-        static getPropEditors(controlClassName) {
-            let classEditors = this.controlPropEditors[controlClassName] || [];
-            return classEditors;
+        static getPropEditors(componentData) {
+            let componentType = componentData.type;
+            let result = [];
+            let propEditorInfo = this.componentPropEditors[componentType] || [];
+            for (let i = 0; i < propEditorInfo.length; i++) {
+                let propName = propEditorInfo[i].propName;
+                let display = Component.componentPropEditorDisplay[`${componentType}.${propName}`];
+                if (display != null && display(componentData) == false)
+                    continue;
+                result.push(propEditorInfo[i]);
+            }
+            return result;
+            // let classEditors = this.componentPropEditors[componentType] || []
+            // Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
+            // return classEditors
         }
-        static getPropEditor(controlClassName, ...propNames) {
-            return this.getPropEditorByArray(controlClassName, propNames);
+        static getPropEditor(controlClassName, propName) {
+            return this.getPropEditorByArray(controlClassName, propName);
         }
         /** 通过属性数组获取属性的编辑器 */
         static getPropEditorByArray(controlClassName, propNames) {
-            let classEditors = this.controlPropEditors[controlClassName] || [];
-            let editor = classEditors.filter(o => o.propNames.join('.') == propNames.join('.'))[0];
+            let classEditors = this.componentPropEditors[controlClassName] || [];
+            let editor = classEditors.filter(o => o.propName == propNames)[0];
             return editor;
         }
-        static setPropEditor(componentType, propName, editorType, group) {
+        static setPropEditor(componentTypeOrOptions, propName, editorType, group) {
+            let componentType;
+            let editorDisplay;
+            if (typeof componentTypeOrOptions == "object") {
+                let options = componentTypeOrOptions;
+                componentType = options.componentType;
+                propName = options.propName;
+                editorType = options.editorType;
+                group = options.group;
+                editorDisplay = options.display;
+                if (options.displayName != null) {
+                    common_1.proptDisplayNames[propName] = options.displayName;
+                }
+            }
+            else {
+                componentType = componentTypeOrOptions;
+            }
             group = group || '';
+            // 属性可能为导航属性,例如 style.width
             let propNames = propName.split('.');
             let className = typeof componentType == 'string' ? componentType : componentType.prototype.typename || componentType.name;
-            let classProps = Component.controlPropEditors[className] = Component.controlPropEditors[className] || [];
+            Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
+            let classProps = Component.componentPropEditors[className] = Component.componentPropEditors[className] || [];
             for (let i = 0; i < classProps.length; i++) {
-                let propName1 = classProps[i].propNames.join('.');
+                let propName1 = classProps[i].propName; //classProps[i].propNames.join('.')
                 let propName2 = propNames.join('.');
                 if (propName1 == propName2) {
                     classProps[i].editorType = editorType;
                     return;
                 }
             }
-            classProps.push({ propNames: propNames, editorType, group });
+            classProps.push({ propName, editorType, group });
         }
         /**
          * 将持久化的元素数据转换为 ReactElement
@@ -10818,7 +10848,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         'tr': { container: false, movable: false },
         'td': { container: true, movable: false },
     };
-    Component.controlPropEditors = {};
+    Component.componentPropEditors = {};
+    Component.componentPropEditorDisplay = {};
     Component.componentTypes = {};
     exports.Component = Component;
     exports.MasterPageName = 'MasterPage';
@@ -10826,10 +10857,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     class MasterPage extends React.Component {
         constructor(props) {
             super(props);
-            let children = this.children(props);
+            let children = MasterPage.children(props);
             this.state = { children };
         }
-        children(props) {
+        static children(props) {
             let arr = props.children == null ? [] :
                 Array.isArray(props.children) ? props.children : [props.children];
             let children = [];
@@ -10840,9 +10871,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             });
             return children;
         }
-        componentWillReceiveProps(props) {
+        // componentWillReceiveProps(props: ComponentProps<MasterPage>) {
+        //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
+        //     this.setState({ children })
+        // }
+        static getDerivedStateFromProps(props) {
             let children = this.children(props);
-            this.setState({ children });
+            return { children };
         }
         render() {
             let props = {};
@@ -10927,7 +10962,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 let componentData = this.designer.findComponentData(dd.sourceElement.id);
                 console.assert(componentData != null);
                 let propName = 'parent_id';
-                this.designer.moveControl(dd.sourceElement.id, host.props.id);
+                this.designer.moveComponent(dd.sourceElement.id, host.props.id);
                 this.designer.updateControlProps(dd.sourceElement.id, [propName], this.props.id);
             })
                 .drop('end', (event, dd) => {
@@ -11016,8 +11051,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 this.setState({ designer: this.designer });
             };
         }
-        componentWillReceiveProps(props) {
-            this.setState({ designer: props.designer });
+        // componentWillReceiveProps(props: EditorPanelProps) {
+        //     this.setState({})
+        // }
+        static getDerivedStateFromProps(props) {
+            return {};
         }
         getComponentData(designer) {
             let componentDatas = [];
@@ -11060,12 +11098,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             empty = empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
             let componentDatas = [];
             let selectedComponentIds = [];
-            let designer = this.state.designer;
+            let designer = this.designer;
             if (designer) {
                 componentDatas = this.getComponentData(designer);
                 selectedComponentIds = designer.selectedComponentIds || [];
             }
-            return React.createElement("div", { className: style_1.classNames.editorPanel, ref: (e) => this.element = e || this.element },
+            return React.createElement("div", { className: `${style_1.classNames.editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
                 React.createElement(property_editor_1.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
         }
     }
@@ -11096,6 +11134,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }
         static argumentNull(argumentName) {
             return new Error(`Argument ${argumentName} is null or empty.`);
+        }
+        static argumentRangeError(argumentName) {
+            return new Error(`Argument ${argumentName} range error.`);
         }
         static pageDataIsNull() {
             return new Error(`Page data is null.`);
@@ -11135,7 +11176,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./component-panel */ "./out/component-panel.js"), __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js"), __webpack_require__(/*! ./page-designer */ "./out/page-designer.js"), __webpack_require__(/*! ./component */ "./out/component.js"), __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js"), __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js"), __webpack_require__(/*! ./style */ "./out/style.js"), __webpack_require__(/*! ./jquery */ "./out/jquery.js"), __webpack_require__(/*! ../lib/jquery.event.drag-2.2 */ "./lib/jquery.event.drag-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drag.live-2.2 */ "./lib/jquery.event.drag.live-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drop-2.2 */ "./lib/jquery.event.drop-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drop.live-2.2 */ "./lib/jquery.event.drop.live-2.2.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, component_panel_1, editor_panel_1, page_designer_1, component_1, prop_editor_1, prop_editor_2, style_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./component-panel */ "./out/component-panel.js"), __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js"), __webpack_require__(/*! ./page-designer */ "./out/page-designer.js"), __webpack_require__(/*! ./component */ "./out/component.js"), __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js"), __webpack_require__(/*! ./style */ "./out/style.js"), __webpack_require__(/*! ./common */ "./out/common.js"), __webpack_require__(/*! ./jquery */ "./out/jquery.js"), __webpack_require__(/*! ../lib/jquery.event.drag-2.2 */ "./lib/jquery.event.drag-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drag.live-2.2 */ "./lib/jquery.event.drag.live-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drop-2.2 */ "./lib/jquery.event.drop-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drop.live-2.2 */ "./lib/jquery.event.drop.live-2.2.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, component_panel_1, editor_panel_1, page_designer_1, component_1, prop_editor_1, style_1, common_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ComponentPanel = component_panel_1.ComponentPanel;
@@ -11144,9 +11185,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     exports.Component = component_1.Component;
     exports.DesignerContext = component_1.DesignerContext;
     exports.MasterPage = component_1.MasterPage;
+    exports.PropEditor = prop_editor_1.PropEditor;
     exports.TextInput = prop_editor_1.TextInput;
-    exports.PropEditor = prop_editor_2.PropEditor;
     exports.classNames = style_1.classNames;
+    exports.strings = common_1.proptDisplayNames;
+    exports.proptDisplayNames = common_1.proptDisplayNames;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 //# sourceMappingURL=index.js.map
@@ -11201,19 +11244,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             this.componentAppend = common_1.Callback.create();
             this.componentUpdated = common_1.Callback.create();
             this.designtimeComponentDidMount = common_1.Callback.create();
-            this.namedComponents = {};
-            this.initPageData(props.pageData);
+            PageDesigner.initPageData(props.pageData);
             this.state = { pageData: props.pageData };
             this.designtimeComponentDidMount.add((args) => {
                 console.log(`this:designer event:controlComponentDidMount`);
             });
         }
-        initPageData(pageData) {
+        static initPageData(pageData) {
             if (pageData == null) {
                 return;
             }
             pageData.children = pageData.children || [];
-            this.nameComponent(pageData);
+            PageDesigner.nameComponent(pageData);
         }
         get root() {
             return this._root;
@@ -11277,7 +11319,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
          * 对组件及其子控件进行命名
          * @param component
          */
-        nameComponent(component) {
+        static nameComponent(component) {
+            let namedComponents = {};
             let props = component.props = component.props || {};
             if (!props.name) {
                 let num = 0;
@@ -11285,8 +11328,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
                 do {
                     num = num + 1;
                     name = `${component.type}${num}`;
-                } while (this.namedComponents[name]);
-                this.namedComponents[name] = component;
+                } while (namedComponents[name]);
+                namedComponents[name] = component;
                 props.name = name;
             }
             if (!props.id)
@@ -11295,29 +11338,39 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
                 return;
             }
             for (let i = 0; i < component.children.length; i++) {
-                this.nameComponent(component.children[i]);
+                PageDesigner.nameComponent(component.children[i]);
             }
         }
         /** 添加控件 */
-        appendComponent(parentId, childControl, childIds) {
+        appendComponent(parentId, childComponent, childComponentIndex) {
             if (!parentId)
                 throw errors_1.Errors.argumentNull('parentId');
-            if (!childControl)
-                throw errors_1.Errors.argumentNull('childControl');
-            this.nameComponent(childControl);
+            if (!childComponent)
+                throw errors_1.Errors.argumentNull('childComponent');
+            // if(childComponentIndex!=null && childComponentIndex<0)
+            // throw Errors.ar
+            PageDesigner.nameComponent(childComponent);
             let parentControl = this.findComponentData(parentId);
             if (parentControl == null)
                 throw new Error('Parent is not exists');
             console.assert(parentControl != null);
             parentControl.children = parentControl.children || [];
-            parentControl.children.push(childControl);
-            if (childIds)
-                this.sortChildren(parentId, childIds);
-            else {
-                let { pageData } = this.state;
-                this.setState({ pageData });
+            if (childComponentIndex != null) {
+                parentControl.children.splice(childComponentIndex, 0, childComponent);
             }
-            this.selectComponent(childControl.props.id);
+            else {
+                parentControl.children.push(childComponent);
+            }
+            let { pageData } = this.state;
+            this.setState({ pageData });
+            // parentControl.children.push(childControl);
+            // if (childIds)
+            //     this.sortChildren(parentId, childIds);
+            // else {
+            //     let { pageData } = this.state;
+            //     this.setState({ pageData });
+            // }
+            this.selectComponent(childComponent.props.id);
             this.componentAppend.fire(this);
         }
         /** 设置控件位置 */
@@ -11384,33 +11437,33 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             //====================================================
         }
         /** 移除控件 */
-        removeControl(...controlIds) {
+        removeComponent(...componentIds) {
             let pageData = this.state.pageData;
             if (!pageData || !pageData.children || pageData.children.length == 0)
                 return;
-            controlIds.forEach(controlId => {
-                this.removeControlFrom(controlId, pageData.children);
+            componentIds.forEach(controlId => {
+                this.removeComponentFrom(controlId, pageData.children);
             });
             this.setState({ pageData });
-            this.componentRemoved.fire(controlIds);
+            this.componentRemoved.fire(componentIds);
         }
         /**
          * 移动控件到另外一个控件容器
          * @param componentId 要移动的组件编号
          * @param parentId 目标组件编号
-         * @param childIds 目标组件子组件的编号，用于排序子组件
+         * @param beforeChildId 组件的前一个子组件编号
          */
-        moveControl(componentId, parentId, childIds) {
-            let control = this.findComponentData(componentId);
-            if (control == null)
-                throw new Error(`Cannt find control by id ${componentId}`);
-            console.assert(control != null, `Cannt find control by id ${componentId}`);
+        moveComponent(componentId, parentId, childComponentIndex) {
+            let component = this.findComponentData(componentId);
+            if (component == null)
+                throw new Error(`Cannt find component by id ${componentId}`);
+            console.assert(component != null, `Cannt find component by id ${componentId}`);
             let pageData = this.state.pageData;
             console.assert(pageData.children != null);
-            this.removeControlFrom(componentId, pageData.children);
-            this.appendComponent(parentId, control, childIds);
+            this.removeComponentFrom(componentId, pageData.children);
+            this.appendComponent(parentId, component, childComponentIndex);
         }
-        removeControlFrom(controlId, collection) {
+        removeComponentFrom(controlId, collection) {
             let controlIndex = null;
             for (let i = 0; i < collection.length; i++) {
                 if (controlId == collection[i].props.id) {
@@ -11422,7 +11475,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
                 for (let i = 0; i < collection.length; i++) {
                     let o = collection[i];
                     if (o.children && o.children.length > 0) {
-                        let isRemoved = this.removeControlFrom(controlId, o.children);
+                        let isRemoved = this.removeComponentFrom(controlId, o.children);
                         if (isRemoved) {
                             return true;
                         }
@@ -11463,7 +11516,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             if (e.keyCode == DELETE_KEY_CODE) {
                 if (this.selectedComponents.length == 0)
                     return;
-                this.removeControl(...this.selectedComponentIds);
+                this.removeComponent(...this.selectedComponentIds);
             }
         }
         createDesignTimeElement(type, props, ...children) {
@@ -11487,9 +11540,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             let className = props.selected ? style_1.appendClassName(props.className || '', style_1.classNames.componentSelected) : props.className;
             return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, Object.assign({}, props, { className }), { designer: this, source: { type, attr, props, children } }));
         }
-        componentWillReceiveProps(props) {
-            this.initPageData(props.pageData);
-            this.setState({ pageData: props.pageData });
+        // componentWillReceiveProps(props: PageDesignerProps) {
+        //     PageDesigner.initPageData(props.pageData)
+        //     this.setState({ pageData: props.pageData });
+        // }
+        static getDerivedStateFromProps(props, state) {
+            PageDesigner.initPageData(props.pageData);
+            return { pageData: props.pageData };
         }
         render() {
             let designer = this;
@@ -11503,6 +11560,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             return result;
         }
     }
+    PageDesigner.defaultProps = { pageData: null, wrapDesignTimeElement: true };
     exports.PageDesigner = PageDesigner;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -11517,7 +11575,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! react */ "react")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, React) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! react */ "react")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, React) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class PropEditor extends React.Component {
@@ -11525,11 +11591,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             super(props);
             this.state = { value: props.value };
         }
-        componentWillReceiveProps(props) {
-            this.setState({ value: props.value });
+        // componentWillReceiveProps(props: PropEditorProps<T>) {
+        //     this.setState({ value: props.value } as any)
+        // }
+        static getDerivedStateFromProps(props, state) {
+            return { value: props.value };
         }
-        static dropdown(items) {
-            return dropdown(items);
+        static dropdown(items, valueType) {
+            return dropdown(items, valueType);
         }
         static textInput() {
             return TextInput;
@@ -11546,25 +11615,64 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }
     }
     exports.TextInput = TextInput;
-    function dropdown(items) {
-        return class Dropdown extends PropEditor {
-            render() {
-                let { value } = this.state;
-                value = value || '';
-                if (Array.isArray(items)) {
-                    let tmp = items;
-                    items = {};
-                    for (let i = 0; i < tmp.length; i++) {
-                        items[tmp[i]] = tmp[i];
+    function dropdown(items, valueType) {
+        let itemsPromise;
+        let textValues = [];
+        if (valueType == null && Array.isArray(items)) {
+            valueType = items.length > 0 && typeof items[0] == "number" ? "number" : "string";
+            for (let i = 0; i < items.length; i++) {
+                textValues[i] = { text: items[i], value: items[i] };
+            }
+        }
+        else if (valueType == null) {
+            valueType = "string";
+            let propNames = Object.getOwnPropertyNames(items);
+            for (let i = 0; i < propNames.length; i++) {
+                textValues[i] = { text: items[propNames[i]], value: propNames[i] };
+            }
+        }
+        else if (Array.isArray(items)) {
+            textValues = items;
+        }
+        else {
+            itemsPromise = items;
+        }
+        class Dropdown extends PropEditor {
+            constructor(props) {
+                super(props);
+            }
+            componentDidMount() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (itemsPromise) {
+                        let items = yield itemsPromise;
+                        this.setState({ items });
                     }
-                }
-                return React.createElement("select", { className: 'form-control', value: value, onChange: e => {
-                        value = e.target.value;
+                });
+            }
+            render() {
+                let { value, items } = this.state;
+                items = items || textValues;
+                return React.createElement("select", { className: 'form-control', value: value == null ? "" : value, onChange: e => {
+                        let textValue = e.target.value;
+                        if (valueType == "number") {
+                            let integerRegex = /^\d+$/;
+                            let floatRegex = /^[+-]?\d+(\.\d+)?$/;
+                            if (integerRegex.test(textValue))
+                                value = parseInt(textValue);
+                            else if (floatRegex.test(textValue))
+                                value = parseFloat(textValue);
+                            else
+                                value = null;
+                        }
+                        else {
+                            value = textValue;
+                        }
                         this.setState({ value });
                         this.props.onChange(value);
-                    } }, Object.getOwnPropertyNames(items).map(o => React.createElement("option", { key: o, value: o }, items[o])));
+                    } }, items.map(o => React.createElement("option", { key: o.value, value: o.value }, o.text)));
             }
-        };
+        }
+        return Dropdown;
     }
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -11601,10 +11709,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             this._element = null;
             this.state = { editors: [] };
         }
-        componentWillReceiveProps(props) {
-            this.setState({
-                designer: props.designer,
-            });
+        // componentWillReceiveProps(props: EditorProps) {
+        //     this.setState({
+        //         designer: props.designer,
+        //     })
+        // }
+        static getDerivedStateFromProps(props, state) {
+            return { designer: props.designer };
         }
         getEditors(designer) {
             if (designer == null) {
@@ -11614,9 +11725,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             let commonPropEditorInfos = [];
             let componentDatas = designer.selectedComponents;
             for (let i = 0; i < componentDatas.length; i++) {
-                let control = componentDatas[i];
-                let className = control.type;
-                let propEditorInfos = component_1.Component.getPropEditors(className);
+                let componentData = componentDatas[i];
+                let propEditorInfos = component_1.Component.getPropEditors(componentData);
                 if (i == 0) {
                     commonPropEditorInfos = propEditorInfos || [];
                 }
@@ -11624,8 +11734,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
                     let items = [];
                     commonPropEditorInfos.forEach(propInfo1 => {
                         propEditorInfos.forEach(propInfo2 => {
-                            let propName1 = propInfo1.propNames.join('.');
-                            let propName2 = propInfo2.propNames.join('.');
+                            let propName1 = propInfo1.propName; //propInfo1.propNames.join('.')
+                            let propName2 = propInfo2.propName; //propInfo2.propNames.join('.')
                             if (propInfo1.editorType == propInfo2.editorType && propName1 == propName2) {
                                 items.push(propInfo1);
                             }
@@ -11656,9 +11766,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             let editors = [];
             for (let i = 0; i < commonPropEditorInfos.length; i++) {
                 let propEditorInfo = commonPropEditorInfos[i];
-                let propName = propEditorInfo.propNames[propEditorInfo.propNames.length - 1];
+                let propNameParts = propEditorInfo.propName.split(".");
+                let propName = propNameParts[propNameParts.length - 1]; //propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
                 let editorType = propEditorInfo.editorType;
-                let propNames = propEditorInfo.propNames;
+                let propNames = propNameParts; //propEditorInfo.propNames;
                 let editor = React.createElement(editorType, {
                     value: commonFlatProps[propNames.join('.')],
                     onChange: (value) => {
@@ -11704,9 +11815,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
                 groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor });
             }
             return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
-                g.group ? React.createElement("div", { className: "panel-heading" }, common_1.strings[g.group] || g.group) : null,
+                g.group ? React.createElement("div", { className: "panel-heading" }, common_1.proptDisplayNames[g.group] || g.group) : null,
                 React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group" },
-                    React.createElement("label", { key: common_1.guid() }, common_1.strings[o.prop] || o.prop),
+                    React.createElement("label", { key: common_1.guid() }, common_1.proptDisplayNames[o.prop] || o.prop),
                     " ",
                     React.createElement("div", { className: "control" }, o.editor)))))));
         }

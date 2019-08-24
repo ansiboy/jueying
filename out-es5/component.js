@@ -1,7 +1,5 @@
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
@@ -19,6 +17,8 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -84,40 +84,69 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
       }
     }, {
       key: "getPropEditors",
-      value: function getPropEditors(controlClassName) {
-        var classEditors = this.controlPropEditors[controlClassName] || [];
-        return classEditors;
+      value: function getPropEditors(componentData) {
+        var componentType = componentData.type;
+        var result = [];
+        var propEditorInfo = this.componentPropEditors[componentType] || [];
+
+        for (var i = 0; i < propEditorInfo.length; i++) {
+          var propName = propEditorInfo[i].propName;
+          var display = Component.componentPropEditorDisplay["".concat(componentType, ".").concat(propName)];
+          if (display != null && display(componentData) == false) continue;
+          result.push(propEditorInfo[i]);
+        }
+
+        return result; // let classEditors = this.componentPropEditors[componentType] || []
+        // Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
+        // return classEditors
       }
     }, {
       key: "getPropEditor",
-      value: function getPropEditor(controlClassName) {
-        for (var _len = arguments.length, propNames = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          propNames[_key - 1] = arguments[_key];
-        }
-
-        return this.getPropEditorByArray(controlClassName, propNames);
+      value: function getPropEditor(controlClassName, propName) {
+        return this.getPropEditorByArray(controlClassName, propName);
       }
       /** 通过属性数组获取属性的编辑器 */
 
     }, {
       key: "getPropEditorByArray",
       value: function getPropEditorByArray(controlClassName, propNames) {
-        var classEditors = this.controlPropEditors[controlClassName] || [];
+        var classEditors = this.componentPropEditors[controlClassName] || [];
         var editor = classEditors.filter(function (o) {
-          return o.propNames.join('.') == propNames.join('.');
+          return o.propName == propNames;
         })[0];
         return editor;
       }
     }, {
       key: "setPropEditor",
-      value: function setPropEditor(componentType, propName, editorType, group) {
-        group = group || '';
+      value: function setPropEditor(componentTypeOrOptions, propName, editorType, group) {
+        var componentType;
+        var editorDisplay;
+
+        if (_typeof(componentTypeOrOptions) == "object") {
+          var options = componentTypeOrOptions;
+          componentType = options.componentType;
+          propName = options.propName;
+          editorType = options.editorType;
+          group = options.group;
+          editorDisplay = options.display;
+
+          if (options.displayName != null) {
+            common_1.proptDisplayNames[propName] = options.displayName;
+          }
+        } else {
+          componentType = componentTypeOrOptions;
+        }
+
+        group = group || ''; // 属性可能为导航属性,例如 style.width
+
         var propNames = propName.split('.');
         var className = typeof componentType == 'string' ? componentType : componentType.prototype.typename || componentType.name;
-        var classProps = Component.controlPropEditors[className] = Component.controlPropEditors[className] || [];
+        Component.componentPropEditorDisplay["".concat(className, ".").concat(propName)] = editorDisplay;
+        var classProps = Component.componentPropEditors[className] = Component.componentPropEditors[className] || [];
 
         for (var i = 0; i < classProps.length; i++) {
-          var propName1 = classProps[i].propNames.join('.');
+          var propName1 = classProps[i].propName; //classProps[i].propNames.join('.')
+
           var propName2 = propNames.join('.');
 
           if (propName1 == propName2) {
@@ -127,7 +156,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
         }
 
         classProps.push({
-          propNames: propNames,
+          propName: propName,
           editorType: editorType,
           group: group
         });
@@ -262,7 +291,8 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
       movable: false
     }
   };
-  Component.controlPropEditors = {};
+  Component.componentPropEditors = {};
+  Component.componentPropEditorDisplay = {};
   Component.componentTypes = {};
   exports.Component = Component;
   exports.MasterPageName = 'MasterPage';
@@ -281,9 +311,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
       _classCallCheck(this, MasterPage);
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(MasterPage).call(this, props));
-
-      var children = _this.children(props);
-
+      var children = MasterPage.children(props);
       _this.state = {
         children: children
       };
@@ -291,25 +319,6 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
     }
 
     _createClass(MasterPage, [{
-      key: "children",
-      value: function children(props) {
-        var arr = props.children == null ? [] : Array.isArray(props.children) ? props.children : [props.children];
-        var children = [];
-        arr.forEach(function (o) {
-          if (!React.isValidElement(o)) return;
-          children.push(o);
-        });
-        return children;
-      }
-    }, {
-      key: "componentWillReceiveProps",
-      value: function componentWillReceiveProps(props) {
-        var children = this.children(props);
-        this.setState({
-          children: children
-        });
-      }
-    }, {
       key: "render",
       value: function render() {
         var props = {};
@@ -330,6 +339,29 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
             form: this
           }
         }, children);
+      }
+    }], [{
+      key: "children",
+      value: function children(props) {
+        var arr = props.children == null ? [] : Array.isArray(props.children) ? props.children : [props.children];
+        var children = [];
+        arr.forEach(function (o) {
+          if (!React.isValidElement(o)) return;
+          children.push(o);
+        });
+        return children;
+      } // componentWillReceiveProps(props: ComponentProps<MasterPage>) {
+      //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
+      //     this.setState({ children })
+      // }
+
+    }, {
+      key: "getDerivedStateFromProps",
+      value: function getDerivedStateFromProps(props) {
+        var children = this.children(props);
+        return {
+          children: children
+        };
       }
     }]);
 
@@ -427,7 +459,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
           console.assert(componentData != null);
           var propName = 'parent_id';
 
-          _this4.designer.moveControl(dd.sourceElement.id, host.props.id);
+          _this4.designer.moveComponent(dd.sourceElement.id, host.props.id);
 
           _this4.designer.updateControlProps(dd.sourceElement.id, [propName], _this4.props.id);
         }).drop('end', function (event, dd) {

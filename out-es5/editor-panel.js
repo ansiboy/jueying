@@ -49,16 +49,12 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
       };
 
       return _this;
-    }
+    } // componentWillReceiveProps(props: EditorPanelProps) {
+    //     this.setState({})
+    // }
+
 
     _createClass(EditorPanel, [{
-      key: "componentWillReceiveProps",
-      value: function componentWillReceiveProps(props) {
-        this.setState({
-          designer: props.designer
-        });
-      }
-    }, {
       key: "getComponentData",
       value: function getComponentData(designer) {
         var componentDatas = [];
@@ -93,7 +89,7 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
         }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
         var componentDatas = [];
         var selectedComponentIds = [];
-        var designer = this.state.designer;
+        var designer = this.designer;
 
         if (designer) {
           componentDatas = this.getComponentData(designer);
@@ -101,7 +97,7 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
         }
 
         return React.createElement("div", {
-          className: style_1.classNames.editorPanel,
+          className: "".concat(style_1.classNames.editorPanel, " ").concat(this.props.className || ""),
           ref: function ref(e) {
             return _this2.element = e || _this2.element;
           }
@@ -137,6 +133,11 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
         }
 
         this._designer = value;
+      }
+    }], [{
+      key: "getDerivedStateFromProps",
+      value: function getDerivedStateFromProps(props) {
+        return {};
       }
     }]);
 

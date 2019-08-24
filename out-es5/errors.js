@@ -37,6 +37,11 @@ define(["require", "exports"], function (require, exports) {
         return new Error("Argument ".concat(argumentName, " is null or empty."));
       }
     }, {
+      key: "argumentRangeError",
+      value: function argumentRangeError(argumentName) {
+        return new Error("Argument ".concat(argumentName, " range error."));
+      }
+    }, {
       key: "pageDataIsNull",
       value: function pageDataIsNull() {
         return new Error("Page data is null.");

@@ -284,10 +284,10 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
       value: function draggable(designer, element, handler) {
         if (!designer) throw errors_1.Errors.argumentNull('designer');
         if (!element) throw errors_1.Errors.argumentNull('element');
-        console.assert(element.id);
+        console.assert(element.id != "");
         handler = handler || element;
         var componentId = element.id;
-        console.assert(componentId);
+        console.assert(componentId != "");
         var startPos;
         var rect;
         var dragStart;
@@ -402,7 +402,7 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
         }
 
         var selectedControlIds = designer.selectedComponentIds;
-        console.assert(elementID);
+        console.assert(elementID != "");
 
         if (selectedControlIds.indexOf(elementID) >= 0) {
           selectedControlIds = selectedControlIds.filter(function (o) {

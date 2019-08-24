@@ -86,10 +86,10 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
                 throw errors_1.Errors.argumentNull('designer');
             if (!element)
                 throw errors_1.Errors.argumentNull('element');
-            console.assert(element.id);
+            console.assert(element.id != "");
             handler = handler || element;
             let componentId = element.id;
-            console.assert(componentId);
+            console.assert(componentId != "");
             let startPos;
             let rect;
             let dragStart;
@@ -190,7 +190,7 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
                 return;
             }
             let selectedControlIds = designer.selectedComponentIds;
-            console.assert(elementID);
+            console.assert(elementID != "");
             if (selectedControlIds.indexOf(elementID) >= 0) {
                 selectedControlIds = selectedControlIds.filter(o => o != elementID);
             }

@@ -62,10 +62,7 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
       _this.componentAppend = common_1.Callback.create();
       _this.componentUpdated = common_1.Callback.create();
       _this.designtimeComponentDidMount = common_1.Callback.create();
-      _this.namedComponents = {};
-
-      _this.initPageData(props.pageData);
-
+      PageDesigner.initPageData(props.pageData);
       _this.state = {
         pageData: props.pageData
       };
@@ -78,16 +75,6 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
     }
 
     _createClass(PageDesigner, [{
-      key: "initPageData",
-      value: function initPageData(pageData) {
-        if (pageData == null) {
-          return;
-        }
-
-        pageData.children = pageData.children || [];
-        this.nameComponent(pageData);
-      }
-    }, {
       key: "updateControlProps",
       value: function updateControlProps(controlId, navPropsNames, value) {
         var componentData = this.findComponentData(controlId);
@@ -134,53 +121,38 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
        */
 
     }, {
-      key: "nameComponent",
-      value: function nameComponent(component) {
-        var props = component.props = component.props || {};
-
-        if (!props.name) {
-          var num = 0;
-          var name;
-
-          do {
-            num = num + 1;
-            name = "".concat(component.type).concat(num);
-          } while (this.namedComponents[name]);
-
-          this.namedComponents[name] = component;
-          props.name = name;
-        }
-
-        if (!props.id) props.id = common_1.guid();
-
-        if (!component.children || component.children.length == 0) {
-          return;
-        }
-
-        for (var i = 0; i < component.children.length; i++) {
-          this.nameComponent(component.children[i]);
-        }
-      }
-      /** 添加控件 */
-
-    }, {
       key: "appendComponent",
-      value: function appendComponent(parentId, childControl, childIds) {
+
+      /** 添加控件 */
+      value: function appendComponent(parentId, childComponent, childComponentIndex) {
         if (!parentId) throw errors_1.Errors.argumentNull('parentId');
-        if (!childControl) throw errors_1.Errors.argumentNull('childControl');
-        this.nameComponent(childControl);
+        if (!childComponent) throw errors_1.Errors.argumentNull('childComponent'); // if(childComponentIndex!=null && childComponentIndex<0)
+        // throw Errors.ar
+
+        PageDesigner.nameComponent(childComponent);
         var parentControl = this.findComponentData(parentId);
         if (parentControl == null) throw new Error('Parent is not exists');
         console.assert(parentControl != null);
         parentControl.children = parentControl.children || [];
-        parentControl.children.push(childControl);
-        if (childIds) this.sortChildren(parentId, childIds);else {
-          var pageData = this.state.pageData;
-          this.setState({
-            pageData: pageData
-          });
+
+        if (childComponentIndex != null) {
+          parentControl.children.splice(childComponentIndex, 0, childComponent);
+        } else {
+          parentControl.children.push(childComponent);
         }
-        this.selectComponent(childControl.props.id);
+
+        var pageData = this.state.pageData;
+        this.setState({
+          pageData: pageData
+        }); // parentControl.children.push(childControl);
+        // if (childIds)
+        //     this.sortChildren(parentId, childIds);
+        // else {
+        //     let { pageData } = this.state;
+        //     this.setState({ pageData });
+        // }
+
+        this.selectComponent(childComponent.props.id);
         this.componentAppend.fire(this);
       }
       /** 设置控件位置 */
@@ -271,46 +243,46 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
       /** 移除控件 */
 
     }, {
-      key: "removeControl",
-      value: function removeControl() {
+      key: "removeComponent",
+      value: function removeComponent() {
         var _this3 = this;
 
         var pageData = this.state.pageData;
         if (!pageData || !pageData.children || pageData.children.length == 0) return;
 
-        for (var _len = arguments.length, controlIds = new Array(_len), _key = 0; _key < _len; _key++) {
-          controlIds[_key] = arguments[_key];
+        for (var _len = arguments.length, componentIds = new Array(_len), _key = 0; _key < _len; _key++) {
+          componentIds[_key] = arguments[_key];
         }
 
-        controlIds.forEach(function (controlId) {
-          _this3.removeControlFrom(controlId, pageData.children);
+        componentIds.forEach(function (controlId) {
+          _this3.removeComponentFrom(controlId, pageData.children);
         });
         this.setState({
           pageData: pageData
         });
-        this.componentRemoved.fire(controlIds);
+        this.componentRemoved.fire(componentIds);
       }
       /**
        * 移动控件到另外一个控件容器
        * @param componentId 要移动的组件编号
        * @param parentId 目标组件编号
-       * @param childIds 目标组件子组件的编号，用于排序子组件
+       * @param beforeChildId 组件的前一个子组件编号
        */
 
     }, {
-      key: "moveControl",
-      value: function moveControl(componentId, parentId, childIds) {
-        var control = this.findComponentData(componentId);
-        if (control == null) throw new Error("Cannt find control by id ".concat(componentId));
-        console.assert(control != null, "Cannt find control by id ".concat(componentId));
+      key: "moveComponent",
+      value: function moveComponent(componentId, parentId, childComponentIndex) {
+        var component = this.findComponentData(componentId);
+        if (component == null) throw new Error("Cannt find component by id ".concat(componentId));
+        console.assert(component != null, "Cannt find component by id ".concat(componentId));
         var pageData = this.state.pageData;
         console.assert(pageData.children != null);
-        this.removeControlFrom(componentId, pageData.children);
-        this.appendComponent(parentId, control, childIds);
+        this.removeComponentFrom(componentId, pageData.children);
+        this.appendComponent(parentId, component, childComponentIndex);
       }
     }, {
-      key: "removeControlFrom",
-      value: function removeControlFrom(controlId, collection) {
+      key: "removeComponentFrom",
+      value: function removeComponentFrom(controlId, collection) {
         var controlIndex = null;
 
         for (var i = 0; i < collection.length; i++) {
@@ -325,7 +297,7 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             var o = collection[_i];
 
             if (o.children && o.children.length > 0) {
-              var isRemoved = this.removeControlFrom(controlId, o.children);
+              var isRemoved = this.removeComponentFrom(controlId, o.children);
 
               if (isRemoved) {
                 return true;
@@ -373,7 +345,7 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
 
         if (e.keyCode == DELETE_KEY_CODE) {
           if (this.selectedComponents.length == 0) return;
-          this.removeControl.apply(this, _toConsumableArray(this.selectedComponentIds));
+          this.removeComponent.apply(this, _toConsumableArray(this.selectedComponentIds));
         }
       }
     }, {
@@ -409,15 +381,11 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             children: children
           }
         }));
-      }
-    }, {
-      key: "componentWillReceiveProps",
-      value: function componentWillReceiveProps(props) {
-        this.initPageData(props.pageData);
-        this.setState({
-          pageData: props.pageData
-        });
-      }
+      } // componentWillReceiveProps(props: PageDesignerProps) {
+      //     PageDesigner.initPageData(props.pageData)
+      //     this.setState({ pageData: props.pageData });
+      // }
+
     }, {
       key: "render",
       value: function render() {
@@ -482,11 +450,62 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
 
         return arr;
       }
+    }], [{
+      key: "initPageData",
+      value: function initPageData(pageData) {
+        if (pageData == null) {
+          return;
+        }
+
+        pageData.children = pageData.children || [];
+        PageDesigner.nameComponent(pageData);
+      }
+    }, {
+      key: "nameComponent",
+      value: function nameComponent(component) {
+        var namedComponents = {};
+        var props = component.props = component.props || {};
+
+        if (!props.name) {
+          var num = 0;
+          var name;
+
+          do {
+            num = num + 1;
+            name = "".concat(component.type).concat(num);
+          } while (namedComponents[name]);
+
+          namedComponents[name] = component;
+          props.name = name;
+        }
+
+        if (!props.id) props.id = common_1.guid();
+
+        if (!component.children || component.children.length == 0) {
+          return;
+        }
+
+        for (var i = 0; i < component.children.length; i++) {
+          PageDesigner.nameComponent(component.children[i]);
+        }
+      }
+    }, {
+      key: "getDerivedStateFromProps",
+      value: function getDerivedStateFromProps(props, state) {
+        PageDesigner.initPageData(props.pageData);
+        return {
+          pageData: props.pageData
+        };
+      }
     }]);
 
     return PageDesigner;
   }(React.Component);
 
+  PageDesigner.defaultProps = {
+    pageData: null,
+    wrapDesignTimeElement: true
+  };
   exports.PageDesigner = PageDesigner;
 });
 //# sourceMappingURL=page-designer.js.map

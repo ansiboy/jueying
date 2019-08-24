@@ -33,11 +33,21 @@ declare type DesignerContextValue = {
 export declare const DesignerContext: React.Context<DesignerContextValue>;
 export declare const ComponentWrapperContext: React.Context<ComponentWrapper>;
 export interface PropEditorInfo {
-    propNames: string[];
+    propName: string;
     editorType: PropEditorConstructor;
     group: string;
 }
 export declare function component<T extends React.Component>(args?: ComponentAttribute): (constructor: new (...args: any[]) => T) => new (...args: any[]) => T;
+interface SetPropEditorOptions {
+    componentType: React.ComponentClass | string;
+    propName: string;
+    editorType: PropEditorConstructor;
+    group?: string;
+    display?: ComponentPropEditorDisplay;
+    displayName?: string;
+}
+/** 组件是否显示回调函数 */
+declare type ComponentPropEditorDisplay = (componentData: ComponentData) => boolean;
 export declare class Component {
     static readonly Fragment = "";
     private static defaultComponentAttribute;
@@ -55,12 +65,14 @@ export declare class Component {
     static getAttribute(type: string | React.ComponentClass<any>): {
         type: string | React.ComponentClass<any, any>;
     } & ComponentAttribute;
-    private static controlPropEditors;
-    static getPropEditors(controlClassName: string): PropEditorInfo[];
+    private static componentPropEditors;
+    private static componentPropEditorDisplay;
+    static getPropEditors(componentData: ComponentData): PropEditorInfo[];
     static getPropEditor<T, K extends keyof T, K1 extends keyof T[K]>(controlClassName: string, propName: K, propName1: K1): PropEditorInfo;
     static getPropEditor<T, K extends keyof T>(controlClassName: string, propName: string): PropEditorInfo;
     /** 通过属性数组获取属性的编辑器 */
-    static getPropEditorByArray(controlClassName: string, propNames: string[]): PropEditorInfo;
+    private static getPropEditorByArray;
+    static setPropEditor(options: SetPropEditorOptions): void;
     static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
     /**
      * 将持久化的元素数据转换为 ReactElement
@@ -75,8 +87,10 @@ export declare class MasterPage extends React.Component<ComponentProps<MasterPag
     children: React.ReactElement<ComponentProps<MasterPage>>[];
 }> {
     constructor(props: ComponentProps<MasterPage>);
-    private children;
-    componentWillReceiveProps(props: ComponentProps<MasterPage>): void;
+    private static children;
+    static getDerivedStateFromProps(props: ComponentProps<MasterPage>): Readonly<{
+        children: React.ReactElement<ComponentProps<MasterPage>, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>[];
+    }>;
     render(): JSX.Element;
 }
 /**
@@ -101,6 +115,6 @@ export declare class PageView extends React.Component<{
     pageData: ComponentData;
 }, {}> {
     constructor(props: any);
-    render(): React.ReactElement<any>;
+    render(): React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
 }
 export {};

@@ -8,7 +8,7 @@ define(["require", "exports"], function (require, exports) {
         componentData: 'component-data',
         componentPosition: "component-position"
     };
-    exports.strings = {};
+    exports.proptDisplayNames = {};
     function guid() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)

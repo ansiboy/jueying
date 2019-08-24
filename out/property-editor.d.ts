@@ -28,7 +28,7 @@ interface EditorState {
 export declare class PropertyEditor extends React.Component<EditorProps, EditorState> {
     private _element;
     constructor(props: EditorProps);
-    componentWillReceiveProps(props: EditorProps): void;
+    static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState>;
     private getEditors;
     private flatProps;
     render(): JSX.Element;

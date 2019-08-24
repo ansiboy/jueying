@@ -9,7 +9,6 @@ interface EditorPanelProps {
     className?: string;
     style?: React.CSSProperties;
     empty?: string | JSX.Element;
-    designer?: PageDesigner;
 }
 export declare class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
     element: HTMLElement;
@@ -17,7 +16,7 @@ export declare class EditorPanel extends React.Component<EditorPanelProps, Edito
     private _designer;
     private designerComponentChanged;
     constructor(props: any);
-    componentWillReceiveProps(props: EditorPanelProps): void;
+    static getDerivedStateFromProps(props: EditorPanel): Partial<EditorPanelState>;
     private getComponentData;
     designer: PageDesigner;
     componentDidMount(): void;

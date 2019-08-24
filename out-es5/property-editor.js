@@ -54,16 +54,14 @@ define(["require", "exports", "react", "./component", "./common"], function (req
         editors: []
       };
       return _this;
-    }
+    } // componentWillReceiveProps(props: EditorProps) {
+    //     this.setState({
+    //         designer: props.designer,
+    //     })
+    // }
+
 
     _createClass(PropertyEditor, [{
-      key: "componentWillReceiveProps",
-      value: function componentWillReceiveProps(props) {
-        this.setState({
-          designer: props.designer
-        });
-      }
-    }, {
       key: "getEditors",
       value: function getEditors(designer) {
         if (designer == null) {
@@ -75,9 +73,8 @@ define(["require", "exports", "react", "./component", "./common"], function (req
         var componentDatas = designer.selectedComponents;
 
         var _loop = function _loop(i) {
-          var control = componentDatas[i];
-          var className = control.type;
-          var propEditorInfos = component_1.Component.getPropEditors(className);
+          var componentData = componentDatas[i];
+          var propEditorInfos = component_1.Component.getPropEditors(componentData);
 
           if (i == 0) {
             commonPropEditorInfos = propEditorInfos || [];
@@ -85,8 +82,9 @@ define(["require", "exports", "react", "./component", "./common"], function (req
             var items = [];
             commonPropEditorInfos.forEach(function (propInfo1) {
               propEditorInfos.forEach(function (propInfo2) {
-                var propName1 = propInfo1.propNames.join('.');
-                var propName2 = propInfo2.propNames.join('.');
+                var propName1 = propInfo1.propName; //propInfo1.propNames.join('.')
+
+                var propName2 = propInfo2.propName; //propInfo2.propNames.join('.')
 
                 if (propInfo1.editorType == propInfo2.editorType && propName1 == propName2) {
                   items.push(propInfo1);
@@ -127,9 +125,12 @@ define(["require", "exports", "react", "./component", "./common"], function (req
 
         var _loop2 = function _loop2(_i) {
           var propEditorInfo = commonPropEditorInfos[_i];
-          var propName = propEditorInfo.propNames[propEditorInfo.propNames.length - 1];
+          var propNameParts = propEditorInfo.propName.split(".");
+          var propName = propNameParts[propNameParts.length - 1]; //propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
+
           var editorType = propEditorInfo.editorType;
-          var propNames = propEditorInfo.propNames;
+          var propNames = propNameParts; //propEditorInfo.propNames;
+
           var editor = React.createElement(editorType, {
             value: commonFlatProps[propNames.join('.')],
             onChange: function onChange(value) {
@@ -214,7 +215,7 @@ define(["require", "exports", "react", "./component", "./common"], function (req
             className: "panel panel-default"
           }, g.group ? React.createElement("div", {
             className: "panel-heading"
-          }, common_1.strings[g.group] || g.group) : null, React.createElement("div", {
+          }, common_1.proptDisplayNames[g.group] || g.group) : null, React.createElement("div", {
             className: "panel-body"
           }, g.editors.map(function (o, i) {
             return React.createElement("div", {
@@ -222,7 +223,7 @@ define(["require", "exports", "react", "./component", "./common"], function (req
               className: "form-group"
             }, React.createElement("label", {
               key: common_1.guid()
-            }, common_1.strings[o.prop] || o.prop), " ", React.createElement("div", {
+            }, common_1.proptDisplayNames[o.prop] || o.prop), " ", React.createElement("div", {
               className: "control"
             }, o.editor));
           })));
@@ -232,6 +233,13 @@ define(["require", "exports", "react", "./component", "./common"], function (req
       key: "element",
       get: function get() {
         return this._element;
+      }
+    }], [{
+      key: "getDerivedStateFromProps",
+      value: function getDerivedStateFromProps(props, state) {
+        return {
+          designer: props.designer
+        };
       }
     }]);
 

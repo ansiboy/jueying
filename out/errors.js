@@ -12,6 +12,9 @@ define(["require", "exports"], function (require, exports) {
         static argumentNull(argumentName) {
             return new Error(`Argument ${argumentName} is null or empty.`);
         }
+        static argumentRangeError(argumentName) {
+            return new Error(`Argument ${argumentName} range error.`);
+        }
         static pageDataIsNull() {
             return new Error(`Page data is null.`);
         }

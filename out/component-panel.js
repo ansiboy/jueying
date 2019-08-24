@@ -40,7 +40,7 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
             let componets = this.state.componets || [];
             return React.createElement(component_1.DesignerContext.Consumer, null, context => {
                 this.designer = context.designer;
-                return React.createElement("ul", Object.assign({}, props, { className: `${style_1.classNames.componentPanel}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
+                return React.createElement("ul", Object.assign({}, props, { className: `${style_1.classNames.componentPanel} ${this.props.className || ""}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
                     let props = { key: i };
                     props[ComponentPanel.componentIndexName] = `${i}`;
                     return React.createElement("li", Object.assign({}, props, { className: style_1.classNames.componentIcon }),

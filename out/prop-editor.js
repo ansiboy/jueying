@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 define(["require", "exports", "react"], function (require, exports, React) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -6,11 +14,14 @@ define(["require", "exports", "react"], function (require, exports, React) {
             super(props);
             this.state = { value: props.value };
         }
-        componentWillReceiveProps(props) {
-            this.setState({ value: props.value });
+        // componentWillReceiveProps(props: PropEditorProps<T>) {
+        //     this.setState({ value: props.value } as any)
+        // }
+        static getDerivedStateFromProps(props, state) {
+            return { value: props.value };
         }
-        static dropdown(items) {
-            return dropdown(items);
+        static dropdown(items, valueType) {
+            return dropdown(items, valueType);
         }
         static textInput() {
             return TextInput;
@@ -27,25 +38,64 @@ define(["require", "exports", "react"], function (require, exports, React) {
         }
     }
     exports.TextInput = TextInput;
-    function dropdown(items) {
-        return class Dropdown extends PropEditor {
-            render() {
-                let { value } = this.state;
-                value = value || '';
-                if (Array.isArray(items)) {
-                    let tmp = items;
-                    items = {};
-                    for (let i = 0; i < tmp.length; i++) {
-                        items[tmp[i]] = tmp[i];
+    function dropdown(items, valueType) {
+        let itemsPromise;
+        let textValues = [];
+        if (valueType == null && Array.isArray(items)) {
+            valueType = items.length > 0 && typeof items[0] == "number" ? "number" : "string";
+            for (let i = 0; i < items.length; i++) {
+                textValues[i] = { text: items[i], value: items[i] };
+            }
+        }
+        else if (valueType == null) {
+            valueType = "string";
+            let propNames = Object.getOwnPropertyNames(items);
+            for (let i = 0; i < propNames.length; i++) {
+                textValues[i] = { text: items[propNames[i]], value: propNames[i] };
+            }
+        }
+        else if (Array.isArray(items)) {
+            textValues = items;
+        }
+        else {
+            itemsPromise = items;
+        }
+        class Dropdown extends PropEditor {
+            constructor(props) {
+                super(props);
+            }
+            componentDidMount() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (itemsPromise) {
+                        let items = yield itemsPromise;
+                        this.setState({ items });
                     }
-                }
-                return React.createElement("select", { className: 'form-control', value: value, onChange: e => {
-                        value = e.target.value;
+                });
+            }
+            render() {
+                let { value, items } = this.state;
+                items = items || textValues;
+                return React.createElement("select", { className: 'form-control', value: value == null ? "" : value, onChange: e => {
+                        let textValue = e.target.value;
+                        if (valueType == "number") {
+                            let integerRegex = /^\d+$/;
+                            let floatRegex = /^[+-]?\d+(\.\d+)?$/;
+                            if (integerRegex.test(textValue))
+                                value = parseInt(textValue);
+                            else if (floatRegex.test(textValue))
+                                value = parseFloat(textValue);
+                            else
+                                value = null;
+                        }
+                        else {
+                            value = textValue;
+                        }
                         this.setState({ value });
                         this.props.onChange(value);
-                    } }, Object.getOwnPropertyNames(items).map(o => React.createElement("option", { key: o, value: o }, items[o])));
+                    } }, items.map(o => React.createElement("option", { key: o.value, value: o.value }, o.text)));
             }
-        };
+        }
+        return Dropdown;
     }
 });
 //# sourceMappingURL=prop-editor.js.map

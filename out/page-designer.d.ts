@@ -18,6 +18,7 @@ import { ComponentProps } from "./component";
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null;
     style?: React.CSSProperties;
+    wrapDesignTimeElement?: boolean;
 }
 export interface PageDesignerState {
     pageData: ComponentData | null;
@@ -29,16 +30,16 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
     componentAppend: Callback<PageDesigner>;
     componentUpdated: Callback<ComponentData[]>;
     designtimeComponentDidMount: Callback<{
-        component: React.ReactElement<any>;
+        component: React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
         element: HTMLElement;
     }>;
-    private namedComponents;
     private _root;
+    static defaultProps: PageDesignerProps;
     constructor(props: PageDesignerProps);
-    initPageData(pageData: ComponentData): void;
+    private static initPageData;
     readonly root: React.ReactElement<any>;
     readonly pageData: ComponentData;
-    readonly selectedComponentIds: any[];
+    readonly selectedComponentIds: string[];
     readonly selectedComponents: ComponentData[];
     updateControlProps(controlId: string, navPropsNames: string[], value: any): any;
     private sortChildren;
@@ -46,9 +47,9 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
      * 对组件及其子控件进行命名
      * @param component
      */
-    private nameComponent;
+    private static nameComponent;
     /** 添加控件 */
-    appendComponent(parentId: string, childControl: ComponentData, childIds?: string[]): void;
+    appendComponent(parentId: string, childComponent: ComponentData, childComponentIndex?: number): void;
     /** 设置控件位置 */
     setComponentPosition(componentId: string, position: {
         left: number | string;
@@ -71,18 +72,18 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
      */
     selectComponent(componentIds: string[] | string): void;
     /** 移除控件 */
-    removeControl(...controlIds: string[]): void;
+    removeComponent(...componentIds: string[]): void;
     /**
      * 移动控件到另外一个控件容器
      * @param componentId 要移动的组件编号
      * @param parentId 目标组件编号
-     * @param childIds 目标组件子组件的编号，用于排序子组件
+     * @param beforeChildId 组件的前一个子组件编号
      */
-    moveControl(componentId: string, parentId: string, childIds?: string[]): void;
-    private removeControlFrom;
+    moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
+    private removeComponentFrom;
     findComponentData(controlId: string): ComponentData | null;
     private onKeyDown;
     protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
-    componentWillReceiveProps(props: PageDesignerProps): void;
+    static getDerivedStateFromProps(props: PageDesignerProps, state: any): Partial<PageDesignerProps>;
     render(): JSX.Element;
 }

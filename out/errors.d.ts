@@ -2,6 +2,7 @@ export declare class Errors {
     static placeHolderIdNull(): any;
     static fileNotExists(fileName: string): any;
     static argumentNull(argumentName: string): Error;
+    static argumentRangeError(argumentName: string): Error;
     static pageDataIsNull(): Error;
     static toolbarRequiredKey(): Error;
     static loadPluginFail(pluginId: string): Error;

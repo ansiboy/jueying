@@ -5,8 +5,8 @@ export declare let constants: {
     componentData: string;
     componentPosition: string;
 };
-export declare let strings: {
-    [key: string]: string;
+export declare let proptDisplayNames: {
+    [prop: string]: string;
 };
 export declare function guid(): string;
 export declare class Callback<T> {

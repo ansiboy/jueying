@@ -10,8 +10,11 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
                 this.setState({ designer: this.designer });
             };
         }
-        componentWillReceiveProps(props) {
-            this.setState({ designer: props.designer });
+        // componentWillReceiveProps(props: EditorPanelProps) {
+        //     this.setState({})
+        // }
+        static getDerivedStateFromProps(props) {
+            return {};
         }
         getComponentData(designer) {
             let componentDatas = [];
@@ -54,12 +57,12 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
             empty = empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
             let componentDatas = [];
             let selectedComponentIds = [];
-            let designer = this.state.designer;
+            let designer = this.designer;
             if (designer) {
                 componentDatas = this.getComponentData(designer);
                 selectedComponentIds = designer.selectedComponentIds || [];
             }
-            return React.createElement("div", { className: style_1.classNames.editorPanel, ref: (e) => this.element = e || this.element },
+            return React.createElement("div", { className: `${style_1.classNames.editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
                 React.createElement(property_editor_1.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
         }
     }

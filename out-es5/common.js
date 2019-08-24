@@ -19,7 +19,7 @@ define(["require", "exports"], function (require, exports) {
     componentData: 'component-data',
     componentPosition: "component-position"
   };
-  exports.strings = {};
+  exports.proptDisplayNames = {};
 
   function guid() {
     function s4() {

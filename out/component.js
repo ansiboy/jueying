@@ -31,33 +31,63 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
             let attr = Component.componentAttributes[typename];
             return Object.assign({ type }, Component.defaultComponentAttribute, attr || {});
         }
-        static getPropEditors(controlClassName) {
-            let classEditors = this.controlPropEditors[controlClassName] || [];
-            return classEditors;
+        static getPropEditors(componentData) {
+            let componentType = componentData.type;
+            let result = [];
+            let propEditorInfo = this.componentPropEditors[componentType] || [];
+            for (let i = 0; i < propEditorInfo.length; i++) {
+                let propName = propEditorInfo[i].propName;
+                let display = Component.componentPropEditorDisplay[`${componentType}.${propName}`];
+                if (display != null && display(componentData) == false)
+                    continue;
+                result.push(propEditorInfo[i]);
+            }
+            return result;
+            // let classEditors = this.componentPropEditors[componentType] || []
+            // Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
+            // return classEditors
         }
-        static getPropEditor(controlClassName, ...propNames) {
-            return this.getPropEditorByArray(controlClassName, propNames);
+        static getPropEditor(controlClassName, propName) {
+            return this.getPropEditorByArray(controlClassName, propName);
         }
         /** 通过属性数组获取属性的编辑器 */
         static getPropEditorByArray(controlClassName, propNames) {
-            let classEditors = this.controlPropEditors[controlClassName] || [];
-            let editor = classEditors.filter(o => o.propNames.join('.') == propNames.join('.'))[0];
+            let classEditors = this.componentPropEditors[controlClassName] || [];
+            let editor = classEditors.filter(o => o.propName == propNames)[0];
             return editor;
         }
-        static setPropEditor(componentType, propName, editorType, group) {
+        static setPropEditor(componentTypeOrOptions, propName, editorType, group) {
+            let componentType;
+            let editorDisplay;
+            if (typeof componentTypeOrOptions == "object") {
+                let options = componentTypeOrOptions;
+                componentType = options.componentType;
+                propName = options.propName;
+                editorType = options.editorType;
+                group = options.group;
+                editorDisplay = options.display;
+                if (options.displayName != null) {
+                    common_1.proptDisplayNames[propName] = options.displayName;
+                }
+            }
+            else {
+                componentType = componentTypeOrOptions;
+            }
             group = group || '';
+            // 属性可能为导航属性,例如 style.width
             let propNames = propName.split('.');
             let className = typeof componentType == 'string' ? componentType : componentType.prototype.typename || componentType.name;
-            let classProps = Component.controlPropEditors[className] = Component.controlPropEditors[className] || [];
+            Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
+            let classProps = Component.componentPropEditors[className] = Component.componentPropEditors[className] || [];
             for (let i = 0; i < classProps.length; i++) {
-                let propName1 = classProps[i].propNames.join('.');
+                let propName1 = classProps[i].propName; //classProps[i].propNames.join('.')
                 let propName2 = propNames.join('.');
                 if (propName1 == propName2) {
                     classProps[i].editorType = editorType;
                     return;
                 }
             }
-            classProps.push({ propNames: propNames, editorType, group });
+            classProps.push({ propName, editorType, group });
         }
         /**
          * 将持久化的元素数据转换为 ReactElement
@@ -133,7 +163,8 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
         'tr': { container: false, movable: false },
         'td': { container: true, movable: false },
     };
-    Component.controlPropEditors = {};
+    Component.componentPropEditors = {};
+    Component.componentPropEditorDisplay = {};
     Component.componentTypes = {};
     exports.Component = Component;
     exports.MasterPageName = 'MasterPage';
@@ -141,10 +172,10 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
     class MasterPage extends React.Component {
         constructor(props) {
             super(props);
-            let children = this.children(props);
+            let children = MasterPage.children(props);
             this.state = { children };
         }
-        children(props) {
+        static children(props) {
             let arr = props.children == null ? [] :
                 Array.isArray(props.children) ? props.children : [props.children];
             let children = [];
@@ -155,9 +186,13 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
             });
             return children;
         }
-        componentWillReceiveProps(props) {
+        // componentWillReceiveProps(props: ComponentProps<MasterPage>) {
+        //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
+        //     this.setState({ children })
+        // }
+        static getDerivedStateFromProps(props) {
             let children = this.children(props);
-            this.setState({ children });
+            return { children };
         }
         render() {
             let props = {};
@@ -242,7 +277,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
                 let componentData = this.designer.findComponentData(dd.sourceElement.id);
                 console.assert(componentData != null);
                 let propName = 'parent_id';
-                this.designer.moveControl(dd.sourceElement.id, host.props.id);
+                this.designer.moveComponent(dd.sourceElement.id, host.props.id);
                 this.designer.updateControlProps(dd.sourceElement.id, [propName], this.props.id);
             })
                 .drop('end', (event, dd) => {
