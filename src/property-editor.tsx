@@ -15,7 +15,7 @@
 import React = require("react");
 import { PageDesigner } from "./page-designer";
 import { PropEditorInfo, Component } from "./component";
-import { strings, guid } from "./common";
+import { proptDisplayNames, guid } from "./common";
 
 
 
@@ -39,10 +39,14 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         this.state = { editors: [] }
     }
 
-    componentWillReceiveProps(props: EditorProps) {
-        this.setState({
-            designer: props.designer,
-        })
+    // componentWillReceiveProps(props: EditorProps) {
+    //     this.setState({
+    //         designer: props.designer,
+    //     })
+    // }
+
+    static getDerivedStateFromProps(props: EditorProps, state: EditorState) {
+        return { designer: props.designer } as Partial<EditorState>
     }
 
     private getEditors(designer: PageDesigner) {
@@ -54,9 +58,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         let commonPropEditorInfos: PropEditorInfo[] = []
         let componentDatas = designer.selectedComponents
         for (let i = 0; i < componentDatas.length; i++) {
-            let control = componentDatas[i]
-            let className = control.type
-            let propEditorInfos = Component.getPropEditors(className)
+            let componentData = componentDatas[i]
+            let propEditorInfos = Component.getPropEditors(componentData)
             if (i == 0) {
                 commonPropEditorInfos = propEditorInfos || []
             }
@@ -64,8 +67,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                 let items: PropEditorInfo[] = []
                 commonPropEditorInfos.forEach(propInfo1 => {
                     propEditorInfos.forEach(propInfo2 => {
-                        let propName1 = propInfo1.propNames.join('.')
-                        let propName2 = propInfo2.propNames.join('.')
+                        let propName1 = propInfo1.propName; //propInfo1.propNames.join('.')
+                        let propName2 = propInfo2.propName;//propInfo2.propNames.join('.')
                         if (propInfo1.editorType == propInfo2.editorType && propName1 == propName2) {
                             items.push(propInfo1)
                         }
@@ -98,9 +101,10 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         let editors: { group: string, prop: string, editor: React.ReactElement<any> }[] = []
         for (let i = 0; i < commonPropEditorInfos.length; i++) {
             let propEditorInfo = commonPropEditorInfos[i]
-            let propName = propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
-            let editorType = propEditorInfo.editorType
-            let propNames = propEditorInfo.propNames
+            let propNameParts = propEditorInfo.propName.split(".");
+            let propName = propNameParts[propNameParts.length - 1];//propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
+            let editorType = propEditorInfo.editorType;
+            let propNames = propNameParts; //propEditorInfo.propNames;
             let editor = React.createElement(editorType as any, {
                 value: commonFlatProps[propNames.join('.')],
                 onChange: (value) => {
@@ -156,11 +160,11 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         return <React.Fragment>
             {groupEditorsArray.map((g) =>
                 <div key={g.group} className="panel panel-default">
-                    {g.group ? <div className="panel-heading">{strings[g.group] || g.group}</div> : null}
+                    {g.group ? <div className="panel-heading">{proptDisplayNames[g.group] || g.group}</div> : null}
                     <div className="panel-body">
                         {g.editors.map((o, i) =>
                             <div key={o.prop} className="form-group">
-                                <label key={guid()}>{strings[o.prop] || o.prop}</label> {/* KEY 为 guid，强制更新 */}
+                                <label key={guid()}>{proptDisplayNames[o.prop] || o.prop}</label> {/* KEY 为 guid，强制更新 */}
                                 <div className="control">
                                     {o.editor}
                                 </div>

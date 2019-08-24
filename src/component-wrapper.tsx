@@ -129,11 +129,11 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
 
         if (!designer) throw Errors.argumentNull('designer')
         if (!element) throw Errors.argumentNull('element')
-        console.assert(element.id)
+        console.assert(element.id != "")
 
         handler = handler || element
         let componentId = element.id
-        console.assert(componentId)
+        console.assert(componentId != "")
         let startPos: JQuery.Coordinates
         let rect: { width?: number, height?: number, left?: number, top?: number };
         let dragStart: number
@@ -254,7 +254,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
         }
 
         let selectedControlIds = designer.selectedComponentIds
-        console.assert(elementID)
+        console.assert(elementID != "");
         if (selectedControlIds.indexOf(elementID) >= 0) {
             selectedControlIds = selectedControlIds.filter(o => o != elementID)
         }

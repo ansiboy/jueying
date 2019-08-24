@@ -6,8 +6,9 @@ export let constants = {
     componentPosition: "component-position"
 }
 
-export let strings: { [key: string]: string } = {
+export let proptDisplayNames: { [prop: string]: string } = {
 }
+
 
 export function guid() {
     function s4() {

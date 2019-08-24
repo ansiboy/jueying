@@ -5,7 +5,7 @@ import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
 import { appendClassName, removeClassName, classNames } from "./style";
-import { constants, guid } from "./common";
+import { constants, guid, proptDisplayNames } from "./common";
 import { ComponentPanel } from "./component-panel";
 
 /*******************************************************************************
@@ -44,8 +44,9 @@ export const DesignerContext = React.createContext<DesignerContextValue>({ desig
 export const ComponentWrapperContext = React.createContext<ComponentWrapper>(null);
 
 export interface PropEditorInfo {
-    propNames: string[],
-    editorType: PropEditorConstructor, group: string
+    // propNames: string[],
+    propName: string,
+    editorType: PropEditorConstructor, group: string,
 }
 
 export function component<T extends React.Component>(args?: ComponentAttribute) {
@@ -58,6 +59,18 @@ export function component<T extends React.Component>(args?: ComponentAttribute) 
         return constructor
     }
 }
+
+interface SetPropEditorOptions {
+    componentType: React.ComponentClass | string,
+    propName: string,
+    editorType: PropEditorConstructor,
+    group?: string,
+    display?: ComponentPropEditorDisplay,
+    displayName?: string,
+}
+
+/** 组件是否显示回调函数 */
+type ComponentPropEditorDisplay = (componentData: ComponentData) => boolean;
 
 export class Component {
 
@@ -108,43 +121,85 @@ export class Component {
         return Object.assign({ type }, Component.defaultComponentAttribute, attr || {})
     }
 
-    private static controlPropEditors: {
-        [controlClassName: string]: PropEditorInfo[]
-    } = {}
+    private static componentPropEditors: {
+        [controlClassName: string]: PropEditorInfo[] | null
+    } = {};
 
-    static getPropEditors(controlClassName: string): PropEditorInfo[] {
-        let classEditors = this.controlPropEditors[controlClassName] || []
-        return classEditors
+    private static componentPropEditorDisplay: {
+        [controlClassName: string]: ComponentPropEditorDisplay | null
+    } = {};
+
+
+    static getPropEditors(componentData: ComponentData): PropEditorInfo[] {
+        let componentType: string = componentData.type;
+        let result: PropEditorInfo[] = [];
+        let propEditorInfo = this.componentPropEditors[componentType] || [];
+        for (let i = 0; i < propEditorInfo.length; i++) {
+            let propName = propEditorInfo[i].propName;
+            let display = Component.componentPropEditorDisplay[`${componentType}.${propName}`];
+            if (display != null && display(componentData) == false)
+                continue;
+
+            result.push(propEditorInfo[i]);
+        }
+
+        return result;
+        // let classEditors = this.componentPropEditors[componentType] || []
+        // Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
+        // return classEditors
     }
 
     static getPropEditor<T, K extends keyof T, K1 extends keyof T[K]>(controlClassName: string, propName: K, propName1: K1): PropEditorInfo
     static getPropEditor<T, K extends keyof T>(controlClassName: string, propName: string): PropEditorInfo
-    static getPropEditor(controlClassName: string, ...propNames: string[]): PropEditorInfo {
-        return this.getPropEditorByArray(controlClassName, propNames)
+    static getPropEditor(controlClassName: string, propName: string): PropEditorInfo {
+        return this.getPropEditorByArray(controlClassName, propName)
     }
 
     /** 通过属性数组获取属性的编辑器 */
-    static getPropEditorByArray(controlClassName: string, propNames: string[]) {
-        let classEditors = this.controlPropEditors[controlClassName] || []
-        let editor = classEditors.filter(o => o.propNames.join('.') == propNames.join('.'))[0]
+    private static getPropEditorByArray(controlClassName: string, propNames: string) {
+        let classEditors = this.componentPropEditors[controlClassName] || []
+        let editor = classEditors.filter(o => o.propName == propNames)[0]
         return editor
     }
 
-    static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string, ): void {
-        group = group || ''
-        let propNames = (propName as string).split('.')
+    static setPropEditor(options: SetPropEditorOptions): void;
+    static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
+    static setPropEditor(componentTypeOrOptions: React.ComponentClass | string | SetPropEditorOptions, propName?: string, editorType?: PropEditorConstructor, group?: string): void {
+
+        let componentType: React.ComponentClass | string;
+        let editorDisplay: ComponentPropEditorDisplay;
+        if (typeof componentTypeOrOptions == "object") {
+            let options = componentTypeOrOptions as SetPropEditorOptions;
+            componentType = options.componentType;
+            propName = options.propName;
+            editorType = options.editorType;
+            group = options.group;
+            editorDisplay = options.display;
+            if (options.displayName != null) {
+                proptDisplayNames[propName] = options.displayName;
+            }
+        }
+        else {
+            componentType = componentTypeOrOptions;
+        }
+
+        group = group || '';
+
+        // 属性可能为导航属性,例如 style.width
+        let propNames = (propName as string).split('.');
 
         let className = typeof componentType == 'string' ? componentType : componentType.prototype.typename || componentType.name
-        let classProps = Component.controlPropEditors[className] = Component.controlPropEditors[className] || []
+        Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
+        let classProps = Component.componentPropEditors[className] = Component.componentPropEditors[className] || []
         for (let i = 0; i < classProps.length; i++) {
-            let propName1 = classProps[i].propNames.join('.')
+            let propName1 = classProps[i].propName; //classProps[i].propNames.join('.')
             let propName2 = propNames.join('.')
             if (propName1 == propName2) {
                 classProps[i].editorType = editorType
                 return
             }
         }
-        classProps.push({ propNames: propNames, editorType, group })
+        classProps.push({ propName, editorType, group })
     }
 
     /**
@@ -225,10 +280,10 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
     constructor(props: ComponentProps<MasterPage>) {
         super(props)
 
-        let children: React.ReactElement<ComponentProps<any>>[] = this.children(props)
+        let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
         this.state = { children }
     }
-    private children(props: ComponentProps<MasterPage>): React.ReactElement<ComponentProps<any>>[] {
+    private static children(props: ComponentProps<MasterPage>): React.ReactElement<ComponentProps<any>>[] {
         let arr = props.children == null ? [] :
             Array.isArray(props.children) ? props.children : [props.children];
 
@@ -242,10 +297,16 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
 
         return children
     }
-    componentWillReceiveProps(props: ComponentProps<MasterPage>) {
+
+    // componentWillReceiveProps(props: ComponentProps<MasterPage>) {
+    //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
+    //     this.setState({ children })
+    // }
+    static getDerivedStateFromProps(props: ComponentProps<MasterPage>) {
         let children: React.ReactElement<ComponentProps<any>>[] = this.children(props)
-        this.setState({ children })
+        return { children } as MasterPage["state"];
     }
+
     render() {
         let props = {} as any
         for (let key in this.props) {
@@ -325,7 +386,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
             let ctrl: ComponentData;
             if (event.dataTransfer)
                 ctrl = ComponentPanel.getComponentData(event.dataTransfer);
-                
+
             if (!ctrl)
                 return
 

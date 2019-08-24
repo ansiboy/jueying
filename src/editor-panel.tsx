@@ -19,7 +19,7 @@ interface EditorPanelProps {
     className?: string;
     style?: React.CSSProperties;
     empty?: string | JSX.Element;
-    designer?: PageDesigner
+    // designer?: PageDesigner
 }
 
 export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
@@ -38,8 +38,12 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
         }
     }
 
-    componentWillReceiveProps(props: EditorPanelProps) {
-        this.setState({ designer: props.designer })
+    // componentWillReceiveProps(props: EditorPanelProps) {
+    //     this.setState({})
+    // }
+
+    static getDerivedStateFromProps(props: EditorPanel): Partial<EditorPanelState> {
+        return {};
     }
 
     private getComponentData(designer: PageDesigner) {
@@ -91,7 +95,7 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
 
         let componentDatas: ComponentData[] = []
         let selectedComponentIds = []
-        let designer = this.state.designer
+        let designer = this.designer
         if (designer) {
             componentDatas = this.getComponentData(designer)
             selectedComponentIds = designer.selectedComponentIds || []

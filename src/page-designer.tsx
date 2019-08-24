@@ -41,7 +41,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     componentUpdated = Callback.create<ComponentData[]>()
 
     designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
-    private namedComponents: { [key: string]: ComponentData } = {}
+    // private namedComponents: { [key: string]: ComponentData } = {}
     private _root: React.ReactElement<any>
 
     static defaultProps: PageDesignerProps = { pageData: null, wrapDesignTimeElement: true };
@@ -49,20 +49,20 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     constructor(props: PageDesignerProps) {
         super(props);
 
-        this.initPageData(props.pageData)
+        PageDesigner.initPageData(props.pageData)
         this.state = { pageData: props.pageData };
         this.designtimeComponentDidMount.add((args) => {
             console.log(`this:designer event:controlComponentDidMount`)
         })
     }
 
-    initPageData(pageData: ComponentData) {
+    private static initPageData(pageData: ComponentData) {
         if (pageData == null) {
             return
         }
 
         pageData.children = pageData.children || []
-        this.nameComponent(pageData)
+        PageDesigner.nameComponent(pageData)
     }
 
     get root(): React.ReactElement<any> {
@@ -141,7 +141,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * 对组件及其子控件进行命名
      * @param component 
      */
-    private nameComponent(component: ComponentData) {
+    private static nameComponent(component: ComponentData) {
+        let namedComponents: { [key: string]: ComponentData } = {}
         let props = component.props = component.props || {};
         if (!props.name) {
             let num = 0;
@@ -149,9 +150,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             do {
                 num = num + 1;
                 name = `${component.type}${num}`;
-            } while (this.namedComponents[name]);
+            } while (namedComponents[name]);
 
-            this.namedComponents[name] = component
+            namedComponents[name] = component
             props.name = name;
         }
 
@@ -162,7 +163,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             return;
         }
         for (let i = 0; i < component.children.length; i++) {
-            this.nameComponent(component.children[i]);
+            PageDesigner.nameComponent(component.children[i]);
         }
     }
 
@@ -173,7 +174,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         // if(childComponentIndex!=null && childComponentIndex<0)
         // throw Errors.ar
 
-        this.nameComponent(childComponent)
+        PageDesigner.nameComponent(childComponent)
         let parentControl = this.findComponentData(parentId);
         if (parentControl == null)
             throw new Error('Parent is not exists')
@@ -413,9 +414,14 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         </ComponentWrapper>
     }
 
-    componentWillReceiveProps(props: PageDesignerProps) {
-        this.initPageData(props.pageData)
-        this.setState({ pageData: props.pageData });
+    // componentWillReceiveProps(props: PageDesignerProps) {
+    //     PageDesigner.initPageData(props.pageData)
+    //     this.setState({ pageData: props.pageData });
+    // }
+
+    static getDerivedStateFromProps(props: PageDesignerProps, state: any) {
+        PageDesigner.initPageData(props.pageData)
+        return { pageData: props.pageData } as Partial<PageDesignerProps>;
     }
 
     render() {
