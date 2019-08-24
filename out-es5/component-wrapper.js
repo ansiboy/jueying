@@ -245,9 +245,7 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
           var componentName = event.dataTransfer.getData(common_1.constants.componentData);
           if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
           console.log("dragover: left:".concat(event.layerX, " top:").concat(event.layerX));
-        }); // element.ondrop = (event) => {
-        // }
-
+        });
         element.addEventListener("drop", function (event) {
           event.preventDefault();
           event.stopPropagation();

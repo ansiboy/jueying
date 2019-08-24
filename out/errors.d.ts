@@ -7,7 +7,7 @@ export declare class Errors {
     static toolbarRequiredKey(): Error;
     static loadPluginFail(pluginId: string): Error;
     static idRequired(): Error;
-    static canntFindHost(componentId: string): Error;
+    static canntFindMasterPage(componentId: string): Error;
     static propCanntNull(componentName: string, property: string): Error;
     static argumentFieldCanntNull(fieldName: string, argumentName: string): Error;
 }

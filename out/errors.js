@@ -27,8 +27,8 @@ define(["require", "exports"], function (require, exports) {
         static idRequired() {
             return new Error(`Property id is required.`);
         }
-        static canntFindHost(componentId) {
-            return new Error(`Can not find host element for component container ${componentId}.`);
+        static canntFindMasterPage(componentId) {
+            return new Error(`Can not find master page for component container ${componentId}.`);
         }
         static propCanntNull(componentName, property) {
             let msg = `${componentName} property ${property} cannt be null or empty.`;

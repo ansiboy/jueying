@@ -7,6 +7,7 @@ define(["require", "exports", "./component-panel", "./editor-panel", "./page-des
     exports.Component = component_1.Component;
     exports.DesignerContext = component_1.DesignerContext;
     exports.MasterPage = component_1.MasterPage;
+    exports.MasterPageContext = component_1.MasterPageContext;
     exports.PropEditor = prop_editor_1.PropEditor;
     exports.TextInput = prop_editor_1.TextInput;
     exports.classNames = style_1.classNames;

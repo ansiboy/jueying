@@ -10732,9 +10732,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           var componentName = event.dataTransfer.getData(common_1.constants.componentData);
           if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
           console.log("dragover: left:".concat(event.layerX, " top:").concat(event.layerX));
-        }); // element.ondrop = (event) => {
-        // }
-
+        });
         element.addEventListener("drop", function (event) {
           event.preventDefault();
           event.stopPropagation();
@@ -11221,8 +11219,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
   Component.componentTypes = {};
   exports.Component = Component;
   exports.MasterPageName = 'MasterPage';
-  var MasterPageContext = React.createContext({
-    form: null
+  exports.MasterPageContext = React.createContext({
+    master: null
   });
 
   var MasterPage =
@@ -11259,9 +11257,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         var children = this.state.children.filter(function (o) {
           return o.props.parent_id == null;
         });
-        return React.createElement(MasterPageContext.Provider, {
+        return React.createElement(exports.MasterPageContext.Provider, {
           value: {
-            form: this
+            master: this
           }
         }, children);
       }
@@ -11283,7 +11281,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     }, {
       key: "getDerivedStateFromProps",
       value: function getDerivedStateFromProps(props) {
-        var children = this.children(props);
+        var children = MasterPage.children(props);
         return {
           children: children
         };
@@ -11326,7 +11324,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
     _createClass(PlaceHolder, [{
       key: "enableAppendDroppable",
-      value: function enableAppendDroppable(element, host) {
+      value: function enableAppendDroppable(element, master) {
         var _this3 = this;
 
         if (element.getAttribute('enable-append-droppable')) return;
@@ -11361,9 +11359,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           console.assert(_this3.props.id != null);
           console.assert(_this3.designer != null);
           ctrl.props.parent_id = _this3.props.id;
-          console.assert(host != null, 'host is null');
+          console.assert(master != null, 'host is null');
 
-          _this3.designer.appendComponent(host.props.id, ctrl);
+          _this3.designer.appendComponent(master.props.id, ctrl);
         };
       }
     }, {
@@ -11401,18 +11399,18 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           key: common_1.guid(),
           className: "empty"
         }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
-        return React.createElement(MasterPageContext.Consumer, null, function (args) {
-          var host = args.form;
-          if (host == null) throw errors_1.Errors.canntFindHost(_this5.props.id);
+        return React.createElement(exports.MasterPageContext.Consumer, null, function (args) {
+          var master = args.master;
+          if (master == null) throw errors_1.Errors.canntFindMasterPage(_this5.props.id);
           var children = [];
 
-          if (host.props && host.props.children) {
+          if (master.props && master.props.children) {
             var arr;
 
-            if (Array.isArray(host.props.children)) {
-              arr = host.props.children;
+            if (Array.isArray(master.props.children)) {
+              arr = master.props.children;
             } else {
-              arr = [host.props.children];
+              arr = [master.props.children];
             }
 
             children = arr.filter(function (o) {
@@ -11440,9 +11438,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
                     if (!e) return;
                     _this5.element = e;
 
-                    _this5.enableAppendDroppable(e, host);
+                    _this5.enableAppendDroppable(e, master);
 
-                    _this5.enableMoveDroppable(e, host);
+                    _this5.enableMoveDroppable(e, master);
                   }
                 }, element);
               }
@@ -11728,9 +11726,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         return new Error("Property id is required.");
       }
     }, {
-      key: "canntFindHost",
-      value: function canntFindHost(componentId) {
-        return new Error("Can not find host element for component container ".concat(componentId, "."));
+      key: "canntFindMasterPage",
+      value: function canntFindMasterPage(componentId) {
+        return new Error("Can not find master page for component container ".concat(componentId, "."));
       }
     }, {
       key: "propCanntNull",
@@ -11779,6 +11777,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
   exports.Component = component_1.Component;
   exports.DesignerContext = component_1.DesignerContext;
   exports.MasterPage = component_1.MasterPage;
+  exports.MasterPageContext = component_1.MasterPageContext;
   exports.PropEditor = prop_editor_1.PropEditor;
   exports.TextInput = prop_editor_1.TextInput;
   exports.classNames = style_1.classNames;

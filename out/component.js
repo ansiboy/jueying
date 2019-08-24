@@ -168,7 +168,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
     Component.componentTypes = {};
     exports.Component = Component;
     exports.MasterPageName = 'MasterPage';
-    const MasterPageContext = React.createContext({ form: null });
+    exports.MasterPageContext = React.createContext({ master: null });
     class MasterPage extends React.Component {
         constructor(props) {
             super(props);
@@ -191,7 +191,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
         //     this.setState({ children })
         // }
         static getDerivedStateFromProps(props) {
-            let children = this.children(props);
+            let children = MasterPage.children(props);
             return { children };
         }
         render() {
@@ -203,7 +203,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
             }
             props.style = Object.assign({ minHeight: 40 }, props.style);
             let children = this.state.children.filter(o => o.props.parent_id == null);
-            return React.createElement(MasterPageContext.Provider, { value: { form: this } }, children);
+            return React.createElement(exports.MasterPageContext.Provider, { value: { master: this } }, children);
         }
     }
     exports.MasterPage = MasterPage;
@@ -221,7 +221,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
         /**
          * 启用拖放操作，以便通过拖放图标添加控件
          */
-        enableAppendDroppable(element, host) {
+        enableAppendDroppable(element, master) {
             if (element.getAttribute('enable-append-droppable'))
                 return;
             element.setAttribute('enable-append-droppable', 'true');
@@ -257,8 +257,8 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
                 console.assert(this.props.id != null);
                 console.assert(this.designer != null);
                 ctrl.props.parent_id = this.props.id;
-                console.assert(host != null, 'host is null');
-                this.designer.appendComponent(host.props.id, ctrl);
+                console.assert(master != null, 'host is null');
+                this.designer.appendComponent(master.props.id, ctrl);
             };
         }
         enableMoveDroppable(element, host) {
@@ -288,18 +288,18 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
         }
         render() {
             let empty = this.props.empty || React.createElement("div", { key: common_1.guid(), className: "empty" }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
-            return React.createElement(MasterPageContext.Consumer, null, (args) => {
-                let host = args.form;
-                if (host == null)
-                    throw errors_1.Errors.canntFindHost(this.props.id);
+            return React.createElement(exports.MasterPageContext.Consumer, null, (args) => {
+                let master = args.master;
+                if (master == null)
+                    throw errors_1.Errors.canntFindMasterPage(this.props.id);
                 let children = [];
-                if (host.props && host.props.children) {
+                if (master.props && master.props.children) {
                     let arr;
-                    if (Array.isArray(host.props.children)) {
-                        arr = host.props.children;
+                    if (Array.isArray(master.props.children)) {
+                        arr = master.props.children;
                     }
                     else {
-                        arr = [host.props.children];
+                        arr = [master.props.children];
                     }
                     children = arr.filter((o) => o.props.parent_id != null && o.props.parent_id == this.props.id);
                 }
@@ -318,8 +318,8 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
                                 if (!e)
                                     return;
                                 this.element = e;
-                                this.enableAppendDroppable(e, host);
-                                this.enableMoveDroppable(e, host);
+                                this.enableAppendDroppable(e, master);
+                                this.enableMoveDroppable(e, master);
                             } }, element);
                     }
                     return element;

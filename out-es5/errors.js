@@ -62,9 +62,9 @@ define(["require", "exports"], function (require, exports) {
         return new Error("Property id is required.");
       }
     }, {
-      key: "canntFindHost",
-      value: function canntFindHost(componentId) {
-        return new Error("Can not find host element for component container ".concat(componentId, "."));
+      key: "canntFindMasterPage",
+      value: function canntFindMasterPage(componentId) {
+        return new Error("Can not find master page for component container ".concat(componentId, "."));
       }
     }, {
       key: "propCanntNull",

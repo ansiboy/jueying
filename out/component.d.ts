@@ -83,6 +83,10 @@ export declare class Component {
     static register(componentName: string, componentType: React.ComponentClass<any>, attr?: ComponentAttribute): void;
 }
 export declare const MasterPageName = "MasterPage";
+declare type MasterPageContextValue = {
+    master: MasterPage | null;
+};
+export declare const MasterPageContext: React.Context<MasterPageContextValue>;
 export declare class MasterPage extends React.Component<ComponentProps<MasterPage>, {
     children: React.ReactElement<ComponentProps<MasterPage>>[];
 }> {
@@ -103,7 +107,7 @@ export declare class PlaceHolder extends React.Component<{
     private element;
     constructor(props: any);
     private designer;
-    wraper: ComponentWrapper;
+    private wraper;
     /**
      * 启用拖放操作，以便通过拖放图标添加控件
      */
