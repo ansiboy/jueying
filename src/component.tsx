@@ -273,8 +273,8 @@ export class Component {
 
 
 export const MasterPageName = 'MasterPage'
-type MasterPageContextValue = { form: MasterPage | null };
-const MasterPageContext = React.createContext<MasterPageContextValue>({ form: null });
+type MasterPageContextValue = { master: MasterPage | null };
+export const MasterPageContext = React.createContext<MasterPageContextValue>({ master: null });
 
 export class MasterPage extends React.Component<ComponentProps<MasterPage>, { children: React.ReactElement<ComponentProps<MasterPage>>[] }> {
     constructor(props: ComponentProps<MasterPage>) {
@@ -303,7 +303,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
     //     this.setState({ children })
     // }
     static getDerivedStateFromProps(props: ComponentProps<MasterPage>) {
-        let children: React.ReactElement<ComponentProps<any>>[] = this.children(props)
+        let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
         return { children } as MasterPage["state"];
     }
 
@@ -318,7 +318,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
 
         props.style = Object.assign({ minHeight: 40 }, props.style)
         let children = this.state.children.filter(o => o.props.parent_id == null);
-        return <MasterPageContext.Provider value={{ form: this }}>
+        return <MasterPageContext.Provider value={{ master: this }}>
             {children}
         </MasterPageContext.Provider>
     }
@@ -340,13 +340,12 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
     }
 
     private designer: PageDesigner;
-    // private host: MasterPage;
-    wraper: ComponentWrapper;
+    private wraper: ComponentWrapper;
 
     /**
      * 启用拖放操作，以便通过拖放图标添加控件
      */
-    private enableAppendDroppable(element: HTMLElement, host: MasterPage) {
+    private enableAppendDroppable(element: HTMLElement, master: MasterPage) {
         if (element.getAttribute('enable-append-droppable'))
             return
 
@@ -393,8 +392,8 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
             console.assert(this.props.id != null);
             console.assert(this.designer != null);
             ctrl.props.parent_id = this.props.id;
-            console.assert(host != null, 'host is null')
-            this.designer.appendComponent(host.props.id, ctrl)
+            console.assert(master != null, 'host is null')
+            this.designer.appendComponent(master.props.id, ctrl)
         }
     }
     private enableMoveDroppable(element: HTMLElement, host: MasterPage) {
@@ -432,17 +431,17 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
         let empty = this.props.empty || <div key={guid()} className="empty">可以拖拉控件到这里</div>
         return <MasterPageContext.Consumer>
             {(args) => {
-                let host = args.form
-                if (host == null) throw Errors.canntFindHost(this.props.id)
+                let master = args.master
+                if (master == null) throw Errors.canntFindMasterPage(this.props.id)
 
                 let children: (typeof empty)[] = []
-                if (host.props && host.props.children) {
+                if (master.props && master.props.children) {
                     let arr: React.ReactElement<ComponentProps<any>>[]
-                    if (Array.isArray(host.props.children)) {
-                        arr = host.props.children as any
+                    if (Array.isArray(master.props.children)) {
+                        arr = master.props.children as any
                     }
                     else {
-                        arr = [host.props.children as any]
+                        arr = [master.props.children as any]
                     }
                     children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parent_id != null && o.props.parent_id == this.props.id)
                 }
@@ -469,8 +468,8 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                                     ref={e => {
                                         if (!e) return
                                         this.element = e;
-                                        this.enableAppendDroppable(e, host)
-                                        this.enableMoveDroppable(e, host)
+                                        this.enableAppendDroppable(e, master)
+                                        this.enableMoveDroppable(e, master)
                                     }}>
                                     {element}
                                 </div>

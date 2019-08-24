@@ -24,8 +24,8 @@ export class Errors {
     static idRequired() {
         return new Error(`Property id is required.`)
     }
-    static canntFindHost(componentId: string) {
-        return new Error(`Can not find host element for component container ${componentId}.`)
+    static canntFindMasterPage(componentId: string) {
+        return new Error(`Can not find master page for component container ${componentId}.`)
     }
     static propCanntNull(componentName: string, property: string) {
         let msg = `${componentName} property ${property} cannt be null or empty.`

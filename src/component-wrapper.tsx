@@ -9,13 +9,6 @@ import { ComponentPanel } from "./component-panel";
 import { classNames, appendClassName } from "./style";
 import { MasterPage, ComponentWrapperContext } from "./component";
 
-// import { PageDesigner } from "./page-designer";
-// import { ComponentProps, ComponentWrapperContext, ContainerHost } from "./component";
-// import * as React from "react";
-// import { constants } from "./comon";
-// import { ComponentPanel } from "./component-toolbar";
-// import { classNames, appendClassName } from "./style";
-
 type ComponentWrapperProps = {
     designer: PageDesigner,
     source: {
@@ -86,9 +79,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
 
             console.log(`dragover: left:${event.layerX} top:${event.layerX}`)
         })
-        // element.ondrop = (event) => {
 
-        // }
         element.addEventListener("drop", function (event) {
             event.preventDefault()
             event.stopPropagation()
