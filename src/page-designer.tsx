@@ -94,24 +94,32 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return arr
     }
 
-    updateControlProps(controlId: string, navPropsNames: string[], value: any): any {
-        let componentData = this.findComponentData(controlId);
-        if (componentData == null)
-            return
+    updateControlProp(...componentProps: { componentId: string, propName: string, value: any }[] ): any {
+        let componentDatas: ComponentData[] = [];
+        for (let i = 0; i < componentProps.length; i++) {
+            let { componentId, propName, value } = componentProps[i];
 
-        console.assert(componentData != null);
-        console.assert(navPropsNames != null, 'props is null');
+            let componentData = this.findComponentData(componentId);
+            if (componentData == null)
+                continue;
 
-        componentData.props = componentData.props || {};
+            let navPropsNames: string[] = propName.split(".");
+            console.assert(componentData != null);
+            console.assert(navPropsNames != null, 'props is null');
 
-        let obj = componentData.props
-        for (let i = 0; i < navPropsNames.length - 1; i++) {
-            obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
+            componentData.props = componentData.props || {};
+
+            let obj = componentData.props
+            for (let i = 0; i < navPropsNames.length - 1; i++) {
+                obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
+            }
+
+            obj[navPropsNames[navPropsNames.length - 1]] = value;
+            componentDatas.push(componentData);
         }
 
-        obj[navPropsNames[navPropsNames.length - 1]] = value
         this.setState(this.state);
-        this.componentUpdated.fire([componentData])
+        this.componentUpdated.fire(componentDatas);
     }
 
     private sortChildren(parentId: string, childIds: string[]) {

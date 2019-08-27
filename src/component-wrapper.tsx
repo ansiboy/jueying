@@ -265,8 +265,6 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
     }
 
     render() {
-        console.assert(!Array.isArray(this.props.children))
-
         let attr = this.props.source.attr
         let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
         if (!shouldWrapper) {

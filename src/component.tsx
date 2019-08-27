@@ -35,7 +35,7 @@ export interface ComponentProps<T> extends React.Props<T> {
     style?: React.CSSProperties,
     selected?: boolean,
     text?: string,
-    parent_id?: string;
+    parentId?: string;
     attr?: ComponentAttribute
 }
 
@@ -221,6 +221,10 @@ export class Component {
 
             let children: (React.ReactElement<any> | string)[] = componentData.children ? componentData.children.map(o => Component.createElement(o, h)) : [];
             let props: ComponentProps<any> = componentData.props == null ? {} : JSON.parse(JSON.stringify(componentData.props));
+            if (controlType != null && controlType["defaultProps"]) {
+                props = Object.assign({}, controlType["defaultProps"], props);
+            }
+
             let result: JSX.Element
 
 
@@ -317,7 +321,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
         }
 
         props.style = Object.assign({ minHeight: 40 }, props.style)
-        let children = this.state.children.filter(o => o.props.parent_id == null);
+        let children = this.state.children.filter(o => o.props.parentId == null);
         return <MasterPageContext.Provider value={{ master: this }}>
             {children}
         </MasterPageContext.Provider>
@@ -391,7 +395,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
 
             console.assert(this.props.id != null);
             console.assert(this.designer != null);
-            ctrl.props.parent_id = this.props.id;
+            ctrl.props.parentId = this.props.id;
             console.assert(master != null, 'host is null')
             this.designer.appendComponent(master.props.id, ctrl)
         }
@@ -416,9 +420,11 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                 let componentData = this.designer.findComponentData(dd.sourceElement.id)
                 console.assert(componentData != null)
 
-                let propName: keyof ComponentProps<any> = 'parent_id'
+                let propName: keyof ComponentProps<any> = 'parentId'
                 this.designer.moveComponent(dd.sourceElement.id, host.props.id)
-                this.designer.updateControlProps(dd.sourceElement.id, [propName], this.props.id)
+                this.designer.updateControlProp({
+                    componentId: "string", propName: "string", value: "any"
+                })//dd.sourceElement.id, propName, this.props.id
             })
             .drop('end', (event, dd: ComponentWrapperDrapData) => {
                 if (dd.sourceElement.id == this.wraper.props.source.props.id)
@@ -443,7 +449,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                     else {
                         arr = [master.props.children as any]
                     }
-                    children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parent_id != null && o.props.parent_id == this.props.id)
+                    children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parentId != null && o.props.parentId == this.props.id)
                 }
 
 

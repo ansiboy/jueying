@@ -19,7 +19,6 @@ interface EditorPanelProps {
     className?: string;
     style?: React.CSSProperties;
     empty?: string | JSX.Element;
-    // designer?: PageDesigner
 }
 
 export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
@@ -31,35 +30,13 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
 
     constructor(props) {
         super(props);
-        this.state = { componentDatas: [] };
+        this.state = { componentDatas: [], designer: null };
         this.designerComponentChanged = () => {
             console.assert(this.designer != null)
             this.setState({ designer: this.designer })
         }
     }
 
-    // componentWillReceiveProps(props: EditorPanelProps) {
-    //     this.setState({})
-    // }
-
-    static getDerivedStateFromProps(props: EditorPanel): Partial<EditorPanelState> {
-        return {};
-    }
-
-    private getComponentData(designer: PageDesigner) {
-        let componentDatas = []
-        let stack = new Array<ComponentData>()
-        stack.push(designer.pageData)
-        while (stack.length > 0) {
-            let item = stack.pop()
-            componentDatas.push(item)
-            let children = item.children || []
-            for (let i = 0; i < children.length; i++) {
-                stack.push(children[i])
-            }
-        }
-        return componentDatas
-    }
     get designer() {
         return this._designer;
     }
@@ -79,29 +56,16 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
             value.componentSelected.add(this.designerComponentChanged)
         }
 
-        this._designer = value
+        this._designer = value;
+        this.setState({ designer: value });
     }
 
-    // private designerComponentChanged(sender, ) {
-
-    // }
-
-    componentDidMount() {
-
-    }
     render() {
         let { empty } = this.props;
         empty = empty || <div className="empty">暂无可用的属性</div>;
-
-        let componentDatas: ComponentData[] = []
-        let selectedComponentIds = []
-        let designer = this.designer
-        if (designer) {
-            componentDatas = this.getComponentData(designer)
-            selectedComponentIds = designer.selectedComponentIds || []
-        }
-
-        return <div className={`${classNames.editorPanel} ${this.props.className || ""}`} ref={(e: HTMLElement) => this.element = e || this.element}>
+        let { designer } = this.state;
+        return <div className={`${classNames.editorPanel} ${this.props.className || ""}`}
+            ref={(e: HTMLElement) => this.element = e || this.element}>
             {/* <select className="form-control"
                     ref={e => {
                         if (!e) return

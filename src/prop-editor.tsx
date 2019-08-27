@@ -1,28 +1,23 @@
 import * as React from "react";
+import { ComponentData } from "models";
 
 export interface PropEditorConstructor {
     new(props: PropEditorProps<any>)
 }
-interface PropEditorProps<T> {
+export interface PropEditorProps<T> {
     value: T,
-    onChange: (value: T) => void
+    updateComponentProp: (value: T) => void,
+
+    /** 该编辑器所编辑的控件 */
+    editComponents: ComponentData[],
 }
-interface PropEditorState<T> {
-    value: T
+export interface PropEditorState<T> {
+    // value: T
 }
-export abstract class PropEditor<S extends PropEditorState<T>, T> extends React.Component<PropEditorProps<T>, S> {
+export abstract class PropEditor<S, T> extends React.Component<PropEditorProps<T>, S> {
     constructor(props: PropEditorProps<T>) {
         super(props)
 
-        this.state = { value: props.value } as PropEditorState<T> as any
-    }
-
-    // componentWillReceiveProps(props: PropEditorProps<T>) {
-    //     this.setState({ value: props.value } as any)
-    // }
-
-    static getDerivedStateFromProps(props: PropEditorProps<any>, state: any) {
-        return { value: props.value } as Partial<PropEditorProps<any>>;
     }
 
     static dropdown<T extends DropDownValue>(items: Promise<DropDownItem[]>, valueType: "string" | "number"): React.ComponentClass
@@ -39,11 +34,11 @@ export abstract class PropEditor<S extends PropEditorState<T>, T> extends React.
 
 export class TextInput extends PropEditor<PropEditorState<string>, string> {
     render() {
-        let { value } = this.state
+        let { value } = this.props
         return <input className='form-control' value={value as any || ''}
             onChange={e => {
-                this.setState({ value: e.target.value })
-                this.props.onChange(e.target.value)
+                // this.setState({ value: e.target.value })
+                this.props.updateComponentProp(e.target.value)
             }} />
     }
 }
@@ -77,9 +72,11 @@ function dropdown(items: any, valueType?: "string" | "number") {
         itemsPromise = items;
     }
 
-    class Dropdown extends PropEditor<{ value: DropDownValue, items?: DropDownItem[] }, DropDownValue>{
+    class Dropdown extends PropEditor<{ items?: DropDownItem[] }, DropDownValue>{
         constructor(props) {
             super(props);
+
+            this.state = {};
         }
         async componentDidMount() {
             if (itemsPromise) {
@@ -88,7 +85,8 @@ function dropdown(items: any, valueType?: "string" | "number") {
             }
         }
         render() {
-            let { value, items } = this.state;
+            let { items } = this.state;
+            let { value } = this.props;
             items = items || textValues;
 
             return <select className='form-control' value={value == null ? "" : value}
@@ -108,8 +106,7 @@ function dropdown(items: any, valueType?: "string" | "number") {
                         value = textValue;
                     }
 
-                    this.setState({ value })
-                    this.props.onChange(value)
+                    this.props.updateComponentProp(value)
                 }}>
                 {items.map(o => <option key={o.value} value={o.value}>{o.text}</option>)}
             </select >
