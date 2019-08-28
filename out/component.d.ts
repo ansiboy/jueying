@@ -24,7 +24,7 @@ export interface ComponentProps<T> extends React.Props<T> {
     style?: React.CSSProperties;
     selected?: boolean;
     text?: string;
-    parent_id?: string;
+    parentId?: string;
     attr?: ComponentAttribute;
 }
 declare type DesignerContextValue = {
@@ -74,11 +74,12 @@ export declare class Component {
     private static getPropEditorByArray;
     static setPropEditor(options: SetPropEditorOptions): void;
     static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
+    static createElement(componentData: ComponentData, h?: ReactFactory): React.ReactElement<any> | null;
     /**
      * 将持久化的元素数据转换为 ReactElement
      * @param componentData 元素数据
      */
-    static createElement(componentData: ComponentData, h?: ReactFactory): React.ReactElement<any> | null;
+    private static _createElement;
     private static componentTypes;
     static register(componentName: string, componentType: React.ComponentClass<any>, attr?: ComponentAttribute): void;
 }
@@ -90,6 +91,9 @@ export declare const MasterPageContext: React.Context<MasterPageContextValue>;
 export declare class MasterPage extends React.Component<ComponentProps<MasterPage>, {
     children: React.ReactElement<ComponentProps<MasterPage>>[];
 }> {
+    childComponents: {
+        [key: string]: React.Component[];
+    };
     constructor(props: ComponentProps<MasterPage>);
     private static children;
     static getDerivedStateFromProps(props: ComponentProps<MasterPage>): Readonly<{

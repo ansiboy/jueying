@@ -8,6 +8,9 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
      * 2. 组件的拖放
      */
     class ComponentWrapper extends React.Component {
+        constructor(props) {
+            super(props);
+        }
         designtimeBehavior(element, attr) {
             if (!element)
                 throw errors_1.Errors.argumentNull('element');
@@ -205,7 +208,6 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
             this.designtimeBehavior(this.element, attr);
         }
         render() {
-            console.assert(!Array.isArray(this.props.children));
             let attr = this.props.source.attr;
             let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage);
             if (!shouldWrapper) {
@@ -234,6 +236,8 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
                 if (wrapperProps.style.height && wrapperProps.style.height != 'unset')
                     props.style.height = '100%';
             }
+            // source.props.ref = function (e) {
+            // };
             return React.createElement(component_1.ComponentWrapperContext.Provider, { value: this },
                 React.createElement("div", Object.assign({}, wrapperProps),
                     move_handle,
@@ -251,7 +255,10 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
         }
         renderWidthoutWrapper() {
             let { type, props, children } = this.props.source;
+            let ref = props.ref;
             props.ref = (e) => {
+                if (typeof ref == "function")
+                    ref(e);
                 if (!e)
                     return;
                 if (e.tagName) {

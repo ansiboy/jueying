@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.1.4
+ *  maishu-jueying v1.2.0
  *  https://github.com/ansiboy/jueying
  *  
  *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
@@ -10531,10 +10531,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
   function (_React$Component) {
     _inherits(ComponentWrapper, _React$Component);
 
-    function ComponentWrapper() {
+    function ComponentWrapper(props) {
       _classCallCheck(this, ComponentWrapper);
 
-      return _possibleConstructorReturn(this, _getPrototypeOf(ComponentWrapper).apply(this, arguments));
+      return _possibleConstructorReturn(this, _getPrototypeOf(ComponentWrapper).call(this, props));
     }
 
     _createClass(ComponentWrapper, [{
@@ -10585,7 +10585,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       value: function render() {
         var _this = this;
 
-        console.assert(!Array.isArray(this.props.children));
         var attr = this.props.source.attr;
         var shouldWrapper = attr.resize || typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage;
 
@@ -10637,7 +10636,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           delete props.style.position;
           if (wrapperProps.style.width && wrapperProps.style.width != 'unset') props.style.width = '100%';
           if (wrapperProps.style.height && wrapperProps.style.height != 'unset') props.style.height = '100%';
-        }
+        } // source.props.ref = function (e) {
+        // };
+
 
         return React.createElement(component_1.ComponentWrapperContext.Provider, {
           value: this
@@ -10668,8 +10669,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
             type = _this$props$source.type,
             props = _this$props$source.props,
             children = _this$props$source.children;
+        var ref = props.ref;
 
         props.ref = function (e) {
+          if (typeof ref == "function") ref(e);
           if (!e) return;
 
           if (e.tagName) {
@@ -11084,14 +11087,22 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           group: group
         });
       }
+    }, {
+      key: "createElement",
+      value: function createElement(componentData, h) {
+        return Component._createElement(componentData, {
+          components: [],
+          componentTypes: []
+        }, h);
+      }
       /**
        * 将持久化的元素数据转换为 ReactElement
        * @param componentData 元素数据
        */
 
     }, {
-      key: "createElement",
-      value: function createElement(componentData, h) {
+      key: "_createElement",
+      value: function _createElement(componentData, context, h) {
         if (!componentData) throw errors_1.Errors.argumentNull('componentData');
         h = h || React.createElement;
 
@@ -11105,9 +11116,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           }
 
           var children = componentData.children ? componentData.children.map(function (o) {
-            return Component.createElement(o, h);
+            return Component._createElement(o, context, h);
           }) : [];
-          var props = componentData.props == null ? {} : JSON.parse(JSON.stringify(componentData.props));
+          var props = componentData.props == null ? {} : Object.assign({}, componentData.props); //JSON.parse(JSON.stringify(componentData.props));
+
+          if (controlType != null && controlType["defaultProps"]) {
+            props = Object.assign({}, controlType["defaultProps"], props);
+          }
+
           var result;
 
           if (typeof type == 'string') {
@@ -11125,7 +11141,27 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           }
 
+          var masterPage;
           type = type == Component.Fragment ? React.Fragment : type;
+          var ref = props.ref;
+
+          props.ref = function (e) {
+            if (typeof ref == "function") ref(e);
+
+            if (e instanceof MasterPage) {
+              masterPage = e;
+
+              for (var i = 0; i < context.componentTypes.length; i++) {
+                var typeName = context.componentTypes[i];
+                var childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
+                childComponents.push(context.components[i]);
+              }
+            } else {
+              context.components.push(e);
+              context.componentTypes.push(typeof type == "string" ? type : type.name);
+            }
+          };
+
           result = h.apply(void 0, [type, props].concat(_toConsumableArray(children)));
           return result;
         } catch (e) {
@@ -11234,6 +11270,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _classCallCheck(this, MasterPage);
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(MasterPage).call(this, props));
+      _this.childComponents = {};
       var children = MasterPage.children(props);
       _this.state = {
         children: children
@@ -11255,7 +11292,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           minHeight: 40
         }, props.style);
         var children = this.state.children.filter(function (o) {
-          return o.props.parent_id == null;
+          return o.props.parentId == null;
         });
         return React.createElement(exports.MasterPageContext.Provider, {
           value: {
@@ -11358,7 +11395,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           if (!ctrl) return;
           console.assert(_this3.props.id != null);
           console.assert(_this3.designer != null);
-          ctrl.props.parent_id = _this3.props.id;
+          ctrl.props.parentId = _this3.props.id;
           console.assert(master != null, 'host is null');
 
           _this3.designer.appendComponent(master.props.id, ctrl);
@@ -11380,11 +11417,16 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           var componentData = _this4.designer.findComponentData(dd.sourceElement.id);
 
           console.assert(componentData != null);
-          var propName = 'parent_id';
+          var propName = 'parentId';
 
           _this4.designer.moveComponent(dd.sourceElement.id, host.props.id);
 
-          _this4.designer.updateControlProps(dd.sourceElement.id, [propName], _this4.props.id);
+          _this4.designer.updateControlProp({
+            componentId: "string",
+            propName: "string",
+            value: "any"
+          }); //dd.sourceElement.id, propName, this.props.id
+
         }).drop('end', function (event, dd) {
           if (dd.sourceElement.id == _this4.wraper.props.source.props.id) return;
           style_1.removeClassName(element, 'active');
@@ -11414,7 +11456,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             }
 
             children = arr.filter(function (o) {
-              return o.props.parent_id != null && o.props.parent_id == _this5.props.id;
+              return o.props.parentId != null && o.props.parentId == _this5.props.id;
             });
           }
 
@@ -11539,7 +11581,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(EditorPanel).call(this, props));
       _this.state = {
-        componentDatas: []
+        componentDatas: [],
+        designer: null
       };
 
       _this.designerComponentChanged = function () {
@@ -11551,36 +11594,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       };
 
       return _this;
-    } // componentWillReceiveProps(props: EditorPanelProps) {
-    //     this.setState({})
-    // }
-
+    }
 
     _createClass(EditorPanel, [{
-      key: "getComponentData",
-      value: function getComponentData(designer) {
-        var componentDatas = [];
-        var stack = new Array();
-        stack.push(designer.pageData);
-
-        while (stack.length > 0) {
-          var item = stack.pop();
-          componentDatas.push(item);
-          var children = item.children || [];
-
-          for (var i = 0; i < children.length; i++) {
-            stack.push(children[i]);
-          }
-        }
-
-        return componentDatas;
-      }
-    }, {
-      key: "componentDidMount",
-      // private designerComponentChanged(sender, ) {
-      // }
-      value: function componentDidMount() {}
-    }, {
       key: "render",
       value: function render() {
         var _this2 = this;
@@ -11589,15 +11605,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         empty = empty || React.createElement("div", {
           className: "empty"
         }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
-        var componentDatas = [];
-        var selectedComponentIds = [];
-        var designer = this.designer;
-
-        if (designer) {
-          componentDatas = this.getComponentData(designer);
-          selectedComponentIds = designer.selectedComponentIds || [];
-        }
-
+        var designer = this.state.designer;
         return React.createElement("div", {
           className: "".concat(style_1.classNames.editorPanel, " ").concat(this.props.className || ""),
           ref: function ref(e) {
@@ -11635,11 +11643,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         }
 
         this._designer = value;
-      }
-    }], [{
-      key: "getDerivedStateFromProps",
-      value: function getDerivedStateFromProps(props) {
-        return {};
+        this.setState({
+          designer: value
+        });
       }
     }]);
 
@@ -11899,22 +11905,34 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
     }
 
     _createClass(PageDesigner, [{
-      key: "updateControlProps",
-      value: function updateControlProps(controlId, navPropsNames, value) {
-        var componentData = this.findComponentData(controlId);
-        if (componentData == null) return;
-        console.assert(componentData != null);
-        console.assert(navPropsNames != null, 'props is null');
-        componentData.props = componentData.props || {};
-        var obj = componentData.props;
+      key: "updateControlProp",
+      value: function updateControlProp() {
+        var componentDatas = [];
 
-        for (var i = 0; i < navPropsNames.length - 1; i++) {
-          obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
+        for (var i = 0; i < arguments.length; i++) {
+          var _ref = i < 0 || arguments.length <= i ? undefined : arguments[i],
+              componentId = _ref.componentId,
+              propName = _ref.propName,
+              value = _ref.value;
+
+          var componentData = this.findComponentData(componentId);
+          if (componentData == null) continue;
+          var navPropsNames = propName.split(".");
+          console.assert(componentData != null);
+          console.assert(navPropsNames != null, 'props is null');
+          componentData.props = componentData.props || {};
+          var obj = componentData.props;
+
+          for (var _i = 0; _i < navPropsNames.length - 1; _i++) {
+            obj = obj[navPropsNames[_i]] = obj[navPropsNames[_i]] || {};
+          }
+
+          obj[navPropsNames[navPropsNames.length - 1]] = value;
+          componentDatas.push(componentData);
         }
 
-        obj[navPropsNames[navPropsNames.length - 1]] = value;
         this.setState(this.state);
-        this.componentUpdated.fire([componentData]);
+        this.componentUpdated.fire(componentDatas);
       }
     }, {
       key: "sortChildren",
@@ -12117,8 +12135,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         }
 
         if (controlIndex == null) {
-          for (var _i = 0; _i < collection.length; _i++) {
-            var o = collection[_i];
+          for (var _i2 = 0; _i2 < collection.length; _i2++) {
+            var o = collection[_i2];
 
             if (o.children && o.children.length > 0) {
               var isRemoved = this.removeComponentFrom(controlId, o.children);
@@ -12189,14 +12207,16 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         delete props.attr; //===================================================
 
         var className = props.selected ? style_1.appendClassName(props.className || '', style_1.classNames.componentSelected) : props.className;
+        var wrapperProps = Object.assign({}, props);
+        delete wrapperProps.ref;
+        wrapperProps.className = className; // let sourceProps = Object.assign({}, props);
+        // delete sourceProps.attr;
 
         for (var _len2 = arguments.length, children = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
           children[_key2 - 2] = arguments[_key2];
         }
 
-        return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, Object.assign({}, props, {
-          className: className
-        }), {
+        return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, {
           designer: this,
           source: {
             type: type,
@@ -12407,28 +12427,12 @@ var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P
     _inherits(PropEditor, _React$Component);
 
     function PropEditor(props) {
-      var _this;
-
       _classCallCheck(this, PropEditor);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(PropEditor).call(this, props));
-      _this.state = {
-        value: props.value
-      };
-      return _this;
-    } // componentWillReceiveProps(props: PropEditorProps<T>) {
-    //     this.setState({ value: props.value } as any)
-    // }
-
+      return _possibleConstructorReturn(this, _getPrototypeOf(PropEditor).call(this, props));
+    }
 
     _createClass(PropEditor, null, [{
-      key: "getDerivedStateFromProps",
-      value: function getDerivedStateFromProps(props, state) {
-        return {
-          value: props.value
-        };
-      }
-    }, {
       key: "dropdown",
       value: function dropdown(items, valueType) {
         return _dropdown(items, valueType);
@@ -12459,18 +12463,15 @@ var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P
     _createClass(TextInput, [{
       key: "render",
       value: function render() {
-        var _this2 = this;
+        var _this = this;
 
-        var value = this.state.value;
+        var value = this.props.value;
         return React.createElement("input", {
           className: 'form-control',
           value: value || '',
           onChange: function onChange(e) {
-            _this2.setState({
-              value: e.target.value
-            });
-
-            _this2.props.onChange(e.target.value);
+            // this.setState({ value: e.target.value })
+            _this.props.updateComponentProp(e.target.value);
           }
         });
       }
@@ -12516,9 +12517,13 @@ var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P
       _inherits(Dropdown, _PropEditor2);
 
       function Dropdown(props) {
+        var _this2;
+
         _classCallCheck(this, Dropdown);
 
-        return _possibleConstructorReturn(this, _getPrototypeOf(Dropdown).call(this, props));
+        _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Dropdown).call(this, props));
+        _this2.state = {};
+        return _this2;
       }
 
       _createClass(Dropdown, [{
@@ -12560,9 +12565,8 @@ var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P
         value: function render() {
           var _this3 = this;
 
-          var _this$state = this.state,
-              value = _this$state.value,
-              items = _this$state.items;
+          var items = this.state.items;
+          var value = this.props.value;
           items = items || textValues;
           return React.createElement("select", {
             className: 'form-control',
@@ -12578,11 +12582,7 @@ var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P
                 value = textValue;
               }
 
-              _this3.setState({
-                value: value
-              });
-
-              _this3.props.onChange(value);
+              _this3.props.updateComponentProp(value);
             }
           }, items.map(function (o) {
             return React.createElement("option", {
@@ -12617,6 +12617,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -12646,7 +12654,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * QQ 讨论组：  119038574
  *
  ********************************************************************************/
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! react */ "react"), __webpack_require__(/*! ./component */ "./out-es5/component.js"), __webpack_require__(/*! ./common */ "./out-es5/common.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, React, component_1, common_1) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! react */ "react"), __webpack_require__(/*! ./component */ "./out-es5/component.js"), __webpack_require__(/*! ./common */ "./out-es5/common.js"), __webpack_require__(/*! ./errors */ "./out-es5/errors.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, React, component_1, common_1, errors_1) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -12666,29 +12674,26 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       _this = _possibleConstructorReturn(this, _getPrototypeOf(PropertyEditor).call(this, props));
       _this._element = null;
       _this.state = {
-        editors: []
+        designer: _this.props.designer
       };
       return _this;
-    } // componentWillReceiveProps(props: EditorProps) {
-    //     this.setState({
-    //         designer: props.designer,
-    //     })
-    // }
-
+    }
 
     _createClass(PropertyEditor, [{
       key: "getEditors",
       value: function getEditors(designer) {
+        var _this2 = this;
+
         if (designer == null) {
           return [];
         } // 各个控件相同的编辑器
 
 
         var commonPropEditorInfos = [];
-        var componentDatas = designer.selectedComponents;
+        var selectedComponents = designer.selectedComponents;
 
         var _loop = function _loop(i) {
-          var componentData = componentDatas[i];
+          var componentData = selectedComponents[i];
           var propEditorInfos = component_1.Component.getPropEditors(componentData);
 
           if (i == 0) {
@@ -12710,18 +12715,17 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           }
         };
 
-        for (var i = 0; i < componentDatas.length; i++) {
+        for (var i = 0; i < selectedComponents.length; i++) {
           _loop(i);
         } // 各个控件相同的属性值
 
 
         var commonFlatProps;
 
-        for (var i = 0; i < componentDatas.length; i++) {
-          var control = componentDatas[i];
+        for (var i = 0; i < selectedComponents.length; i++) {
+          var control = selectedComponents[i];
           var controlProps = Object.assign({}, control.props);
-          delete controlProps.children;
-          controlProps = this.flatProps(controlProps);
+          delete controlProps.children; // controlProps = this.flatProps(controlProps)
 
           if (i == 0) {
             commonFlatProps = controlProps;
@@ -12740,24 +12744,29 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
         var _loop2 = function _loop2(_i) {
           var propEditorInfo = commonPropEditorInfos[_i];
-          var propNameParts = propEditorInfo.propName.split(".");
-          var propName = propNameParts[propNameParts.length - 1]; //propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
-
+          var propName = propEditorInfo.propName;
+          ;
           var editorType = propEditorInfo.editorType;
-          var propNames = propNameParts; //propEditorInfo.propNames;
 
-          var editor = React.createElement(editorType, {
-            value: commonFlatProps[propNames.join('.')],
-            onChange: function onChange(value) {
-              for (var _i2 = 0; _i2 < componentDatas.length; _i2++) {
-                var c = componentDatas[_i2];
-                console.assert(c.props.id != null);
-                designer.updateControlProps(c.props.id, propNames, value);
-              }
+          var value = _this2.propValue(propName, commonFlatProps);
+
+          var editorProps = {
+            value: value,
+            editComponents: selectedComponents,
+            updateComponentProp: function updateComponentProp(value) {
+              var componentProps = selectedComponents.map(function (o) {
+                return {
+                  componentId: o.props.id,
+                  propName: propEditorInfo.propName,
+                  value: value
+                };
+              });
+              designer.updateControlProp.apply(designer, _toConsumableArray(componentProps));
             }
-          });
+          };
+          var editor = React.createElement(editorType, editorProps);
           editors.push({
-            prop: propName,
+            prop: propEditorInfo.propName,
             editor: editor,
             group: propEditorInfo.group
           });
@@ -12768,6 +12777,21 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         }
 
         return editors;
+      }
+    }, {
+      key: "propValue",
+      value: function propValue(propName, props) {
+        if (!propName) throw errors_1.Errors.argumentNull("propName");
+        if (!props) throw errors_1.Errors.argumentNull("props");
+        var navPropsNames = propName.split(".");
+        var obj = props;
+
+        for (var i = 0; i < navPropsNames.length; i++) {
+          obj = props[navPropsNames[i]];
+          if (obj == null) return null;
+        }
+
+        return obj;
       }
     }, {
       key: "flatProps",
@@ -12907,7 +12931,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
   };
   var element = document.createElement('style');
   element.type = 'text/css';
-  element.innerHTML = "\n            .".concat(exports.classNames.componentSelected, " {\n                border: solid 1px #337ab7!important;\n            }\n            .").concat(exports.classNames.componentSelected, " > :first-child {\n                border-color: blue;\n              }\n              .").concat(exports.classNames.componentSelected, " .resize_handle {\n                position: absolute;\n                height: 6px;\n                width: 6px;\n                border: 1px solid #89B;\n                background: #9AC;\n              }\n              .").concat(exports.classNames.componentSelected, " .move_handle {\n                height: 12px;\n                width: 12px;\n                top: 6px;\n                left: 8px;\n                border: solid 1px black;\n                position: relative;\n                margin-top: -12px;\n              }\n              .").concat(exports.classNames.componentSelected, " .NW,\n              .").concat(exports.classNames.componentSelected, " .NN,\n              .").concat(exports.classNames.componentSelected, " .NE {\n                top: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .NE,\n              .").concat(exports.classNames.componentSelected, " .EE,\n              .").concat(exports.classNames.componentSelected, " .SE {\n                right: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .SW,\n              .").concat(exports.classNames.componentSelected, ".SS,\n              .").concat(exports.classNames.componentSelected, " .SE {\n                bottom: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .NW,\n              .").concat(exports.classNames.componentSelected, " .WW,\n              .").concat(exports.classNames.componentSelected, " .SW {\n                left: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .SE,\n              .").concat(exports.classNames.componentSelected, " .NW {\n                cursor: nw-resize;\n              }\n              .").concat(exports.classNames.componentSelected, " .SW,\n              .").concat(exports.classNames.componentSelected, " .NE {\n                cursor: ne-resize;\n              }\n              .").concat(exports.classNames.componentSelected, " .NN,\n              .").concat(exports.classNames.componentSelected, " .SS {\n                cursor: n-resize;\n                left: 50%;\n                margin-left: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .EE,\n              .").concat(exports.classNames.componentSelected, " .WW {\n                cursor: e-resize;\n                top: 50%;\n                margin-top: -4px;\n              }\n            .").concat(exports.classNames.emptyTemplates, " {\n                padding:50px 0;\n                text-align: center;\n            }\n            .").concat(exports.classNames.loadingTemplates, " {\n                padding:50px 0;\n                text-align: center;\n            }\n            .").concat(exports.classNames.templateSelected, " .page-view {\n                border: solid 1px #337ab7!important;\n            }\n            .").concat(exports.classNames.templateDialog, " .name {\n                margin-top: -").concat(templateDialog.nameHeight, "px;\n                height: ").concat(templateDialog.nameHeight, "px;\n                font-size: ").concat(templateDialog.fontSize, "px;\n                text-align: center;\n                padding-top: 6px;\n                background-color: black;\n                opacity: 0.5;\n            }\n            .").concat(exports.classNames.templateDialog, " .name span {\n                color: white;\n            }\n            .").concat(exports.classNames.emptyDocument, " {\n                text-align: center;\n                padding: 100px 0;\n            }\n            .").concat(exports.classNames.component, " > .NW,\n            .").concat(exports.classNames.component, " > .NN,\n            .").concat(exports.classNames.component, " > .NE,\n            .").concat(exports.classNames.component, " > .EE,\n            .").concat(exports.classNames.component, " > .SE,\n            .").concat(exports.classNames.component, " > .SW,\n            .").concat(exports.classNames.component, " > .SS,\n            .").concat(exports.classNames.component, " > .WW {\n                display: none;\n            }\n            .").concat(exports.classNames.componentSelected, ".component > .NW,\n            .").concat(exports.classNames.componentSelected, ".component > .NN,\n            .").concat(exports.classNames.componentSelected, ".component > .NE,\n            .").concat(exports.classNames.componentSelected, ".component > .EE,\n            .").concat(exports.classNames.componentSelected, ".component > .SE,\n            .").concat(exports.classNames.componentSelected, ".component > .SW,\n            .").concat(exports.classNames.componentSelected, ".component > .SS,\n            .").concat(exports.classNames.componentSelected, ".component > .WW {\n                display: block;\n            }\n            ul.nav-tabs li i {\n                position: relative;\n                top: 4px;\n                right: -6px;\n            }\n            .validationMessage {\n                position: absolute;\n                margin-top: -60px;\n                background-color: red;\n                color: white;\n                padding: 4px 10px;\n            }\n            .").concat(exports.classNames.placeholder, " {\n                min-height: 40px;\n                width: 100%;\n            }\n            .").concat(exports.classNames.placeholder, ".active,\n            .").concat(exports.classNames.componentWrapper, ".active,\n            .").concat(exports.classNames.componentWrapper, ".").concat(exports.classNames.componentSelected, ".active {\n                border: 1px solid green;\n            }\n            .").concat(exports.classNames.editorPanel, " {\n                width: 300px;\n                background: white;\n                color: black;\n                margin: 0;\n                font-size: 14px;\n                z-index: 100;\n                overflow: auto;\n            }\n            .").concat(exports.classNames.editorPanel, " label {\n                width: 80px;\n                float: left;\n                padding: 4px;\n                text-overflow: ellipsis;\n                overflow: hidden;\n            }\n            .").concat(exports.classNames.editorPanel, " .control {\n                padding-left: 90px;\n            }\n            .").concat(exports.classNames.editorPanel, " .empty {\n                padding-top: 200px;\n                text-align: center;\n            }\n            .").concat(exports.classNames.componentPanel, " {\n                background: white;\n                color: black;\n                font-size: 14px;\n                z-index: 100;\n                list-style: none;\n                padding: 0;\n                text-align: center\n            }\n            .").concat(exports.classNames.componentPanel, " .panel-heading {\n                text-align: center;\n            }\n            .").concat(exports.classNames.componentPanel, " li {\n                text-align: center;\n                padding: 8px;\n            }\n            .").concat(exports.classNames.componentWrapper, ".").concat(exports.classNames.moveDown, " {\n         \n            }\n        ");
+  element.setAttribute("data-name", "jueying");
+  element.innerHTML = "\n            .".concat(exports.classNames.componentSelected, " {\n                border: solid 1px #337ab7!important;\n            }\n            .").concat(exports.classNames.componentSelected, " > :first-child {\n                border-color: blue;\n              }\n              .").concat(exports.classNames.componentSelected, " .resize_handle {\n                position: absolute;\n                height: 6px;\n                width: 6px;\n                border: 1px solid #89B;\n                background: #9AC;\n              }\n              .").concat(exports.classNames.componentSelected, " .move_handle {\n                height: 12px;\n                width: 12px;\n                top: 6px;\n                left: 8px;\n                border: solid 1px black;\n                position: relative;\n                margin-top: -12px;\n              }\n              .").concat(exports.classNames.componentSelected, " .NW,\n              .").concat(exports.classNames.componentSelected, " .NN,\n              .").concat(exports.classNames.componentSelected, " .NE {\n                top: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .NE,\n              .").concat(exports.classNames.componentSelected, " .EE,\n              .").concat(exports.classNames.componentSelected, " .SE {\n                right: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .SW,\n              .").concat(exports.classNames.componentSelected, ".SS,\n              .").concat(exports.classNames.componentSelected, " .SE {\n                bottom: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .NW,\n              .").concat(exports.classNames.componentSelected, " .WW,\n              .").concat(exports.classNames.componentSelected, " .SW {\n                left: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .SE,\n              .").concat(exports.classNames.componentSelected, " .NW {\n                cursor: nw-resize;\n              }\n              .").concat(exports.classNames.componentSelected, " .SW,\n              .").concat(exports.classNames.componentSelected, " .NE {\n                cursor: ne-resize;\n              }\n              .").concat(exports.classNames.componentSelected, " .NN,\n              .").concat(exports.classNames.componentSelected, " .SS {\n                cursor: n-resize;\n                left: 50%;\n                margin-left: -4px;\n              }\n              .").concat(exports.classNames.componentSelected, " .EE,\n              .").concat(exports.classNames.componentSelected, " .WW {\n                cursor: e-resize;\n                top: 50%;\n                margin-top: -4px;\n              }\n            .").concat(exports.classNames.emptyTemplates, " {\n                padding:50px 0;\n                text-align: center;\n            }\n            .").concat(exports.classNames.loadingTemplates, " {\n                padding:50px 0;\n                text-align: center;\n            }\n            .").concat(exports.classNames.templateSelected, " .page-view {\n                border: solid 1px #337ab7!important;\n            }\n            .").concat(exports.classNames.templateDialog, " .name {\n                margin-top: -").concat(templateDialog.nameHeight, "px;\n                height: ").concat(templateDialog.nameHeight, "px;\n                font-size: ").concat(templateDialog.fontSize, "px;\n                text-align: center;\n                padding-top: 6px;\n                background-color: black;\n                opacity: 0.5;\n            }\n            .").concat(exports.classNames.templateDialog, " .name span {\n                color: white;\n            }\n            .").concat(exports.classNames.emptyDocument, " {\n                text-align: center;\n                padding: 100px 0;\n            }\n            .").concat(exports.classNames.component, " > .NW,\n            .").concat(exports.classNames.component, " > .NN,\n            .").concat(exports.classNames.component, " > .NE,\n            .").concat(exports.classNames.component, " > .EE,\n            .").concat(exports.classNames.component, " > .SE,\n            .").concat(exports.classNames.component, " > .SW,\n            .").concat(exports.classNames.component, " > .SS,\n            .").concat(exports.classNames.component, " > .WW {\n                display: none;\n            }\n            .").concat(exports.classNames.componentSelected, ".component > .NW,\n            .").concat(exports.classNames.componentSelected, ".component > .NN,\n            .").concat(exports.classNames.componentSelected, ".component > .NE,\n            .").concat(exports.classNames.componentSelected, ".component > .EE,\n            .").concat(exports.classNames.componentSelected, ".component > .SE,\n            .").concat(exports.classNames.componentSelected, ".component > .SW,\n            .").concat(exports.classNames.componentSelected, ".component > .SS,\n            .").concat(exports.classNames.componentSelected, ".component > .WW {\n                display: block;\n            }\n            .").concat(exports.classNames.placeholder, " {\n                min-height: 40px;\n                width: 100%;\n            }\n            .").concat(exports.classNames.placeholder, ".active,\n            .").concat(exports.classNames.componentWrapper, ".active,\n            .").concat(exports.classNames.componentWrapper, ".").concat(exports.classNames.componentSelected, ".active {\n                border: 1px solid green;\n            }\n            .").concat(exports.classNames.editorPanel, " {\n                width: 300px;\n                background: white;\n                color: black;\n                margin: 0;\n                font-size: 14px;\n                z-index: 100;\n                overflow: auto;\n            }\n            .").concat(exports.classNames.editorPanel, " label {\n                width: 80px;\n                float: left;\n                padding: 4px;\n                text-overflow: ellipsis;\n                overflow: hidden;\n            }\n            .").concat(exports.classNames.editorPanel, " .control {\n                padding-left: 90px;\n            }\n            .").concat(exports.classNames.editorPanel, " .empty {\n                padding-top: 200px;\n                text-align: center;\n            }\n            .").concat(exports.classNames.componentPanel, " {\n                background: white;\n                color: black;\n                font-size: 14px;\n                z-index: 100;\n                list-style: none;\n                padding: 0;\n                text-align: center\n            }\n            .").concat(exports.classNames.componentPanel, " .panel-heading {\n                text-align: center;\n            }\n            .").concat(exports.classNames.componentPanel, " li {\n                text-align: center;\n                padding: 8px;\n            }\n            .").concat(exports.classNames.componentWrapper, ".").concat(exports.classNames.moveDown, " {\n         \n            }\n        ");
   document.head.appendChild(element);
 
   function appendClassName(element, addonClassName) {

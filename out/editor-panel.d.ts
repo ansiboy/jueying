@@ -16,10 +16,7 @@ export declare class EditorPanel extends React.Component<EditorPanelProps, Edito
     private _designer;
     private designerComponentChanged;
     constructor(props: any);
-    static getDerivedStateFromProps(props: EditorPanel): Partial<EditorPanelState>;
-    private getComponentData;
     designer: PageDesigner;
-    componentDidMount(): void;
     render(): JSX.Element;
 }
 export {};

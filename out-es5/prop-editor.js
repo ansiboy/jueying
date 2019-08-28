@@ -59,28 +59,12 @@ define(["require", "exports", "react"], function (require, exports, React) {
     _inherits(PropEditor, _React$Component);
 
     function PropEditor(props) {
-      var _this;
-
       _classCallCheck(this, PropEditor);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(PropEditor).call(this, props));
-      _this.state = {
-        value: props.value
-      };
-      return _this;
-    } // componentWillReceiveProps(props: PropEditorProps<T>) {
-    //     this.setState({ value: props.value } as any)
-    // }
-
+      return _possibleConstructorReturn(this, _getPrototypeOf(PropEditor).call(this, props));
+    }
 
     _createClass(PropEditor, null, [{
-      key: "getDerivedStateFromProps",
-      value: function getDerivedStateFromProps(props, state) {
-        return {
-          value: props.value
-        };
-      }
-    }, {
       key: "dropdown",
       value: function dropdown(items, valueType) {
         return _dropdown(items, valueType);
@@ -111,18 +95,15 @@ define(["require", "exports", "react"], function (require, exports, React) {
     _createClass(TextInput, [{
       key: "render",
       value: function render() {
-        var _this2 = this;
+        var _this = this;
 
-        var value = this.state.value;
+        var value = this.props.value;
         return React.createElement("input", {
           className: 'form-control',
           value: value || '',
           onChange: function onChange(e) {
-            _this2.setState({
-              value: e.target.value
-            });
-
-            _this2.props.onChange(e.target.value);
+            // this.setState({ value: e.target.value })
+            _this.props.updateComponentProp(e.target.value);
           }
         });
       }
@@ -168,9 +149,13 @@ define(["require", "exports", "react"], function (require, exports, React) {
       _inherits(Dropdown, _PropEditor2);
 
       function Dropdown(props) {
+        var _this2;
+
         _classCallCheck(this, Dropdown);
 
-        return _possibleConstructorReturn(this, _getPrototypeOf(Dropdown).call(this, props));
+        _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Dropdown).call(this, props));
+        _this2.state = {};
+        return _this2;
       }
 
       _createClass(Dropdown, [{
@@ -212,9 +197,8 @@ define(["require", "exports", "react"], function (require, exports, React) {
         value: function render() {
           var _this3 = this;
 
-          var _this$state = this.state,
-              value = _this$state.value,
-              items = _this$state.items;
+          var items = this.state.items;
+          var value = this.props.value;
           items = items || textValues;
           return React.createElement("select", {
             className: 'form-control',
@@ -230,11 +214,7 @@ define(["require", "exports", "react"], function (require, exports, React) {
                 value = textValue;
               }
 
-              _this3.setState({
-                value: value
-              });
-
-              _this3.props.onChange(value);
+              _this3.props.updateComponentProp(value);
             }
           }, items.map(function (o) {
             return React.createElement("option", {

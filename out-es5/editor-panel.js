@@ -37,7 +37,8 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(EditorPanel).call(this, props));
       _this.state = {
-        componentDatas: []
+        componentDatas: [],
+        designer: null
       };
 
       _this.designerComponentChanged = function () {
@@ -49,36 +50,9 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
       };
 
       return _this;
-    } // componentWillReceiveProps(props: EditorPanelProps) {
-    //     this.setState({})
-    // }
-
+    }
 
     _createClass(EditorPanel, [{
-      key: "getComponentData",
-      value: function getComponentData(designer) {
-        var componentDatas = [];
-        var stack = new Array();
-        stack.push(designer.pageData);
-
-        while (stack.length > 0) {
-          var item = stack.pop();
-          componentDatas.push(item);
-          var children = item.children || [];
-
-          for (var i = 0; i < children.length; i++) {
-            stack.push(children[i]);
-          }
-        }
-
-        return componentDatas;
-      }
-    }, {
-      key: "componentDidMount",
-      // private designerComponentChanged(sender, ) {
-      // }
-      value: function componentDidMount() {}
-    }, {
       key: "render",
       value: function render() {
         var _this2 = this;
@@ -87,15 +61,7 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
         empty = empty || React.createElement("div", {
           className: "empty"
         }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
-        var componentDatas = [];
-        var selectedComponentIds = [];
-        var designer = this.designer;
-
-        if (designer) {
-          componentDatas = this.getComponentData(designer);
-          selectedComponentIds = designer.selectedComponentIds || [];
-        }
-
+        var designer = this.state.designer;
         return React.createElement("div", {
           className: "".concat(style_1.classNames.editorPanel, " ").concat(this.props.className || ""),
           ref: function ref(e) {
@@ -133,11 +99,9 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
         }
 
         this._designer = value;
-      }
-    }], [{
-      key: "getDerivedStateFromProps",
-      value: function getDerivedStateFromProps(props) {
-        return {};
+        this.setState({
+          designer: value
+        });
       }
     }]);
 

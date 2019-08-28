@@ -58,20 +58,26 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             }
             return arr;
         }
-        updateControlProps(controlId, navPropsNames, value) {
-            let componentData = this.findComponentData(controlId);
-            if (componentData == null)
-                return;
-            console.assert(componentData != null);
-            console.assert(navPropsNames != null, 'props is null');
-            componentData.props = componentData.props || {};
-            let obj = componentData.props;
-            for (let i = 0; i < navPropsNames.length - 1; i++) {
-                obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
+        updateControlProp(...componentProps) {
+            let componentDatas = [];
+            for (let i = 0; i < componentProps.length; i++) {
+                let { componentId, propName, value } = componentProps[i];
+                let componentData = this.findComponentData(componentId);
+                if (componentData == null)
+                    continue;
+                let navPropsNames = propName.split(".");
+                console.assert(componentData != null);
+                console.assert(navPropsNames != null, 'props is null');
+                componentData.props = componentData.props || {};
+                let obj = componentData.props;
+                for (let i = 0; i < navPropsNames.length - 1; i++) {
+                    obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
+                }
+                obj[navPropsNames[navPropsNames.length - 1]] = value;
+                componentDatas.push(componentData);
             }
-            obj[navPropsNames[navPropsNames.length - 1]] = value;
             this.setState(this.state);
-            this.componentUpdated.fire([componentData]);
+            this.componentUpdated.fire(componentDatas);
         }
         sortChildren(parentId, childIds) {
             if (!parentId)
@@ -316,7 +322,12 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             delete props.attr;
             //===================================================
             let className = props.selected ? style_1.appendClassName(props.className || '', style_1.classNames.componentSelected) : props.className;
-            return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, Object.assign({}, props, { className }), { designer: this, source: { type, attr, props, children } }));
+            let wrapperProps = Object.assign({}, props);
+            delete wrapperProps.ref;
+            wrapperProps.className = className;
+            // let sourceProps = Object.assign({}, props);
+            // delete sourceProps.attr;
+            return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, { designer: this, source: { type, attr, props, children } }));
         }
         // componentWillReceiveProps(props: PageDesignerProps) {
         //     PageDesigner.initPageData(props.pageData)

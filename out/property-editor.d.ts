@@ -18,18 +18,14 @@ interface EditorProps extends React.Props<PropertyEditor> {
     empty: string | JSX.Element;
 }
 interface EditorState {
-    editors: {
-        group: string;
-        prop: string;
-        editor: React.ReactElement<any>;
-    }[];
-    designer?: PageDesigner;
+    designer: PageDesigner | null;
 }
 export declare class PropertyEditor extends React.Component<EditorProps, EditorState> {
     private _element;
     constructor(props: EditorProps);
     static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState>;
     private getEditors;
+    private propValue;
     private flatProps;
     render(): JSX.Element;
     readonly element: HTMLElement;

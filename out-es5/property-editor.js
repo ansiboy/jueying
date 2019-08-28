@@ -2,6 +2,14 @@
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -31,7 +39,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * QQ 讨论组：  119038574
  *
  ********************************************************************************/
-define(["require", "exports", "react", "./component", "./common"], function (require, exports, React, component_1, common_1) {
+define(["require", "exports", "react", "./component", "./common", "./errors"], function (require, exports, React, component_1, common_1, errors_1) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -51,29 +59,26 @@ define(["require", "exports", "react", "./component", "./common"], function (req
       _this = _possibleConstructorReturn(this, _getPrototypeOf(PropertyEditor).call(this, props));
       _this._element = null;
       _this.state = {
-        editors: []
+        designer: _this.props.designer
       };
       return _this;
-    } // componentWillReceiveProps(props: EditorProps) {
-    //     this.setState({
-    //         designer: props.designer,
-    //     })
-    // }
-
+    }
 
     _createClass(PropertyEditor, [{
       key: "getEditors",
       value: function getEditors(designer) {
+        var _this2 = this;
+
         if (designer == null) {
           return [];
         } // 各个控件相同的编辑器
 
 
         var commonPropEditorInfos = [];
-        var componentDatas = designer.selectedComponents;
+        var selectedComponents = designer.selectedComponents;
 
         var _loop = function _loop(i) {
-          var componentData = componentDatas[i];
+          var componentData = selectedComponents[i];
           var propEditorInfos = component_1.Component.getPropEditors(componentData);
 
           if (i == 0) {
@@ -95,18 +100,17 @@ define(["require", "exports", "react", "./component", "./common"], function (req
           }
         };
 
-        for (var i = 0; i < componentDatas.length; i++) {
+        for (var i = 0; i < selectedComponents.length; i++) {
           _loop(i);
         } // 各个控件相同的属性值
 
 
         var commonFlatProps;
 
-        for (var i = 0; i < componentDatas.length; i++) {
-          var control = componentDatas[i];
+        for (var i = 0; i < selectedComponents.length; i++) {
+          var control = selectedComponents[i];
           var controlProps = Object.assign({}, control.props);
-          delete controlProps.children;
-          controlProps = this.flatProps(controlProps);
+          delete controlProps.children; // controlProps = this.flatProps(controlProps)
 
           if (i == 0) {
             commonFlatProps = controlProps;
@@ -125,24 +129,29 @@ define(["require", "exports", "react", "./component", "./common"], function (req
 
         var _loop2 = function _loop2(_i) {
           var propEditorInfo = commonPropEditorInfos[_i];
-          var propNameParts = propEditorInfo.propName.split(".");
-          var propName = propNameParts[propNameParts.length - 1]; //propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
-
+          var propName = propEditorInfo.propName;
+          ;
           var editorType = propEditorInfo.editorType;
-          var propNames = propNameParts; //propEditorInfo.propNames;
 
-          var editor = React.createElement(editorType, {
-            value: commonFlatProps[propNames.join('.')],
-            onChange: function onChange(value) {
-              for (var _i2 = 0; _i2 < componentDatas.length; _i2++) {
-                var c = componentDatas[_i2];
-                console.assert(c.props.id != null);
-                designer.updateControlProps(c.props.id, propNames, value);
-              }
+          var value = _this2.propValue(propName, commonFlatProps);
+
+          var editorProps = {
+            value: value,
+            editComponents: selectedComponents,
+            updateComponentProp: function updateComponentProp(value) {
+              var componentProps = selectedComponents.map(function (o) {
+                return {
+                  componentId: o.props.id,
+                  propName: propEditorInfo.propName,
+                  value: value
+                };
+              });
+              designer.updateControlProp.apply(designer, _toConsumableArray(componentProps));
             }
-          });
+          };
+          var editor = React.createElement(editorType, editorProps);
           editors.push({
-            prop: propName,
+            prop: propEditorInfo.propName,
             editor: editor,
             group: propEditorInfo.group
           });
@@ -153,6 +162,21 @@ define(["require", "exports", "react", "./component", "./common"], function (req
         }
 
         return editors;
+      }
+    }, {
+      key: "propValue",
+      value: function propValue(propName, props) {
+        if (!propName) throw errors_1.Errors.argumentNull("propName");
+        if (!props) throw errors_1.Errors.argumentNull("props");
+        var navPropsNames = propName.split(".");
+        var obj = props;
+
+        for (var i = 0; i < navPropsNames.length; i++) {
+          obj = props[navPropsNames[i]];
+          if (obj == null) return null;
+        }
+
+        return obj;
       }
     }, {
       key: "flatProps",

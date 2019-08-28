@@ -23,6 +23,7 @@ define(["require", "exports", "./errors"], function (require, exports, errors_1)
     };
     let element = document.createElement('style');
     element.type = 'text/css';
+    element.setAttribute("data-name", "jueying");
     element.innerHTML = `
             .${exports.classNames.componentSelected} {
                 border: solid 1px #337ab7!important;
@@ -132,18 +133,6 @@ define(["require", "exports", "./errors"], function (require, exports, errors_1)
             .${exports.classNames.componentSelected}.component > .SS,
             .${exports.classNames.componentSelected}.component > .WW {
                 display: block;
-            }
-            ul.nav-tabs li i {
-                position: relative;
-                top: 4px;
-                right: -6px;
-            }
-            .validationMessage {
-                position: absolute;
-                margin-top: -60px;
-                background-color: red;
-                color: white;
-                padding: 4px 10px;
             }
             .${exports.classNames.placeholder} {
                 min-height: 40px;

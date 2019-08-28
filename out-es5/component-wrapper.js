@@ -44,10 +44,10 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
   function (_React$Component) {
     _inherits(ComponentWrapper, _React$Component);
 
-    function ComponentWrapper() {
+    function ComponentWrapper(props) {
       _classCallCheck(this, ComponentWrapper);
 
-      return _possibleConstructorReturn(this, _getPrototypeOf(ComponentWrapper).apply(this, arguments));
+      return _possibleConstructorReturn(this, _getPrototypeOf(ComponentWrapper).call(this, props));
     }
 
     _createClass(ComponentWrapper, [{
@@ -98,7 +98,6 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
       value: function render() {
         var _this = this;
 
-        console.assert(!Array.isArray(this.props.children));
         var attr = this.props.source.attr;
         var shouldWrapper = attr.resize || typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage;
 
@@ -150,7 +149,9 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
           delete props.style.position;
           if (wrapperProps.style.width && wrapperProps.style.width != 'unset') props.style.width = '100%';
           if (wrapperProps.style.height && wrapperProps.style.height != 'unset') props.style.height = '100%';
-        }
+        } // source.props.ref = function (e) {
+        // };
+
 
         return React.createElement(component_1.ComponentWrapperContext.Provider, {
           value: this
@@ -181,8 +182,10 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
             type = _this$props$source.type,
             props = _this$props$source.props,
             children = _this$props$source.children;
+        var ref = props.ref;
 
         props.ref = function (e) {
+          if (typeof ref == "function") ref(e);
           if (!e) return;
 
           if (e.tagName) {

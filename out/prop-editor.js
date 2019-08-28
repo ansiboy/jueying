@@ -12,13 +12,6 @@ define(["require", "exports", "react"], function (require, exports, React) {
     class PropEditor extends React.Component {
         constructor(props) {
             super(props);
-            this.state = { value: props.value };
-        }
-        // componentWillReceiveProps(props: PropEditorProps<T>) {
-        //     this.setState({ value: props.value } as any)
-        // }
-        static getDerivedStateFromProps(props, state) {
-            return { value: props.value };
         }
         static dropdown(items, valueType) {
             return dropdown(items, valueType);
@@ -30,10 +23,10 @@ define(["require", "exports", "react"], function (require, exports, React) {
     exports.PropEditor = PropEditor;
     class TextInput extends PropEditor {
         render() {
-            let { value } = this.state;
+            let { value } = this.props;
             return React.createElement("input", { className: 'form-control', value: value || '', onChange: e => {
-                    this.setState({ value: e.target.value });
-                    this.props.onChange(e.target.value);
+                    // this.setState({ value: e.target.value })
+                    this.props.updateComponentProp(e.target.value);
                 } });
         }
     }
@@ -63,6 +56,7 @@ define(["require", "exports", "react"], function (require, exports, React) {
         class Dropdown extends PropEditor {
             constructor(props) {
                 super(props);
+                this.state = {};
             }
             componentDidMount() {
                 return __awaiter(this, void 0, void 0, function* () {
@@ -73,7 +67,8 @@ define(["require", "exports", "react"], function (require, exports, React) {
                 });
             }
             render() {
-                let { value, items } = this.state;
+                let { items } = this.state;
+                let { value } = this.props;
                 items = items || textValues;
                 return React.createElement("select", { className: 'form-control', value: value == null ? "" : value, onChange: e => {
                         let textValue = e.target.value;
@@ -90,8 +85,7 @@ define(["require", "exports", "react"], function (require, exports, React) {
                         else {
                             value = textValue;
                         }
-                        this.setState({ value });
-                        this.props.onChange(value);
+                        this.props.updateComponentProp(value);
                     } }, items.map(o => React.createElement("option", { key: o.value, value: o.value }, o.text)));
             }
         }

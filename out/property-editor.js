@@ -11,20 +11,15 @@
  * QQ 讨论组：  119038574
  *
  ********************************************************************************/
-define(["require", "exports", "react", "./component", "./common"], function (require, exports, React, component_1, common_1) {
+define(["require", "exports", "react", "./component", "./common", "./errors"], function (require, exports, React, component_1, common_1, errors_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class PropertyEditor extends React.Component {
         constructor(props) {
             super(props);
             this._element = null;
-            this.state = { editors: [] };
+            this.state = { designer: this.props.designer };
         }
-        // componentWillReceiveProps(props: EditorProps) {
-        //     this.setState({
-        //         designer: props.designer,
-        //     })
-        // }
         static getDerivedStateFromProps(props, state) {
             return { designer: props.designer };
         }
@@ -34,9 +29,9 @@ define(["require", "exports", "react", "./component", "./common"], function (req
             }
             // 各个控件相同的编辑器
             let commonPropEditorInfos = [];
-            let componentDatas = designer.selectedComponents;
-            for (let i = 0; i < componentDatas.length; i++) {
-                let componentData = componentDatas[i];
+            let selectedComponents = designer.selectedComponents;
+            for (let i = 0; i < selectedComponents.length; i++) {
+                let componentData = selectedComponents[i];
                 let propEditorInfos = component_1.Component.getPropEditors(componentData);
                 if (i == 0) {
                     commonPropEditorInfos = propEditorInfos || [];
@@ -57,11 +52,11 @@ define(["require", "exports", "react", "./component", "./common"], function (req
             }
             // 各个控件相同的属性值
             let commonFlatProps;
-            for (let i = 0; i < componentDatas.length; i++) {
-                let control = componentDatas[i];
+            for (let i = 0; i < selectedComponents.length; i++) {
+                let control = selectedComponents[i];
                 let controlProps = Object.assign({}, control.props);
                 delete controlProps.children;
-                controlProps = this.flatProps(controlProps);
+                // controlProps = this.flatProps(controlProps)
                 if (i == 0) {
                     commonFlatProps = controlProps;
                 }
@@ -77,23 +72,38 @@ define(["require", "exports", "react", "./component", "./common"], function (req
             let editors = [];
             for (let i = 0; i < commonPropEditorInfos.length; i++) {
                 let propEditorInfo = commonPropEditorInfos[i];
-                let propNameParts = propEditorInfo.propName.split(".");
-                let propName = propNameParts[propNameParts.length - 1]; //propEditorInfo.propNames[propEditorInfo.propNames.length - 1]
+                let propName = propEditorInfo.propName;
+                ;
                 let editorType = propEditorInfo.editorType;
-                let propNames = propNameParts; //propEditorInfo.propNames;
-                let editor = React.createElement(editorType, {
-                    value: commonFlatProps[propNames.join('.')],
-                    onChange: (value) => {
-                        for (let i = 0; i < componentDatas.length; i++) {
-                            let c = componentDatas[i];
-                            console.assert(c.props.id != null);
-                            designer.updateControlProps(c.props.id, propNames, value);
-                        }
+                let value = this.propValue(propName, commonFlatProps);
+                let editorProps = {
+                    value: value,
+                    editComponents: selectedComponents,
+                    updateComponentProp: (value) => {
+                        let componentProps = selectedComponents.map(o => ({
+                            componentId: o.props.id, propName: propEditorInfo.propName, value
+                        }));
+                        designer.updateControlProp(...componentProps);
                     }
-                });
-                editors.push({ prop: propName, editor, group: propEditorInfo.group });
+                };
+                let editor = React.createElement(editorType, editorProps);
+                editors.push({ prop: propEditorInfo.propName, editor, group: propEditorInfo.group });
             }
             return editors;
+        }
+        propValue(propName, props) {
+            if (!propName)
+                throw errors_1.Errors.argumentNull("propName");
+            if (!props)
+                throw errors_1.Errors.argumentNull("props");
+            let navPropsNames = propName.split(".");
+            let obj = props;
+            for (let i = 0; i < navPropsNames.length; i++) {
+                obj = props[navPropsNames[i]];
+                if (obj == null)
+                    return null;
+            }
+            return obj;
         }
         flatProps(props, baseName) {
             baseName = baseName ? baseName + '.' : '';

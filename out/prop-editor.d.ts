@@ -1,17 +1,18 @@
 import * as React from "react";
+import { ComponentData } from "./models";
 export interface PropEditorConstructor {
-    new (props: PropEditorProps<any>): any;
+    new(props: PropEditorProps<any>): any;
 }
-interface PropEditorProps<T> {
+export interface PropEditorProps<T> {
     value: T;
-    onChange: (value: T) => void;
+    updateComponentProp: (value: T) => void;
+    /** 该编辑器所编辑的控件 */
+    editComponents: ComponentData[];
 }
-interface PropEditorState<T> {
-    value: T;
+export interface PropEditorState<T> {
 }
-export declare abstract class PropEditor<S extends PropEditorState<T>, T> extends React.Component<PropEditorProps<T>, S> {
+export declare abstract class PropEditor<S, T> extends React.Component<PropEditorProps<T>, S> {
     constructor(props: PropEditorProps<T>);
-    static getDerivedStateFromProps(props: PropEditorProps<any>, state: any): Partial<PropEditorProps<any>>;
     static dropdown<T extends DropDownValue>(items: Promise<DropDownItem[]>, valueType: "string" | "number"): React.ComponentClass;
     static dropdown<T extends string | number>(items: T[]): React.ComponentClass;
     static dropdown(items: {
@@ -27,4 +28,4 @@ export declare type DropDownItem = {
     text: string;
     value: DropDownValue;
 };
-export {};
+export { };

@@ -41,7 +41,11 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
     readonly pageData: ComponentData;
     readonly selectedComponentIds: string[];
     readonly selectedComponents: ComponentData[];
-    updateControlProps(controlId: string, navPropsNames: string[], value: any): any;
+    updateControlProp(...componentProps: {
+        componentId: string;
+        propName: string;
+        value: any;
+    }[]): any;
     private sortChildren;
     /**
      * 对组件及其子控件进行命名

@@ -75,22 +75,34 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
     }
 
     _createClass(PageDesigner, [{
-      key: "updateControlProps",
-      value: function updateControlProps(controlId, navPropsNames, value) {
-        var componentData = this.findComponentData(controlId);
-        if (componentData == null) return;
-        console.assert(componentData != null);
-        console.assert(navPropsNames != null, 'props is null');
-        componentData.props = componentData.props || {};
-        var obj = componentData.props;
+      key: "updateControlProp",
+      value: function updateControlProp() {
+        var componentDatas = [];
 
-        for (var i = 0; i < navPropsNames.length - 1; i++) {
-          obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
+        for (var i = 0; i < arguments.length; i++) {
+          var _ref = i < 0 || arguments.length <= i ? undefined : arguments[i],
+              componentId = _ref.componentId,
+              propName = _ref.propName,
+              value = _ref.value;
+
+          var componentData = this.findComponentData(componentId);
+          if (componentData == null) continue;
+          var navPropsNames = propName.split(".");
+          console.assert(componentData != null);
+          console.assert(navPropsNames != null, 'props is null');
+          componentData.props = componentData.props || {};
+          var obj = componentData.props;
+
+          for (var _i = 0; _i < navPropsNames.length - 1; _i++) {
+            obj = obj[navPropsNames[_i]] = obj[navPropsNames[_i]] || {};
+          }
+
+          obj[navPropsNames[navPropsNames.length - 1]] = value;
+          componentDatas.push(componentData);
         }
 
-        obj[navPropsNames[navPropsNames.length - 1]] = value;
         this.setState(this.state);
-        this.componentUpdated.fire([componentData]);
+        this.componentUpdated.fire(componentDatas);
       }
     }, {
       key: "sortChildren",
@@ -293,8 +305,8 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
         }
 
         if (controlIndex == null) {
-          for (var _i = 0; _i < collection.length; _i++) {
-            var o = collection[_i];
+          for (var _i2 = 0; _i2 < collection.length; _i2++) {
+            var o = collection[_i2];
 
             if (o.children && o.children.length > 0) {
               var isRemoved = this.removeComponentFrom(controlId, o.children);
@@ -365,14 +377,16 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
         delete props.attr; //===================================================
 
         var className = props.selected ? style_1.appendClassName(props.className || '', style_1.classNames.componentSelected) : props.className;
+        var wrapperProps = Object.assign({}, props);
+        delete wrapperProps.ref;
+        wrapperProps.className = className; // let sourceProps = Object.assign({}, props);
+        // delete sourceProps.attr;
 
         for (var _len2 = arguments.length, children = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
           children[_key2 - 2] = arguments[_key2];
         }
 
-        return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, Object.assign({}, props, {
-          className: className
-        }), {
+        return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, {
           designer: this,
           source: {
             type: type,

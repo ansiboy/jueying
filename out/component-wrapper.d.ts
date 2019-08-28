@@ -24,6 +24,7 @@ export declare class ComponentWrapper extends React.Component<ComponentWrapperPr
     private handler;
     private element;
     private static isDrag;
+    constructor(props: any);
     designtimeBehavior(element: HTMLElement, attr: {
         container?: boolean;
         movable?: boolean;

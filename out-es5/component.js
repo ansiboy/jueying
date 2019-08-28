@@ -161,14 +161,22 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
           group: group
         });
       }
+    }, {
+      key: "createElement",
+      value: function createElement(componentData, h) {
+        return Component._createElement(componentData, {
+          components: [],
+          componentTypes: []
+        }, h);
+      }
       /**
        * 将持久化的元素数据转换为 ReactElement
        * @param componentData 元素数据
        */
 
     }, {
-      key: "createElement",
-      value: function createElement(componentData, h) {
+      key: "_createElement",
+      value: function _createElement(componentData, context, h) {
         if (!componentData) throw errors_1.Errors.argumentNull('componentData');
         h = h || React.createElement;
 
@@ -182,9 +190,14 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
           }
 
           var children = componentData.children ? componentData.children.map(function (o) {
-            return Component.createElement(o, h);
+            return Component._createElement(o, context, h);
           }) : [];
-          var props = componentData.props == null ? {} : JSON.parse(JSON.stringify(componentData.props));
+          var props = componentData.props == null ? {} : Object.assign({}, componentData.props); //JSON.parse(JSON.stringify(componentData.props));
+
+          if (controlType != null && controlType["defaultProps"]) {
+            props = Object.assign({}, controlType["defaultProps"], props);
+          }
+
           var result;
 
           if (typeof type == 'string') {
@@ -202,7 +215,27 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
 
           }
 
+          var masterPage;
           type = type == Component.Fragment ? React.Fragment : type;
+          var ref = props.ref;
+
+          props.ref = function (e) {
+            if (typeof ref == "function") ref(e);
+
+            if (e instanceof MasterPage) {
+              masterPage = e;
+
+              for (var i = 0; i < context.componentTypes.length; i++) {
+                var typeName = context.componentTypes[i];
+                var childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
+                childComponents.push(context.components[i]);
+              }
+            } else {
+              context.components.push(e);
+              context.componentTypes.push(typeof type == "string" ? type : type.name);
+            }
+          };
+
           result = h.apply(void 0, [type, props].concat(_toConsumableArray(children)));
           return result;
         } catch (e) {
@@ -311,6 +344,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
       _classCallCheck(this, MasterPage);
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(MasterPage).call(this, props));
+      _this.childComponents = {};
       var children = MasterPage.children(props);
       _this.state = {
         children: children
@@ -332,7 +366,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
           minHeight: 40
         }, props.style);
         var children = this.state.children.filter(function (o) {
-          return o.props.parent_id == null;
+          return o.props.parentId == null;
         });
         return React.createElement(exports.MasterPageContext.Provider, {
           value: {
@@ -435,7 +469,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
           if (!ctrl) return;
           console.assert(_this3.props.id != null);
           console.assert(_this3.designer != null);
-          ctrl.props.parent_id = _this3.props.id;
+          ctrl.props.parentId = _this3.props.id;
           console.assert(master != null, 'host is null');
 
           _this3.designer.appendComponent(master.props.id, ctrl);
@@ -457,11 +491,16 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
           var componentData = _this4.designer.findComponentData(dd.sourceElement.id);
 
           console.assert(componentData != null);
-          var propName = 'parent_id';
+          var propName = 'parentId';
 
           _this4.designer.moveComponent(dd.sourceElement.id, host.props.id);
 
-          _this4.designer.updateControlProps(dd.sourceElement.id, [propName], _this4.props.id);
+          _this4.designer.updateControlProp({
+            componentId: "string",
+            propName: "string",
+            value: "any"
+          }); //dd.sourceElement.id, propName, this.props.id
+
         }).drop('end', function (event, dd) {
           if (dd.sourceElement.id == _this4.wraper.props.source.props.id) return;
           style_1.removeClassName(element, 'active');
@@ -491,7 +530,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
             }
 
             children = arr.filter(function (o) {
-              return o.props.parent_id != null && o.props.parent_id == _this5.props.id;
+              return o.props.parentId != null && o.props.parentId == _this5.props.id;
             });
           }
 
