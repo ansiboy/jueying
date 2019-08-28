@@ -34,6 +34,10 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
     private element: HTMLElement;
     private static isDrag: boolean = false;
 
+    constructor(props) {
+        super(props);
+    }
+
     designtimeBehavior(element: HTMLElement, attr: { container?: boolean, movable?: boolean }) {
         if (!element) throw Errors.argumentNull('element')
         if (!attr) throw Errors.argumentNull('args')
@@ -300,6 +304,9 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
             if (wrapperProps.style.height && wrapperProps.style.height != 'unset')
                 props.style.height = '100%'
         }
+        // source.props.ref = function (e) {
+
+        // };
         return <ComponentWrapperContext.Provider value={this}>
             <div {...wrapperProps}>
                 {move_handle}
@@ -322,7 +329,11 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
     private renderWidthoutWrapper() {
         let { type, props, children } = this.props.source
 
+        let ref = props.ref;
         props.ref = (e: HTMLElement | React.Component) => {
+            if (typeof ref == "function")
+                ref(e);
+
             if (!e) return
 
             if ((e as HTMLElement).tagName) {

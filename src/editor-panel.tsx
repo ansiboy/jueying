@@ -4,12 +4,6 @@ import * as React from "react";
 import { PropertyEditor } from "./property-editor";
 import { classNames } from "./style";
 
-// import { classNames } from "./style";
-// import * as React from "react";
-// import { ComponentEditor } from "./component-editor";
-// import { ComponentData } from "./models";
-// import { PageDesigner } from "./page-designer";
-
 interface EditorPanelState {
     componentDatas: ComponentData[];
     designer?: PageDesigner,

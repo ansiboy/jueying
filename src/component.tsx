@@ -71,6 +71,7 @@ interface SetPropEditorOptions {
 
 /** 组件是否显示回调函数 */
 type ComponentPropEditorDisplay = (componentData: ComponentData) => boolean;
+type CreateElementContext = { components: React.Component[], componentTypes: string[] };
 
 export class Component {
 
@@ -202,11 +203,15 @@ export class Component {
         classProps.push({ propName, editorType, group })
     }
 
+    static createElement(componentData: ComponentData, h?: ReactFactory): React.ReactElement<any> | null {
+        return Component._createElement(componentData, { components: [], componentTypes: [] }, h);
+    }
+
     /**
      * 将持久化的元素数据转换为 ReactElement
      * @param componentData 元素数据
      */
-    static createElement(componentData: ComponentData, h?: ReactFactory): React.ReactElement<any> | null {
+    private static _createElement(componentData: ComponentData, context: CreateElementContext, h?: ReactFactory): React.ReactElement<any> | null {
         if (!componentData) throw Errors.argumentNull('componentData')
 
         h = h || React.createElement
@@ -219,8 +224,8 @@ export class Component {
                 type = controlType;
             }
 
-            let children: (React.ReactElement<any> | string)[] = componentData.children ? componentData.children.map(o => Component.createElement(o, h)) : [];
-            let props: ComponentProps<any> = componentData.props == null ? {} : JSON.parse(JSON.stringify(componentData.props));
+            let children: (React.ReactElement<any> | string)[] = componentData.children ? componentData.children.map(o => Component._createElement(o, context, h)) : [];
+            let props: ComponentProps<any> = componentData.props == null ? {} : Object.assign({}, componentData.props);//JSON.parse(JSON.stringify(componentData.props));
             if (controlType != null && controlType["defaultProps"]) {
                 props = Object.assign({}, controlType["defaultProps"], props);
             }
@@ -243,9 +248,29 @@ export class Component {
             }
 
 
+            let masterPage: MasterPage;
             type = type == Component.Fragment ? React.Fragment : type
-            result = h(type, props, ...children);
+            let ref = props.ref;
+            props.ref = function (e: any) {
 
+                if (typeof ref == "function")
+                    ref(e);
+
+                if (e instanceof MasterPage) {
+                    masterPage = e;
+                    for (let i = 0; i < context.componentTypes.length; i++) {
+                        let typeName = context.componentTypes[i];
+                        let childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
+                        childComponents.push(context.components[i]);
+                    }
+                }
+                else {
+                    context.components.push(e);
+                    context.componentTypes.push(typeof type == "string" ? type : type.name);
+                }
+            };
+
+            result = h(type, props, ...children);
             return result
         }
         catch (e) {
@@ -281,6 +306,9 @@ type MasterPageContextValue = { master: MasterPage | null };
 export const MasterPageContext = React.createContext<MasterPageContextValue>({ master: null });
 
 export class MasterPage extends React.Component<ComponentProps<MasterPage>, { children: React.ReactElement<ComponentProps<MasterPage>>[] }> {
+
+    childComponents: { [key: string]: React.Component[] } = {};
+
     constructor(props: ComponentProps<MasterPage>) {
         super(props)
 

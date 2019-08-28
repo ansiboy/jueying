@@ -94,7 +94,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return arr
     }
 
-    updateControlProp(...componentProps: { componentId: string, propName: string, value: any }[] ): any {
+    updateControlProp(...componentProps: { componentId: string, propName: string, value: any }[]): any {
         let componentDatas: ComponentData[] = [];
         for (let i = 0; i < componentProps.length; i++) {
             let { componentId, propName, value } = componentProps[i];
@@ -417,7 +417,12 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         //===================================================
 
         let className = props.selected ? appendClassName(props.className || '', classNames.componentSelected) : props.className
-        return <ComponentWrapper {...Object.assign({}, props, { className })} designer={this}
+
+        let wrapperProps = Object.assign({}, props);
+        delete wrapperProps.ref;
+        wrapperProps.className = className;
+
+        return <ComponentWrapper {...wrapperProps} designer={this}
             source={{ type, attr, props, children }}>
         </ComponentWrapper>
     }
