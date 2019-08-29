@@ -244,7 +244,7 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
           }, g.editors.map(function (o, i) {
             return React.createElement("div", {
               key: o.prop,
-              className: "form-group"
+              className: "form-group clearfix"
             }, React.createElement("label", {
               key: common_1.guid()
             }, common_1.proptDisplayNames[o.prop] || o.prop), " ", React.createElement("div", {

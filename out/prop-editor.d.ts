@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ComponentData } from "./models";
 export interface PropEditorConstructor {
-    new(props: PropEditorProps<any>): any;
+    new (props: PropEditorProps<any>): any;
 }
 export interface PropEditorProps<T> {
     value: T;
@@ -28,4 +28,4 @@ export declare type DropDownItem = {
     text: string;
     value: DropDownValue;
 };
-export { };
+export {};

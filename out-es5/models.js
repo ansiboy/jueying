@@ -1,6 +1,5 @@
 "use strict";
 
-// import { ComponentProps } from "react";
 define(["require", "exports"], function (require, exports) {
   "use strict";
 

@@ -137,7 +137,7 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
             }
             return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
                 g.group ? React.createElement("div", { className: "panel-heading" }, common_1.proptDisplayNames[g.group] || g.group) : null,
-                React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group" },
+                React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
                     React.createElement("label", { key: common_1.guid() }, common_1.proptDisplayNames[o.prop] || o.prop),
                     " ",
                     React.createElement("div", { className: "control" }, o.editor)))))));

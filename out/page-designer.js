@@ -325,8 +325,6 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             let wrapperProps = Object.assign({}, props);
             delete wrapperProps.ref;
             wrapperProps.className = className;
-            // let sourceProps = Object.assign({}, props);
-            // delete sourceProps.attr;
             return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, { designer: this, source: { type, attr, props, children } }));
         }
         // componentWillReceiveProps(props: PageDesignerProps) {

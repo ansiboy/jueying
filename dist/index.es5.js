@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.2.0
+ *  maishu-jueying v1.3.0
  *  https://github.com/ansiboy/jueying
  *  
  *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
@@ -12209,8 +12209,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         var className = props.selected ? style_1.appendClassName(props.className || '', style_1.classNames.componentSelected) : props.className;
         var wrapperProps = Object.assign({}, props);
         delete wrapperProps.ref;
-        wrapperProps.className = className; // let sourceProps = Object.assign({}, props);
-        // delete sourceProps.attr;
+        wrapperProps.className = className;
 
         for (var _len2 = arguments.length, children = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
           children[_key2 - 2] = arguments[_key2];
@@ -12859,7 +12858,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           }, g.editors.map(function (o, i) {
             return React.createElement("div", {
               key: o.prop,
-              className: "form-group"
+              className: "form-group clearfix"
             }, React.createElement("label", {
               key: common_1.guid()
             }, common_1.proptDisplayNames[o.prop] || o.prop), " ", React.createElement("div", {

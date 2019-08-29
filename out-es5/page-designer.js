@@ -379,8 +379,7 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
         var className = props.selected ? style_1.appendClassName(props.className || '', style_1.classNames.componentSelected) : props.className;
         var wrapperProps = Object.assign({}, props);
         delete wrapperProps.ref;
-        wrapperProps.className = className; // let sourceProps = Object.assign({}, props);
-        // delete sourceProps.attr;
+        wrapperProps.className = className;
 
         for (var _len2 = arguments.length, children = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
           children[_key2 - 2] = arguments[_key2];

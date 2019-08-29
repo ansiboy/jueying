@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.2.0
+ *  maishu-jueying v1.3.0
  *  https://github.com/ansiboy/jueying
  *  
  *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
@@ -11551,8 +11551,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             let wrapperProps = Object.assign({}, props);
             delete wrapperProps.ref;
             wrapperProps.className = className;
-            // let sourceProps = Object.assign({}, props);
-            // delete sourceProps.attr;
             return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, { designer: this, source: { type, attr, props, children } }));
         }
         // componentWillReceiveProps(props: PageDesignerProps) {
@@ -11835,7 +11833,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             }
             return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
                 g.group ? React.createElement("div", { className: "panel-heading" }, common_1.proptDisplayNames[g.group] || g.group) : null,
-                React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group" },
+                React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
                     React.createElement("label", { key: common_1.guid() }, common_1.proptDisplayNames[o.prop] || o.prop),
                     " ",
                     React.createElement("div", { className: "control" }, o.editor)))))));
