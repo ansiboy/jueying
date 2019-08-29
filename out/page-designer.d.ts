@@ -41,7 +41,8 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
     readonly pageData: ComponentData;
     readonly selectedComponentIds: string[];
     readonly selectedComponents: ComponentData[];
-    updateControlProp(...componentProps: {
+    updateComponentProp(componentId: string, propName: string, value: any): any;
+    updateComponentProps(...componentProps: {
         componentId: string;
         propName: string;
         value: any;

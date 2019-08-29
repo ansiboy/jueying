@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.3.0
+ *  maishu-jueying v1.3.1
  *  https://github.com/ansiboy/jueying
  *  
  *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
@@ -11421,7 +11421,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           _this4.designer.moveComponent(dd.sourceElement.id, host.props.id);
 
-          _this4.designer.updateControlProp({
+          _this4.designer.updateComponentProps({
             componentId: "string",
             propName: "string",
             value: "any"
@@ -11905,8 +11905,17 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
     }
 
     _createClass(PageDesigner, [{
-      key: "updateControlProp",
-      value: function updateControlProp() {
+      key: "updateComponentProp",
+      value: function updateComponentProp(componentId, propName, value) {
+        return this.updateComponentProps({
+          componentId: componentId,
+          propName: propName,
+          value: value
+        });
+      }
+    }, {
+      key: "updateComponentProps",
+      value: function updateComponentProps() {
         var componentDatas = [];
 
         for (var i = 0; i < arguments.length; i++) {
@@ -12760,7 +12769,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
                   value: value
                 };
               });
-              designer.updateControlProp.apply(designer, _toConsumableArray(componentProps));
+              designer.updateComponentProps.apply(designer, _toConsumableArray(componentProps));
             }
           };
           var editor = React.createElement(editorType, editorProps);

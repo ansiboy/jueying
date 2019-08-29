@@ -94,7 +94,10 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return arr
     }
 
-    updateControlProp(...componentProps: { componentId: string, propName: string, value: any }[]): any {
+    updateComponentProp(componentId: string, propName: string, value: any): any {
+        return this.updateComponentProps({ componentId, propName, value });
+    }
+    updateComponentProps(...componentProps: { componentId: string, propName: string, value: any }[]): any {
         let componentDatas: ComponentData[] = [];
         for (let i = 0; i < componentProps.length; i++) {
             let { componentId, propName, value } = componentProps[i];

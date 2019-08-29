@@ -146,7 +146,7 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
                   value: value
                 };
               });
-              designer.updateControlProp.apply(designer, _toConsumableArray(componentProps));
+              designer.updateComponentProps.apply(designer, _toConsumableArray(componentProps));
             }
           };
           var editor = React.createElement(editorType, editorProps);

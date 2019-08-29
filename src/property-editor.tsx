@@ -107,7 +107,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     let componentProps = selectedComponents.map(o => ({
                         componentId: o.props.id, propName: propEditorInfo.propName, value
                     }));
-                    designer.updateControlProp(...componentProps);
+                    designer.updateComponentProps(...componentProps);
                 }
             };
             let editor = React.createElement(editorType, editorProps);

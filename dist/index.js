@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.3.0
+ *  maishu-jueying v1.3.1
  *  https://github.com/ansiboy/jueying
  *  
  *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
@@ -10993,7 +10993,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 console.assert(componentData != null);
                 let propName = 'parentId';
                 this.designer.moveComponent(dd.sourceElement.id, host.props.id);
-                this.designer.updateControlProp({
+                this.designer.updateComponentProps({
                     componentId: "string", propName: "string", value: "any"
                 }); //dd.sourceElement.id, propName, this.props.id
             })
@@ -11284,7 +11284,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             }
             return arr;
         }
-        updateControlProp(...componentProps) {
+        updateComponentProp(componentId, propName, value) {
+            return this.updateComponentProps({ componentId, propName, value });
+        }
+        updateComponentProps(...componentProps) {
             let componentDatas = [];
             for (let i = 0; i < componentProps.length; i++) {
                 let { componentId, propName, value } = componentProps[i];
@@ -11779,7 +11782,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
                         let componentProps = selectedComponents.map(o => ({
                             componentId: o.props.id, propName: propEditorInfo.propName, value
                         }));
-                        designer.updateControlProp(...componentProps);
+                        designer.updateComponentProps(...componentProps);
                     }
                 };
                 let editor = React.createElement(editorType, editorProps);

@@ -495,7 +495,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
 
           _this4.designer.moveComponent(dd.sourceElement.id, host.props.id);
 
-          _this4.designer.updateControlProp({
+          _this4.designer.updateComponentProps({
             componentId: "string",
             propName: "string",
             value: "any"

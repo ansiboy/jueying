@@ -450,7 +450,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
 
                 let propName: keyof ComponentProps<any> = 'parentId'
                 this.designer.moveComponent(dd.sourceElement.id, host.props.id)
-                this.designer.updateControlProp({
+                this.designer.updateComponentProps({
                     componentId: "string", propName: "string", value: "any"
                 })//dd.sourceElement.id, propName, this.props.id
             })

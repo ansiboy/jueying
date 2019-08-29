@@ -75,8 +75,17 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
     }
 
     _createClass(PageDesigner, [{
-      key: "updateControlProp",
-      value: function updateControlProp() {
+      key: "updateComponentProp",
+      value: function updateComponentProp(componentId, propName, value) {
+        return this.updateComponentProps({
+          componentId: componentId,
+          propName: propName,
+          value: value
+        });
+      }
+    }, {
+      key: "updateComponentProps",
+      value: function updateComponentProps() {
         var componentDatas = [];
 
         for (var i = 0; i < arguments.length; i++) {

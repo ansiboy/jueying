@@ -58,7 +58,10 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             }
             return arr;
         }
-        updateControlProp(...componentProps) {
+        updateComponentProp(componentId, propName, value) {
+            return this.updateComponentProps({ componentId, propName, value });
+        }
+        updateComponentProps(...componentProps) {
             let componentDatas = [];
             for (let i = 0; i < componentProps.length; i++) {
                 let { componentId, propName, value } = componentProps[i];

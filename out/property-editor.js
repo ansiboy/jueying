@@ -83,7 +83,7 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
                         let componentProps = selectedComponents.map(o => ({
                             componentId: o.props.id, propName: propEditorInfo.propName, value
                         }));
-                        designer.updateControlProp(...componentProps);
+                        designer.updateComponentProps(...componentProps);
                     }
                 };
                 let editor = React.createElement(editorType, editorProps);

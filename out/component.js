@@ -303,7 +303,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
                 console.assert(componentData != null);
                 let propName = 'parentId';
                 this.designer.moveComponent(dd.sourceElement.id, host.props.id);
-                this.designer.updateControlProp({
+                this.designer.updateComponentProps({
                     componentId: "string", propName: "string", value: "any"
                 }); //dd.sourceElement.id, propName, this.props.id
             })
