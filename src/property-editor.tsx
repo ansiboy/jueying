@@ -178,7 +178,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     {g.group ? <div className="panel-heading">{proptDisplayNames[g.group] || g.group}</div> : null}
                     <div className="panel-body">
                         {g.editors.map((o, i) =>
-                            <div key={o.prop} className="form-group">
+                            <div key={o.prop} className="form-group clearfix">
                                 <label key={guid()}>{proptDisplayNames[o.prop] || o.prop}</label> {/* KEY 为 guid，强制更新 */}
                                 <div className="control">
                                     {o.editor}
