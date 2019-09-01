@@ -33,13 +33,16 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
         component: React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
         element: HTMLElement;
     }>;
-    private _root;
     static defaultProps: PageDesignerProps;
+    private components;
     constructor(props: PageDesignerProps);
     private static initPageData;
-    readonly root: React.ReactElement<any>;
+    allComponents(): React.Component[];
+    /** 页面数据 */
     readonly pageData: ComponentData;
+    /** 获取已选择了的组件编号 */
     readonly selectedComponentIds: string[];
+    /** 获取已选择了的组件 */
     readonly selectedComponents: ComponentData[];
     updateComponentProp(componentId: string, propName: string, value: any): any;
     updateComponentProps(...componentProps: {
@@ -86,7 +89,9 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
      */
     moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
     private removeComponentFrom;
-    findComponentData(controlId: string): ComponentData | null;
+    private travelComponentData;
+    findComponetsByTypeName(componentTypeName: string): React.Component<{}, {}, any>[];
+    findComponentData(componentId: string): ComponentData | null;
     private onKeyDown;
     protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
     static getDerivedStateFromProps(props: PageDesignerProps, state: any): Partial<PageDesignerProps>;

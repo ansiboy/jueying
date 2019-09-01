@@ -22,11 +22,25 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             this.componentAppend = common_1.Callback.create();
             this.componentUpdated = common_1.Callback.create();
             this.designtimeComponentDidMount = common_1.Callback.create();
+            this.components = {};
             PageDesigner.initPageData(props.pageData);
             this.state = { pageData: props.pageData };
             this.designtimeComponentDidMount.add((args) => {
                 console.log(`this:designer event:controlComponentDidMount`);
             });
+            let stack = [props.pageData];
+            while (stack.length > 0) {
+                let item = stack.shift();
+                let itemRef = item.props.ref;
+                item.props.ref = (e) => {
+                    // this._components.push(e);
+                    this.components[item.type] = this.components[item.type] || [];
+                    this.components[item.type].push(e);
+                    if (typeof itemRef == "function")
+                        itemRef(e);
+                };
+                stack.push(...item.children || []);
+            }
         }
         static initPageData(pageData) {
             if (pageData == null) {
@@ -35,15 +49,22 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             pageData.children = pageData.children || [];
             PageDesigner.nameComponent(pageData);
         }
-        get root() {
-            return this._root;
+        allComponents() {
+            let r = [];
+            for (let key in this.components) {
+                r.push(...this.components[key]);
+            }
+            return r;
         }
+        /** 页面数据 */
         get pageData() {
             return this.state.pageData;
         }
+        /** 获取已选择了的组件编号 */
         get selectedComponentIds() {
             return this.selectedComponents.map(o => o.props.id);
         }
+        /** 获取已选择了的组件 */
         get selectedComponents() {
             let arr = new Array();
             let stack = new Array();
@@ -134,8 +155,6 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
                 throw errors_1.Errors.argumentNull('parentId');
             if (!childComponent)
                 throw errors_1.Errors.argumentNull('childComponent');
-            // if(childComponentIndex!=null && childComponentIndex<0)
-            // throw Errors.ar
             PageDesigner.nameComponent(childComponent);
             let parentControl = this.findComponentData(parentId);
             if (parentControl == null)
@@ -281,22 +300,45 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             }
             return true;
         }
-        findComponentData(controlId) {
+        travelComponentData(pageData, callback) {
+            let stack = new Array();
+            stack.push(pageData);
+            let r = [];
+            // return new Promise((resolve, reject) => {
+            while (stack.length > 0) {
+                let item = stack.pop();
+                if (callback(item)) {
+                    r.push(item);
+                }
+                //===============================================
+                // 子元素有可能为字符串, 过滤出对象
+                let children = (item.children || []).filter(o => typeof o == 'object');
+                //===============================================
+                stack.push(...children);
+            }
+            return r;
+        }
+        findComponetsByTypeName(componentTypeName) {
+            let components = this.components[componentTypeName];
+            return components;
+        }
+        findComponentData(componentId) {
             let pageData = this.state.pageData;
             if (!pageData)
                 throw errors_1.Errors.pageDataIsNull();
-            let stack = new Array();
-            stack.push(pageData);
-            while (stack.length > 0) {
-                let item = stack.pop();
-                if (item == null)
-                    continue;
-                if (item.props.id == controlId)
-                    return item;
-                let children = (item.children || []).filter(o => typeof o == 'object');
-                stack.push(...children);
-            }
-            return null;
+            // let stack = new Array<ComponentData>();
+            // stack.push(pageData);
+            // while (stack.length > 0) {
+            //     let item = stack.pop();
+            //     if (item == null)
+            //         continue
+            //     if (item.props.id == componentId)
+            //         return item;
+            //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
+            //     stack.push(...children);
+            // }
+            let componentDatas = this.travelComponentData(pageData, (item) => item.props.id == componentId);
+            return componentDatas[0];
         }
         onKeyDown(e) {
             const DELETE_KEY_CODE = 46;
@@ -344,8 +386,8 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             let style = this.props.style;
             let result = React.createElement("div", { className: style_1.classNames.designer, tabIndex: 1, style: style, ref: e => this.element = e || this.element, onKeyDown: (e) => this.onKeyDown(e) },
                 React.createElement(component_1.DesignerContext.Provider, { value: { designer } }, (() => {
-                    this._root = pageData ? component_1.Component.createElement(pageData, this.createDesignTimeElement.bind(this)) : null;
-                    return this._root;
+                    let _root = pageData ? component_1.Component.createElement(pageData, this.createDesignTimeElement.bind(this)) : null;
+                    return _root;
                 })()));
             return result;
         }

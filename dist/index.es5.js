@@ -11830,6 +11830,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 "use strict";
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -11837,8 +11839,6 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11892,6 +11892,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       _this.componentAppend = common_1.Callback.create();
       _this.componentUpdated = common_1.Callback.create();
       _this.designtimeComponentDidMount = common_1.Callback.create();
+      _this.components = {};
       PageDesigner.initPageData(props.pageData);
       _this.state = {
         pageData: props.pageData
@@ -11901,10 +11902,45 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         console.log("this:designer event:controlComponentDidMount");
       });
 
+      var stack = [props.pageData];
+
+      var _loop = function _loop() {
+        var item = stack.shift();
+        var itemRef = item.props.ref;
+
+        item.props.ref = function (e) {
+          // this._components.push(e);
+          _this.components[item.type] = _this.components[item.type] || [];
+
+          _this.components[item.type].push(e);
+
+          if (typeof itemRef == "function") itemRef(e);
+        };
+
+        stack.push.apply(stack, _toConsumableArray(item.children || []));
+      };
+
+      while (stack.length > 0) {
+        _loop();
+      }
+
       return _this;
     }
 
     _createClass(PageDesigner, [{
+      key: "allComponents",
+      value: function allComponents() {
+        var r = [];
+
+        for (var key in this.components) {
+          r.push.apply(r, _toConsumableArray(this.components[key]));
+        }
+
+        return r;
+      }
+      /** 页面数据 */
+
+    }, {
       key: "updateComponentProp",
       value: function updateComponentProp(componentId, propName, value) {
         return this.updateComponentProps({
@@ -11977,9 +12013,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       /** 添加控件 */
       value: function appendComponent(parentId, childComponent, childComponentIndex) {
         if (!parentId) throw errors_1.Errors.argumentNull('parentId');
-        if (!childComponent) throw errors_1.Errors.argumentNull('childComponent'); // if(childComponentIndex!=null && childComponentIndex<0)
-        // throw Errors.ar
-
+        if (!childComponent) throw errors_1.Errors.argumentNull('childComponent');
         PageDesigner.nameComponent(childComponent);
         var parentControl = this.findComponentData(parentId);
         if (parentControl == null) throw new Error('Parent is not exists');
@@ -12170,24 +12204,56 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         return true;
       }
     }, {
-      key: "findComponentData",
-      value: function findComponentData(controlId) {
-        var pageData = this.state.pageData;
-        if (!pageData) throw errors_1.Errors.pageDataIsNull();
+      key: "travelComponentData",
+      value: function travelComponentData(pageData, callback) {
         var stack = new Array();
         stack.push(pageData);
+        var r = []; // return new Promise((resolve, reject) => {
 
         while (stack.length > 0) {
           var item = stack.pop();
-          if (item == null) continue;
-          if (item.props.id == controlId) return item;
+
+          if (callback(item)) {
+            r.push(item);
+          } //===============================================
+          // 子元素有可能为字符串, 过滤出对象
+
+
           var children = (item.children || []).filter(function (o) {
             return _typeof(o) == 'object';
-          });
+          }); //===============================================
+
           stack.push.apply(stack, _toConsumableArray(children));
         }
 
-        return null;
+        return r;
+      }
+    }, {
+      key: "findComponetsByTypeName",
+      value: function findComponetsByTypeName(componentTypeName) {
+        var components = this.components[componentTypeName];
+        return components;
+      }
+    }, {
+      key: "findComponentData",
+      value: function findComponentData(componentId) {
+        var pageData = this.state.pageData;
+        if (!pageData) throw errors_1.Errors.pageDataIsNull(); // let stack = new Array<ComponentData>();
+        // stack.push(pageData);
+        // while (stack.length > 0) {
+        //     let item = stack.pop();
+        //     if (item == null)
+        //         continue
+        //     if (item.props.id == componentId)
+        //         return item;
+        //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
+        //     stack.push(...children);
+        // }
+
+        var componentDatas = this.travelComponentData(pageData, function (item) {
+          return item.props.id == componentId;
+        });
+        return componentDatas[0];
       }
     }, {
       key: "onKeyDown",
@@ -12261,21 +12327,19 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
             designer: designer
           }
         }, function () {
-          _this4._root = pageData ? component_1.Component.createElement(pageData, _this4.createDesignTimeElement.bind(_this4)) : null;
-          return _this4._root;
+          var _root = pageData ? component_1.Component.createElement(pageData, _this4.createDesignTimeElement.bind(_this4)) : null;
+
+          return _root;
         }()));
         return result;
-      }
-    }, {
-      key: "root",
-      get: function get() {
-        return this._root;
       }
     }, {
       key: "pageData",
       get: function get() {
         return this.state.pageData;
       }
+      /** 获取已选择了的组件编号 */
+
     }, {
       key: "selectedComponentIds",
       get: function get() {
@@ -12283,6 +12347,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           return o.props.id;
         });
       }
+      /** 获取已选择了的组件 */
+
     }, {
       key: "selectedComponents",
       get: function get() {

@@ -41,10 +41,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     componentUpdated = Callback.create<ComponentData[]>()
 
     designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
-    // private namedComponents: { [key: string]: ComponentData } = {}
-    private _root: React.ReactElement<any>
 
     static defaultProps: PageDesignerProps = { pageData: null, wrapDesignTimeElement: true };
+    private components: { [typeName: string]: React.Component[] } = {};
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -54,6 +53,21 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.designtimeComponentDidMount.add((args) => {
             console.log(`this:designer event:controlComponentDidMount`)
         })
+
+        let stack = [props.pageData];
+        while (stack.length > 0) {
+            let item = stack.shift();
+            let itemRef = item.props.ref;
+            item.props.ref = (e) => {
+                // this._components.push(e);
+                this.components[item.type] = this.components[item.type] || [];
+                this.components[item.type].push(e);
+
+                if (typeof itemRef == "function")
+                    itemRef(e);
+            }
+            stack.push(...item.children || [])
+        }
     }
 
     private static initPageData(pageData: ComponentData) {
@@ -65,18 +79,25 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         PageDesigner.nameComponent(pageData)
     }
 
-    get root(): React.ReactElement<any> {
-        return this._root
+    allComponents(): React.Component[] {
+        let r: React.Component[] = [];
+        for (let key in this.components) {
+            r.push(...this.components[key]);
+        }
+        return r;
     }
 
+    /** 页面数据 */
     get pageData() {
         return this.state.pageData;
     }
 
+    /** 获取已选择了的组件编号 */
     get selectedComponentIds() {
         return this.selectedComponents.map(o => o.props.id)
     }
 
+    /** 获取已选择了的组件 */
     get selectedComponents(): ComponentData[] {
         let arr = new Array<ComponentData>()
         let stack = new Array<ComponentData>()
@@ -91,7 +112,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                 stack.push(children[i])
         }
 
-        return arr
+        return arr;
     }
 
     updateComponentProp(componentId: string, propName: string, value: any): any {
@@ -178,47 +199,51 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         }
     }
 
-    /** 添加控件 */
-    appendComponent(parentId: string, childComponent: ComponentData, childComponentIndex?: number) {
+    /** 
+     * 添加控件 
+     * @param parentId 父控件编号
+     * @param componentData 控件数据
+     * @param componentIndex 新添加组件在子组件中的次序 
+     */
+    appendComponent(parentId: string, componentData: ComponentData, componentIndex?: number) {
         if (!parentId) throw Errors.argumentNull('parentId');
-        if (!childComponent) throw Errors.argumentNull('childComponent');
-        // if(childComponentIndex!=null && childComponentIndex<0)
-        // throw Errors.ar
+        if (!componentData) throw Errors.argumentNull('childComponent');
 
-        PageDesigner.nameComponent(childComponent)
+        PageDesigner.nameComponent(componentData)
         let parentControl = this.findComponentData(parentId);
         if (parentControl == null)
             throw new Error('Parent is not exists')
 
         console.assert(parentControl != null);
         parentControl.children = parentControl.children || [];
-        if (childComponentIndex != null) {
-            parentControl.children.splice(childComponentIndex, 0, childComponent);
+        if (componentIndex != null) {
+            parentControl.children.splice(componentIndex, 0, componentData);
         }
         else {
-            parentControl.children.push(childComponent);
+            parentControl.children.push(componentData);
         }
 
         let { pageData } = this.state;
         this.setState({ pageData });
 
-        // parentControl.children.push(childControl);
-        // if (childIds)
-        //     this.sortChildren(parentId, childIds);
-        // else {
-        //     let { pageData } = this.state;
-        //     this.setState({ pageData });
-        // }
-
-        this.selectComponent(childComponent.props.id);
+        this.selectComponent(componentData.props.id);
         this.componentAppend.fire(this)
     }
 
-    /** 设置控件位置 */
+    /** 
+     * 设置控件位置
+     * @param componentId 组件编号
+     * @param position 组件位置 
+     */
     setComponentPosition(componentId: string, position: { left: number | string, top: number | string }) {
         return this.setComponentsPosition([{ componentId, position }])
     }
 
+    /** 
+     * 设置控件大小
+     * @param componentId 组件编号
+     * @param size 组件大小 
+     */
     setComponentSize(componentId: string, size: { width?: number | string, height?: number | string }) {
         console.assert(componentId != null)
         console.assert(size != null)
@@ -365,26 +390,52 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return true;
     }
 
-    findComponentData(controlId: string): ComponentData | null {
+    private travelComponentData(pageData: ComponentData, callback: (item: ComponentData) => boolean): ComponentData[] {
+        let stack = new Array<ComponentData>();
+        stack.push(pageData);
+        let r: ComponentData[] = [];
+        // return new Promise((resolve, reject) => {
+        while (stack.length > 0) {
+            let item = stack.pop();
+            if (callback(item)) {
+                r.push(item);
+            }
+            //===============================================
+            // 子元素有可能为字符串, 过滤出对象
+            let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
+            //===============================================
+            stack.push(...children);
+        }
+
+        return r;
+    }
+
+    findComponetsByTypeName(componentTypeName: string) {
+        let components = this.components[componentTypeName];
+        return components;
+    }
+
+    findComponentData(componentId: string): ComponentData | null {
         let pageData = this.state.pageData;
         if (!pageData)
             throw Errors.pageDataIsNull();
 
-        let stack = new Array<ComponentData>();
-        stack.push(pageData);
-        while (stack.length > 0) {
-            let item = stack.pop();
-            if (item == null)
-                continue
+        // let stack = new Array<ComponentData>();
+        // stack.push(pageData);
+        // while (stack.length > 0) {
+        //     let item = stack.pop();
+        //     if (item == null)
+        //         continue
 
-            if (item.props.id == controlId)
-                return item;
+        //     if (item.props.id == componentId)
+        //         return item;
 
-            let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
-            stack.push(...children);
-        }
+        //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
+        //     stack.push(...children);
+        // }
 
-        return null;
+        let componentDatas = this.travelComponentData(pageData, (item) => item.props.id == componentId)
+        return componentDatas[0];
     }
 
     private onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
@@ -450,8 +501,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             onKeyDown={(e) => this.onKeyDown(e)}>
             <DesignerContext.Provider value={{ designer }}>
                 {(() => {
-                    this._root = pageData ? Component.createElement(pageData, this.createDesignTimeElement.bind(this)) : null
-                    return this._root
+                    let _root = pageData ? Component.createElement(pageData, this.createDesignTimeElement.bind(this)) : null;
+                    return _root;
                 })()}
             </DesignerContext.Provider>
         </div >
