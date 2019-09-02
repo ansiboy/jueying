@@ -29,13 +29,21 @@ export interface ComponentWrapperDrapData extends DragDropData {
  * 1. 组件的移动
  * 2. 组件的拖放
  */
-export class ComponentWrapper extends React.Component<ComponentWrapperProps, any>{
+export class ComponentWrapper extends React.Component<ComponentWrapperProps, { error: Error }>{
     private handler: HTMLElement;
     private element: HTMLElement;
     private static isDrag: boolean = false;
 
     constructor(props) {
         super(props);
+    }
+
+    componentDidCatch(error, info) {
+        // Display fallback UI
+        this.setState({ error });
+        // You can also log the error to an error reporting service
+        //   logErrorToMyService(error, info);
+        debugger
     }
 
     designtimeBehavior(element: HTMLElement, attr: { container?: boolean, movable?: boolean }) {
@@ -269,6 +277,15 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, any
     }
 
     render() {
+
+        let { error } = this.state || {} as this["state"];
+        if (error) {
+            return <div className="error">
+                <div>{error.message}</div>
+                <div>{error.stack}</div>
+            </div>
+        }
+
         let attr = this.props.source.attr
         let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
         if (!shouldWrapper) {

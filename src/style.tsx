@@ -170,6 +170,10 @@ element.innerHTML = `
                 padding-top: 200px;
                 text-align: center;
             }
+            .${classNames.designer} .error,
+            .${classNames.editorPanel} .error {
+                color: red;
+            }
             .${classNames.componentPanel} {
                 background: white;
                 color: black;

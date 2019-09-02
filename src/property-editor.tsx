@@ -14,11 +14,10 @@
 
 import React = require("react");
 import { PageDesigner } from "./page-designer";
-import { PropEditorInfo, Component } from "./component";
+import { PropEditorInfo, Component, ErrorBoundary } from "./component";
 import { proptDisplayNames, guid } from "./common";
 import { PropEditorProps } from "./prop-editor";
 import { Errors } from "./errors";
-
 
 
 interface EditorProps extends React.Props<PropertyEditor> {
@@ -101,7 +100,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
             let value = this.propValue(propName, commonFlatProps);
 
             let editorProps: PropEditorProps<any> = {
-                value: value, 
+                value: value,
                 editComponents: selectedComponents,
                 updateComponentProp: (value) => {
                     let componentProps = selectedComponents.map(o => ({
@@ -151,6 +150,9 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         return obj
     }
 
+    componentDidCatch(error, info) {
+        debugger;
+    }
 
     render() {
         let { designer } = this.state
@@ -181,7 +183,9 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                             <div key={o.prop} className="form-group clearfix">
                                 <label key={guid()}>{proptDisplayNames[o.prop] || o.prop}</label> {/* KEY 为 guid，强制更新 */}
                                 <div className="control">
-                                    {o.editor}
+                                    <ErrorBoundary>
+                                        {o.editor}
+                                    </ErrorBoundary>
                                 </div>
                             </div>
                         )}
