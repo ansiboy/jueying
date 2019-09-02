@@ -180,37 +180,39 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
     }, {
       key: "appendComponent",
 
-      /** 添加控件 */
-      value: function appendComponent(parentId, childComponent, childComponentIndex) {
+      /**
+       * 添加控件
+       * @param parentId 父控件编号
+       * @param componentData 控件数据
+       * @param componentIndex 新添加组件在子组件中的次序
+       */
+      value: function appendComponent(parentId, componentData, componentIndex) {
         if (!parentId) throw errors_1.Errors.argumentNull('parentId');
-        if (!childComponent) throw errors_1.Errors.argumentNull('childComponent');
-        PageDesigner.nameComponent(childComponent);
+        if (!componentData) throw errors_1.Errors.argumentNull('childComponent');
+        PageDesigner.nameComponent(componentData);
         var parentControl = this.findComponentData(parentId);
         if (parentControl == null) throw new Error('Parent is not exists');
         console.assert(parentControl != null);
         parentControl.children = parentControl.children || [];
 
-        if (childComponentIndex != null) {
-          parentControl.children.splice(childComponentIndex, 0, childComponent);
+        if (componentIndex != null) {
+          parentControl.children.splice(componentIndex, 0, componentData);
         } else {
-          parentControl.children.push(childComponent);
+          parentControl.children.push(componentData);
         }
 
         var pageData = this.state.pageData;
         this.setState({
           pageData: pageData
-        }); // parentControl.children.push(childControl);
-        // if (childIds)
-        //     this.sortChildren(parentId, childIds);
-        // else {
-        //     let { pageData } = this.state;
-        //     this.setState({ pageData });
-        // }
-
-        this.selectComponent(childComponent.props.id);
+        });
+        this.selectComponent(componentData.props.id);
         this.componentAppend.fire(this);
       }
-      /** 设置控件位置 */
+      /**
+       * 设置控件位置
+       * @param componentId 组件编号
+       * @param position 组件位置
+       */
 
     }, {
       key: "setComponentPosition",
@@ -220,6 +222,12 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
           position: position
         }]);
       }
+      /**
+       * 设置控件大小
+       * @param componentId 组件编号
+       * @param size 组件大小
+       */
+
     }, {
       key: "setComponentSize",
       value: function setComponentSize(componentId, size) {

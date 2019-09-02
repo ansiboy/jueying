@@ -11,6 +11,13 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
         constructor(props) {
             super(props);
         }
+        componentDidCatch(error, info) {
+            // Display fallback UI
+            this.setState({ error });
+            // You can also log the error to an error reporting service
+            //   logErrorToMyService(error, info);
+            debugger;
+        }
         designtimeBehavior(element, attr) {
             if (!element)
                 throw errors_1.Errors.argumentNull('element');
@@ -208,6 +215,12 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
             this.designtimeBehavior(this.element, attr);
         }
         render() {
+            let { error } = this.state || {};
+            if (error) {
+                return React.createElement("div", { className: "error" },
+                    React.createElement("div", null, error.message),
+                    React.createElement("div", null, error.stack));
+            }
             let attr = this.props.source.attr;
             let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage);
             if (!shouldWrapper) {

@@ -51,6 +51,17 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
     }
 
     _createClass(ComponentWrapper, [{
+      key: "componentDidCatch",
+      value: function componentDidCatch(error, info) {
+        // Display fallback UI
+        this.setState({
+          error: error
+        }); // You can also log the error to an error reporting service
+        //   logErrorToMyService(error, info);
+
+        debugger;
+      }
+    }, {
       key: "designtimeBehavior",
       value: function designtimeBehavior(element, attr) {
         if (!element) throw errors_1.Errors.argumentNull('element');
@@ -97,6 +108,15 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
       key: "render",
       value: function render() {
         var _this = this;
+
+        var _ref = this.state || {},
+            error = _ref.error;
+
+        if (error) {
+          return React.createElement("div", {
+            className: "error"
+          }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
+        }
 
         var attr = this.props.source.attr;
         var shouldWrapper = attr.resize || typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage;

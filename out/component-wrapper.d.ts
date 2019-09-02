@@ -20,11 +20,14 @@ export interface ComponentWrapperDrapData extends DragDropData {
  * 1. 组件的移动
  * 2. 组件的拖放
  */
-export declare class ComponentWrapper extends React.Component<ComponentWrapperProps, any> {
+export declare class ComponentWrapper extends React.Component<ComponentWrapperProps, {
+    error: Error;
+}> {
     private handler;
     private element;
     private static isDrag;
     constructor(props: any);
+    componentDidCatch(error: any, info: any): void;
     designtimeBehavior(element: HTMLElement, attr: {
         container?: boolean;
         movable?: boolean;

@@ -601,5 +601,53 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
   }(React.Component);
 
   exports.PageView = PageView;
+
+  var ErrorBoundary =
+  /*#__PURE__*/
+  function (_React$Component4) {
+    _inherits(ErrorBoundary, _React$Component4);
+
+    function ErrorBoundary(props) {
+      var _this7;
+
+      _classCallCheck(this, ErrorBoundary);
+
+      _this7 = _possibleConstructorReturn(this, _getPrototypeOf(ErrorBoundary).call(this, props));
+      _this7.state = {};
+      return _this7;
+    }
+
+    _createClass(ErrorBoundary, [{
+      key: "componentDidCatch",
+      value: function componentDidCatch(error, info) {
+        // Display fallback UI
+        this.setState({
+          error: error
+        }); // You can also log the error to an error reporting service
+        //   logErrorToMyService(error, info);
+
+        debugger;
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _ref = this.state || {},
+            error = _ref.error;
+
+        if (error) {
+          // You can render any custom fallback UI
+          return React.createElement("div", {
+            className: "error"
+          }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
+        }
+
+        return this.props.children;
+      }
+    }]);
+
+    return ErrorBoundary;
+  }(React.Component);
+
+  exports.ErrorBoundary = ErrorBoundary;
 });
 //# sourceMappingURL=component.js.map

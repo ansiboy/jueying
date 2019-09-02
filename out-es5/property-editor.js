@@ -195,6 +195,11 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
         return obj;
       }
     }, {
+      key: "componentDidCatch",
+      value: function componentDidCatch(error, info) {
+        debugger;
+      }
+    }, {
       key: "render",
       value: function render() {
         var designer = this.state.designer;
@@ -249,7 +254,7 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
               key: common_1.guid()
             }, common_1.proptDisplayNames[o.prop] || o.prop), " ", React.createElement("div", {
               className: "control"
-            }, o.editor));
+            }, React.createElement(component_1.ErrorBoundary, null, o.editor)));
           })));
         }));
       }

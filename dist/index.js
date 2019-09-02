@@ -10386,6 +10386,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/// <reference p
         constructor(props) {
             super(props);
         }
+        componentDidCatch(error, info) {
+            // Display fallback UI
+            this.setState({ error });
+            // You can also log the error to an error reporting service
+            //   logErrorToMyService(error, info);
+            debugger;
+        }
         designtimeBehavior(element, attr) {
             if (!element)
                 throw errors_1.Errors.argumentNull('element');
@@ -10583,6 +10590,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/// <reference p
             this.designtimeBehavior(this.element, attr);
         }
         render() {
+            let { error } = this.state || {};
+            if (error) {
+                return React.createElement("div", { className: "error" },
+                    React.createElement("div", null, error.message),
+                    React.createElement("div", null, error.stack));
+            }
             let attr = this.props.source.attr;
             let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage);
             if (!shouldWrapper) {
@@ -11058,6 +11071,30 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }
     }
     exports.PageView = PageView;
+    class ErrorBoundary extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {};
+        }
+        componentDidCatch(error, info) {
+            // Display fallback UI
+            this.setState({ error });
+            // You can also log the error to an error reporting service
+            //   logErrorToMyService(error, info);
+            debugger;
+        }
+        render() {
+            let { error } = this.state || {};
+            if (error) {
+                // You can render any custom fallback UI
+                return React.createElement("div", { className: "error" },
+                    React.createElement("div", null, error.message),
+                    React.createElement("div", null, error.stack));
+            }
+            return this.props.children;
+        }
+    }
+    exports.ErrorBoundary = ErrorBoundary;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 //# sourceMappingURL=component.js.map
@@ -11375,40 +11412,47 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
                 PageDesigner.nameComponent(component.children[i]);
             }
         }
-        /** 添加控件 */
-        appendComponent(parentId, childComponent, childComponentIndex) {
+        /**
+         * 添加控件
+         * @param parentId 父控件编号
+         * @param componentData 控件数据
+         * @param componentIndex 新添加组件在子组件中的次序
+         */
+        appendComponent(parentId, componentData, componentIndex) {
             if (!parentId)
                 throw errors_1.Errors.argumentNull('parentId');
-            if (!childComponent)
+            if (!componentData)
                 throw errors_1.Errors.argumentNull('childComponent');
-            PageDesigner.nameComponent(childComponent);
+            PageDesigner.nameComponent(componentData);
             let parentControl = this.findComponentData(parentId);
             if (parentControl == null)
                 throw new Error('Parent is not exists');
             console.assert(parentControl != null);
             parentControl.children = parentControl.children || [];
-            if (childComponentIndex != null) {
-                parentControl.children.splice(childComponentIndex, 0, childComponent);
+            if (componentIndex != null) {
+                parentControl.children.splice(componentIndex, 0, componentData);
             }
             else {
-                parentControl.children.push(childComponent);
+                parentControl.children.push(componentData);
             }
             let { pageData } = this.state;
             this.setState({ pageData });
-            // parentControl.children.push(childControl);
-            // if (childIds)
-            //     this.sortChildren(parentId, childIds);
-            // else {
-            //     let { pageData } = this.state;
-            //     this.setState({ pageData });
-            // }
-            this.selectComponent(childComponent.props.id);
+            this.selectComponent(componentData.props.id);
             this.componentAppend.fire(this);
         }
-        /** 设置控件位置 */
+        /**
+         * 设置控件位置
+         * @param componentId 组件编号
+         * @param position 组件位置
+         */
         setComponentPosition(componentId, position) {
             return this.setComponentsPosition([{ componentId, position }]);
         }
+        /**
+         * 设置控件大小
+         * @param componentId 组件编号
+         * @param size 组件大小
+         */
         setComponentSize(componentId, size) {
             console.assert(componentId != null);
             console.assert(size != null);
@@ -11859,6 +11903,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             }
             return obj;
         }
+        componentDidCatch(error, info) {
+            debugger;
+        }
         render() {
             let { designer } = this.state;
             let editors = this.getEditors(designer);
@@ -11881,7 +11928,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
                 React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
                     React.createElement("label", { key: common_1.guid() }, common_1.proptDisplayNames[o.prop] || o.prop),
                     " ",
-                    React.createElement("div", { className: "control" }, o.editor)))))));
+                    React.createElement("div", { className: "control" },
+                        React.createElement(component_1.ErrorBoundary, null, o.editor))))))));
         }
         get element() {
             return this._element;
@@ -12068,6 +12116,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             .${exports.classNames.editorPanel} .empty {
                 padding-top: 200px;
                 text-align: center;
+            }
+            .${exports.classNames.designer} .error,
+            .${exports.classNames.editorPanel} .error {
+                color: red;
             }
             .${exports.classNames.componentPanel} {
                 background: white;

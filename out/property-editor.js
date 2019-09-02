@@ -118,6 +118,9 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
             }
             return obj;
         }
+        componentDidCatch(error, info) {
+            debugger;
+        }
         render() {
             let { designer } = this.state;
             let editors = this.getEditors(designer);
@@ -140,7 +143,8 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
                 React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
                     React.createElement("label", { key: common_1.guid() }, common_1.proptDisplayNames[o.prop] || o.prop),
                     " ",
-                    React.createElement("div", { className: "control" }, o.editor)))))));
+                    React.createElement("div", { className: "control" },
+                        React.createElement(component_1.ErrorBoundary, null, o.editor))))))));
         }
         get element() {
             return this._element;

@@ -125,4 +125,11 @@ export declare class PageView extends React.Component<{
     constructor(props: any);
     render(): React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
 }
+export declare class ErrorBoundary extends React.Component<{}, {
+    error?: Error;
+}> {
+    constructor(props: any);
+    componentDidCatch(error: any, info: any): void;
+    render(): {};
+}
 export {};

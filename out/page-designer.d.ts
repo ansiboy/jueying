@@ -56,13 +56,27 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
      * @param component
      */
     private static nameComponent;
-    /** 添加控件 */
-    appendComponent(parentId: string, childComponent: ComponentData, childComponentIndex?: number): void;
-    /** 设置控件位置 */
+    /**
+     * 添加控件
+     * @param parentId 父控件编号
+     * @param componentData 控件数据
+     * @param componentIndex 新添加组件在子组件中的次序
+     */
+    appendComponent(parentId: string, componentData: ComponentData, componentIndex?: number): void;
+    /**
+     * 设置控件位置
+     * @param componentId 组件编号
+     * @param position 组件位置
+     */
     setComponentPosition(componentId: string, position: {
         left: number | string;
         top: number | string;
     }): void;
+    /**
+     * 设置控件大小
+     * @param componentId 组件编号
+     * @param size 组件大小
+     */
     setComponentSize(componentId: string, size: {
         width?: number | string;
         height?: number | string;

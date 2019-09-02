@@ -27,6 +27,7 @@ export declare class PropertyEditor extends React.Component<EditorProps, EditorS
     private getEditors;
     private propValue;
     private flatProps;
+    componentDidCatch(error: any, info: any): void;
     render(): JSX.Element;
     readonly element: HTMLElement;
 }

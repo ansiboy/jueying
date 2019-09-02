@@ -166,6 +166,10 @@ define(["require", "exports", "./errors"], function (require, exports, errors_1)
                 padding-top: 200px;
                 text-align: center;
             }
+            .${exports.classNames.designer} .error,
+            .${exports.classNames.editorPanel} .error {
+                color: red;
+            }
             .${exports.classNames.componentPanel} {
                 background: white;
                 color: black;
