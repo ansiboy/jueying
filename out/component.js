@@ -139,7 +139,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
                             childComponents.push(context.components[i]);
                         }
                     }
-                    else {
+                    else if (e != null) {
                         context.components.push(e);
                         context.componentTypes.push(typeof type == "string" ? type : type.name);
                     }

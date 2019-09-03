@@ -11176,7 +11176,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
                 var childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
                 childComponents.push(context.components[i]);
               }
-            } else {
+            } else if (e != null) {
               context.components.push(e);
               context.componentTypes.push(typeof type == "string" ? type : type.name);
             }
@@ -11684,7 +11684,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           ref: function ref(e) {
             return _this2.editor = e || _this2.editor;
           },
-          empty: empty
+          empty: empty,
+          customRender: this.props.customRender
         }));
       }
     }, {
@@ -11949,6 +11950,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
   function (_React$Component) {
     _inherits(PageDesigner, _React$Component);
 
+    // private components: { [typeName: string]: React.Component[] } = {};
     function PageDesigner(props) {
       var _this;
 
@@ -11960,37 +11962,16 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       _this.componentAppend = common_1.Callback.create();
       _this.componentUpdated = common_1.Callback.create();
       _this.designtimeComponentDidMount = common_1.Callback.create();
-      _this.components = {};
-      PageDesigner.initPageData(props.pageData);
+      var components = {};
+      PageDesigner.initPageData(props.pageData, components);
       _this.state = {
-        pageData: props.pageData
+        pageData: props.pageData,
+        components: components
       };
 
       _this.designtimeComponentDidMount.add(function (args) {
         console.log("this:designer event:controlComponentDidMount");
       });
-
-      var stack = [props.pageData];
-
-      var _loop = function _loop() {
-        var item = stack.shift();
-        var itemRef = item.props.ref;
-
-        item.props.ref = function (e) {
-          // this._components.push(e);
-          _this.components[item.type] = _this.components[item.type] || [];
-
-          _this.components[item.type].push(e);
-
-          if (typeof itemRef == "function") itemRef(e);
-        };
-
-        stack.push.apply(stack, _toConsumableArray(item.children || []));
-      };
-
-      while (stack.length > 0) {
-        _loop();
-      }
 
       return _this;
     }
@@ -12000,8 +11981,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       value: function allComponents() {
         var r = [];
 
-        for (var key in this.components) {
-          r.push.apply(r, _toConsumableArray(this.components[key]));
+        for (var key in this.state.components) {
+          r.push.apply(r, _toConsumableArray(this.state.components[key]));
         }
 
         return r;
@@ -12280,34 +12261,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         return true;
       }
     }, {
-      key: "travelComponentData",
-      value: function travelComponentData(pageData, callback) {
-        var stack = new Array();
-        stack.push(pageData);
-        var r = []; // return new Promise((resolve, reject) => {
-
-        while (stack.length > 0) {
-          var item = stack.pop();
-
-          if (callback(item)) {
-            r.push(item);
-          } //===============================================
-          // 子元素有可能为字符串, 过滤出对象
-
-
-          var children = (item.children || []).filter(function (o) {
-            return _typeof(o) == 'object';
-          }); //===============================================
-
-          stack.push.apply(stack, _toConsumableArray(children));
-        }
-
-        return r;
-      }
-    }, {
       key: "findComponetsByTypeName",
       value: function findComponetsByTypeName(componentTypeName) {
-        var components = this.components[componentTypeName];
+        var components = this.state.components[componentTypeName];
         return components;
       }
     }, {
@@ -12326,7 +12282,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         //     stack.push(...children);
         // }
 
-        var componentDatas = this.travelComponentData(pageData, function (item) {
+        var componentDatas = PageDesigner.travelComponentData(pageData, function (item) {
           return item.props.id == componentId;
         });
         return componentDatas[0];
@@ -12375,11 +12331,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
             children: children
           }
         }));
-      } // componentWillReceiveProps(props: PageDesignerProps) {
-      //     PageDesigner.initPageData(props.pageData)
-      //     this.setState({ pageData: props.pageData });
-      // }
-
+      }
     }, {
       key: "render",
       value: function render() {
@@ -12445,14 +12397,54 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         return arr;
       }
     }], [{
+      key: "setComponetRefProp",
+      value: function setComponetRefProp(pageData, components) {
+        //=========================================================
+        // 纪录当前 pageData 控件 ID
+        var componentIds = {}; //=========================================================
+
+        PageDesigner.travelComponentData(pageData).forEach(function (item) {
+          console.assert(item.props != null && item.props.id != null);
+          componentIds[item.type] = componentIds[item.type] || [];
+          componentIds[item.type].push(item.props["id"]);
+          var itemRef = item.props.ref;
+
+          item.props.ref = function (e) {
+            if (e != null) {
+              components[item.type] = components[item.type] || [];
+              components[item.type].push(e);
+            }
+
+            if (typeof itemRef == "function") itemRef(e);
+          };
+        }); //=========================================================
+        // 仅保留 componentIds 中的控件 
+
+        var names = Object.getOwnPropertyNames(components);
+
+        var _loop = function _loop(i) {
+          var typename = names[i];
+          var ids = componentIds[typename] || [];
+          components[typename] = (components[typename] || []).filter(function (o) {
+            return ids.indexOf(o["id"] || o.props["id"]) >= 0;
+          });
+        };
+
+        for (var i = 0; i < names.length; i++) {
+          _loop(i);
+        } //=========================================================
+
+      }
+    }, {
       key: "initPageData",
-      value: function initPageData(pageData) {
+      value: function initPageData(pageData, components) {
         if (pageData == null) {
           return;
         }
 
         pageData.children = pageData.children || [];
         PageDesigner.nameComponent(pageData);
+        PageDesigner.setComponetRefProp(pageData, components);
       }
     }, {
       key: "nameComponent",
@@ -12484,9 +12476,38 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         }
       }
     }, {
+      key: "travelComponentData",
+      value: function travelComponentData(pageData, filter) {
+        var stack = new Array();
+        stack.push(pageData);
+        var r = []; // return new Promise((resolve, reject) => {
+
+        filter = filter || function () {
+          return true;
+        };
+
+        while (stack.length > 0) {
+          var item = stack.shift();
+
+          if (filter(item)) {
+            r.push(item);
+          } //===============================================
+          // 子元素有可能为字符串, 过滤出对象
+
+
+          var children = (item.children || []).filter(function (o) {
+            return _typeof(o) == 'object';
+          }); //===============================================
+
+          stack.push.apply(stack, _toConsumableArray(children));
+        }
+
+        return r;
+      }
+    }, {
       key: "getDerivedStateFromProps",
       value: function getDerivedStateFromProps(props, state) {
-        PageDesigner.initPageData(props.pageData);
+        PageDesigner.initPageData(props.pageData, state.components);
         return {
           pageData: props.pageData
         };
@@ -12937,32 +12958,11 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         var obj = props;
 
         for (var i = 0; i < navPropsNames.length; i++) {
-          obj = props[navPropsNames[i]];
+          obj = obj[navPropsNames[i]];
           if (obj == null) return null;
         }
 
         return obj;
-      }
-    }, {
-      key: "flatProps",
-      value: function flatProps(props, baseName) {
-        baseName = baseName ? baseName + '.' : '';
-        var obj = {};
-
-        for (var key in props) {
-          if (_typeof(props[key]) != 'object') {
-            obj[baseName + key] = props[key];
-          } else {
-            Object.assign(obj, this.flatProps(props[key], key));
-          }
-        }
-
-        return obj;
-      }
-    }, {
-      key: "componentDidCatch",
-      value: function componentDidCatch(error, info) {
-        debugger;
       }
     }, {
       key: "render",
@@ -12975,6 +12975,19 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           return React.createElement("div", {
             className: "text-center"
           }, empty);
+        }
+
+        if (this.props.customRender) {
+          var items = editors.map(function (o) {
+            return Object.assign({
+              displayName: common_1.proptDisplayNames[o.prop] || o.prop
+            }, o);
+          });
+          var r = this.props.customRender(designer.selectedComponents, items);
+
+          if (r != null) {
+            return r;
+          }
         }
 
         var groupEditorsArray = [];
@@ -13015,9 +13028,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
             return React.createElement("div", {
               key: o.prop,
               className: "form-group clearfix"
-            }, React.createElement("label", {
-              key: common_1.guid()
-            }, common_1.proptDisplayNames[o.prop] || o.prop), " ", React.createElement("div", {
+            }, React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
               className: "control"
             }, React.createElement(component_1.ErrorBoundary, null, o.editor)));
           })));

@@ -72,7 +72,8 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
           ref: function ref(e) {
             return _this2.editor = e || _this2.editor;
           },
-          empty: empty
+          empty: empty,
+          customRender: this.props.customRender
         }));
       }
     }, {

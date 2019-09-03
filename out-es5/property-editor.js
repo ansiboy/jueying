@@ -172,32 +172,11 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
         var obj = props;
 
         for (var i = 0; i < navPropsNames.length; i++) {
-          obj = props[navPropsNames[i]];
+          obj = obj[navPropsNames[i]];
           if (obj == null) return null;
         }
 
         return obj;
-      }
-    }, {
-      key: "flatProps",
-      value: function flatProps(props, baseName) {
-        baseName = baseName ? baseName + '.' : '';
-        var obj = {};
-
-        for (var key in props) {
-          if (_typeof(props[key]) != 'object') {
-            obj[baseName + key] = props[key];
-          } else {
-            Object.assign(obj, this.flatProps(props[key], key));
-          }
-        }
-
-        return obj;
-      }
-    }, {
-      key: "componentDidCatch",
-      value: function componentDidCatch(error, info) {
-        debugger;
       }
     }, {
       key: "render",
@@ -210,6 +189,19 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
           return React.createElement("div", {
             className: "text-center"
           }, empty);
+        }
+
+        if (this.props.customRender) {
+          var items = editors.map(function (o) {
+            return Object.assign({
+              displayName: common_1.proptDisplayNames[o.prop] || o.prop
+            }, o);
+          });
+          var r = this.props.customRender(designer.selectedComponents, items);
+
+          if (r != null) {
+            return r;
+          }
         }
 
         var groupEditorsArray = [];
@@ -250,9 +242,7 @@ define(["require", "exports", "react", "./component", "./common", "./errors"], f
             return React.createElement("div", {
               key: o.prop,
               className: "form-group clearfix"
-            }, React.createElement("label", {
-              key: common_1.guid()
-            }, common_1.proptDisplayNames[o.prop] || o.prop), " ", React.createElement("div", {
+            }, React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
               className: "control"
             }, React.createElement(component_1.ErrorBoundary, null, o.editor)));
           })));

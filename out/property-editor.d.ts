@@ -13,9 +13,16 @@
  ********************************************************************************/
 import React = require("react");
 import { PageDesigner } from "./page-designer";
-interface EditorProps extends React.Props<PropertyEditor> {
+import { ComponentData } from "./models";
+export interface EditorProps extends React.Props<PropertyEditor> {
     designer: PageDesigner;
     empty: string | JSX.Element;
+    customRender?: (editComponents: ComponentData[], items: {
+        group: string;
+        prop: string;
+        displayName: string;
+        editor: React.ReactElement<any>;
+    }[]) => JSX.Element;
 }
 interface EditorState {
     designer: PageDesigner | null;
@@ -26,8 +33,6 @@ export declare class PropertyEditor extends React.Component<EditorProps, EditorS
     static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState>;
     private getEditors;
     private propValue;
-    private flatProps;
-    componentDidCatch(error: any, info: any): void;
     render(): JSX.Element;
     readonly element: HTMLElement;
 }

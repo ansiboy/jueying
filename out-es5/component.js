@@ -230,7 +230,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
                 var childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
                 childComponents.push(context.components[i]);
               }
-            } else {
+            } else if (e != null) {
               context.components.push(e);
               context.componentTypes.push(typeof type == "string" ? type : type.name);
             }

@@ -22,6 +22,9 @@ export interface PageDesignerProps extends React.Props<PageDesigner> {
 }
 export interface PageDesignerState {
     pageData: ComponentData | null;
+    components: {
+        [typeName: string]: React.Component[];
+    };
 }
 export declare class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private element;
@@ -34,8 +37,8 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
         element: HTMLElement;
     }>;
     static defaultProps: PageDesignerProps;
-    private components;
     constructor(props: PageDesignerProps);
+    private static setComponetRefProp;
     private static initPageData;
     allComponents(): React.Component[];
     /** 页面数据 */
@@ -103,11 +106,11 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
      */
     moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
     private removeComponentFrom;
-    private travelComponentData;
+    private static travelComponentData;
     findComponetsByTypeName(componentTypeName: string): React.Component<{}, {}, any>[];
     findComponentData(componentId: string): ComponentData | null;
     private onKeyDown;
     protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
-    static getDerivedStateFromProps(props: PageDesignerProps, state: any): Partial<PageDesignerProps>;
+    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState>;
     render(): JSX.Element;
 }

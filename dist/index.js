@@ -10842,7 +10842,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                             childComponents.push(context.components[i]);
                         }
                     }
-                    else {
+                    else if (e != null) {
                         context.components.push(e);
                         context.componentTypes.push(typeof type == "string" ? type : type.name);
                     }
@@ -11144,7 +11144,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             empty = empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
             let { designer } = this.state;
             return React.createElement("div", { className: `${style_1.classNames.editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
-                React.createElement(property_editor_1.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
+                React.createElement(property_editor_1.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty, customRender: this.props.customRender }));
         }
     }
     exports.EditorPanel = EditorPanel;
@@ -11278,6 +11278,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class PageDesigner extends React.Component {
+        // private components: { [typeName: string]: React.Component[] } = {};
         constructor(props) {
             super(props);
             this.componentSelected = common_1.Callback.create();
@@ -11285,37 +11286,54 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             this.componentAppend = common_1.Callback.create();
             this.componentUpdated = common_1.Callback.create();
             this.designtimeComponentDidMount = common_1.Callback.create();
-            this.components = {};
-            PageDesigner.initPageData(props.pageData);
-            this.state = { pageData: props.pageData };
+            let components = {};
+            PageDesigner.initPageData(props.pageData, components);
+            this.state = { pageData: props.pageData, components };
             this.designtimeComponentDidMount.add((args) => {
                 console.log(`this:designer event:controlComponentDidMount`);
             });
-            let stack = [props.pageData];
-            while (stack.length > 0) {
-                let item = stack.shift();
+        }
+        static setComponetRefProp(pageData, components) {
+            //=========================================================
+            // 纪录当前 pageData 控件 ID
+            let componentIds = {};
+            //=========================================================
+            PageDesigner.travelComponentData(pageData).forEach(item => {
+                console.assert(item.props != null && item.props.id != null);
+                componentIds[item.type] = componentIds[item.type] || [];
+                componentIds[item.type].push(item.props["id"]);
                 let itemRef = item.props.ref;
                 item.props.ref = (e) => {
-                    // this._components.push(e);
-                    this.components[item.type] = this.components[item.type] || [];
-                    this.components[item.type].push(e);
+                    if (e != null) {
+                        components[item.type] = components[item.type] || [];
+                        components[item.type].push(e);
+                    }
                     if (typeof itemRef == "function")
                         itemRef(e);
                 };
-                stack.push(...item.children || []);
+            });
+            //=========================================================
+            // 仅保留 componentIds 中的控件 
+            let names = Object.getOwnPropertyNames(components);
+            for (let i = 0; i < names.length; i++) {
+                let typename = names[i];
+                let ids = componentIds[typename] || [];
+                components[typename] = (components[typename] || []).filter(o => ids.indexOf(o["id"] || o.props["id"]) >= 0);
             }
+            //=========================================================
         }
-        static initPageData(pageData) {
+        static initPageData(pageData, components) {
             if (pageData == null) {
                 return;
             }
             pageData.children = pageData.children || [];
             PageDesigner.nameComponent(pageData);
+            PageDesigner.setComponetRefProp(pageData, components);
         }
         allComponents() {
             let r = [];
-            for (let key in this.components) {
-                r.push(...this.components[key]);
+            for (let key in this.state.components) {
+                r.push(...this.state.components[key]);
             }
             return r;
         }
@@ -11570,14 +11588,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             }
             return true;
         }
-        travelComponentData(pageData, callback) {
+        static travelComponentData(pageData, filter) {
             let stack = new Array();
             stack.push(pageData);
             let r = [];
             // return new Promise((resolve, reject) => {
+            filter = filter || (() => true);
             while (stack.length > 0) {
-                let item = stack.pop();
-                if (callback(item)) {
+                let item = stack.shift();
+                if (filter(item)) {
                     r.push(item);
                 }
                 //===============================================
@@ -11589,7 +11608,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             return r;
         }
         findComponetsByTypeName(componentTypeName) {
-            let components = this.components[componentTypeName];
+            let components = this.state.components[componentTypeName];
             return components;
         }
         findComponentData(componentId) {
@@ -11607,7 +11626,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
             //     stack.push(...children);
             // }
-            let componentDatas = this.travelComponentData(pageData, (item) => item.props.id == componentId);
+            let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.props.id == componentId);
             return componentDatas[0];
         }
         onKeyDown(e) {
@@ -11642,12 +11661,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             wrapperProps.className = className;
             return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, { designer: this, source: { type, attr, props, children } }));
         }
-        // componentWillReceiveProps(props: PageDesignerProps) {
-        //     PageDesigner.initPageData(props.pageData)
-        //     this.setState({ pageData: props.pageData });
-        // }
         static getDerivedStateFromProps(props, state) {
-            PageDesigner.initPageData(props.pageData);
+            PageDesigner.initPageData(props.pageData, state.components);
             return { pageData: props.pageData };
         }
         render() {
@@ -11884,27 +11899,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             let navPropsNames = propName.split(".");
             let obj = props;
             for (let i = 0; i < navPropsNames.length; i++) {
-                obj = props[navPropsNames[i]];
+                obj = obj[navPropsNames[i]];
                 if (obj == null)
                     return null;
             }
             return obj;
-        }
-        flatProps(props, baseName) {
-            baseName = baseName ? baseName + '.' : '';
-            let obj = {};
-            for (let key in props) {
-                if (typeof props[key] != 'object') {
-                    obj[baseName + key] = props[key];
-                }
-                else {
-                    Object.assign(obj, this.flatProps(props[key], key));
-                }
-            }
-            return obj;
-        }
-        componentDidCatch(error, info) {
-            debugger;
         }
         render() {
             let { designer } = this.state;
@@ -11912,6 +11911,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             if (editors.length == 0) {
                 let empty = this.props.empty;
                 return React.createElement("div", { className: "text-center" }, empty);
+            }
+            if (this.props.customRender) {
+                let items = editors.map(o => Object.assign({ displayName: common_1.proptDisplayNames[o.prop] || o.prop }, o));
+                let r = this.props.customRender(designer.selectedComponents, items);
+                if (r != null) {
+                    return r;
+                }
             }
             let groupEditorsArray = [];
             for (let i = 0; i < editors.length; i++) {
@@ -11926,8 +11932,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/***************
             return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
                 g.group ? React.createElement("div", { className: "panel-heading" }, common_1.proptDisplayNames[g.group] || g.group) : null,
                 React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
-                    React.createElement("label", { key: common_1.guid() }, common_1.proptDisplayNames[o.prop] || o.prop),
-                    " ",
+                    React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop),
                     React.createElement("div", { className: "control" },
                         React.createElement(component_1.ErrorBoundary, null, o.editor))))))));
         }

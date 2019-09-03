@@ -34,7 +34,7 @@ define(["require", "exports", "react", "./property-editor", "./style"], function
             empty = empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
             let { designer } = this.state;
             return React.createElement("div", { className: `${style_1.classNames.editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
-                React.createElement(property_editor_1.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty }));
+                React.createElement(property_editor_1.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty, customRender: this.props.customRender }));
         }
     }
     exports.EditorPanel = EditorPanel;
