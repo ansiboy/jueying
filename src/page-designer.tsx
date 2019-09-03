@@ -29,7 +29,8 @@ export interface PageDesignerProps extends React.Props<PageDesigner> {
 }
 
 export interface PageDesignerState {
-    pageData: ComponentData | null
+    pageData: ComponentData | null,
+    components: { [typeName: string]: React.Component[] },
 }
 
 export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
@@ -43,46 +44,71 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
 
     static defaultProps: PageDesignerProps = { pageData: null, wrapDesignTimeElement: true };
-    private components: { [typeName: string]: React.Component[] } = {};
+    // private components: { [typeName: string]: React.Component[] } = {};
 
     constructor(props: PageDesignerProps) {
         super(props);
 
-        PageDesigner.initPageData(props.pageData)
-        this.state = { pageData: props.pageData };
+        let components: PageDesignerState["components"] = {};
+        PageDesigner.initPageData(props.pageData, components);
+
+        this.state = { pageData: props.pageData, components };
         this.designtimeComponentDidMount.add((args) => {
             console.log(`this:designer event:controlComponentDidMount`)
         })
 
-        let stack = [props.pageData];
-        while (stack.length > 0) {
-            let item = stack.shift();
+    }
+
+    private static setComponetRefProp(pageData: ComponentData, components: PageDesignerState["components"]) {
+
+        //=========================================================
+        // 纪录当前 pageData 控件 ID
+        let componentIds: { [typeName: string]: string[] } = {};
+        //=========================================================
+        PageDesigner.travelComponentData(pageData).forEach(item => {
+
+            console.assert(item.props != null && item.props.id != null);
+            componentIds[item.type] = componentIds[item.type] || [];
+            componentIds[item.type].push(item.props["id"] as string);
+
             let itemRef = item.props.ref;
             item.props.ref = (e) => {
-                // this._components.push(e);
-                this.components[item.type] = this.components[item.type] || [];
-                this.components[item.type].push(e);
+                if (e != null) {
+                    components[item.type] = components[item.type] || [];
+                    components[item.type].push(e);
+                }
 
                 if (typeof itemRef == "function")
                     itemRef(e);
             }
-            stack.push(...item.children || [])
+        })
+
+        //=========================================================
+        // 仅保留 componentIds 中的控件 
+        let names = Object.getOwnPropertyNames(components);
+        for (let i = 0; i < names.length; i++) {
+            let typename = names[i];
+            let ids = componentIds[typename] || [];
+            components[typename] = (components[typename] || []).filter(o => ids.indexOf(o["id"] || o.props["id"]) >= 0)
         }
+        //=========================================================
     }
 
-    private static initPageData(pageData: ComponentData) {
+    private static initPageData(pageData: ComponentData, components: PageDesignerState["components"]) {
         if (pageData == null) {
             return
         }
 
-        pageData.children = pageData.children || []
-        PageDesigner.nameComponent(pageData)
+        pageData.children = pageData.children || [];
+        PageDesigner.nameComponent(pageData);
+        PageDesigner.setComponetRefProp(pageData, components);
+
     }
 
     allComponents(): React.Component[] {
         let r: React.Component[] = [];
-        for (let key in this.components) {
-            r.push(...this.components[key]);
+        for (let key in this.state.components) {
+            r.push(...this.state.components[key]);
         }
         return r;
     }
@@ -390,16 +416,18 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return true;
     }
 
-    private travelComponentData(pageData: ComponentData, callback: (item: ComponentData) => boolean): ComponentData[] {
+    private static travelComponentData(pageData: ComponentData, filter?: (item: ComponentData) => boolean): ComponentData[] {
         let stack = new Array<ComponentData>();
         stack.push(pageData);
         let r: ComponentData[] = [];
         // return new Promise((resolve, reject) => {
+        filter = filter || (() => true);
         while (stack.length > 0) {
-            let item = stack.pop();
-            if (callback(item)) {
+            let item = stack.shift();
+            if (filter(item)) {
                 r.push(item);
             }
+
             //===============================================
             // 子元素有可能为字符串, 过滤出对象
             let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
@@ -411,7 +439,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     findComponetsByTypeName(componentTypeName: string) {
-        let components = this.components[componentTypeName];
+        let components = this.state.components[componentTypeName];
         return components;
     }
 
@@ -434,7 +462,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         //     stack.push(...children);
         // }
 
-        let componentDatas = this.travelComponentData(pageData, (item) => item.props.id == componentId)
+        let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.props.id == componentId)
         return componentDatas[0];
     }
 
@@ -481,14 +509,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         </ComponentWrapper>
     }
 
-    // componentWillReceiveProps(props: PageDesignerProps) {
-    //     PageDesigner.initPageData(props.pageData)
-    //     this.setState({ pageData: props.pageData });
-    // }
-
-    static getDerivedStateFromProps(props: PageDesignerProps, state: any) {
-        PageDesigner.initPageData(props.pageData)
-        return { pageData: props.pageData } as Partial<PageDesignerProps>;
+    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState) {
+        PageDesigner.initPageData(props.pageData, state.components);
+        return { pageData: props.pageData } as Partial<PageDesignerState>;
     }
 
     render() {

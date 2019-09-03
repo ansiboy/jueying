@@ -1,7 +1,7 @@
 import { ComponentData } from "./models";
 import { PageDesigner } from "./page-designer";
 import * as React from "react";
-import { PropertyEditor } from "./property-editor";
+import { PropertyEditor, EditorProps } from "./property-editor";
 import { classNames } from "./style";
 
 interface EditorPanelState {
@@ -9,10 +9,11 @@ interface EditorPanelState {
     designer?: PageDesigner,
 }
 
-interface EditorPanelProps {
+export interface EditorPanelProps {
     className?: string;
     style?: React.CSSProperties;
     empty?: string | JSX.Element;
+    customRender?: EditorProps["customRender"]
 }
 
 export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
@@ -74,7 +75,8 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
                     )}
                 </select> */}
 
-            <PropertyEditor designer={designer} ref={e => this.editor = e || this.editor} empty={empty} />
+            <PropertyEditor designer={designer} ref={e => this.editor = e || this.editor} empty={empty}
+                customRender={this.props.customRender} />
         </div>
     }
 }

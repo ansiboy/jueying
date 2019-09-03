@@ -264,7 +264,7 @@ export class Component {
                         childComponents.push(context.components[i]);
                     }
                 }
-                else {
+                else if (e != null) {
                     context.components.push(e);
                     context.componentTypes.push(typeof type == "string" ? type : type.name);
                 }

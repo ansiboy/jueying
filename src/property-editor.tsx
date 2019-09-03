@@ -14,15 +14,22 @@
 
 import React = require("react");
 import { PageDesigner } from "./page-designer";
-import { PropEditorInfo, Component, ErrorBoundary } from "./component";
+import { PropEditorInfo, Component, ErrorBoundary, ComponentProps } from "./component";
 import { proptDisplayNames, guid } from "./common";
 import { PropEditorProps } from "./prop-editor";
 import { Errors } from "./errors";
+import { ComponentData } from "./models";
 
 
-interface EditorProps extends React.Props<PropertyEditor> {
+export interface EditorProps extends React.Props<PropertyEditor> {
     designer: PageDesigner,
-    empty: string | JSX.Element
+    empty: string | JSX.Element,
+    customRender?: (editComponents: ComponentData[], items: {
+        group: string
+        prop: string
+        displayName: string
+        editor: React.ReactElement<any>
+    }[]) => JSX.Element
 }
 
 interface EditorState {
@@ -127,31 +134,12 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
         let obj: any = props;
         for (let i = 0; i < navPropsNames.length; i++) {
-            obj = props[navPropsNames[i]];
+            obj = obj[navPropsNames[i]];
             if (obj == null)
                 return null;
         }
 
         return obj;
-    }
-
-    private flatProps(props: object, baseName?: string): { [key: string]: object } {
-        baseName = baseName ? baseName + '.' : ''
-        let obj = {}
-        for (let key in props) {
-            if (typeof props[key] != 'object') {
-                obj[baseName + key] = props[key]
-            }
-            else {
-                Object.assign(obj, this.flatProps(props[key], key))
-            }
-        }
-
-        return obj
-    }
-
-    componentDidCatch(error, info) {
-        debugger;
     }
 
     render() {
@@ -160,6 +148,14 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         if (editors.length == 0) {
             let empty = this.props.empty
             return <div className="text-center">{empty}</div>
+        }
+
+        if (this.props.customRender) {
+            let items = editors.map(o => Object.assign({ displayName: proptDisplayNames[o.prop] || o.prop }, o));
+            let r = this.props.customRender(designer.selectedComponents, items);
+            if (r != null) {
+                return r;
+            }
         }
 
         let groupEditorsArray: { group: string, editors: { prop: string, editor: React.ReactElement<any> }[] }[] = []
@@ -181,7 +177,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     <div className="panel-body">
                         {g.editors.map((o, i) =>
                             <div key={o.prop} className="form-group clearfix">
-                                <label key={guid()}>{proptDisplayNames[o.prop] || o.prop}</label> {/* KEY 为 guid，强制更新 */}
+                                <label>{proptDisplayNames[o.prop] || o.prop}</label>
                                 <div className="control">
                                     <ErrorBoundary>
                                         {o.editor}
