@@ -10,6 +10,8 @@ interface DragDropData {
     originalY: number
     drop: HTMLElement[]
     drap: HTMLElement
+    layerX: number
+    layerY: number
 }
 
 interface JQuery<TElement = HTMLElement> extends Iterable<TElement> {

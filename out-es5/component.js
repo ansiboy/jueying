@@ -232,7 +232,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
               }
             } else if (e != null) {
               context.components.push(e);
-              context.componentTypes.push(typeof type == "string" ? type : type.name);
+              context.componentTypes.push(typeof type == "string" ? type : type.name); // masterPage.componentCreated.fire({ component: e, type: typeof type == "string" ? type : type.name });
             }
           };
 

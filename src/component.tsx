@@ -5,7 +5,7 @@ import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
 import { appendClassName, removeClassName, classNames } from "./style";
-import { constants, guid, proptDisplayNames } from "./common";
+import { constants, guid, proptDisplayNames, Callback } from "./common";
 import { ComponentPanel } from "./component-panel";
 
 /*******************************************************************************
@@ -267,6 +267,7 @@ export class Component {
                 else if (e != null) {
                     context.components.push(e);
                     context.componentTypes.push(typeof type == "string" ? type : type.name);
+                    // masterPage.componentCreated.fire({ component: e, type: typeof type == "string" ? type : type.name });
                 }
             };
 
@@ -313,7 +314,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
         super(props)
 
         let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-        this.state = { children }
+        this.state = { children };
     }
     private static children(props: ComponentProps<MasterPage>): React.ReactElement<ComponentProps<any>>[] {
         let arr = props.children == null ? [] :
@@ -396,7 +397,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
             else
                 event.dataTransfer.dropEffect = "move"
 
-            console.log(`dragover: left:${event.layerX} top:${event.layerX}`)
+            console.log(`dragover: left:${(event as any).layerX} top:${(event as any).layerX}`)
         })
 
         let func = function (event) {

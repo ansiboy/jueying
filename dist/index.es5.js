@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.3.1
+ *  maishu-jueying v1.3.2
  *  https://github.com/ansiboy/jueying
  *  
  *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
@@ -11178,7 +11178,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               }
             } else if (e != null) {
               context.components.push(e);
-              context.componentTypes.push(typeof type == "string" ? type : type.name);
+              context.componentTypes.push(typeof type == "string" ? type : type.name); // masterPage.componentCreated.fire({ component: e, type: typeof type == "string" ? type : type.name });
             }
           };
 
@@ -11840,24 +11840,24 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 "use strict";
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./component-panel */ "./out-es5/component-panel.js"), __webpack_require__(/*! ./editor-panel */ "./out-es5/editor-panel.js"), __webpack_require__(/*! ./page-designer */ "./out-es5/page-designer.js"), __webpack_require__(/*! ./component */ "./out-es5/component.js"), __webpack_require__(/*! ./prop-editor */ "./out-es5/prop-editor.js"), __webpack_require__(/*! ./style */ "./out-es5/style.js"), __webpack_require__(/*! ./common */ "./out-es5/common.js"), __webpack_require__(/*! ./jquery */ "./out-es5/jquery.js"), __webpack_require__(/*! ../lib/jquery.event.drag-2.2 */ "./lib/jquery.event.drag-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drag.live-2.2 */ "./lib/jquery.event.drag.live-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drop-2.2 */ "./lib/jquery.event.drop-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drop.live-2.2 */ "./lib/jquery.event.drop.live-2.2.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, component_panel_1, editor_panel_1, page_designer_1, component_1, prop_editor_1, style_1, common_1) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(/*! ./common */ "./out-es5/common.js"), __webpack_require__(/*! ./component */ "./out-es5/component.js"), __webpack_require__(/*! ./component-panel */ "./out-es5/component-panel.js"), __webpack_require__(/*! ./editor-panel */ "./out-es5/editor-panel.js"), __webpack_require__(/*! ./page-designer */ "./out-es5/page-designer.js"), __webpack_require__(/*! ./prop-editor */ "./out-es5/prop-editor.js"), __webpack_require__(/*! ./style */ "./out-es5/style.js"), __webpack_require__(/*! ./jquery */ "./out-es5/jquery.js"), __webpack_require__(/*! ../lib/jquery.event.drag-2.2 */ "./lib/jquery.event.drag-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drag.live-2.2 */ "./lib/jquery.event.drag.live-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drop-2.2 */ "./lib/jquery.event.drop-2.2.js"), __webpack_require__(/*! ../lib/jquery.event.drop.live-2.2 */ "./lib/jquery.event.drop.live-2.2.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function (require, exports, common_1, component_1, component_panel_1, editor_panel_1, page_designer_1, prop_editor_1, style_1) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.ComponentPanel = component_panel_1.ComponentPanel;
-  exports.EditorPanel = editor_panel_1.EditorPanel;
-  exports.PageDesigner = page_designer_1.PageDesigner;
+  exports.strings = common_1.proptDisplayNames;
+  exports.proptDisplayNames = common_1.proptDisplayNames;
   exports.Component = component_1.Component;
   exports.DesignerContext = component_1.DesignerContext;
   exports.MasterPage = component_1.MasterPage;
   exports.MasterPageContext = component_1.MasterPageContext;
+  exports.ComponentPanel = component_panel_1.ComponentPanel;
+  exports.EditorPanel = editor_panel_1.EditorPanel;
+  exports.PageDesigner = page_designer_1.PageDesigner;
   exports.PropEditor = prop_editor_1.PropEditor;
   exports.TextInput = prop_editor_1.TextInput;
   exports.classNames = style_1.classNames;
-  exports.strings = common_1.proptDisplayNames;
-  exports.proptDisplayNames = common_1.proptDisplayNames;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 //# sourceMappingURL=index.js.map
