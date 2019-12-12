@@ -26,4 +26,4 @@ interface JQuery<TElement = HTMLElement> extends Iterable<TElement> {
     drop(arg1: string | Function, func?: (ev?: JQuery.Event, dd?: DragDropData, options?: object) => void): this;
 }
 
-declare let define: Function;
+// declare let define: Function;
