@@ -89,7 +89,7 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             stack.push(this.pageData);
             while (stack.length > 0) {
                 let item = stack.pop();
-                if (item.props.selected == true)
+                if (item.props != null && item.props.selected == true)
                     arr.push(item);
                 let children = item.children || [];
                 for (let i = 0; i < children.length; i++)

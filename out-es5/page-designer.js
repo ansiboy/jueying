@@ -487,7 +487,7 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
 
         while (stack.length > 0) {
           var item = stack.pop();
-          if (item.props.selected == true) arr.push(item);
+          if (item.props != null && item.props.selected == true) arr.push(item);
           var children = item.children || [];
 
           for (var i = 0; i < children.length; i++) {
