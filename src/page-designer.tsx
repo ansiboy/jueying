@@ -130,7 +130,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         stack.push(this.pageData)
         while (stack.length > 0) {
             let item = stack.pop()
-            if (item.props.selected == true)
+            if (item.props != null && item.props.selected == true)
                 arr.push(item)
 
             let children = item.children || []
