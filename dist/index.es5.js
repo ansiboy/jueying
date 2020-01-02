@@ -1,13 +1,13 @@
 /*!
  * 
- *  maishu-jueying v1.4.0
+ *  maishu-jueying v1.5.0
  *  https://github.com/ansiboy/jueying
  *  
  *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
  *  Licensed under the MIT License.
  * 
  */
-define(["react"], function(__WEBPACK_EXTERNAL_MODULE_react__) { return /******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -13142,9 +13142,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_react__;
+module.exports = react;
 
 /***/ })
 
-/******/ })});;
+/******/ });
 //# sourceMappingURL=index.es5.js.map
