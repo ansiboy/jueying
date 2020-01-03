@@ -1,6 +1,9 @@
-define(["require", "exports", "../lib/jquery-2.1.3"], function (require, exports, j) {
+define(["require", "exports", "jquery"], function (require, exports, j) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    window['$'] = window['jQuery'] = j;
+    let jquery = window['$'] || window['jQuery'];
+    if (jquery == null) {
+        window['$'] = window['jQuery'] = j;
+    }
 });
 //# sourceMappingURL=jquery.js.map
