@@ -23,7 +23,7 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
 
     private designerComponentChanged: (args: any) => void
 
-    constructor(props) {
+    constructor(props: EditorPanelProps) {
         super(props);
         this.state = { componentDatas: [], designer: null };
         this.designerComponentChanged = () => {

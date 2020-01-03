@@ -331,10 +331,6 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
         return children
     }
 
-    // componentWillReceiveProps(props: ComponentProps<MasterPage>) {
-    //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-    //     this.setState({ children })
-    // }
     static getDerivedStateFromProps(props: ComponentProps<MasterPage>) {
         let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
         return { children } as MasterPage["state"];
@@ -351,7 +347,10 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
 
         props.style = Object.assign({ minHeight: 40 }, props.style)
         let children = this.state.children.filter(o => o.props.parentId == null);
-        return <MasterPageContext.Provider value={{ master: this }}>
+
+        let master = this;
+        console.assert(master != null);
+        return <MasterPageContext.Provider value={{ master }}>
             {children}
         </MasterPageContext.Provider>
     }
@@ -364,7 +363,7 @@ Component.register(MasterPageName, MasterPage, { container: false })
 export class PlaceHolder extends React.Component<{ id: string, empty?: string | JSX.Element }, {}>{
     private element: HTMLElement;
 
-    constructor(props) {
+    constructor(props: PlaceHolder["props"]) {
         super(props)
 
         if (!this.props.id) {
@@ -524,7 +523,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
 Component.register('PlaceHolder', PlaceHolder)
 
 export class PageView extends React.Component<{ pageData: ComponentData }, {}> {
-    constructor(props) {
+    constructor(props: PageView["props"]) {
         super(props)
 
         if (!this.props.pageData)

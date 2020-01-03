@@ -34,7 +34,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
     private element: HTMLElement;
     private static isDrag: boolean = false;
 
-    constructor(props) {
+    constructor(props: ComponentWrapperProps) {
         super(props);
     }
 
@@ -89,7 +89,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
             else
                 event.dataTransfer.dropEffect = "move"
 
-            console.log(`dragover: left:${event.layerX} top:${event.layerX}`)
+            console.log(`dragover: left:${event['layerX']} top:${event['layerX']}`)
         })
 
         element.addEventListener("drop", function (event) {
@@ -114,8 +114,8 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
             let pos = ComponentPanel.mouseInnerPosition(event.dataTransfer)
             console.assert(pos != null)
             if (ctrl.props.style.position == 'absolute') {
-                ctrl.props.style.left = event.layerX - pos.x
-                ctrl.props.style.top = event.layerY - pos.y
+                ctrl.props.style.left = event['layerX'] - pos.x
+                ctrl.props.style.top = event['layerY'] - pos.y
             }
             designer.appendComponent(element.id, ctrl);
         })

@@ -19,7 +19,7 @@ export class ComponentPanel extends React.Component<ComponentToolbarProps, Compo
     static componentIndexName = "data-component-index";
     private toolbarElement: HTMLElement;
 
-    constructor(props) {
+    constructor(props: ComponentToolbarProps) {
         super(props)
         this.state = { componets: [] }
     }
