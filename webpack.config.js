@@ -16,7 +16,7 @@ module.exports = {
     },
     mode: 'development',
     devtool: 'source-map',
-    externals: ['react', 'react-dom', 'maishu-chitu'],
+    externals: ['react', 'react-dom', 'jquery'],
     plugins: [
         new webpack.BannerPlugin(license),
     ],
