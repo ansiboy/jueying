@@ -267,7 +267,7 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
           event.stopPropagation();
           var componentName = event.dataTransfer.getData(common_1.constants.componentData);
           if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
-          console.log("dragover: left:".concat(event.layerX, " top:").concat(event.layerX));
+          console.log("dragover: left:".concat(event['layerX'], " top:").concat(event['layerX']));
         });
         element.addEventListener("drop", function (event) {
           event.preventDefault();
@@ -287,8 +287,8 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
           console.assert(pos != null);
 
           if (ctrl.props.style.position == 'absolute') {
-            ctrl.props.style.left = event.layerX - pos.x;
-            ctrl.props.style.top = event.layerY - pos.y;
+            ctrl.props.style.left = event['layerX'] - pos.x;
+            ctrl.props.style.top = event['layerY'] - pos.y;
           }
 
           designer.appendComponent(element.id, ctrl);

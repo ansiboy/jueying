@@ -13,7 +13,7 @@ export declare class ComponentPanel extends React.Component<ComponentToolbarProp
     designer: PageDesigner;
     static componentIndexName: string;
     private toolbarElement;
-    constructor(props: any);
+    constructor(props: ComponentToolbarProps);
     readonly element: HTMLElement;
     private componentDraggable;
     setComponets(componets: ComponentDefine[]): void;

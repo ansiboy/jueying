@@ -10754,7 +10754,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           event.stopPropagation();
           var componentName = event.dataTransfer.getData(common_1.constants.componentData);
           if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
-          console.log("dragover: left:".concat(event.layerX, " top:").concat(event.layerX));
+          console.log("dragover: left:".concat(event['layerX'], " top:").concat(event['layerX']));
         });
         element.addEventListener("drop", function (event) {
           event.preventDefault();
@@ -10774,8 +10774,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           console.assert(pos != null);
 
           if (ctrl.props.style.position == 'absolute') {
-            ctrl.props.style.left = event.layerX - pos.x;
-            ctrl.props.style.top = event.layerY - pos.y;
+            ctrl.props.style.left = event['layerX'] - pos.x;
+            ctrl.props.style.top = event['layerY'] - pos.y;
           }
 
           designer.appendComponent(element.id, ctrl);
@@ -11314,9 +11314,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         var children = this.state.children.filter(function (o) {
           return o.props.parentId == null;
         });
+        var master = this;
+        console.assert(master != null);
         return React.createElement(exports.MasterPageContext.Provider, {
           value: {
-            master: this
+            master: master
           }
         }, children);
       }
@@ -11330,11 +11332,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           children.push(o);
         });
         return children;
-      } // componentWillReceiveProps(props: ComponentProps<MasterPage>) {
-      //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-      //     this.setState({ children })
-      // }
-
+      }
     }, {
       key: "getDerivedStateFromProps",
       value: function getDerivedStateFromProps(props) {

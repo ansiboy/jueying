@@ -109,7 +109,7 @@ export declare class PlaceHolder extends React.Component<{
     empty?: string | JSX.Element;
 }, {}> {
     private element;
-    constructor(props: any);
+    constructor(props: PlaceHolder["props"]);
     private designer;
     private wraper;
     /**
@@ -122,7 +122,7 @@ export declare class PlaceHolder extends React.Component<{
 export declare class PageView extends React.Component<{
     pageData: ComponentData;
 }, {}> {
-    constructor(props: any);
+    constructor(props: PageView["props"]);
     render(): React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
 }
 export declare class ErrorBoundary extends React.Component<{}, {

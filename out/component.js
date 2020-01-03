@@ -212,10 +212,6 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
             });
             return children;
         }
-        // componentWillReceiveProps(props: ComponentProps<MasterPage>) {
-        //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-        //     this.setState({ children })
-        // }
         static getDerivedStateFromProps(props) {
             let children = MasterPage.children(props);
             return { children };
@@ -229,7 +225,9 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
             }
             props.style = Object.assign({ minHeight: 40 }, props.style);
             let children = this.state.children.filter(o => o.props.parentId == null);
-            return React.createElement(exports.MasterPageContext.Provider, { value: { master: this } }, children);
+            let master = this;
+            console.assert(master != null);
+            return React.createElement(exports.MasterPageContext.Provider, { value: { master } }, children);
         }
     }
     exports.MasterPage = MasterPage;

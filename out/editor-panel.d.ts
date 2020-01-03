@@ -17,7 +17,7 @@ export declare class EditorPanel extends React.Component<EditorPanelProps, Edito
     private editor;
     private _designer;
     private designerComponentChanged;
-    constructor(props: any);
+    constructor(props: EditorPanelProps);
     designer: PageDesigner;
     render(): JSX.Element;
 }
