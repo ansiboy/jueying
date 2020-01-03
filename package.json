@@ -1,6 +1,6 @@
 {
     "name": "maishu-jueying",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "author": "mai.shu",
     "main": "dist/index.js",
     "typings": "out/index.d.ts",

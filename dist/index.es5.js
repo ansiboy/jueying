@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.6.0
+ *  maishu-jueying v1.7.0
  *  https://github.com/ansiboy/jueying
  *  
  *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
