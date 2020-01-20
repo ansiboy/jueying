@@ -92,6 +92,8 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
 
     }, {
       key: "updateComponentProp",
+
+      /** 更新组件属性 */
       value: function updateComponentProp(componentId, propName, value) {
         return this.updateComponentProps({
           componentId: componentId,
@@ -99,6 +101,8 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
           value: value
         });
       }
+      /** 更新组件多个属性 */
+
     }, {
       key: "updateComponentProps",
       value: function updateComponentProps() {

@@ -72,6 +72,7 @@ export declare class Component {
     static getPropEditor<T, K extends keyof T>(controlClassName: string, propName: string): PropEditorInfo;
     /** 通过属性数组获取属性的编辑器 */
     private static getPropEditorByArray;
+    /** 设置组件属性编辑器 */
     static setPropEditor(options: SetPropEditorOptions): void;
     static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
     static createElement(componentData: ComponentData, h?: ReactFactory): React.ReactElement<any> | null;

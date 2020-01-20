@@ -97,9 +97,11 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             }
             return arr;
         }
+        /** 更新组件属性 */
         updateComponentProp(componentId, propName, value) {
             return this.updateComponentProps({ componentId, propName, value });
         }
+        /** 更新组件多个属性 */
         updateComponentProps(...componentProps) {
             let componentDatas = [];
             for (let i = 0; i < componentProps.length; i++) {

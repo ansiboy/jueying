@@ -163,6 +163,7 @@ export class Component {
         return editor
     }
 
+    /** 设置组件属性编辑器 */
     static setPropEditor(options: SetPropEditorOptions): void;
     static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
     static setPropEditor(componentTypeOrOptions: React.ComponentClass | string | SetPropEditorOptions, propName?: string, editorType?: PropEditorConstructor, group?: string): void {

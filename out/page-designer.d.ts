@@ -47,7 +47,9 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
     readonly selectedComponentIds: string[];
     /** 获取已选择了的组件 */
     readonly selectedComponents: ComponentData[];
+    /** 更新组件属性 */
     updateComponentProp(componentId: string, propName: string, value: any): any;
+    /** 更新组件多个属性 */
     updateComponentProps(...componentProps: {
         componentId: string;
         propName: string;
