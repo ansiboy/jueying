@@ -279,11 +279,20 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.componentUpdated.fire([componentData])
     }
 
+    /** 设置多个组件的位置 */
     setComponentsPosition(positions: { componentId: string, position: { left: number | string, top: number | string } }[]) {
         let componentDatas = new Array<ComponentData>()
         positions.forEach(o => {
-            let { componentId } = o
-            let { left, top } = o.position
+            let { componentId } = o;
+            let { left, top } = o.position;
+            if (typeof left == "number") {
+                left = `${left}px`;
+            }
+
+            if (typeof top == "number") {
+                top = `${top}px`;
+            }
+
             let componentData = this.findComponentData(componentId);
             if (!componentData)
                 throw new Error(`Control ${componentId} is not exits.`);
