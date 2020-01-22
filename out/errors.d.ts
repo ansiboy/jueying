@@ -10,4 +10,5 @@ export declare class Errors {
     static canntFindMasterPage(componentId: string): Error;
     static propCanntNull(componentName: string, property: string): Error;
     static argumentFieldCanntNull(fieldName: string, argumentName: string): Error;
+    static componentDataNotExists(componentId: string): Error;
 }

@@ -1,17 +1,14 @@
 import React = require("react");
 import { ComponentData } from "./models";
 import { Callback } from "./common";
-import { ComponentProps } from "./component";
+import { PageBuilder } from "./page-builder";
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null;
     style?: React.CSSProperties;
     wrapDesignTimeElement?: boolean;
+    pageBuilder?: PageBuilder;
 }
 export interface PageDesignerState {
-    pageData: ComponentData | null;
-    components: {
-        [typeName: string]: React.Component[];
-    };
 }
 export declare class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private element;
@@ -24,11 +21,8 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
         element: HTMLElement;
     }>;
     static defaultProps: PageDesignerProps;
+    private pageBuilder;
     constructor(props: PageDesignerProps);
-    private static setComponetRefProp;
-    /** 对 pageData 进行缺少的字段进行补充 */
-    private static fillPageData;
-    allComponents(): React.Component[];
     /** 页面数据 */
     readonly pageData: ComponentData;
     /** 获取已选择了的组件编号 */
@@ -36,14 +30,13 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
     /** 获取已选择了的组件 */
     readonly selectedComponents: ComponentData[];
     /** 更新组件属性 */
-    updateComponentProp(componentId: string, propName: string, value: any): any;
+    updateComponentProp(componentId: string, propName: string, value: any): void;
     /** 更新组件多个属性 */
     updateComponentProps(...componentProps: {
         componentId: string;
         propName: string;
         value: any;
-    }[]): any;
-    private sortChildren;
+    }[]): void;
     /**
      * 对组件及其子控件进行命名
      * @param component
@@ -96,12 +89,7 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
      * @param beforeChildId 组件的前一个子组件编号
      */
     moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
-    private removeComponentFrom;
-    private static travelComponentData;
-    findComponetsByTypeName(componentTypeName: string): React.Component<{}, {}, any>[];
-    findComponentData(componentId: string): ComponentData | null;
     private onKeyDown;
-    protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
-    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState>;
+    componentDidMount(): void;
     render(): JSX.Element;
 }

@@ -1,6 +1,6 @@
 /// <reference path="../../../out/index.d.ts"/>
 
-const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, DesignerContext, PageView } = jueying
+const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, PageBuilderContext, PageView } = jueying
 
 
 class Button extends React.Component {
@@ -8,10 +8,10 @@ class Button extends React.Component {
         super(props)
     }
     render() {
-        return <DesignerContext.Consumer>
+        return <PageBuilderContext.Consumer>
             {args => {
                 return <div style={{ width: 280 }}>
-                    <div>{args.designer ? "设计时" : "运行时"}</div>
+                    <div>{args.pageBuilder ? "设计时" : "运行时"}</div>
                     <div className="form-group">
                         <button className="btn btn-block btn-primary"
                             onClick={() => {
@@ -20,7 +20,7 @@ class Button extends React.Component {
                     </div>
                 </div>
             }}
-        </DesignerContext.Consumer>
+        </PageBuilderContext.Consumer>
     }
 }
 

@@ -1,12 +1,11 @@
 import * as React from "react";
 import { ComponentAttribute, ComponentWrapper } from "./component-wrapper";
-import { PageDesigner } from "./page-designer";
 import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
  *
- * 作者: 寒烟
+ * 作者: 麦舒
  * 日期: 2018/5/30
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
@@ -27,10 +26,6 @@ export interface ComponentProps<T> extends React.Props<T> {
     parentid?: string;
     attr?: ComponentAttribute;
 }
-declare type DesignerContextValue = {
-    designer: PageDesigner | null;
-};
-export declare const DesignerContext: React.Context<DesignerContextValue>;
 export declare const ComponentWrapperContext: React.Context<ComponentWrapper>;
 export interface PropEditorInfo {
     propName: string;
@@ -120,6 +115,7 @@ export declare class PlaceHolder extends React.Component<{
     private enableMoveDroppable;
     render(): JSX.Element;
 }
+/** 用于将 ComponentData 显示为组件 */
 export declare class PageView extends React.Component<{
     pageData: ComponentData;
 }, {}> {

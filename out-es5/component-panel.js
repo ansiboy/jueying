@@ -24,11 +24,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var React = require("react");
 
-console.log("React is null:".concat(React == null));
-
 var common_1 = require("./common");
-
-var component_1 = require("./component");
 
 var style_1 = require("./style");
 
@@ -79,42 +75,44 @@ function (_React$Component) {
         className: "empty"
       }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
       var props = Object.assign({}, this.props);
-      var componets = this.state.componets || [];
-      return React.createElement(component_1.DesignerContext.Consumer, null, function (context) {
-        _this2.designer = context.designer;
-        return React.createElement("ul", Object.assign({}, props, {
-          className: "".concat(style_1.classNames.componentPanel, " ").concat(_this2.props.className || ""),
-          ref: function ref(e) {
-            return _this2.toolbarElement = _this2.toolbarElement || e;
-          }
-        }), componets.length == 0 ? empty : componets.map(function (c, i) {
-          var props = {
-            key: i
-          };
-          props[ComponentPanel.componentIndexName] = "".concat(i);
-          return React.createElement("li", Object.assign({}, props, {
-            className: style_1.classNames.componentIcon
-          }), React.createElement("div", {
-            className: "btn-link"
-          }, React.createElement("i", {
-            className: c.icon,
-            style: {
-              fontSize: 44,
-              color: 'black'
-            },
-            ref: function ref(e) {
-              if (!e) return;
-              var ctrl = c.componentData;
+      var componets = this.state.componets || []; // return <DesignerContext.Consumer>
+      //     {context => {
+      //         this.designer = context.designer;
 
-              _this2.componentDraggable(e, ctrl);
-            }
-          })), React.createElement("div", null, c.displayName));
-        })); // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
-        //     <div className="panel-heading">工具栏</div>
-        //     <div className="panel-body">
-        //     </div>
-        // </div>
-      });
+      return React.createElement("ul", Object.assign({}, props, {
+        className: "".concat(style_1.classNames.componentPanel, " ").concat(this.props.className || ""),
+        ref: function ref(e) {
+          return _this2.toolbarElement = _this2.toolbarElement || e;
+        }
+      }), componets.length == 0 ? empty : componets.map(function (c, i) {
+        var props = {
+          key: i
+        };
+        props[ComponentPanel.componentIndexName] = "".concat(i);
+        return React.createElement("li", Object.assign({}, props, {
+          className: style_1.classNames.componentIcon
+        }), React.createElement("div", {
+          className: "btn-link"
+        }, React.createElement("i", {
+          className: c.icon,
+          style: {
+            fontSize: 44,
+            color: 'black'
+          },
+          ref: function ref(e) {
+            if (!e) return;
+            var ctrl = c.componentData;
+
+            _this2.componentDraggable(e, ctrl);
+          }
+        })), React.createElement("div", null, c.displayName));
+      })); // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
+      //     <div className="panel-heading">工具栏</div>
+      //     <div className="panel-body">
+      //     </div>
+      // </div>
+      //     }}
+      // </DesignerContext.Consumer>
     }
   }, {
     key: "element",
@@ -140,7 +138,8 @@ function (_React$Component) {
   }]);
 
   return ComponentPanel;
-}(React.Component);
+}(React.Component); // designer: PageDesigner;
+
 
 ComponentPanel.componentIndexName = "data-component-index";
 exports.ComponentPanel = ComponentPanel;

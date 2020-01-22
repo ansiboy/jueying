@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ComponentDefine, ComponentData } from "./models";
-import { PageDesigner } from "./page-designer";
 interface ComponentToolbarProps extends React.Props<ComponentPanel> {
     style?: React.CSSProperties;
     className?: string;
@@ -10,7 +9,6 @@ interface ComponentToolbarState {
     componets: ComponentDefine[];
 }
 export declare class ComponentPanel extends React.Component<ComponentToolbarProps, ComponentToolbarState> {
-    designer: PageDesigner;
     static componentIndexName: string;
     private toolbarElement;
     constructor(props: ComponentToolbarProps);

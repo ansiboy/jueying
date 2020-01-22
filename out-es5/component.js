@@ -42,9 +42,10 @@ var common_1 = require("./common");
 
 var component_panel_1 = require("./component-panel");
 
-exports.DesignerContext = React.createContext({
-  designer: null
-});
+var page_builder_1 = require("./page-builder"); // type DesignerContextValue = { designer: PageDesigner | null };
+// export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
+
+
 exports.ComponentWrapperContext = React.createContext(null);
 
 function component(args) {
@@ -502,11 +503,11 @@ function (_React$Component2) {
 
         _this4.designer.moveComponent(dd.sourceElement.id, host.props.id);
 
-        _this4.designer.updateComponentProps({
+        _this4.designer.updateComponentProps([{
           componentId: "string",
           propName: "string",
           value: "any"
-        }); //dd.sourceElement.id, propName, this.props.id
+        }]); //dd.sourceElement.id, propName, this.props.id
 
       }).drop('end', function (event, dd) {
         if (dd.sourceElement.id == _this4.wraper.props.source.props.id) return;
@@ -541,19 +542,19 @@ function (_React$Component2) {
           });
         }
 
-        return React.createElement(exports.DesignerContext.Consumer, null, function (args) {
+        return React.createElement(page_builder_1.PageBuilderContext.Consumer, null, function (args) {
           return React.createElement(exports.ComponentWrapperContext.Consumer, null, function (wraper) {
             _this5.wraper = wraper;
             console.assert(_this5.wraper != null);
 
-            if (args.designer != null && children.length == 0) {
+            if (args.pageBuilder != null && children.length == 0) {
               children = [empty];
             }
 
             var element = React.createElement(React.Fragment, null, _this5.props.children, children);
 
-            if (args.designer) {
-              _this5.designer = args.designer;
+            if (args.pageBuilder) {
+              _this5.designer = args.pageBuilder;
               element = React.createElement("div", {
                 key: common_1.guid(),
                 className: style_1.classNames.placeholder,
@@ -580,6 +581,7 @@ function (_React$Component2) {
 
 exports.PlaceHolder = PlaceHolder;
 Component.register('PlaceHolder', PlaceHolder);
+/** 用于将 ComponentData 显示为组件 */
 
 var PageView =
 /*#__PURE__*/

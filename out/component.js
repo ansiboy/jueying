@@ -6,7 +6,9 @@ const errors_1 = require("./errors");
 const style_1 = require("./style");
 const common_1 = require("./common");
 const component_panel_1 = require("./component-panel");
-exports.DesignerContext = React.createContext({ designer: null });
+const page_builder_1 = require("./page-builder");
+// type DesignerContextValue = { designer: PageDesigner | null };
+// export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
 exports.ComponentWrapperContext = React.createContext(null);
 function component(args) {
     return function (constructor) {
@@ -306,9 +308,9 @@ class PlaceHolder extends React.Component {
             let componentData = this.designer.findComponentData(dd.sourceElement.id);
             console.assert(componentData != null);
             this.designer.moveComponent(dd.sourceElement.id, host.props.id);
-            this.designer.updateComponentProps({
-                componentId: "string", propName: "string", value: "any"
-            }); //dd.sourceElement.id, propName, this.props.id
+            this.designer.updateComponentProps([{
+                    componentId: "string", propName: "string", value: "any"
+                }]); //dd.sourceElement.id, propName, this.props.id
         })
             .drop('end', (event, dd) => {
             if (dd.sourceElement.id == this.wraper.props.source.props.id)
@@ -333,32 +335,35 @@ class PlaceHolder extends React.Component {
                 }
                 children = arr.filter((o) => o.props.parentid != null && o.props.parentid == this.props.id);
             }
-            return React.createElement(exports.DesignerContext.Consumer, null, args => React.createElement(exports.ComponentWrapperContext.Consumer, null, wraper => {
-                this.wraper = wraper;
-                console.assert(this.wraper != null);
-                if (args.designer != null && children.length == 0) {
-                    children = [empty];
-                }
-                let element = React.createElement(React.Fragment, null,
-                    this.props.children,
-                    children);
-                if (args.designer) {
-                    this.designer = args.designer;
-                    element = React.createElement("div", { key: common_1.guid(), className: style_1.classNames.placeholder, ref: e => {
-                            if (!e)
-                                return;
-                            this.element = e;
-                            this.enableAppendDroppable(e, master);
-                            this.enableMoveDroppable(e, master);
-                        } }, element);
-                }
-                return element;
-            }));
+            return React.createElement(page_builder_1.PageBuilderContext.Consumer, null, args => {
+                return React.createElement(exports.ComponentWrapperContext.Consumer, null, wraper => {
+                    this.wraper = wraper;
+                    console.assert(this.wraper != null);
+                    if (args.pageBuilder != null && children.length == 0) {
+                        children = [empty];
+                    }
+                    let element = React.createElement(React.Fragment, null,
+                        this.props.children,
+                        children);
+                    if (args.pageBuilder) {
+                        this.designer = args.pageBuilder;
+                        element = React.createElement("div", { key: common_1.guid(), className: style_1.classNames.placeholder, ref: e => {
+                                if (!e)
+                                    return;
+                                this.element = e;
+                                this.enableAppendDroppable(e, master);
+                                this.enableMoveDroppable(e, master);
+                            } }, element);
+                    }
+                    return element;
+                });
+            });
         });
     }
 }
 exports.PlaceHolder = PlaceHolder;
 Component.register('PlaceHolder', PlaceHolder);
+/** 用于将 ComponentData 显示为组件 */
 class PageView extends React.Component {
     constructor(props) {
         super(props);

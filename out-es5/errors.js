@@ -75,6 +75,12 @@ function () {
       var msg = "".concat(fieldName, " of argument ").concat(argumentName, " cannt be null or empty.");
       return new Error(msg);
     }
+  }, {
+    key: "componentDataNotExists",
+    value: function componentDataNotExists(componentId) {
+      var msg = "Component data ".concat(componentId, " is not exists.");
+      return new Error(msg);
+    }
   }]);
 
   return Errors;
