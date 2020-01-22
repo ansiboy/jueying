@@ -35,7 +35,7 @@ export interface ComponentProps<T> extends React.Props<T> {
     style?: React.CSSProperties,
     selected?: boolean,
     text?: string,
-    parentId?: string;
+    parentid?: string;
     attr?: ComponentAttribute
 }
 
@@ -347,7 +347,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
         }
 
         props.style = Object.assign({ minHeight: 40 }, props.style)
-        let children = this.state.children.filter(o => o.props.parentId == null);
+        let children = this.state.children.filter(o => o.props.parentid == null);
 
         let master = this;
         console.assert(master != null);
@@ -424,7 +424,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
 
             console.assert(this.props.id != null);
             console.assert(this.designer != null);
-            ctrl.props.parentId = this.props.id;
+            ctrl.props.parentid = this.props.id;
             console.assert(master != null, 'host is null')
             this.designer.appendComponent(master.props.id, ctrl)
         }
@@ -449,7 +449,6 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                 let componentData = this.designer.findComponentData(dd.sourceElement.id)
                 console.assert(componentData != null)
 
-                let propName: keyof ComponentProps<any> = 'parentId'
                 this.designer.moveComponent(dd.sourceElement.id, host.props.id)
                 this.designer.updateComponentProps({
                     componentId: "string", propName: "string", value: "any"
@@ -478,7 +477,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                     else {
                         arr = [master.props.children as any]
                     }
-                    children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parentId != null && o.props.parentId == this.props.id)
+                    children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parentid != null && o.props.parentid == this.props.id)
                 }
 
 
