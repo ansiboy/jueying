@@ -137,8 +137,6 @@ function () {
   }, {
     key: "setComponentsSize",
     value: function setComponentsSize(componentSiezs) {
-      // console.assert(componentId != null)
-      // console.assert(size != null)
       var componentDatas = [];
 
       for (var i = 0; i < componentSiezs.length; i++) {

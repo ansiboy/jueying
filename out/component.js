@@ -116,6 +116,7 @@ class Component {
             }
             let children = componentData.children ? componentData.children.map(o => Component._createElement(o, context, h)) : [];
             let props = componentData.props == null ? {} : Object.assign({}, componentData.props); //JSON.parse(JSON.stringify(componentData.props));
+            props.style = Object.assign({}, props.style || {});
             if (controlType != null && controlType["defaultProps"]) {
                 props = Object.assign({}, controlType["defaultProps"], props);
             }

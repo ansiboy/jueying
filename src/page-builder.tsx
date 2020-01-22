@@ -172,9 +172,6 @@ export class ReactPageBuilder implements PageBuilder {
     }
 
     setComponentsSize(componentSiezs: { componentId: string, size: { width?: React.ReactText; height?: React.ReactText; } }[]): ComponentData[] {
-        // console.assert(componentId != null)
-        // console.assert(size != null)
-
         let componentDatas: ComponentData[] = [];
         for (let i = 0; i < componentSiezs.length; i++) {
             let { componentId, size } = componentSiezs[i];

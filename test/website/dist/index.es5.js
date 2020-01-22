@@ -1957,6 +1957,8 @@ function () {
         }) : [];
         var props = componentData.props == null ? {} : Object.assign({}, componentData.props); //JSON.parse(JSON.stringify(componentData.props));
 
+        props.style = Object.assign({}, props.style || {});
+
         if (controlType != null && controlType["defaultProps"]) {
           props = Object.assign({}, controlType["defaultProps"], props);
         }
@@ -2888,8 +2890,6 @@ function () {
   }, {
     key: "setComponentsSize",
     value: function setComponentsSize(componentSiezs) {
-      // console.assert(componentId != null)
-      // console.assert(size != null)
       var componentDatas = [];
 
       for (var i = 0; i < componentSiezs.length; i++) {

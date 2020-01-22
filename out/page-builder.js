@@ -76,8 +76,6 @@ class ReactPageBuilder {
         return componentDatas;
     }
     setComponentsSize(componentSiezs) {
-        // console.assert(componentId != null)
-        // console.assert(size != null)
         let componentDatas = [];
         for (let i = 0; i < componentSiezs.length; i++) {
             let { componentId, size } = componentSiezs[i];
