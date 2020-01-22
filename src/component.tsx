@@ -7,11 +7,12 @@ import { Errors } from "./errors";
 import { appendClassName, removeClassName, classNames } from "./style";
 import { constants, guid, proptDisplayNames, Callback } from "./common";
 import { ComponentPanel } from "./component-panel";
+import { PageBuilder, PageBuilderContext } from "./page-builder";
 
 /*******************************************************************************
  * Copyright (C) maishu All rights reserved.
  * 
- * 作者: 寒烟
+ * 作者: 麦舒
  * 日期: 2018/5/30
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
@@ -39,8 +40,8 @@ export interface ComponentProps<T> extends React.Props<T> {
     attr?: ComponentAttribute
 }
 
-type DesignerContextValue = { designer: PageDesigner | null };
-export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
+// type DesignerContextValue = { designer: PageDesigner | null };
+// export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
 export const ComponentWrapperContext = React.createContext<ComponentWrapper>(null);
 
 export interface PropEditorInfo {
@@ -372,7 +373,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
         }
     }
 
-    private designer: PageDesigner;
+    private designer: PageBuilder;
     private wraper: ComponentWrapper;
 
     /**
@@ -450,9 +451,9 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                 console.assert(componentData != null)
 
                 this.designer.moveComponent(dd.sourceElement.id, host.props.id)
-                this.designer.updateComponentProps({
+                this.designer.updateComponentProps([{
                     componentId: "string", propName: "string", value: "any"
-                })//dd.sourceElement.id, propName, this.props.id
+                }])//dd.sourceElement.id, propName, this.props.id
             })
             .drop('end', (event, dd: ComponentWrapperDrapData) => {
                 if (dd.sourceElement.id == this.wraper.props.source.props.id)
@@ -481,39 +482,40 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                 }
 
 
-                return <DesignerContext.Consumer>
-                    {args => <ComponentWrapperContext.Consumer>
-                        {wraper => {
-                            this.wraper = wraper
-                            console.assert(this.wraper != null)
+                return <PageBuilderContext.Consumer>
+                    {args => {
+                        return <ComponentWrapperContext.Consumer>
+                            {wraper => {
+                                this.wraper = wraper
+                                console.assert(this.wraper != null)
 
-                            if (args.designer != null && children.length == 0) {
-                                children = [empty]
-                            }
+                                if (args.pageBuilder != null && children.length == 0) {
+                                    children = [empty]
+                                }
 
-                            let element = <React.Fragment>
-                                {this.props.children}
-                                {children}
-                            </React.Fragment>
+                                let element = <React.Fragment>
+                                    {this.props.children}
+                                    {children}
+                                </React.Fragment>
 
-                            if (args.designer) {
-                                this.designer = args.designer
-                                element = <div key={guid()} className={classNames.placeholder}
-                                    ref={e => {
-                                        if (!e) return
-                                        this.element = e;
-                                        this.enableAppendDroppable(e, master)
-                                        this.enableMoveDroppable(e, master)
-                                    }}>
-                                    {element}
-                                </div>
-                            }
+                                if (args.pageBuilder) {
+                                    this.designer = args.pageBuilder
+                                    element = <div key={guid()} className={classNames.placeholder}
+                                        ref={e => {
+                                            if (!e) return
+                                            this.element = e;
+                                            this.enableAppendDroppable(e, master)
+                                            this.enableMoveDroppable(e, master)
+                                        }}>
+                                        {element}
+                                    </div>
+                                }
 
-                            return element
-                        }}
-                    </ComponentWrapperContext.Consumer>
-                    }
-                </DesignerContext.Consumer>
+                                return element
+                            }}
+                        </ComponentWrapperContext.Consumer>
+                    }}
+                </PageBuilderContext.Consumer>
             }}
         </MasterPageContext.Consumer>
 
