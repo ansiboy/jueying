@@ -522,6 +522,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
 
 Component.register('PlaceHolder', PlaceHolder)
 
+/** 用于将 ComponentData 显示为组件 */
 export class PageView extends React.Component<{ pageData: ComponentData }, {}> {
     constructor(props: PageView["props"]) {
         super(props)

@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.7.4
+ *  maishu-jueying v1.7.6
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -2129,7 +2129,7 @@ function (_React$Component) {
         minHeight: 40
       }, props.style);
       var children = this.state.children.filter(function (o) {
-        return o.props.parentId == null;
+        return o.props.parentid == null;
       });
       var master = this;
       console.assert(master != null);
@@ -2230,7 +2230,7 @@ function (_React$Component2) {
         if (!ctrl) return;
         console.assert(_this3.props.id != null);
         console.assert(_this3.designer != null);
-        ctrl.props.parentId = _this3.props.id;
+        ctrl.props.parentid = _this3.props.id;
         console.assert(master != null, 'host is null');
 
         _this3.designer.appendComponent(master.props.id, ctrl);
@@ -2252,7 +2252,6 @@ function (_React$Component2) {
         var componentData = _this4.designer.findComponentData(dd.sourceElement.id);
 
         console.assert(componentData != null);
-        var propName = 'parentId';
 
         _this4.designer.moveComponent(dd.sourceElement.id, host.props.id);
 
@@ -2291,7 +2290,7 @@ function (_React$Component2) {
           }
 
           children = arr.filter(function (o) {
-            return o.props.parentId != null && o.props.parentId == _this5.props.id;
+            return o.props.parentid != null && o.props.parentid == _this5.props.id;
           });
         }
 
@@ -2674,6 +2673,8 @@ exports.Component = component_1.Component;
 exports.DesignerContext = component_1.DesignerContext;
 exports.MasterPage = component_1.MasterPage;
 exports.MasterPageContext = component_1.MasterPageContext;
+exports.PlaceHolder = component_1.PlaceHolder;
+exports.PageView = component_1.PageView;
 
 var component_panel_1 = __webpack_require__(/*! ./component-panel */ "./out-es5/component-panel.js");
 
@@ -2971,6 +2972,8 @@ function (_React$Component) {
       });
       this.componentUpdated.fire([componentData]);
     }
+    /** 设置多个组件的位置 */
+
   }, {
     key: "setComponentsPosition",
     value: function setComponentsPosition(positions) {
@@ -2982,6 +2985,14 @@ function (_React$Component) {
         var _o$position = o.position,
             left = _o$position.left,
             top = _o$position.top;
+
+        if (typeof left == "number") {
+          left = "".concat(left, "px");
+        }
+
+        if (typeof top == "number") {
+          top = "".concat(top, "px");
+        }
 
         var componentData = _this2.findComponentData(componentId);
 

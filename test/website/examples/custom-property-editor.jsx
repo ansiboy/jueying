@@ -1,6 +1,5 @@
-/// <reference path="../../../out/index.d.ts"/>
+const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, PropEditor } = jueying
 
-const { ComponentPanel, EditorPanel, PageDesigner, Component, PropEditor } = jueying
 
 class Button extends React.Component {
     static defaultTheme = 'primary'
@@ -20,7 +19,7 @@ Component.register('Button', Button, { movable: true, showHandler: true })
 class ThemeSelector extends PropEditor {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {}
     }
     selectTheme(value) {
         this.props.updateComponentProp(value)
@@ -76,7 +75,7 @@ class MainPage extends React.Component {
                     pageData={{
                         type: "div",
                         props: {
-                            style: { position: 'absolute', width: 400, height: 400 },
+                            style: { position: 'absolute', width: 400, height: 200 },
                             attr: { movable: false, resize: false }
                         }
                     }} />

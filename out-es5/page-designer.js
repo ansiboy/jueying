@@ -223,6 +223,8 @@ function (_React$Component) {
       });
       this.componentUpdated.fire([componentData]);
     }
+    /** 设置多个组件的位置 */
+
   }, {
     key: "setComponentsPosition",
     value: function setComponentsPosition(positions) {
@@ -234,6 +236,14 @@ function (_React$Component) {
         var _o$position = o.position,
             left = _o$position.left,
             top = _o$position.top;
+
+        if (typeof left == "number") {
+          left = "".concat(left, "px");
+        }
+
+        if (typeof top == "number") {
+          top = "".concat(top, "px");
+        }
 
         var componentData = _this2.findComponentData(componentId);
 

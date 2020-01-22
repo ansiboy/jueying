@@ -24,7 +24,7 @@ export interface ComponentProps<T> extends React.Props<T> {
     style?: React.CSSProperties;
     selected?: boolean;
     text?: string;
-    parentId?: string;
+    parentid?: string;
     attr?: ComponentAttribute;
 }
 declare type DesignerContextValue = {

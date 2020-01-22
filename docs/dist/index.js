@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.7.4
+ *  maishu-jueying v1.7.6
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1738,7 +1738,7 @@ class MasterPage extends React.Component {
             props[key] = this.props[key];
         }
         props.style = Object.assign({ minHeight: 40 }, props.style);
-        let children = this.state.children.filter(o => o.props.parentId == null);
+        let children = this.state.children.filter(o => o.props.parentid == null);
         let master = this;
         console.assert(master != null);
         return React.createElement(exports.MasterPageContext.Provider, { value: { master } }, children);
@@ -1794,7 +1794,7 @@ class PlaceHolder extends React.Component {
                 return;
             console.assert(this.props.id != null);
             console.assert(this.designer != null);
-            ctrl.props.parentId = this.props.id;
+            ctrl.props.parentid = this.props.id;
             console.assert(master != null, 'host is null');
             this.designer.appendComponent(master.props.id, ctrl);
         };
@@ -1814,7 +1814,6 @@ class PlaceHolder extends React.Component {
                 return;
             let componentData = this.designer.findComponentData(dd.sourceElement.id);
             console.assert(componentData != null);
-            let propName = 'parentId';
             this.designer.moveComponent(dd.sourceElement.id, host.props.id);
             this.designer.updateComponentProps({
                 componentId: "string", propName: "string", value: "any"
@@ -1841,7 +1840,7 @@ class PlaceHolder extends React.Component {
                 else {
                     arr = [master.props.children];
                 }
-                children = arr.filter((o) => o.props.parentId != null && o.props.parentId == this.props.id);
+                children = arr.filter((o) => o.props.parentid != null && o.props.parentid == this.props.id);
             }
             return React.createElement(exports.DesignerContext.Consumer, null, args => React.createElement(exports.ComponentWrapperContext.Consumer, null, wraper => {
                 this.wraper = wraper;
@@ -2039,6 +2038,8 @@ exports.Component = component_1.Component;
 exports.DesignerContext = component_1.DesignerContext;
 exports.MasterPage = component_1.MasterPage;
 exports.MasterPageContext = component_1.MasterPageContext;
+exports.PlaceHolder = component_1.PlaceHolder;
+exports.PageView = component_1.PageView;
 var component_panel_1 = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
 exports.ComponentPanel = component_panel_1.ComponentPanel;
 var editor_panel_1 = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
@@ -2314,11 +2315,18 @@ class PageDesigner extends React.Component {
         this.setState({ pageData });
         this.componentUpdated.fire([componentData]);
     }
+    /** 设置多个组件的位置 */
     setComponentsPosition(positions) {
         let componentDatas = new Array();
         positions.forEach(o => {
             let { componentId } = o;
             let { left, top } = o.position;
+            if (typeof left == "number") {
+                left = `${left}px`;
+            }
+            if (typeof top == "number") {
+                top = `${top}px`;
+            }
             let componentData = this.findComponentData(componentId);
             if (!componentData)
                 throw new Error(`Control ${componentId} is not exits.`);

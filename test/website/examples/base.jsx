@@ -1,6 +1,4 @@
-/// <reference path="../../../out/index.d.ts"/>
-
-const { ComponentPanel, EditorPanel, PageDesigner, Component, PropEditor } = jueying
+const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput } = jueying
 let components = [
     {
         componentData: {
@@ -20,13 +18,10 @@ let components = [
     },
 ]
 
-let positionDropDown = PropEditor.dropdown({ '': '默认', absolute: '绝对定位', fixed: '固定' })
-let textInput = PropEditor.textInput()
-
-Component.setPropEditor('label', 'text', textInput)
-Component.setPropEditor('label', 'style.position', positionDropDown)
-Component.setPropEditor('div', 'text', textInput)
-Component.setPropEditor('div', 'style.position', positionDropDown)
+Component.setPropEditor('label', 'text', TextInput)
+Component.setPropEditor('label', 'style.position', TextInput)
+Component.setPropEditor('div', 'text', TextInput)
+Component.setPropEditor('div', 'style.position', TextInput)
 
 let container = document.getElementById('container')
 
@@ -61,3 +56,5 @@ class MainPage extends React.Component {
 }
 
 ReactDOM.render(<MainPage />, container)
+
+

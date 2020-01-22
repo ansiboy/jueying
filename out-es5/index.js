@@ -25,6 +25,8 @@ exports.Component = component_1.Component;
 exports.DesignerContext = component_1.DesignerContext;
 exports.MasterPage = component_1.MasterPage;
 exports.MasterPageContext = component_1.MasterPageContext;
+exports.PlaceHolder = component_1.PlaceHolder;
+exports.PageView = component_1.PageView;
 
 var component_panel_1 = require("./component-panel");
 

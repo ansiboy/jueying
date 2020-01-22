@@ -1,7 +1,9 @@
-/// <reference path="../../../out/jueying.d.ts"/>
+/// <reference path="../../../out/index.d.ts"/>
 
 const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, DesignerContext, PageView } = jueying
 
+console.assert(DesignerContext != null);
+console.assert(PageView != null);
 
 class Button extends React.Component {
     constructor(props) {

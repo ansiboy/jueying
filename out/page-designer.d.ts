@@ -74,6 +74,7 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
         width?: number | string;
         height?: number | string;
     }): void;
+    /** 设置多个组件的位置 */
     setComponentsPosition(positions: {
         componentId: string;
         position: {

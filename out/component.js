@@ -229,7 +229,7 @@ class MasterPage extends React.Component {
             props[key] = this.props[key];
         }
         props.style = Object.assign({ minHeight: 40 }, props.style);
-        let children = this.state.children.filter(o => o.props.parentId == null);
+        let children = this.state.children.filter(o => o.props.parentid == null);
         let master = this;
         console.assert(master != null);
         return React.createElement(exports.MasterPageContext.Provider, { value: { master } }, children);
@@ -285,7 +285,7 @@ class PlaceHolder extends React.Component {
                 return;
             console.assert(this.props.id != null);
             console.assert(this.designer != null);
-            ctrl.props.parentId = this.props.id;
+            ctrl.props.parentid = this.props.id;
             console.assert(master != null, 'host is null');
             this.designer.appendComponent(master.props.id, ctrl);
         };
@@ -305,7 +305,6 @@ class PlaceHolder extends React.Component {
                 return;
             let componentData = this.designer.findComponentData(dd.sourceElement.id);
             console.assert(componentData != null);
-            let propName = 'parentId';
             this.designer.moveComponent(dd.sourceElement.id, host.props.id);
             this.designer.updateComponentProps({
                 componentId: "string", propName: "string", value: "any"
@@ -332,7 +331,7 @@ class PlaceHolder extends React.Component {
                 else {
                     arr = [master.props.children];
                 }
-                children = arr.filter((o) => o.props.parentId != null && o.props.parentId == this.props.id);
+                children = arr.filter((o) => o.props.parentid != null && o.props.parentid == this.props.id);
             }
             return React.createElement(exports.DesignerContext.Consumer, null, args => React.createElement(exports.ComponentWrapperContext.Consumer, null, wraper => {
                 this.wraper = wraper;

@@ -1,4 +1,4 @@
-/// <reference path="../../../out/jueying.d.ts"/>
+/// <reference path="../../../out/index.d.ts"/>
 
 const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, DesignerContext, PageView } = jueying
 

@@ -4,7 +4,7 @@ import '../lib/jquery.event.drag.live-2.2';
 import '../lib/jquery.event.drop-2.2';
 import '../lib/jquery.event.drop.live-2.2';
 export { proptDisplayNames as strings, proptDisplayNames } from "./common";
-export { Component, DesignerContext, MasterPage, MasterPageContext, ComponentProps } from "./component";
+export { Component, DesignerContext, MasterPage, MasterPageContext, ComponentProps, PlaceHolder, PageView } from "./component";
 export { ComponentPanel } from "./component-panel";
 export { EditorPanel, EditorPanelProps } from "./editor-panel";
 export { ComponentDefine, ComponentData } from "./models";
