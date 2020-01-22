@@ -1,4 +1,8 @@
 import * as React from "react";
+
+console.log(`React is null:${React == null}`);
+// console.log(`require is null:${require == null}`);
+// console.log(require)
 import { ComponentDefine, ComponentData } from "./models";
 import { PageDesigner } from "./page-designer";
 import { constants } from "./common";

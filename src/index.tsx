@@ -15,5 +15,17 @@ export { PropEditor, PropEditorState, TextInput, DropDownItem, } from "./prop-ed
 export { PropertyEditorInfo } from "./property-editor";
 export { classNames } from "./style";
 
+// (function (factory) {
+//     if (typeof module === "object" && typeof module.exports === "object") {
+//         var v = factory(require, exports);
+//         if (v !== undefined) module.exports = v;
+//     }
+//     else if (typeof define === "function" && define.amd) {
+//         define(["require", "exports"], factory);
+//     }
+// })(function (require, exports) {
+
+
+
 
 

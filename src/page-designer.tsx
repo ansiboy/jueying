@@ -1,18 +1,3 @@
-
-/*******************************************************************************
- * Copyright (C) maishu All rights reserved.
- *
- * HTML 页面设计器 
- * 
- * 作者: 寒烟
- * 日期: 2018/5/30
- *
- * 个人博客：   http://www.cnblogs.com/ansiboy/
- * GITHUB:     http://github.com/ansiboy
- * QQ 讨论组：  119038574
- * 
- ********************************************************************************/
-
 import React = require("react");
 
 import { ComponentData } from "./models";
@@ -44,13 +29,12 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
 
     static defaultProps: PageDesignerProps = { pageData: null, wrapDesignTimeElement: true };
-    // private components: { [typeName: string]: React.Component[] } = {};
 
     constructor(props: PageDesignerProps) {
         super(props);
 
         let components: PageDesignerState["components"] = {};
-        PageDesigner.initPageData(props.pageData, components);
+        PageDesigner.fillPageData(props.pageData, components);
 
         this.state = { pageData: props.pageData, components };
         this.designtimeComponentDidMount.add((args) => {
@@ -94,7 +78,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         //=========================================================
     }
 
-    private static initPageData(pageData: ComponentData, components: PageDesignerState["components"]) {
+    /** 对 pageData 进行缺少的字段进行补充 */
+    private static fillPageData(pageData: ComponentData, components: PageDesignerState["components"]) {
         if (pageData == null) {
             return
         }
@@ -451,20 +436,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (!pageData)
             throw Errors.pageDataIsNull();
 
-        // let stack = new Array<ComponentData>();
-        // stack.push(pageData);
-        // while (stack.length > 0) {
-        //     let item = stack.pop();
-        //     if (item == null)
-        //         continue
-
-        //     if (item.props.id == componentId)
-        //         return item;
-
-        //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
-        //     stack.push(...children);
-        // }
-
         let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.props.id == componentId)
         return componentDatas[0];
     }
@@ -513,7 +484,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState) {
-        PageDesigner.initPageData(props.pageData, state.components);
+        PageDesigner.fillPageData(props.pageData, state.components);
         return { pageData: props.pageData } as Partial<PageDesignerState>;
     }
 

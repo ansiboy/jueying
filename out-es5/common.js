@@ -6,69 +6,65 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-define(["require", "exports"], function (require, exports) {
-  "use strict";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.constants = {
+  componentsDir: 'components',
+  connectorElementClassName: 'component-container',
+  componentTypeName: 'data-component-name',
+  componentData: 'component-data',
+  componentPosition: "component-position"
+};
+exports.proptDisplayNames = {};
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.constants = {
-    componentsDir: 'components',
-    connectorElementClassName: 'component-container',
-    componentTypeName: 'data-component-name',
-    componentData: 'component-data',
-    componentPosition: "component-position"
-  };
-  exports.proptDisplayNames = {};
-
-  function guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
   }
 
-  exports.guid = guid;
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
 
-  var Callback =
-  /*#__PURE__*/
-  function () {
-    function Callback() {
-      _classCallCheck(this, Callback);
+exports.guid = guid;
 
-      this.funcs = new Array();
+var Callback =
+/*#__PURE__*/
+function () {
+  function Callback() {
+    _classCallCheck(this, Callback);
+
+    this.funcs = new Array();
+  }
+
+  _createClass(Callback, [{
+    key: "add",
+    value: function add(func) {
+      this.funcs.push(func);
     }
+  }, {
+    key: "remove",
+    value: function remove(func) {
+      this.funcs = this.funcs.filter(function (o) {
+        return o != func;
+      });
+    }
+  }, {
+    key: "fire",
+    value: function fire(args) {
+      this.funcs.forEach(function (o) {
+        return o(args);
+      });
+    }
+  }], [{
+    key: "create",
+    value: function create() {
+      return new Callback();
+    }
+  }]);
 
-    _createClass(Callback, [{
-      key: "add",
-      value: function add(func) {
-        this.funcs.push(func);
-      }
-    }, {
-      key: "remove",
-      value: function remove(func) {
-        this.funcs = this.funcs.filter(function (o) {
-          return o != func;
-        });
-      }
-    }, {
-      key: "fire",
-      value: function fire(args) {
-        this.funcs.forEach(function (o) {
-          return o(args);
-        });
-      }
-    }], [{
-      key: "create",
-      value: function create() {
-        return new Callback();
-      }
-    }]);
+  return Callback;
+}();
 
-    return Callback;
-  }();
-
-  exports.Callback = Callback;
-});
+exports.Callback = Callback;
 //# sourceMappingURL=common.js.map
