@@ -22,10 +22,6 @@ exports.proptDisplayNames = common_1.proptDisplayNames;
 var component_1 = require("./component");
 
 exports.Component = component_1.Component;
-exports.MasterPage = component_1.MasterPage;
-exports.MasterPageContext = component_1.MasterPageContext;
-exports.PlaceHolder = component_1.PlaceHolder;
-exports.PageView = component_1.PageView;
 
 var component_panel_1 = require("./component-panel");
 
@@ -48,7 +44,11 @@ var style_1 = require("./style");
 
 exports.classNames = style_1.classNames;
 
-var page_builder_1 = require("./page-builder");
+var react_page_builder_1 = require("./react-page-builder");
 
-exports.PageBuilderContext = page_builder_1.PageBuilderContext;
+exports.PageBuilderContext = react_page_builder_1.PageBuilderContext;
+exports.MasterPage = react_page_builder_1.MasterPage;
+exports.MasterPageContext = react_page_builder_1.MasterPageContext;
+exports.PlaceHolder = react_page_builder_1.PlaceHolder;
+exports.PageView = react_page_builder_1.PageView;
 //# sourceMappingURL=index.js.map

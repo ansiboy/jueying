@@ -1,14 +1,8 @@
 import { ComponentData } from "./models";
-import { ComponentProps } from "./component";
 import { PageDesigner } from "./page-designer";
-import * as React from "react";
-interface PageRenderArguments {
+export interface PageRenderArguments {
     designer: PageDesigner;
 }
-declare type PageBuilderContextValue = {
-    pageBuilder: PageBuilder | null;
-};
-export declare const PageBuilderContext: React.Context<PageBuilderContextValue>;
 /** 页面创建者 */
 export interface PageBuilder {
     /**
@@ -76,51 +70,3 @@ export interface PageBuilder {
     moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
     findComponentData(componentId: string): ComponentData | null;
 }
-/** 基于 ReactJS 的页面渲染器 */
-export declare class ReactPageBuilder implements PageBuilder {
-    private designer;
-    private pageData;
-    private pageElement;
-    constructor(args: PageRenderArguments);
-    protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
-    createPage(pageData: ComponentData, pageElement: HTMLElement): void;
-    private render;
-    updateComponentProps(componentProps: {
-        componentId: string;
-        propName: string;
-        value: any;
-    }[]): ComponentData[];
-    setComponentsSize(componentSiezs: {
-        componentId: string;
-        size: {
-            width?: React.ReactText;
-            height?: React.ReactText;
-        };
-    }[]): ComponentData[];
-    findComponentData(componentId: string): ComponentData | null;
-    /** 对 pageData 进行缺少的字段进行补充 */
-    private static fillPageData;
-    private static travelComponentData;
-    appendComponent(parentId: string, componentData: ComponentData, componentIndex?: number): void;
-    /**
-     * 选择指定的控件
-     * @param control 指定的控件
-     */
-    selectComponents(componentIds: string[] | string): void;
-    setComponentsPosition(positions: {
-        componentId: string;
-        position: {
-            left: number | string;
-            top: number | string;
-        };
-    }[]): ComponentData[];
-    removeComponents(componentIds: string[]): void;
-    moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
-    private removeComponentFrom;
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-    private static nameComponent;
-}
-export {};
