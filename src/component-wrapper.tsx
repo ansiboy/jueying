@@ -7,7 +7,7 @@ import { Errors } from "./errors";
 import { constants } from "./common";
 import { ComponentPanel } from "./component-panel";
 import { classNames, appendClassName } from "./style";
-import { MasterPage, ComponentWrapperContext } from "./component";
+import { ComponentWrapperContext } from "./component";
 
 type ComponentWrapperProps = {
     designer: PageDesigner,
@@ -287,7 +287,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         }
 
         let attr = this.props.source.attr
-        let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
+        let shouldWrapper = attr.resize;// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
         if (!shouldWrapper) {
             return this.renderWidthoutWrapper()
         }
@@ -403,11 +403,15 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
 
 
 export interface ComponentAttribute {
-    /** 表示组件为容器，可以添加组件 */
+    /** 组件在设计设计时，是否可以作为容器添加子组件 */
     container?: boolean,
-    /** 表示组件可移动 */
+    /** 组件在设计设计时，是否可移动 */
     movable?: boolean,
+
+    /** 组件在设计设计时，是否显示操作边框 */
     showHandler?: boolean,
+
+    /** 组件在设计设计时，是否可以设置大小 */
     resize?: boolean,
 }
 

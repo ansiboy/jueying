@@ -1,20 +1,13 @@
 import { ComponentData } from "./models";
-import { ComponentProps, Component, ComponentWrapperContext } from "./component";
-import { Errors } from "./errors";
-import { appendClassName, classNames, removeClassName } from "./style";
-import { ComponentWrapper, ComponentWrapperDrapData } from "./component-wrapper";
 import { PageDesigner } from "./page-designer";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { guid, constants } from "./common";
-import { ComponentPanel } from "./component-panel";
 
-export interface PageRenderArguments {
+export interface PageBuilderArguments {
     designer: PageDesigner;
 }
 
-
-
+export interface PageBuilderConstructor {
+    new(args: PageBuilderArguments): PageBuilder
+}
 
 /** 页面创建者 */
 export interface PageBuilder {

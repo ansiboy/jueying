@@ -1,10 +1,11 @@
 import React = require("react");
 import { PageDesigner } from "./page-designer";
-import { PropEditorInfo, Component, ErrorBoundary, ComponentProps } from "./component";
+import { PropEditorInfo, Component, ComponentProps } from "./component";
 import { proptDisplayNames, guid } from "./common";
 import { PropEditorProps } from "./prop-editor";
 import { Errors } from "./errors";
 import { ComponentData } from "./models";
+import { ErrorBoundary } from "./error-boundary";
 
 
 export interface EditorProps extends React.Props<PropertyEditor> {

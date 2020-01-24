@@ -8,7 +8,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { guid, constants } from "./common";
 import { ComponentPanel } from "./component-panel";
-import { PageBuilder, PageRenderArguments } from "page-builder";
+import { PageBuilder, PageBuilderArguments } from "./page-builder";
 
 
 type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element;
@@ -26,7 +26,7 @@ export class ReactPageBuilder implements PageBuilder {
     private pageData: ComponentData;
     private pageElement: HTMLElement;
 
-    constructor(args: PageRenderArguments) {
+    constructor(args: PageBuilderArguments) {
 
         if (!args) throw Errors.argumentNull("args");
 
@@ -477,7 +477,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
         </MasterPageContext.Provider>
     }
 }
-Component.register(MasterPageName, MasterPage, { container: false })
+Component.register(MasterPageName, MasterPage, { container: false, resize: false })
 
 /**
  * 占位符，用于放置控件
@@ -642,7 +642,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
     }
 }
 
-Component.register('PlaceHolder', PlaceHolder)
+Component.register('PlaceHolder', PlaceHolder, { resize: false, movable: false, container: true })
 
 /** 用于将 ComponentData 显示为组件 */
 export class PageView extends React.Component<{ pageData: ComponentData }, {}> {
@@ -658,29 +658,3 @@ export class PageView extends React.Component<{ pageData: ComponentData }, {}> {
     }
 }
 
-export class ErrorBoundary extends React.Component<{}, { error?: Error }> {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
-    componentDidCatch(error, info) {
-        // Display fallback UI
-        this.setState({ error });
-        // You can also log the error to an error reporting service
-        //   logErrorToMyService(error, info);
-        debugger
-    }
-
-    render() {
-        let { error } = this.state || {} as this["state"];
-        if (error) {
-            // You can render any custom fallback UI
-            return <div className="error">
-                <div>{error.message}</div>
-                <div>{error.stack}</div>
-            </div>;
-        }
-        return this.props.children;
-    }
-}

@@ -4,13 +4,15 @@ import { ComponentData } from "./models";
 import { Callback, guid } from "./common";
 import { Errors } from "./errors";
 import { classNames } from "./style";
-import { PageBuilder, ReactPageBuilder } from "./page-builder";
+import { PageBuilder, PageBuilderConstructor } from "./page-builder";
+import { ReactPageBuilder } from "./react-page-builder";
+
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null,
     style?: React.CSSProperties,
     wrapDesignTimeElement?: boolean,
-    pageBuilder?: PageBuilder,
+    pageBuilderType?: PageBuilderConstructor,
 }
 
 export interface PageDesignerState {
@@ -42,9 +44,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             console.log(`this:designer event:controlComponentDidMount`)
         })
 
-        this.pageBuilder = props.pageBuilder;
-        if (this.pageBuilder == null)
-            this.pageBuilder = new ReactPageBuilder({ designer: this });
+        let pageBuilderType = props.pageBuilderType || ReactPageBuilder;
+        this.pageBuilder = new pageBuilderType({ designer: this });
     }
 
     // private static setComponetRefProp(pageData: ComponentData, components: PageDesignerState["components"]) {

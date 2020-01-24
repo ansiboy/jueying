@@ -1,14 +1,9 @@
 import * as React from "react";
 import { ComponentAttribute, ComponentWrapper } from "./component-wrapper";
-import { PageDesigner } from "./page-designer";
 import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
 import { proptDisplayNames } from "./common";
-import { ReactPageBuilder } from "react-page-builder";
-
-
-type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element
 
 export interface ComponentProps<T> extends React.Props<T> {
     id?: string,
@@ -31,9 +26,9 @@ export interface PropEditorInfo {
 
 export function component<T extends React.Component>(args?: ComponentAttribute) {
     return function (constructor: { new(...args): T }) {
-        if (PageDesigner) {
-            Component.setAttribute(constructor.name, args)
-        }
+        // if (PageDesigner) {
+        Component.setAttribute(constructor.name, args)
+        // }
 
         Component.register(constructor.name, constructor)
         return constructor
