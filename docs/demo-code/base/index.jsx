@@ -1,4 +1,4 @@
-/// <reference path="../../../out/jueying.d.ts"/>
+/// <reference path="../../../out/index.d.ts"/>
 
 const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput } = jueying
 let components = [
@@ -48,7 +48,7 @@ class MainPage extends React.Component {
                         type: "div",
                         props: {
                             style: { position: 'absolute', width: 400, height: 400 },
-                            attr: { movable: false, resize: false }
+                            attr: { noWrapper: true }
                         }
                     }} />
                 <EditorPanel ref={e => this.editorPanel = e || this.editorPanel} />
