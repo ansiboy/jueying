@@ -227,8 +227,8 @@ class ComponentWrapper extends React.Component {
                 React.createElement("div", null, error.stack));
         }
         let attr = this.props.source.attr;
-        let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage);
-        if (!shouldWrapper) {
+        let noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
+        if (noWrapper) {
             return this.renderWidthoutWrapper();
         }
         let props = this.props.source.props;
@@ -318,4 +318,11 @@ class ComponentWrapper extends React.Component {
 }
 ComponentWrapper.isDrag = false;
 exports.ComponentWrapper = ComponentWrapper;
+exports.defaultComponentAttribute = {
+    container: false,
+    movable: false,
+    showHandler: false,
+    resize: false,
+    noWrapper: false,
+};
 //# sourceMappingURL=component-wrapper.js.map

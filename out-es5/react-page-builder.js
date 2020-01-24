@@ -549,7 +549,9 @@ function (_React$Component) {
 
 exports.MasterPage = MasterPage;
 component_1.Component.register(exports.MasterPageName, MasterPage, {
-  container: false
+  container: false,
+  resize: false,
+  noWrapper: true
 });
 /**
  * 占位符，用于放置控件
@@ -716,7 +718,11 @@ function (_React$Component2) {
 }(React.Component);
 
 exports.PlaceHolder = PlaceHolder;
-component_1.Component.register('PlaceHolder', PlaceHolder);
+component_1.Component.register('PlaceHolder', PlaceHolder, {
+  resize: false,
+  movable: false,
+  container: true
+});
 /** 用于将 ComponentData 显示为组件 */
 
 var PageView =
@@ -746,52 +752,4 @@ function (_React$Component3) {
 }(React.Component);
 
 exports.PageView = PageView;
-
-var ErrorBoundary =
-/*#__PURE__*/
-function (_React$Component4) {
-  _inherits(ErrorBoundary, _React$Component4);
-
-  function ErrorBoundary(props) {
-    var _this9;
-
-    _classCallCheck(this, ErrorBoundary);
-
-    _this9 = _possibleConstructorReturn(this, _getPrototypeOf(ErrorBoundary).call(this, props));
-    _this9.state = {};
-    return _this9;
-  }
-
-  _createClass(ErrorBoundary, [{
-    key: "componentDidCatch",
-    value: function componentDidCatch(error, info) {
-      // Display fallback UI
-      this.setState({
-        error: error
-      }); // You can also log the error to an error reporting service
-      //   logErrorToMyService(error, info);
-
-      debugger;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _ref = this.state || {},
-          error = _ref.error;
-
-      if (error) {
-        // You can render any custom fallback UI
-        return React.createElement("div", {
-          className: "error"
-        }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
-      }
-
-      return this.props.children;
-    }
-  }]);
-
-  return ErrorBoundary;
-}(React.Component);
-
-exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=react-page-builder.js.map

@@ -373,7 +373,7 @@ class MasterPage extends React.Component {
     }
 }
 exports.MasterPage = MasterPage;
-component_1.Component.register(exports.MasterPageName, MasterPage, { container: false });
+component_1.Component.register(exports.MasterPageName, MasterPage, { container: false, resize: false, noWrapper: true });
 /**
  * 占位符，用于放置控件
  */
@@ -497,7 +497,7 @@ class PlaceHolder extends React.Component {
     }
 }
 exports.PlaceHolder = PlaceHolder;
-component_1.Component.register('PlaceHolder', PlaceHolder);
+component_1.Component.register('PlaceHolder', PlaceHolder, { resize: false, movable: false, container: true });
 /** 用于将 ComponentData 显示为组件 */
 class PageView extends React.Component {
     constructor(props) {
@@ -511,28 +511,4 @@ class PageView extends React.Component {
     }
 }
 exports.PageView = PageView;
-class ErrorBoundary extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    componentDidCatch(error, info) {
-        // Display fallback UI
-        this.setState({ error });
-        // You can also log the error to an error reporting service
-        //   logErrorToMyService(error, info);
-        debugger;
-    }
-    render() {
-        let { error } = this.state || {};
-        if (error) {
-            // You can render any custom fallback UI
-            return React.createElement("div", { className: "error" },
-                React.createElement("div", null, error.message),
-                React.createElement("div", null, error.stack));
-        }
-        return this.props.children;
-    }
-}
-exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=react-page-builder.js.map

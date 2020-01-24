@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var React = require("react");
 
-var page_designer_1 = require("./page-designer");
+var component_wrapper_1 = require("./component-wrapper");
 
 var errors_1 = require("./errors");
 
@@ -24,9 +24,8 @@ exports.ComponentWrapperContext = React.createContext(null);
 
 function component(args) {
   return function (constructor) {
-    if (page_designer_1.PageDesigner) {
-      Component.setAttribute(constructor.name, args);
-    }
+    // if (PageDesigner) {
+    Component.setAttribute(constructor.name, args); // }
 
     Component.register(constructor.name, constructor);
     return constructor;
@@ -65,7 +64,7 @@ function () {
       var attr = Component.componentAttributes[typename];
       return Object.assign({
         type: type
-      }, Component.defaultComponentAttribute, attr || {});
+      }, component_wrapper_1.defaultComponentAttribute, attr || {});
     }
   }, {
     key: "getPropEditors",
@@ -174,13 +173,10 @@ function () {
 
 
 Component.Fragment = ""; //==========================================
+// private static defaultComponentAttribute: ComponentAttribute = {
+//     container: false, movable: false, showHandler: false, resize: false
+// }
 
-Component.defaultComponentAttribute = {
-  container: false,
-  movable: false,
-  showHandler: false,
-  resize: false
-};
 Component.componentAttributes = {
   'div': {
     container: true,

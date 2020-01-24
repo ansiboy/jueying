@@ -128,9 +128,9 @@ function (_React$Component) {
       }
 
       var attr = this.props.source.attr;
-      var shouldWrapper = attr.resize || typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage;
+      var noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
 
-      if (!shouldWrapper) {
+      if (noWrapper) {
         return this.renderWidthoutWrapper();
       }
 
@@ -451,4 +451,11 @@ function (_React$Component) {
 
 ComponentWrapper.isDrag = false;
 exports.ComponentWrapper = ComponentWrapper;
+exports.defaultComponentAttribute = {
+  container: false,
+  movable: false,
+  showHandler: false,
+  resize: false,
+  noWrapper: false
+};
 //# sourceMappingURL=component-wrapper.js.map

@@ -4,6 +4,7 @@ const React = require("react");
 const component_1 = require("./component");
 const common_1 = require("./common");
 const errors_1 = require("./errors");
+const error_boundary_1 = require("./error-boundary");
 class PropertyEditor extends React.Component {
     constructor(props) {
         super(props);
@@ -124,7 +125,7 @@ class PropertyEditor extends React.Component {
             React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
                 React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop),
                 React.createElement("div", { className: "control" },
-                    React.createElement(component_1.ErrorBoundary, null, o.editor))))))));
+                    React.createElement(error_boundary_1.ErrorBoundary, null, o.editor))))))));
     }
     get element() {
         return this._element;

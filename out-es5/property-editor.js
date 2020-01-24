@@ -38,6 +38,8 @@ var common_1 = require("./common");
 
 var errors_1 = require("./errors");
 
+var error_boundary_1 = require("./error-boundary");
+
 var PropertyEditor =
 /*#__PURE__*/
 function (_React$Component) {
@@ -236,7 +238,7 @@ function (_React$Component) {
             className: "form-group clearfix"
           }, React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
             className: "control"
-          }, React.createElement(component_1.ErrorBoundary, null, o.editor)));
+          }, React.createElement(error_boundary_1.ErrorBoundary, null, o.editor)));
         })));
       }));
     }

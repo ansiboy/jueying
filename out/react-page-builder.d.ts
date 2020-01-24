@@ -1,7 +1,7 @@
 import { ComponentData } from "./models";
 import { ComponentProps } from "./component";
 import * as React from "react";
-import { PageBuilder, PageRenderArguments } from "page-builder";
+import { PageBuilder, PageBuilderArguments } from "./page-builder";
 declare type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element;
 declare type PageBuilderContextValue = {
     pageBuilder: PageBuilder | null;
@@ -12,7 +12,7 @@ export declare class ReactPageBuilder implements PageBuilder {
     private designer;
     private pageData;
     private pageElement;
-    constructor(args: PageRenderArguments);
+    constructor(args: PageBuilderArguments);
     protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
     createPage(pageData: ComponentData, pageElement: HTMLElement): void;
     private render;
@@ -102,12 +102,5 @@ export declare class PageView extends React.Component<{
 }, {}> {
     constructor(props: PageView["props"]);
     render(): React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
-}
-export declare class ErrorBoundary extends React.Component<{}, {
-    error?: Error;
-}> {
-    constructor(props: any);
-    componentDidCatch(error: any, info: any): void;
-    render(): {};
 }
 export {};

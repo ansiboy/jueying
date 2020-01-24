@@ -5,7 +5,7 @@ let license = `
  
  Copyright (C) maishu All rights reserved.
  
- HTML 页面设计器 
+ 组件设计器 
   
  作者: 麦舒
  日期: 2018/5/30

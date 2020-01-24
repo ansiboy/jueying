@@ -1,10 +1,10 @@
 /*!
  * 
- *  maishu-jueying v2.0.0
+ *  maishu-jueying v2.0.2
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
- *  HTML 页面设计器 
+ *  组件设计器 
  *   
  *  作者: 麦舒
  *  日期: 2018/5/30
@@ -1405,8 +1405,8 @@ class ComponentWrapper extends React.Component {
                 React.createElement("div", null, error.stack));
         }
         let attr = this.props.source.attr;
-        let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage);
-        if (!shouldWrapper) {
+        let noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
+        if (noWrapper) {
             return this.renderWidthoutWrapper();
         }
         let props = this.props.source.props;
@@ -1496,6 +1496,13 @@ class ComponentWrapper extends React.Component {
 }
 ComponentWrapper.isDrag = false;
 exports.ComponentWrapper = ComponentWrapper;
+exports.defaultComponentAttribute = {
+    container: false,
+    movable: false,
+    showHandler: false,
+    resize: false,
+    noWrapper: false,
+};
 //# sourceMappingURL=component-wrapper.js.map
 
 /***/ }),
@@ -1511,15 +1518,15 @@ exports.ComponentWrapper = ComponentWrapper;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
-const page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+const component_wrapper_1 = __webpack_require__(/*! ./component-wrapper */ "./out/component-wrapper.js");
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
 const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
 exports.ComponentWrapperContext = React.createContext(null);
 function component(args) {
     return function (constructor) {
-        if (page_designer_1.PageDesigner) {
-            Component.setAttribute(constructor.name, args);
-        }
+        // if (PageDesigner) {
+        Component.setAttribute(constructor.name, args);
+        // }
         Component.register(constructor.name, constructor);
         return constructor;
     };
@@ -1541,7 +1548,7 @@ class Component {
     static getAttribute(type) {
         let typename = typeof type == 'string' ? type : type.name;
         let attr = Component.componentAttributes[typename];
-        return Object.assign({ type }, Component.defaultComponentAttribute, attr || {});
+        return Object.assign({ type }, component_wrapper_1.defaultComponentAttribute, attr || {});
     }
     static getPropEditors(componentData) {
         let componentType = componentData.type;
@@ -1624,9 +1631,9 @@ class Component {
 // 用于创建 React 的 React.Fragment 
 Component.Fragment = "";
 //==========================================
-Component.defaultComponentAttribute = {
-    container: false, movable: false, showHandler: false, resize: false
-};
+// private static defaultComponentAttribute: ComponentAttribute = {
+//     container: false, movable: false, showHandler: false, resize: false
+// }
 Component.componentAttributes = {
     'div': { container: true, movable: true, showHandler: true, resize: true },
     'img': { container: false, movable: true, resize: true },
@@ -1699,6 +1706,45 @@ class EditorPanel extends React.Component {
 }
 exports.EditorPanel = EditorPanel;
 //# sourceMappingURL=editor-panel.js.map
+
+/***/ }),
+
+/***/ "./out/error-boundary.js":
+/*!*******************************!*\
+  !*** ./out/error-boundary.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+    componentDidCatch(error, info) {
+        // Display fallback UI
+        this.setState({ error });
+        // You can also log the error to an error reporting service
+        //   logErrorToMyService(error, info);
+        debugger;
+    }
+    render() {
+        let { error } = this.state || {};
+        if (error) {
+            // You can render any custom fallback UI
+            return React.createElement("div", { className: "error" },
+                React.createElement("div", null, error.message),
+                React.createElement("div", null, error.stack));
+        }
+        return this.props.children;
+    }
+}
+exports.ErrorBoundary = ErrorBoundary;
+//# sourceMappingURL=error-boundary.js.map
 
 /***/ }),
 
@@ -1824,20 +1870,6 @@ if (jquery == null) {
 
 /***/ }),
 
-/***/ "./out/page-builder.js":
-/*!*****************************!*\
-  !*** ./out/page-builder.js ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-//# sourceMappingURL=page-builder.js.map
-
-/***/ }),
-
 /***/ "./out/page-designer.js":
 /*!******************************!*\
   !*** ./out/page-designer.js ***!
@@ -1852,7 +1884,7 @@ const React = __webpack_require__(/*! react */ "react");
 const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
 const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
-const page_builder_1 = __webpack_require__(/*! ./page-builder */ "./out/page-builder.js");
+const react_page_builder_1 = __webpack_require__(/*! ./react-page-builder */ "./out/react-page-builder.js");
 class PageDesigner extends React.Component {
     constructor(props) {
         super(props);
@@ -1867,9 +1899,8 @@ class PageDesigner extends React.Component {
         this.designtimeComponentDidMount.add(() => {
             console.log(`this:designer event:controlComponentDidMount`);
         });
-        this.pageBuilder = props.pageBuilder;
-        if (this.pageBuilder == null)
-            this.pageBuilder = new page_builder_1.ReactPageBuilder({ designer: this });
+        let pageBuilderType = props.pageBuilderType || react_page_builder_1.ReactPageBuilder;
+        this.pageBuilder = new pageBuilderType({ designer: this });
     }
     // private static setComponetRefProp(pageData: ComponentData, components: PageDesignerState["components"]) {
     //     //=========================================================
@@ -2249,6 +2280,7 @@ const React = __webpack_require__(/*! react */ "react");
 const component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
 const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
+const error_boundary_1 = __webpack_require__(/*! ./error-boundary */ "./out/error-boundary.js");
 class PropertyEditor extends React.Component {
     constructor(props) {
         super(props);
@@ -2369,7 +2401,7 @@ class PropertyEditor extends React.Component {
             React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
                 React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop),
                 React.createElement("div", { className: "control" },
-                    React.createElement(component_1.ErrorBoundary, null, o.editor))))))));
+                    React.createElement(error_boundary_1.ErrorBoundary, null, o.editor))))))));
     }
     get element() {
         return this._element;
@@ -2763,7 +2795,7 @@ class MasterPage extends React.Component {
     }
 }
 exports.MasterPage = MasterPage;
-component_1.Component.register(exports.MasterPageName, MasterPage, { container: false });
+component_1.Component.register(exports.MasterPageName, MasterPage, { container: false, resize: false, noWrapper: true });
 /**
  * 占位符，用于放置控件
  */
@@ -2887,7 +2919,7 @@ class PlaceHolder extends React.Component {
     }
 }
 exports.PlaceHolder = PlaceHolder;
-component_1.Component.register('PlaceHolder', PlaceHolder);
+component_1.Component.register('PlaceHolder', PlaceHolder, { resize: false, movable: false, container: true });
 /** 用于将 ComponentData 显示为组件 */
 class PageView extends React.Component {
     constructor(props) {
@@ -2901,30 +2933,6 @@ class PageView extends React.Component {
     }
 }
 exports.PageView = PageView;
-class ErrorBoundary extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    componentDidCatch(error, info) {
-        // Display fallback UI
-        this.setState({ error });
-        // You can also log the error to an error reporting service
-        //   logErrorToMyService(error, info);
-        debugger;
-    }
-    render() {
-        let { error } = this.state || {};
-        if (error) {
-            // You can render any custom fallback UI
-            return React.createElement("div", { className: "error" },
-                React.createElement("div", null, error.message),
-                React.createElement("div", null, error.stack));
-        }
-        return this.props.children;
-    }
-}
-exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=react-page-builder.js.map
 
 /***/ }),

@@ -31,7 +31,6 @@ interface SetPropEditorOptions {
 declare type ComponentPropEditorDisplay = (componentData: ComponentData) => boolean;
 export declare class Component {
     static readonly Fragment = "";
-    private static defaultComponentAttribute;
     private static componentAttributes;
     /**
      * 设置组件特性

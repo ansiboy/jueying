@@ -4,7 +4,7 @@ const React = require("react");
 const common_1 = require("./common");
 const errors_1 = require("./errors");
 const style_1 = require("./style");
-const page_builder_1 = require("./page-builder");
+const react_page_builder_1 = require("./react-page-builder");
 class PageDesigner extends React.Component {
     constructor(props) {
         super(props);
@@ -19,9 +19,8 @@ class PageDesigner extends React.Component {
         this.designtimeComponentDidMount.add(() => {
             console.log(`this:designer event:controlComponentDidMount`);
         });
-        this.pageBuilder = props.pageBuilder;
-        if (this.pageBuilder == null)
-            this.pageBuilder = new page_builder_1.ReactPageBuilder({ designer: this });
+        let pageBuilderType = props.pageBuilderType || react_page_builder_1.ReactPageBuilder;
+        this.pageBuilder = new pageBuilderType({ designer: this });
     }
     // private static setComponetRefProp(pageData: ComponentData, components: PageDesignerState["components"]) {
     //     //=========================================================

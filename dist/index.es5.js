@@ -1,10 +1,10 @@
 /*!
  * 
- *  maishu-jueying v2.0.0
+ *  maishu-jueying v2.0.2
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
- *  HTML 页面设计器 
+ *  组件设计器 
  *   
  *  作者: 麦舒
  *  日期: 2018/5/30
@@ -1414,9 +1414,9 @@ function (_React$Component) {
       }
 
       var attr = this.props.source.attr;
-      var shouldWrapper = attr.resize || typeof this.props.source.type != 'string' && this.props.source.type != component_1.MasterPage;
+      var noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
 
-      if (!shouldWrapper) {
+      if (noWrapper) {
         return this.renderWidthoutWrapper();
       }
 
@@ -1737,6 +1737,13 @@ function (_React$Component) {
 
 ComponentWrapper.isDrag = false;
 exports.ComponentWrapper = ComponentWrapper;
+exports.defaultComponentAttribute = {
+  container: false,
+  movable: false,
+  showHandler: false,
+  resize: false,
+  noWrapper: false
+};
 //# sourceMappingURL=component-wrapper.js.map
 
 
@@ -1766,7 +1773,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var React = __webpack_require__(/*! react */ "react");
 
-var page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out-es5/page-designer.js");
+var component_wrapper_1 = __webpack_require__(/*! ./component-wrapper */ "./out-es5/component-wrapper.js");
 
 var errors_1 = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
@@ -1776,9 +1783,8 @@ exports.ComponentWrapperContext = React.createContext(null);
 
 function component(args) {
   return function (constructor) {
-    if (page_designer_1.PageDesigner) {
-      Component.setAttribute(constructor.name, args);
-    }
+    // if (PageDesigner) {
+    Component.setAttribute(constructor.name, args); // }
 
     Component.register(constructor.name, constructor);
     return constructor;
@@ -1817,7 +1823,7 @@ function () {
       var attr = Component.componentAttributes[typename];
       return Object.assign({
         type: type
-      }, Component.defaultComponentAttribute, attr || {});
+      }, component_wrapper_1.defaultComponentAttribute, attr || {});
     }
   }, {
     key: "getPropEditors",
@@ -1926,13 +1932,10 @@ function () {
 
 
 Component.Fragment = ""; //==========================================
+// private static defaultComponentAttribute: ComponentAttribute = {
+//     container: false, movable: false, showHandler: false, resize: false
+// }
 
-Component.defaultComponentAttribute = {
-  container: false,
-  movable: false,
-  showHandler: false,
-  resize: false
-};
 Component.componentAttributes = {
   'div': {
     container: true,
@@ -2118,6 +2121,92 @@ function (_React$Component) {
 
 exports.EditorPanel = EditorPanel;
 //# sourceMappingURL=editor-panel.js.map
+
+
+/***/ }),
+
+/***/ "./out-es5/error-boundary.js":
+/*!***********************************!*\
+  !*** ./out-es5/error-boundary.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var React = __webpack_require__(/*! react */ "react");
+
+var ErrorBoundary =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(ErrorBoundary, _React$Component);
+
+  function ErrorBoundary(props) {
+    var _this;
+
+    _classCallCheck(this, ErrorBoundary);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ErrorBoundary).call(this, props));
+    _this.state = {};
+    return _this;
+  }
+
+  _createClass(ErrorBoundary, [{
+    key: "componentDidCatch",
+    value: function componentDidCatch(error, info) {
+      // Display fallback UI
+      this.setState({
+        error: error
+      }); // You can also log the error to an error reporting service
+      //   logErrorToMyService(error, info);
+
+      debugger;
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _ref = this.state || {},
+          error = _ref.error;
+
+      if (error) {
+        // You can render any custom fallback UI
+        return React.createElement("div", {
+          className: "error"
+        }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
+      }
+
+      return this.props.children;
+    }
+  }]);
+
+  return ErrorBoundary;
+}(React.Component);
+
+exports.ErrorBoundary = ErrorBoundary;
+//# sourceMappingURL=error-boundary.js.map
 
 
 /***/ }),
@@ -2320,24 +2409,6 @@ if (jquery == null) {
 
 /***/ }),
 
-/***/ "./out-es5/page-builder.js":
-/*!*********************************!*\
-  !*** ./out-es5/page-builder.js ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-//# sourceMappingURL=page-builder.js.map
-
-
-/***/ }),
-
 /***/ "./out-es5/page-designer.js":
 /*!**********************************!*\
   !*** ./out-es5/page-designer.js ***!
@@ -2386,7 +2457,7 @@ var errors_1 = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
 var style_1 = __webpack_require__(/*! ./style */ "./out-es5/style.js");
 
-var page_builder_1 = __webpack_require__(/*! ./page-builder */ "./out-es5/page-builder.js");
+var react_page_builder_1 = __webpack_require__(/*! ./react-page-builder */ "./out-es5/react-page-builder.js");
 
 var PageDesigner =
 /*#__PURE__*/
@@ -2412,8 +2483,8 @@ function (_React$Component) {
       console.log("this:designer event:controlComponentDidMount");
     });
 
-    _this.pageBuilder = props.pageBuilder;
-    if (_this.pageBuilder == null) _this.pageBuilder = new page_builder_1.ReactPageBuilder({
+    var pageBuilderType = props.pageBuilderType || react_page_builder_1.ReactPageBuilder;
+    _this.pageBuilder = new pageBuilderType({
       designer: _assertThisInitialized(_this)
     });
     return _this;
@@ -3058,6 +3129,8 @@ var common_1 = __webpack_require__(/*! ./common */ "./out-es5/common.js");
 
 var errors_1 = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
+var error_boundary_1 = __webpack_require__(/*! ./error-boundary */ "./out-es5/error-boundary.js");
+
 var PropertyEditor =
 /*#__PURE__*/
 function (_React$Component) {
@@ -3256,7 +3329,7 @@ function (_React$Component) {
             className: "form-group clearfix"
           }, React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
             className: "control"
-          }, React.createElement(component_1.ErrorBoundary, null, o.editor)));
+          }, React.createElement(error_boundary_1.ErrorBoundary, null, o.editor)));
         })));
       }));
     }
@@ -3842,7 +3915,9 @@ function (_React$Component) {
 
 exports.MasterPage = MasterPage;
 component_1.Component.register(exports.MasterPageName, MasterPage, {
-  container: false
+  container: false,
+  resize: false,
+  noWrapper: true
 });
 /**
  * 占位符，用于放置控件
@@ -4009,7 +4084,11 @@ function (_React$Component2) {
 }(React.Component);
 
 exports.PlaceHolder = PlaceHolder;
-component_1.Component.register('PlaceHolder', PlaceHolder);
+component_1.Component.register('PlaceHolder', PlaceHolder, {
+  resize: false,
+  movable: false,
+  container: true
+});
 /** 用于将 ComponentData 显示为组件 */
 
 var PageView =
@@ -4039,54 +4118,6 @@ function (_React$Component3) {
 }(React.Component);
 
 exports.PageView = PageView;
-
-var ErrorBoundary =
-/*#__PURE__*/
-function (_React$Component4) {
-  _inherits(ErrorBoundary, _React$Component4);
-
-  function ErrorBoundary(props) {
-    var _this9;
-
-    _classCallCheck(this, ErrorBoundary);
-
-    _this9 = _possibleConstructorReturn(this, _getPrototypeOf(ErrorBoundary).call(this, props));
-    _this9.state = {};
-    return _this9;
-  }
-
-  _createClass(ErrorBoundary, [{
-    key: "componentDidCatch",
-    value: function componentDidCatch(error, info) {
-      // Display fallback UI
-      this.setState({
-        error: error
-      }); // You can also log the error to an error reporting service
-      //   logErrorToMyService(error, info);
-
-      debugger;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _ref = this.state || {},
-          error = _ref.error;
-
-      if (error) {
-        // You can render any custom fallback UI
-        return React.createElement("div", {
-          className: "error"
-        }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
-      }
-
-      return this.props.children;
-    }
-  }]);
-
-  return ErrorBoundary;
-}(React.Component);
-
-exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=react-page-builder.js.map
 
 

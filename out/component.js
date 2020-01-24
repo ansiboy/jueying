@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const page_designer_1 = require("./page-designer");
+const component_wrapper_1 = require("./component-wrapper");
 const errors_1 = require("./errors");
 const common_1 = require("./common");
 exports.ComponentWrapperContext = React.createContext(null);
 function component(args) {
     return function (constructor) {
-        if (page_designer_1.PageDesigner) {
-            Component.setAttribute(constructor.name, args);
-        }
+        // if (PageDesigner) {
+        Component.setAttribute(constructor.name, args);
+        // }
         Component.register(constructor.name, constructor);
         return constructor;
     };
@@ -31,7 +31,7 @@ class Component {
     static getAttribute(type) {
         let typename = typeof type == 'string' ? type : type.name;
         let attr = Component.componentAttributes[typename];
-        return Object.assign({ type }, Component.defaultComponentAttribute, attr || {});
+        return Object.assign({ type }, component_wrapper_1.defaultComponentAttribute, attr || {});
     }
     static getPropEditors(componentData) {
         let componentType = componentData.type;
@@ -114,9 +114,9 @@ class Component {
 // 用于创建 React 的 React.Fragment 
 Component.Fragment = "";
 //==========================================
-Component.defaultComponentAttribute = {
-    container: false, movable: false, showHandler: false, resize: false
-};
+// private static defaultComponentAttribute: ComponentAttribute = {
+//     container: false, movable: false, showHandler: false, resize: false
+// }
 Component.componentAttributes = {
     'div': { container: true, movable: true, showHandler: true, resize: true },
     'img': { container: false, movable: true, resize: true },

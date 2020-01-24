@@ -1,7 +1,10 @@
 import { ComponentData } from "./models";
 import { PageDesigner } from "./page-designer";
-export interface PageRenderArguments {
+export interface PageBuilderArguments {
     designer: PageDesigner;
+}
+export interface PageBuilderConstructor {
+    new (args: PageBuilderArguments): PageBuilder;
 }
 /** 页面创建者 */
 export interface PageBuilder {

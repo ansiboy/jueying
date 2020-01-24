@@ -1,12 +1,12 @@
 import React = require("react");
 import { ComponentData } from "./models";
 import { Callback } from "./common";
-import { PageBuilder } from "./page-builder";
+import { PageBuilderConstructor } from "./page-builder";
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null;
     style?: React.CSSProperties;
     wrapDesignTimeElement?: boolean;
-    pageBuilder?: PageBuilder;
+    pageBuilderType?: PageBuilderConstructor;
 }
 export interface PageDesignerState {
 }

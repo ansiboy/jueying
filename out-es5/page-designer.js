@@ -38,7 +38,7 @@ var errors_1 = require("./errors");
 
 var style_1 = require("./style");
 
-var page_builder_1 = require("./page-builder");
+var react_page_builder_1 = require("./react-page-builder");
 
 var PageDesigner =
 /*#__PURE__*/
@@ -64,8 +64,8 @@ function (_React$Component) {
       console.log("this:designer event:controlComponentDidMount");
     });
 
-    _this.pageBuilder = props.pageBuilder;
-    if (_this.pageBuilder == null) _this.pageBuilder = new page_builder_1.ReactPageBuilder({
+    var pageBuilderType = props.pageBuilderType || react_page_builder_1.ReactPageBuilder;
+    _this.pageBuilder = new pageBuilderType({
       designer: _assertThisInitialized(_this)
     });
     return _this;
