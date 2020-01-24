@@ -477,7 +477,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
         </MasterPageContext.Provider>
     }
 }
-Component.register(MasterPageName, MasterPage, { container: false, resize: false })
+Component.register(MasterPageName, MasterPage, { container: false, resize: false, noWrapper: true })
 
 /**
  * 占位符，用于放置控件

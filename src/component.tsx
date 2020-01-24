@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ComponentAttribute, ComponentWrapper } from "./component-wrapper";
+import { ComponentAttribute, ComponentWrapper, defaultComponentAttribute } from "./component-wrapper";
 import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
@@ -54,9 +54,9 @@ export class Component {
     static readonly Fragment = ""
     //==========================================
 
-    private static defaultComponentAttribute: ComponentAttribute = {
-        container: false, movable: false, showHandler: false, resize: false
-    }
+    // private static defaultComponentAttribute: ComponentAttribute = {
+    //     container: false, movable: false, showHandler: false, resize: false
+    // }
 
     private static componentAttributes: { [key: string]: ComponentAttribute } = {
 
@@ -93,7 +93,7 @@ export class Component {
     static getAttribute(type: string | React.ComponentClass<any>) {
         let typename = typeof type == 'string' ? type : type.name
         let attr = Component.componentAttributes[typename]
-        return Object.assign({ type }, Component.defaultComponentAttribute, attr || {})
+        return Object.assign({ type }, defaultComponentAttribute, attr || {})
     }
 
     private static componentPropEditors: {

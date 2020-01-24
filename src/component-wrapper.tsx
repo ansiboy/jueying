@@ -287,8 +287,8 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         }
 
         let attr = this.props.source.attr
-        let shouldWrapper = attr.resize;// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
-        if (!shouldWrapper) {
+        let noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
+        if (noWrapper) {
             return this.renderWidthoutWrapper()
         }
 
@@ -408,11 +408,22 @@ export interface ComponentAttribute {
     /** 组件在设计设计时，是否可移动 */
     movable?: boolean,
 
-    /** 组件在设计设计时，是否显示操作边框 */
+    /** 组件在设计设计时，是否显示操作按钮 */
     showHandler?: boolean,
 
     /** 组件在设计设计时，是否可以设置大小 */
     resize?: boolean,
+
+    /** 组件在设计设计时，不对元素进行包裹 */
+    noWrapper?: boolean,
+}
+
+export let defaultComponentAttribute: ComponentAttribute = {
+    container: false,
+    movable: false,
+    showHandler: false,
+    resize: false,
+    noWrapper: false,
 }
 
 
