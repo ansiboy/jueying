@@ -11,7 +11,7 @@ import { ComponentPanel } from "./component-panel";
 import { PageBuilder, PageBuilderArguments } from "./page-builder";
 
 
-type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element;
+type ReactFactory = typeof React["createElement"];//(type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => React.ReactNode;
 type CreateElementContext = { components: React.Component[], componentTypes: string[] };
 type PageBuilderContextValue = { pageBuilder: PageBuilder | null };
 
@@ -33,7 +33,7 @@ export class ReactPageBuilder implements PageBuilder {
         this.designer = args.designer;
     }
 
-    protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]) {
+    protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): React.ReactNode {
         if (type == null) throw Errors.argumentNull('type');
         if (props == null) throw Errors.argumentNull('props');
         if (props.id == null) throw Errors.argumentFieldCanntNull('id', 'props');
@@ -458,7 +458,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
         return { children } as MasterPage["state"];
     }
 
-    render() {
+    render(): React.ReactNode {
         let props = {} as any
         for (let key in this.props) {
             if (key == 'ref' || key == 'id')
@@ -468,7 +468,7 @@ export class MasterPage extends React.Component<ComponentProps<MasterPage>, { ch
         }
 
         props.style = Object.assign({ minHeight: 40 }, props.style)
-        let children = this.state.children.filter(o => o.props.parentid == null);
+        let children = this.state.children.filter(o => o.props.parentId == null);
 
         let master = this;
         console.assert(master != null);
@@ -482,7 +482,7 @@ Component.register(MasterPageName, MasterPage, { container: false, resize: false
 /**
  * 占位符，用于放置控件
  */
-export class PlaceHolder extends React.Component<{ id: string, empty?: string | JSX.Element }, {}>{
+export class PlaceHolder extends React.Component<{ id: string, empty?: string | React.ReactElement }, {}>{
     private element: HTMLElement;
 
     constructor(props: PlaceHolder["props"]) {
@@ -545,7 +545,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
 
             console.assert(this.props.id != null);
             console.assert(this.designer != null);
-            ctrl.props.parentid = this.props.id;
+            ctrl.props.parentId = this.props.id;
             console.assert(master != null, 'host is null')
             this.designer.appendComponent(master.props.id, ctrl)
         }
@@ -582,7 +582,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                 removeClassName(element, 'active')
             })
     }
-    render() {
+    render(): React.ReactNode {
         let empty = this.props.empty || <div key={guid()} className="empty">可以拖拉控件到这里</div>
         return <MasterPageContext.Consumer>
             {(args) => {
@@ -598,7 +598,7 @@ export class PlaceHolder extends React.Component<{ id: string, empty?: string | 
                     else {
                         arr = [master.props.children as any]
                     }
-                    children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parentid != null && o.props.parentid == this.props.id)
+                    children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parentId != null && o.props.parentId == this.props.id)
                 }
 
 

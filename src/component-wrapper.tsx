@@ -1,13 +1,12 @@
 /// <reference path="./typings/declare.d.ts"/>
 
-import { ComponentProps } from "react";
 import * as React from "react";
 import { PageDesigner } from "./page-designer";
 import { Errors } from "./errors";
 import { constants } from "./common";
 import { ComponentPanel } from "./component-panel";
 import { classNames, appendClassName } from "./style";
-import { ComponentWrapperContext } from "./component";
+import { ComponentWrapperContext, ComponentProps } from "./component";
 
 type ComponentWrapperProps = {
     designer: PageDesigner,
@@ -371,12 +370,19 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
     }
 
     private createRawElement(type: string | React.ComponentClass, props: ComponentProps<any>, children: any[]) {
+        props = Object.assign({}, props);
         let isEmptyElement = (children || []).length == 0
         if (isEmptyElement) {
             let emtpy = this.designTimeEmptyElement(type, props)
             if (emtpy != null)
                 children = [emtpy]
         }
+
+        if (typeof type == "string") {
+            props["parent-id"] = props.parentId;
+            delete props.parentId;
+        }
+
         return React.createElement(type, props, ...children)
     }
 

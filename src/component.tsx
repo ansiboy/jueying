@@ -12,7 +12,7 @@ export interface ComponentProps<T> extends React.Props<T> {
     style?: React.CSSProperties,
     selected?: boolean,
     text?: string,
-    parentid?: string;
+    parentId?: string;
     attr?: ComponentAttribute
 }
 
@@ -106,7 +106,7 @@ export class Component {
 
 
     static getPropEditors(componentData: ComponentData): PropEditorInfo[] {
-        let componentType: string = componentData.type;
+        let componentType: string = typeof componentData == "string" ? "string" : componentData.type;
         let result: PropEditorInfo[] = [];
         let propEditorInfo = this.componentPropEditors[componentType] || [];
         for (let i = 0; i < propEditorInfo.length; i++) {
