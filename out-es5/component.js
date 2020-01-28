@@ -69,7 +69,7 @@ function () {
   }, {
     key: "getPropEditors",
     value: function getPropEditors(componentData) {
-      var componentType = componentData.type;
+      var componentType = typeof componentData == "string" ? "string" : componentData.type;
       var result = [];
       var propEditorInfo = this.componentPropEditors[componentType] || [];
 

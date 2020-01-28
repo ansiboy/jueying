@@ -12,4 +12,5 @@ export { PageDesigner } from "./page-designer";
 export { PropEditor, PropEditorState, TextInput, DropDownItem, } from "./prop-editor";
 export { PropertyEditorInfo } from "./property-editor";
 export { classNames } from "./style";
+export { PageBuilder } from "./page-builder";
 export { PageBuilderContext, MasterPage, MasterPageContext, PlaceHolder, PageView } from "./react-page-builder";

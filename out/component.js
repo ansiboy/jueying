@@ -34,7 +34,7 @@ class Component {
         return Object.assign({ type }, component_wrapper_1.defaultComponentAttribute, attr || {});
     }
     static getPropEditors(componentData) {
-        let componentType = componentData.type;
+        let componentType = typeof componentData == "string" ? "string" : componentData.type;
         let result = [];
         let propEditorInfo = this.componentPropEditors[componentType] || [];
         for (let i = 0; i < propEditorInfo.length; i++) {

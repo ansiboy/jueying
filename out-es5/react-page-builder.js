@@ -513,7 +513,7 @@ function (_React$Component) {
         minHeight: 40
       }, props.style);
       var children = this.state.children.filter(function (o) {
-        return o.props.parentid == null;
+        return o.props.parentId == null;
       });
       var master = this;
       console.assert(master != null);
@@ -616,7 +616,7 @@ function (_React$Component2) {
         if (!ctrl) return;
         console.assert(_this5.props.id != null);
         console.assert(_this5.designer != null);
-        ctrl.props.parentid = _this5.props.id;
+        ctrl.props.parentId = _this5.props.id;
         console.assert(master != null, 'host is null');
 
         _this5.designer.appendComponent(master.props.id, ctrl);
@@ -676,7 +676,7 @@ function (_React$Component2) {
           }
 
           children = arr.filter(function (o) {
-            return o.props.parentid != null && o.props.parentid == _this7.props.id;
+            return o.props.parentId != null && o.props.parentId == _this7.props.id;
           });
         }
 

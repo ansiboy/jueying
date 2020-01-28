@@ -2,7 +2,7 @@ import { ComponentData } from "./models";
 import { ComponentProps } from "./component";
 import * as React from "react";
 import { PageBuilder, PageBuilderArguments } from "./page-builder";
-declare type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element;
+declare type ReactFactory = typeof React["createElement"];
 declare type PageBuilderContextValue = {
     pageBuilder: PageBuilder | null;
 };
@@ -13,7 +13,7 @@ export declare class ReactPageBuilder implements PageBuilder {
     private pageData;
     private pageElement;
     constructor(args: PageBuilderArguments);
-    protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
+    protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): React.ReactNode;
     createPage(pageData: ComponentData, pageElement: HTMLElement): void;
     private render;
     updateComponentProps(componentProps: {
@@ -76,14 +76,14 @@ export declare class MasterPage extends React.Component<ComponentProps<MasterPag
     static getDerivedStateFromProps(props: ComponentProps<MasterPage>): Readonly<{
         children: React.ReactElement<ComponentProps<MasterPage>, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>[];
     }>;
-    render(): JSX.Element;
+    render(): React.ReactNode;
 }
 /**
  * 占位符，用于放置控件
  */
 export declare class PlaceHolder extends React.Component<{
     id: string;
-    empty?: string | JSX.Element;
+    empty?: string | React.ReactElement;
 }, {}> {
     private element;
     constructor(props: PlaceHolder["props"]);
@@ -94,7 +94,7 @@ export declare class PlaceHolder extends React.Component<{
      */
     private enableAppendDroppable;
     private enableMoveDroppable;
-    render(): JSX.Element;
+    render(): React.ReactNode;
 }
 /** 用于将 ComponentData 显示为组件 */
 export declare class PageView extends React.Component<{

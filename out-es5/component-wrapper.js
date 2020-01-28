@@ -238,11 +238,17 @@ function (_React$Component) {
   }, {
     key: "createRawElement",
     value: function createRawElement(type, props, children) {
+      props = Object.assign({}, props);
       var isEmptyElement = (children || []).length == 0;
 
       if (isEmptyElement) {
         var emtpy = this.designTimeEmptyElement(type, props);
         if (emtpy != null) children = [emtpy];
+      }
+
+      if (typeof type == "string") {
+        props["parent-id"] = props.parentId;
+        delete props.parentId;
       }
 
       return React.createElement.apply(React, [type, props].concat(_toConsumableArray(children)));

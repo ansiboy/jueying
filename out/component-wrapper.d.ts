@@ -1,7 +1,7 @@
 /// <reference path="../src/typings/declare.d.ts" />
-import { ComponentProps } from "react";
 import * as React from "react";
 import { PageDesigner } from "./page-designer";
+import { ComponentProps } from "./component";
 declare type ComponentWrapperProps = {
     designer: PageDesigner;
     source: {

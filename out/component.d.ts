@@ -9,7 +9,7 @@ export interface ComponentProps<T> extends React.Props<T> {
     style?: React.CSSProperties;
     selected?: boolean;
     text?: string;
-    parentid?: string;
+    parentId?: string;
     attr?: ComponentAttribute;
 }
 export declare const ComponentWrapperContext: React.Context<ComponentWrapper>;

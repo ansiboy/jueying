@@ -292,11 +292,16 @@ class ComponentWrapper extends React.Component {
         return React.createElement(component_1.ComponentWrapperContext.Provider, { value: this }, element);
     }
     createRawElement(type, props, children) {
+        props = Object.assign({}, props);
         let isEmptyElement = (children || []).length == 0;
         if (isEmptyElement) {
             let emtpy = this.designTimeEmptyElement(type, props);
             if (emtpy != null)
                 children = [emtpy];
+        }
+        if (typeof type == "string") {
+            props["parent-id"] = props.parentId;
+            delete props.parentId;
         }
         return React.createElement(type, props, ...children);
     }
