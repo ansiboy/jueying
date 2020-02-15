@@ -1,8 +1,7 @@
-/// <reference path="../../../out/index.d.ts"/>
+/// <reference path="../../../out/jueying.d.ts"/>
 
-const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, PropEditor, PlaceHolder } = jueying
+const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput, PropEditor, PlaceHolder, guid } = jueying
 
-console.assert(PlaceHolder != null);
 
 class Login extends React.Component {
     constructor(props) {
@@ -95,14 +94,4 @@ class MainPage extends React.Component {
     }
 }
 
-ReactDOM.render(<MainPage />, container);
-
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
+ReactDOM.render(<MainPage />, container)

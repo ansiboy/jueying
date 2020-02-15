@@ -1,4 +1,4 @@
-/// <reference path="../../../out/index.d.ts"/>
+/// <reference path="../../../out/jueying.d.ts"/>
 
 const { ComponentPanel, EditorPanel, PageDesigner, Component, PropEditor } = jueying
 let components = [

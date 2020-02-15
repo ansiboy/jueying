@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (C) maishu All rights reserved.
+ *
+ * HTML 页面设计器
+ *
+ * 作者: 寒烟
+ * 日期: 2018/5/30
+ *
+ * 个人博客：   http://www.cnblogs.com/ansiboy/
+ * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
+ *
+ ********************************************************************************/
 import React = require("react");
 import { PageDesigner } from "./page-designer";
 import { ComponentData } from "./models";

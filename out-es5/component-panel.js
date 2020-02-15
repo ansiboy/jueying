@@ -18,129 +18,124 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+define(["require", "exports", "react", "./common", "./component", "./style"], function (require, exports, React, common_1, component_1, style_1) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var ComponentPanel =
+  /*#__PURE__*/
+  function (_React$Component) {
+    _inherits(ComponentPanel, _React$Component);
+
+    function ComponentPanel(props) {
+      var _this;
+
+      _classCallCheck(this, ComponentPanel);
+
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(ComponentPanel).call(this, props));
+      _this.state = {
+        componets: []
+      };
+      return _this;
+    }
+
+    _createClass(ComponentPanel, [{
+      key: "componentDraggable",
+      value: function componentDraggable(toolItemElement, componentData) {
+        console.assert(toolItemElement != null);
+        toolItemElement.draggable = true;
+        toolItemElement.addEventListener('dragstart', function (ev) {
+          componentData.props = componentData.props || {};
+          ev.dataTransfer.setData(common_1.constants.componentData, JSON.stringify(componentData));
+          ev.dataTransfer.setData('mousePosition', JSON.stringify({
+            x: ev.offsetX,
+            y: ev.offsetY
+          }));
+        });
+      }
+    }, {
+      key: "setComponets",
+      value: function setComponets(componets) {
+        this.setState({
+          componets: componets
+        });
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _this2 = this;
+
+        var empty = this.props.empty || React.createElement("div", {
+          className: "empty"
+        }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
+        var props = Object.assign({}, this.props);
+        var componets = this.state.componets || [];
+        return React.createElement(component_1.DesignerContext.Consumer, null, function (context) {
+          _this2.designer = context.designer;
+          return React.createElement("ul", Object.assign({}, props, {
+            className: "".concat(style_1.classNames.componentPanel, " ").concat(_this2.props.className || ""),
+            ref: function ref(e) {
+              return _this2.toolbarElement = _this2.toolbarElement || e;
+            }
+          }), componets.length == 0 ? empty : componets.map(function (c, i) {
+            var props = {
+              key: i
+            };
+            props[ComponentPanel.componentIndexName] = "".concat(i);
+            return React.createElement("li", Object.assign({}, props, {
+              className: style_1.classNames.componentIcon
+            }), React.createElement("div", {
+              className: "btn-link"
+            }, React.createElement("i", {
+              className: c.icon,
+              style: {
+                fontSize: 44,
+                color: 'black'
+              },
+              ref: function ref(e) {
+                if (!e) return;
+                var ctrl = c.componentData;
+
+                _this2.componentDraggable(e, ctrl);
+              }
+            })), React.createElement("div", null, c.displayName));
+          })); // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
+          //     <div className="panel-heading">工具栏</div>
+          //     <div className="panel-body">
+          //     </div>
+          // </div>
+        });
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.toolbarElement;
+      }
+    }], [{
+      key: "getComponentData",
+      value: function getComponentData(dataTransfer) {
+        var str = dataTransfer.getData(common_1.constants.componentData);
+        if (!str) return;
+        return JSON.parse(str);
+      }
+      /** 获取光标在图标内的位置 */
+
+    }, {
+      key: "mouseInnerPosition",
+      value: function mouseInnerPosition(dataTransfer) {
+        var str = dataTransfer.getData('mousePosition');
+        if (!str) return;
+        return JSON.parse(str);
+      }
+    }]);
+
+    return ComponentPanel;
+  }(React.Component);
+
+  ComponentPanel.componentIndexName = "data-component-index";
+  exports.ComponentPanel = ComponentPanel;
 });
-
-var React = require("react");
-
-var common_1 = require("./common");
-
-var style_1 = require("./style");
-
-var ComponentPanel =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ComponentPanel, _React$Component);
-
-  function ComponentPanel(props) {
-    var _this;
-
-    _classCallCheck(this, ComponentPanel);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ComponentPanel).call(this, props));
-    _this.state = {
-      componets: []
-    };
-    return _this;
-  }
-
-  _createClass(ComponentPanel, [{
-    key: "componentDraggable",
-    value: function componentDraggable(toolItemElement, componentData) {
-      console.assert(toolItemElement != null);
-      toolItemElement.draggable = true;
-      toolItemElement.addEventListener('dragstart', function (ev) {
-        componentData.props = componentData.props || {};
-        ev.dataTransfer.setData(common_1.constants.componentData, JSON.stringify(componentData));
-        ev.dataTransfer.setData('mousePosition', JSON.stringify({
-          x: ev.offsetX,
-          y: ev.offsetY
-        }));
-      });
-    }
-  }, {
-    key: "setComponets",
-    value: function setComponets(componets) {
-      this.setState({
-        componets: componets
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var empty = this.props.empty || React.createElement("div", {
-        className: "empty"
-      }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
-      var props = Object.assign({}, this.props);
-      var componets = this.state.componets || []; // return <DesignerContext.Consumer>
-      //     {context => {
-      //         this.designer = context.designer;
-
-      return React.createElement("ul", Object.assign({}, props, {
-        className: "".concat(style_1.classNames.componentPanel, " ").concat(this.props.className || ""),
-        ref: function ref(e) {
-          return _this2.toolbarElement = _this2.toolbarElement || e;
-        }
-      }), componets.length == 0 ? empty : componets.map(function (c, i) {
-        var props = {
-          key: i
-        };
-        props[ComponentPanel.componentIndexName] = "".concat(i);
-        return React.createElement("li", Object.assign({}, props, {
-          className: style_1.classNames.componentIcon
-        }), React.createElement("div", {
-          className: "btn-link"
-        }, React.createElement("i", {
-          className: c.icon,
-          style: {
-            fontSize: 44,
-            color: 'black'
-          },
-          ref: function ref(e) {
-            if (!e) return;
-            var ctrl = c.componentData;
-
-            _this2.componentDraggable(e, ctrl);
-          }
-        })), React.createElement("div", null, c.displayName));
-      })); // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
-      //     <div className="panel-heading">工具栏</div>
-      //     <div className="panel-body">
-      //     </div>
-      // </div>
-      //     }}
-      // </DesignerContext.Consumer>
-    }
-  }, {
-    key: "element",
-    get: function get() {
-      return this.toolbarElement;
-    }
-  }], [{
-    key: "getComponentData",
-    value: function getComponentData(dataTransfer) {
-      var str = dataTransfer.getData(common_1.constants.componentData);
-      if (!str) return;
-      return JSON.parse(str);
-    }
-    /** 获取光标在图标内的位置 */
-
-  }, {
-    key: "mouseInnerPosition",
-    value: function mouseInnerPosition(dataTransfer) {
-      var str = dataTransfer.getData('mousePosition');
-      if (!str) return;
-      return JSON.parse(str);
-    }
-  }]);
-
-  return ComponentPanel;
-}(React.Component); // designer: PageDesigner;
-
-
-ComponentPanel.componentIndexName = "data-component-index";
-exports.ComponentPanel = ComponentPanel;
 //# sourceMappingURL=component-panel.js.map

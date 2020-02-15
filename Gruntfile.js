@@ -1,3 +1,4 @@
+
 const webpack_es6 = require('./webpack.config.js');
 
 let webpack_es6_min = Object.assign({}, webpack_es6, {
@@ -16,7 +17,7 @@ let webpack_es5_min = Object.assign({}, webpack_es5, {
     mode: 'production',
 })
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     require('load-grunt-tasks')(grunt);
 
@@ -55,17 +56,11 @@ module.exports = function(grunt) {
             es6_min: webpack_es6_min,
             es5: webpack_es5,
             es5_min: webpack_es5_min,
-        },
-        copy: {
-            dist: {
-                files: [
-                    { expand: true, src: "dist/**", dest: "docs" }
-                ]
-            }
         }
     }
 
     grunt.initConfig(config);
 
-    grunt.registerTask('build', ['shell', 'babel', 'webpack', 'copy']);
+    grunt.registerTask('build', ['shell', 'babel', 'webpack']);
 };
+

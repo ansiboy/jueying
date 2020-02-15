@@ -1,6 +1,7 @@
-/// <reference path="../../../out/index.d.ts"/>
+/// <reference path="../../../out/jueying.d.ts"/>
 
 const { ComponentPanel, EditorPanel, PageDesigner, Component, PropEditor } = jueying
+
 
 class Button extends React.Component {
     static defaultTheme = 'primary'
@@ -18,12 +19,8 @@ class Button extends React.Component {
 Component.register('Button', Button, { movable: true, showHandler: true })
 
 class ThemeSelector extends PropEditor {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
     selectTheme(value) {
-        this.props.updateComponentProp(value)
+        this.props.onChange(value)
     }
     render() {
         let { value } = this.state

@@ -1,14 +1,30 @@
+/*******************************************************************************
+ * Copyright (C) maishu All rights reserved.
+ *
+ * HTML 页面设计器
+ *
+ * 作者: 寒烟
+ * 日期: 2018/5/30
+ *
+ * 个人博客：   http://www.cnblogs.com/ansiboy/
+ * GITHUB:     http://github.com/ansiboy
+ * QQ 讨论组：  119038574
+ *
+ ********************************************************************************/
 import React = require("react");
 import { ComponentData } from "./models";
 import { Callback } from "./common";
-import { PageBuilderConstructor } from "./page-builder";
+import { ComponentProps } from "./component";
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null;
     style?: React.CSSProperties;
     wrapDesignTimeElement?: boolean;
-    pageBuilderType?: PageBuilderConstructor;
 }
 export interface PageDesignerState {
+    pageData: ComponentData | null;
+    components: {
+        [typeName: string]: React.Component[];
+    };
 }
 export declare class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private element;
@@ -21,22 +37,23 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
         element: HTMLElement;
     }>;
     static defaultProps: PageDesignerProps;
-    private pageBuilder;
     constructor(props: PageDesignerProps);
+    private static setComponetRefProp;
+    private static initPageData;
+    allComponents(): React.Component[];
     /** 页面数据 */
     readonly pageData: ComponentData;
     /** 获取已选择了的组件编号 */
     readonly selectedComponentIds: string[];
     /** 获取已选择了的组件 */
     readonly selectedComponents: ComponentData[];
-    /** 更新组件属性 */
-    updateComponentProp(componentId: string, propName: string, value: any): void;
-    /** 更新组件多个属性 */
+    updateComponentProp(componentId: string, propName: string, value: any): any;
     updateComponentProps(...componentProps: {
         componentId: string;
         propName: string;
         value: any;
-    }[]): void;
+    }[]): any;
+    private sortChildren;
     /**
      * 对组件及其子控件进行命名
      * @param component
@@ -67,7 +84,6 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
         width?: number | string;
         height?: number | string;
     }): void;
-    /** 设置多个组件的位置 */
     setComponentsPosition(positions: {
         componentId: string;
         position: {
@@ -89,7 +105,12 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
      * @param beforeChildId 组件的前一个子组件编号
      */
     moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
+    private removeComponentFrom;
+    private static travelComponentData;
+    findComponetsByTypeName(componentTypeName: string): React.Component<{}, {}, any>[];
+    findComponentData(componentId: string): ComponentData | null;
     private onKeyDown;
-    componentDidMount(): void;
+    protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
+    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState>;
     render(): JSX.Element;
 }

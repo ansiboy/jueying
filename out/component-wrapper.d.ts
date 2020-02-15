@@ -1,7 +1,7 @@
 /// <reference path="../src/typings/declare.d.ts" />
+import { ComponentProps } from "react";
 import * as React from "react";
 import { PageDesigner } from "./page-designer";
-import { ComponentProps } from "./component";
 declare type ComponentWrapperProps = {
     designer: PageDesigner;
     source: {
@@ -47,16 +47,11 @@ export declare class ComponentWrapper extends React.Component<ComponentWrapperPr
     private designTimeText;
 }
 export interface ComponentAttribute {
-    /** 组件在设计设计时，是否可以作为容器添加子组件 */
+    /** 表示组件为容器，可以添加组件 */
     container?: boolean;
-    /** 组件在设计设计时，是否可移动 */
+    /** 表示组件可移动 */
     movable?: boolean;
-    /** 组件在设计设计时，是否显示操作按钮 */
     showHandler?: boolean;
-    /** 组件在设计设计时，是否可以设置大小 */
     resize?: boolean;
-    /** 组件在设计设计时，不对元素进行包裹 */
-    noWrapper?: boolean;
 }
-export declare let defaultComponentAttribute: ComponentAttribute;
 export {};
