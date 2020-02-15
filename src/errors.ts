@@ -9,7 +9,7 @@ export class Errors {
     static argumentNull(argumentName: string) {
         return new Error(`Argument ${argumentName} is null or empty.`);
     }
-    static argumentRangeError(argumentName: string) {
+    static argumentRangeError(argumentName: string){
         return new Error(`Argument ${argumentName} range error.`);
     }
     static pageDataIsNull() {
@@ -34,9 +34,5 @@ export class Errors {
     static argumentFieldCanntNull(fieldName: string, argumentName: string) {
         let msg = `${fieldName} of argument ${argumentName} cannt be null or empty.`
         return new Error(msg)
-    }
-    static componentDataNotExists(componentId: string) {
-        let msg = `Component data ${componentId} is not exists.`;
-        return new Error(msg);
     }
 }

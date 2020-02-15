@@ -61,6 +61,20 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
         let { designer } = this.state;
         return <div className={`${classNames.editorPanel} ${this.props.className || ""}`}
             ref={(e: HTMLElement) => this.element = e || this.element}>
+            {/* <select className="form-control"
+                    ref={e => {
+                        if (!e) return
+                        e.value = selectedComponentIds.length == 1 ? selectedComponentIds[0] : ''
+                        e.onchange = () => {
+                            if (designer && e.value)
+                                designer.selectComponent(e.value)
+                        }
+                    }}>
+                    {componentDatas.map(o =>
+                        <option key={o.props.id} id={o.props.id} value={o.props.id}>{o.props.name}</option>
+                    )}
+                </select> */}
+
             <PropertyEditor designer={designer} ref={e => this.editor = e || this.editor} empty={empty}
                 customRender={this.props.customRender} />
         </div>

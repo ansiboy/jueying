@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es6",
-        "module": "None",
+        "module": "amd",
         "sourceMap": true,
         "declaration": true,
         // "outFile": "../out/jueying.js",

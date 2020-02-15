@@ -1,7 +1,8 @@
 import * as React from "react";
-
 import { ComponentDefine, ComponentData } from "./models";
+import { PageDesigner } from "./page-designer";
 import { constants } from "./common";
+import { DesignerContext } from "./component";
 import { classNames } from "./style";
 
 interface ComponentToolbarProps extends React.Props<ComponentPanel> {
@@ -14,7 +15,7 @@ interface ComponentToolbarState {
     componets: ComponentDefine[],
 }
 export class ComponentPanel extends React.Component<ComponentToolbarProps, ComponentToolbarState> {
-    // designer: PageDesigner;
+    designer: PageDesigner;
     static componentIndexName = "data-component-index";
     private toolbarElement: HTMLElement;
 
@@ -62,37 +63,37 @@ export class ComponentPanel extends React.Component<ComponentToolbarProps, Compo
         let empty = this.props.empty || <div className="empty">暂无可用组件</div>
         let props: ComponentToolbarProps = Object.assign({}, this.props);
         let componets = this.state.componets || [];
-        // return <DesignerContext.Consumer>
-        //     {context => {
-        //         this.designer = context.designer;
-        return <ul {...props as any} className={`${classNames.componentPanel} ${this.props.className || ""}`}
-            ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
-            {componets.length == 0 ? empty : componets.map((c, i) => {
-                let props = { key: i };
-                props[ComponentPanel.componentIndexName] = `${i}`;
-                return <li {...props} className={classNames.componentIcon}>
-                    <div className="btn-link">
-                        <i className={c.icon} style={{ fontSize: 44, color: 'black' }}
-                            ref={e => {
-                                if (!e) return
+        return <DesignerContext.Consumer>
+            {context => {
+                this.designer = context.designer;
+                return <ul {...props as any} className={`${classNames.componentPanel} ${this.props.className || ""}`}
+                    ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
+                    {componets.length == 0 ? empty : componets.map((c, i) => {
+                        let props = { key: i };
+                        props[ComponentPanel.componentIndexName] = `${i}`;
+                        return <li {...props} className={classNames.componentIcon}>
+                            <div className="btn-link">
+                                <i className={c.icon} style={{ fontSize: 44, color: 'black' }}
+                                    ref={e => {
+                                        if (!e) return
 
-                                let ctrl = c.componentData
-                                this.componentDraggable(e, ctrl)
-                            }} />
-                    </div>
-                    <div>
-                        {c.displayName}
-                    </div>
-                </li>
-            })}
-        </ul>
-        // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
-        //     <div className="panel-heading">工具栏</div>
-        //     <div className="panel-body">
+                                        let ctrl = c.componentData
+                                        this.componentDraggable(e, ctrl)
+                                    }} />
+                            </div>
+                            <div>
+                                {c.displayName}
+                            </div>
+                        </li>
+                    })}
+                </ul>
+                // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
+                //     <div className="panel-heading">工具栏</div>
+                //     <div className="panel-body">
 
-        //     </div>
-        // </div>
-        //     }}
-        // </DesignerContext.Consumer>
+                //     </div>
+                // </div>
+            }}
+        </DesignerContext.Consumer>
     }
 }
