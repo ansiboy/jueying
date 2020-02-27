@@ -1,11 +1,11 @@
-/// <reference path="../src/typings/declare.d.ts" />
 import { ComponentProps } from "react";
 import * as React from "react";
 import { PageDesigner } from "./page-designer";
+import { ReactComponentType, DragDropData } from "./models";
 declare type ComponentWrapperProps = {
     designer: PageDesigner;
     source: {
-        type: string | React.ComponentClass;
+        type: ReactComponentType;
         attr: ComponentAttribute;
         props: ComponentProps<any>;
         children: any[];

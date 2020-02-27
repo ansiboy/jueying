@@ -3,7 +3,7 @@
  *
  * HTML 页面设计器
  *
- * 作者: 寒烟
+ * 作者: 麦舒
  * 日期: 2018/5/30
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
@@ -15,10 +15,14 @@ import React = require("react");
 import { ComponentData } from "./models";
 import { Callback } from "./common";
 import { ComponentProps } from "./component";
+import { ComponentFactory } from "./component-factory";
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null;
     style?: React.CSSProperties;
-    wrapDesignTimeElement?: boolean;
+    className?: string;
+    componentFactory?: ComponentFactory;
+    elementTag?: string;
+    context?: any;
 }
 export interface PageDesignerState {
     pageData: ComponentData | null;
@@ -26,27 +30,28 @@ export interface PageDesignerState {
         [typeName: string]: React.Component[];
     };
 }
-export declare class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
-    private element;
+export declare class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S extends PageDesignerState = PageDesignerState> extends React.Component<P, S> {
+    private _element;
     componentSelected: Callback<string[]>;
     componentRemoved: Callback<string[]>;
-    componentAppend: Callback<PageDesigner>;
+    componentAppend: Callback<PageDesigner<PageDesignerProps, PageDesignerState>>;
     componentUpdated: Callback<ComponentData[]>;
     designtimeComponentDidMount: Callback<{
         component: React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
         element: HTMLElement;
     }>;
     static defaultProps: PageDesignerProps;
-    constructor(props: PageDesignerProps);
+    constructor(props: P);
     private static setComponetRefProp;
     private static initPageData;
     allComponents(): React.Component[];
     /** 页面数据 */
-    readonly pageData: ComponentData;
+    get pageData(): S["pageData"];
     /** 获取已选择了的组件编号 */
-    readonly selectedComponentIds: string[];
+    get selectedComponentIds(): string[];
     /** 获取已选择了的组件 */
-    readonly selectedComponents: ComponentData[];
+    get selectedComponents(): ComponentData[];
+    get element(): HTMLElement;
     updateComponentProp(componentId: string, propName: string, value: any): any;
     updateComponentProps(...componentProps: {
         componentId: string;
@@ -112,5 +117,11 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
     private onKeyDown;
     protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
     static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState>;
-    render(): JSX.Element;
+    render(): React.DOMElement<{
+        className: string;
+        tabIndex: number;
+        style: P["style"];
+        ref: (e: HTMLElement) => void;
+        onKeyDown: (t: React.KeyboardEvent<HTMLElement>) => void;
+    }, HTMLElement>;
 }

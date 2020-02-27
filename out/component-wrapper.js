@@ -1,4 +1,3 @@
-/// <reference path="./typings/declare.d.ts"/>
 define(["require", "exports", "react", "./errors", "./common", "./component-panel", "./style", "./component"], function (require, exports, React, errors_1, common_1, component_panel_1, style_1, component_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -311,7 +310,7 @@ define(["require", "exports", "react", "./errors", "./common", "./component-pane
             return text;
         }
     }
-    ComponentWrapper.isDrag = false;
     exports.ComponentWrapper = ComponentWrapper;
+    ComponentWrapper.isDrag = false;
 });
 //# sourceMappingURL=component-wrapper.js.map

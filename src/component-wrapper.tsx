@@ -1,5 +1,3 @@
-/// <reference path="./typings/declare.d.ts"/>
-
 import { ComponentProps } from "react";
 import * as React from "react";
 import { PageDesigner } from "./page-designer";
@@ -8,11 +6,12 @@ import { constants } from "./common";
 import { ComponentPanel } from "./component-panel";
 import { classNames, appendClassName } from "./style";
 import { MasterPage, ComponentWrapperContext } from "./component";
+import { ReactComponentType, DragDropData } from "./models";
 
 type ComponentWrapperProps = {
     designer: PageDesigner,
     source: {
-        type: string | React.ComponentClass,
+        type: ReactComponentType,
         attr: ComponentAttribute,
         props: ComponentProps<any>,
         children: any[]
@@ -370,7 +369,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         </ComponentWrapperContext.Provider>
     }
 
-    private createRawElement(type: string | React.ComponentClass, props: ComponentProps<any>, children: any[]) {
+    private createRawElement(type: ReactComponentType, props: ComponentProps<any>, children: any[]) {
         let isEmptyElement = (children || []).length == 0
         if (isEmptyElement) {
             let emtpy = this.designTimeEmptyElement(type, props)
@@ -380,7 +379,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         return React.createElement(type, props, ...children)
     }
 
-    private designTimeEmptyElement(type: string | React.ComponentClass, props: ComponentProps<any>) {
+    private designTimeEmptyElement(type: ReactComponentType, props: ComponentProps<any>) {
         if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
             return null
 

@@ -168,6 +168,7 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
                 Component.setAttribute(componentName, attr);
         }
     }
+    exports.Component = Component;
     //==========================================
     // 用于创建 React 的 React.Fragment 
     Component.Fragment = "";
@@ -191,7 +192,6 @@ define(["require", "exports", "react", "./page-designer", "./errors", "./style",
     Component.componentPropEditors = {};
     Component.componentPropEditorDisplay = {};
     Component.componentTypes = {};
-    exports.Component = Component;
     exports.MasterPageName = 'MasterPage';
     exports.MasterPageContext = React.createContext({ master: null });
     class MasterPage extends React.Component {

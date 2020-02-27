@@ -4,7 +4,7 @@
  *
  * HTML 页面设计器 
  * 
- * 作者: 寒烟
+ * 作者: 麦舒
  * 日期: 2018/5/30
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
@@ -21,11 +21,15 @@ import { Errors } from "./errors";
 import { ComponentProps, Component, DesignerContext } from "./component";
 import { appendClassName, classNames } from "./style";
 import { ComponentWrapper } from "./component-wrapper";
+import { ComponentFactory } from "./component-factory";
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null,
     style?: React.CSSProperties,
-    wrapDesignTimeElement?: boolean
+    className?: string,
+    componentFactory?: ComponentFactory,
+    elementTag?: string;
+    context?: any,
 }
 
 export interface PageDesignerState {
@@ -33,8 +37,9 @@ export interface PageDesignerState {
     components: { [typeName: string]: React.Component[] },
 }
 
-export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
-    private element: HTMLElement;
+export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S extends PageDesignerState = PageDesignerState>
+    extends React.Component<P, S> {
+    private _element: HTMLElement;
 
     componentSelected = Callback.create<string[]>();
     componentRemoved = Callback.create<string[]>()
@@ -43,16 +48,16 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
 
-    static defaultProps: PageDesignerProps = { pageData: null, wrapDesignTimeElement: true };
+    static defaultProps: PageDesignerProps = { pageData: null, };
     // private components: { [typeName: string]: React.Component[] } = {};
 
-    constructor(props: PageDesignerProps) {
+    constructor(props: P) {
         super(props);
 
         let components: PageDesignerState["components"] = {};
         PageDesigner.initPageData(props.pageData, components);
 
-        this.state = { pageData: props.pageData, components };
+        this.state = { pageData: props.pageData, components } as S;
         this.designtimeComponentDidMount.add((args) => {
             console.log(`this:designer event:controlComponentDidMount`)
         })
@@ -139,6 +144,10 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         }
 
         return arr;
+    }
+
+    get element(): HTMLElement {
+        return this._element;
     }
 
     updateComponentProp(componentId: string, propName: string, value: any): any {
@@ -341,8 +350,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.componentSelected.fire(this.selectedComponentIds)
         //====================================================
         // 设置焦点，以便获取键盘事件
-        if (this.element)
-            this.element.focus()
+        if (this._element)
+            this._element.focus()
         //====================================================
     }
 
@@ -467,7 +476,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return componentDatas[0];
     }
 
-    private onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    private onKeyDown(e: React.KeyboardEvent<HTMLElement>) {
         const DELETE_KEY_CODE = 46;
         if (e.keyCode == DELETE_KEY_CODE) {
             if (this.selectedComponents.length == 0)
@@ -519,18 +528,17 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let designer = this;
         let { pageData } = this.state
         let style = this.props.style
+        let elementTag: string = this.props.elementTag || "div";
+        let result = React.createElement(elementTag, {
+            className: classNames.designer, tabIndex: 1, style,
+            ref: (e: HTMLElement) => {
+                if (!e) return;
+                this._element = e || this._element;
+                this.props.componentFactory.renderDesignTimeComponent(pageData, e, { designer: this });
+            },
+            onKeyDown: (t) => this.onKeyDown(t)
+        })
 
-        let result = <div className={classNames.designer} tabIndex={1} style={style}
-            ref={e => this.element = e || this.element}
-            onKeyDown={(e) => this.onKeyDown(e)}>
-            <DesignerContext.Provider value={{ designer }}>
-                {(() => {
-                    let _root = pageData ? Component.createElement(pageData, this.createDesignTimeElement.bind(this)) : null;
-                    return _root;
-                })()}
-            </DesignerContext.Provider>
-        </div >
-
-        return result
+        return result;
     }
 }

@@ -1,5 +1,3 @@
-/// <reference path="../../../out/jueying.d.ts"/>
-
 const { ComponentPanel, EditorPanel, PageDesigner, Component, TextInput } = jueying
 let components = [
     {

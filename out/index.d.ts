@@ -8,7 +8,8 @@ export { Component, DesignerContext, MasterPage, MasterPageContext, ComponentPro
 export { ComponentPanel } from "./component-panel";
 export { EditorPanel, EditorPanelProps } from "./editor-panel";
 export { ComponentDefine, ComponentData } from "./models";
-export { PageDesigner } from "./page-designer";
+export { PageDesigner, PageDesignerProps, PageDesignerState } from "./page-designer";
 export { PropEditor, PropEditorState, TextInput, DropDownItem, } from "./prop-editor";
 export { PropertyEditorInfo } from "./property-editor";
 export { classNames } from "./style";
+export { ComponentFactory, Context } from "./component-factory";

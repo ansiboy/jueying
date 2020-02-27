@@ -31,7 +31,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  *
  * HTML 页面设计器
  *
- * 作者: 寒烟
+ * 作者: 麦舒
  * 日期: 2018/5/30
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
@@ -281,7 +281,7 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
         this.componentSelected.fire(this.selectedComponentIds); //====================================================
         // 设置焦点，以便获取键盘事件
 
-        this.element.focus(); //====================================================
+        if (this._element) this._element.focus(); //====================================================
       }
       /** 移除控件 */
 
@@ -441,25 +441,23 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
         var designer = this;
         var pageData = this.state.pageData;
         var style = this.props.style;
-        var result = React.createElement("div", {
+        var elementTag = this.props.elementTag || "div";
+        var result = React.createElement(elementTag, {
           className: style_1.classNames.designer,
           tabIndex: 1,
           style: style,
           ref: function ref(e) {
-            return _this4.element = e || _this4.element;
-          },
-          onKeyDown: function onKeyDown(e) {
-            return _this4.onKeyDown(e);
-          }
-        }, React.createElement(component_1.DesignerContext.Provider, {
-          value: {
-            designer: designer
-          }
-        }, function () {
-          var _root = pageData ? component_1.Component.createElement(pageData, _this4.createDesignTimeElement.bind(_this4)) : null;
+            if (!e) return;
+            _this4._element = e || _this4._element;
 
-          return _root;
-        }()));
+            _this4.props.componentFactory.renderDesignTimeComponent(pageData, e, {
+              designer: _this4
+            });
+          },
+          onKeyDown: function onKeyDown(t) {
+            return _this4.onKeyDown(t);
+          }
+        });
         return result;
       }
     }, {
@@ -496,6 +494,11 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
         }
 
         return arr;
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this._element;
       }
     }], [{
       key: "setComponetRefProp",
@@ -619,8 +622,7 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
   }(React.Component);
 
   PageDesigner.defaultProps = {
-    pageData: null,
-    wrapDesignTimeElement: true
+    pageData: null
   };
   exports.PageDesigner = PageDesigner;
 });

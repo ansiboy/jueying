@@ -1,45 +1,18 @@
 {
-  "_from": "maishu-jueying@1.7.4",
-  "_id": "maishu-jueying@1.7.4",
-  "_inBundle": false,
-  "_integrity": "sha512-Trm5+l91ydsHn13N49gzdA7znVrXQtjutdptRen7K9YP35/hyJY6E94PPyhQmPlGSZmtK/EVp7f2G8hvOZ+l+A==",
-  "_location": "/maishu-jueying",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "maishu-jueying@1.7.4",
-    "name": "maishu-jueying",
-    "escapedName": "maishu-jueying",
-    "rawSpec": "1.7.4",
-    "saveSpec": null,
-    "fetchSpec": "1.7.4"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/maishu-jueying/-/maishu-jueying-1.7.4.tgz",
-  "_shasum": "678cbedf2d73fb941271bc20771c5148adcdb856",
-  "_spec": "maishu-jueying@1.7.4",
-  "_where": "D:\\projects\\temp\\test1",
   "author": {
     "name": "mai.shu"
   },
-  "bundleDependencies": false,
   "dependencies": {
-    "jquery": "^2.1.3",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
   },
-  "deprecated": false,
   "description": "HTML 页面设计器组件，可以帮助你开发出一个能够集成到系统的设计器。",
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "@types/jquery": "^3.3.22",
-    "@types/react": "^16.9.2",
-    "@types/react-dom": "^16.9.0",
+    "@types/react": "^16.9.20",
+    "@types/react-dom": "^16.8.4",
     "grunt": "^1.0.4",
     "grunt-babel": "^8.0.0",
     "grunt-contrib-concat": "^1.0.1",
@@ -61,5 +34,5 @@
     "build": "grunt build"
   },
   "typings": "out/index.d.ts",
-  "version": "1.7.4"
+  "version": "1.7.6"
 }

@@ -35,6 +35,6 @@ export declare class PropertyEditor extends React.Component<EditorProps, EditorS
     private getEditors;
     private propValue;
     render(): JSX.Element;
-    readonly element: HTMLElement;
+    get element(): HTMLElement;
 }
 export {};

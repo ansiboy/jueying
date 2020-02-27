@@ -1,18 +1,4 @@
-interface DragDropData {
-    available: any[]
-    deltaX: number
-    deltaY: number
-    offsetX: number
-    offsetY: number
-    width: number
-    height: number
-    originalX: number
-    originalY: number
-    drop: HTMLElement[]
-    drap: HTMLElement
-    layerX: number
-    layerY: number
-}
+import { DragDropData } from "models";
 
 interface JQuery<TElement = HTMLElement> extends Iterable<TElement> {
     // drag(handler?: JQuery.EventHandler<TElement> | JQuery.EventHandlerBase<any, JQuery.Event<TElement>> | false): this

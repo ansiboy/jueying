@@ -116,7 +116,7 @@ export class Component {
      * 获取组件特性
      * @param typename 组件类型名称
      */
-    static getAttribute(type: string | React.ComponentClass<any>) {
+    static getAttribute(type: string | React.ComponentClass<any> | React.ComponentType) {
         let typename = typeof type == 'string' ? type : type.name
         let attr = Component.componentAttributes[typename]
         return Object.assign({ type }, Component.defaultComponentAttribute, attr || {})

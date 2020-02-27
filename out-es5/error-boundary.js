@@ -18,57 +18,59 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+define(["require", "exports", "react"], function (require, exports, React) {
+  "use strict";
 
-var React = require("react");
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
 
-var ErrorBoundary =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ErrorBoundary, _React$Component);
+  var ErrorBoundary =
+  /*#__PURE__*/
+  function (_React$Component) {
+    _inherits(ErrorBoundary, _React$Component);
 
-  function ErrorBoundary(props) {
-    var _this;
+    function ErrorBoundary(props) {
+      var _this;
 
-    _classCallCheck(this, ErrorBoundary);
+      _classCallCheck(this, ErrorBoundary);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ErrorBoundary).call(this, props));
-    _this.state = {};
-    return _this;
-  }
-
-  _createClass(ErrorBoundary, [{
-    key: "componentDidCatch",
-    value: function componentDidCatch(error, info) {
-      // Display fallback UI
-      this.setState({
-        error: error
-      }); // You can also log the error to an error reporting service
-      //   logErrorToMyService(error, info);
-
-      debugger;
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(ErrorBoundary).call(this, props));
+      _this.state = {};
+      return _this;
     }
-  }, {
-    key: "render",
-    value: function render() {
-      var _ref = this.state || {},
-          error = _ref.error;
 
-      if (error) {
-        // You can render any custom fallback UI
-        return React.createElement("div", {
-          className: "error"
-        }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
+    _createClass(ErrorBoundary, [{
+      key: "componentDidCatch",
+      value: function componentDidCatch(error, info) {
+        // Display fallback UI
+        this.setState({
+          error: error
+        }); // You can also log the error to an error reporting service
+        //   logErrorToMyService(error, info);
+
+        debugger;
       }
+    }, {
+      key: "render",
+      value: function render() {
+        var _ref = this.state || {},
+            error = _ref.error;
 
-      return this.props.children;
-    }
-  }]);
+        if (error) {
+          // You can render any custom fallback UI
+          return React.createElement("div", {
+            className: "error"
+          }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
+        }
 
-  return ErrorBoundary;
-}(React.Component);
+        return this.props.children;
+      }
+    }]);
 
-exports.ErrorBoundary = ErrorBoundary;
+    return ErrorBoundary;
+  }(React.Component);
+
+  exports.ErrorBoundary = ErrorBoundary;
+});
 //# sourceMappingURL=error-boundary.js.map

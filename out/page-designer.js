@@ -3,7 +3,7 @@
  *
  * HTML 页面设计器
  *
- * 作者: 寒烟
+ * 作者: 麦舒
  * 日期: 2018/5/30
  *
  * 个人博客：   http://www.cnblogs.com/ansiboy/
@@ -96,6 +96,9 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
                     stack.push(children[i]);
             }
             return arr;
+        }
+        get element() {
+            return this._element;
         }
         updateComponentProp(componentId, propName, value) {
             return this.updateComponentProps({ componentId, propName, value });
@@ -264,7 +267,8 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             this.componentSelected.fire(this.selectedComponentIds);
             //====================================================
             // 设置焦点，以便获取键盘事件
-            this.element.focus();
+            if (this._element)
+                this._element.focus();
             //====================================================
         }
         /** 移除控件 */
@@ -406,15 +410,21 @@ define(["require", "exports", "react", "./common", "./errors", "./component", ".
             let designer = this;
             let { pageData } = this.state;
             let style = this.props.style;
-            let result = React.createElement("div", { className: style_1.classNames.designer, tabIndex: 1, style: style, ref: e => this.element = e || this.element, onKeyDown: (e) => this.onKeyDown(e) },
-                React.createElement(component_1.DesignerContext.Provider, { value: { designer } }, (() => {
-                    let _root = pageData ? component_1.Component.createElement(pageData, this.createDesignTimeElement.bind(this)) : null;
-                    return _root;
-                })()));
+            let elementTag = this.props.elementTag || "div";
+            let result = React.createElement(elementTag, {
+                className: style_1.classNames.designer, tabIndex: 1, style,
+                ref: (e) => {
+                    if (!e)
+                        return;
+                    this._element = e || this._element;
+                    this.props.componentFactory.renderDesignTimeComponent(pageData, e, { designer: this });
+                },
+                onKeyDown: (t) => this.onKeyDown(t)
+            });
             return result;
         }
     }
-    PageDesigner.defaultProps = { pageData: null, wrapDesignTimeElement: true };
     exports.PageDesigner = PageDesigner;
+    PageDesigner.defaultProps = { pageData: null, };
 });
 //# sourceMappingURL=page-designer.js.map

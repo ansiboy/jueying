@@ -62,8 +62,8 @@ export declare class Component {
      * 获取组件特性
      * @param typename 组件类型名称
      */
-    static getAttribute(type: string | React.ComponentClass<any>): {
-        type: string | React.ComponentClass<any, any>;
+    static getAttribute(type: string | React.ComponentClass<any> | React.ComponentType): {
+        type: string | React.ComponentClass<any, any> | React.ComponentClass<{}, any> | React.FunctionComponent<{}>;
     } & ComponentAttribute;
     private static componentPropEditors;
     private static componentPropEditorDisplay;

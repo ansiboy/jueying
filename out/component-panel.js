@@ -61,7 +61,7 @@ define(["require", "exports", "react", "./common", "./component", "./style"], fu
             });
         }
     }
-    ComponentPanel.componentIndexName = "data-component-index";
     exports.ComponentPanel = ComponentPanel;
+    ComponentPanel.componentIndexName = "data-component-index";
 });
 //# sourceMappingURL=component-panel.js.map

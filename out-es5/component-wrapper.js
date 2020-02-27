@@ -26,7 +26,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-/// <reference path="./typings/declare.d.ts"/>
 define(["require", "exports", "react", "./errors", "./common", "./component-panel", "./style", "./component"], function (require, exports, React, errors_1, common_1, component_panel_1, style_1, component_1) {
   "use strict";
 
