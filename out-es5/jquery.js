@@ -1,15 +1,18 @@
 "use strict";
 
-define(["require", "exports", "jquery"], function (require, exports, j) {
-  "use strict";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+}); // import * as j from '../lib/jquery-2.1.3'
+// let jquery = window['$'] || window['jQuery'];
+// if (jquery == null) {
+//     window['$'] = window['jQuery'] = j
+// }
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  var jquery = window['$'] || window['jQuery'];
+var j = require("jquery");
 
-  if (jquery == null) {
-    window['$'] = window['jQuery'] = j;
-  }
-});
+var jquery = window['$'] || window['jQuery'];
+
+if (jquery == null) {
+  window['$'] = window['jQuery'] = j;
+}
 //# sourceMappingURL=jquery.js.map

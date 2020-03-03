@@ -1,30 +1,30 @@
-define(["require", "exports", "./errors"], function (require, exports, errors_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.classNames = {
-        componentSelected: `component-selected`,
-        emptyTemplates: `empty-templates`,
-        loadingTemplates: `loading-templates`,
-        templateSelected: `template-selected`,
-        templateDialog: `template-dialog`,
-        emptyDocument: `empty-document`,
-        component: 'component',
-        componentWrapper: 'component-wrapper',
-        componentPanel: 'component-panel',
-        componentIcon: 'component-icon',
-        placeholder: 'placeholder',
-        editorPanel: 'editor-panel',
-        designer: 'designer',
-        moveDown: 'move-down',
-    };
-    let templateDialog = {
-        nameHeight: 40,
-        fontSize: 22
-    };
-    let element = document.createElement('style');
-    element.type = 'text/css';
-    element.setAttribute("data-name", "jueying");
-    element.innerHTML = `
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = require("./errors");
+exports.classNames = {
+    componentSelected: `component-selected`,
+    emptyTemplates: `empty-templates`,
+    loadingTemplates: `loading-templates`,
+    templateSelected: `template-selected`,
+    templateDialog: `template-dialog`,
+    emptyDocument: `empty-document`,
+    component: 'component',
+    componentWrapper: 'component-wrapper',
+    componentPanel: 'component-panel',
+    componentIcon: 'component-icon',
+    placeholder: 'placeholder',
+    editorPanel: 'editor-panel',
+    designer: 'designer',
+    moveDown: 'move-down',
+};
+let templateDialog = {
+    nameHeight: 40,
+    fontSize: 22
+};
+let element = document.createElement('style');
+element.type = 'text/css';
+element.setAttribute("data-name", "jueying");
+element.innerHTML = `
             .${exports.classNames.componentSelected} {
                 border: solid 1px #337ab7!important;
             }
@@ -190,42 +190,41 @@ define(["require", "exports", "./errors"], function (require, exports, errors_1)
          
             }
         `;
-    document.head.appendChild(element);
-    function appendClassName(element, addonClassName) {
-        if (element == null)
-            throw errors_1.Errors.argumentNull('element');
-        if (!addonClassName)
-            throw errors_1.Errors.argumentNull('addonClassName');
-        let sourceClassName;
-        if (typeof element == 'string')
-            sourceClassName = element;
-        else
-            sourceClassName = element.className;
-        sourceClassName = sourceClassName || '';
-        console.assert(addonClassName);
-        if (sourceClassName.indexOf(addonClassName) >= 0)
-            return sourceClassName;
-        let className = `${sourceClassName} ${addonClassName}`;
-        if (typeof element != 'string')
-            element.className = className;
-        return className;
-    }
-    exports.appendClassName = appendClassName;
-    function removeClassName(element, targetClassName) {
-        let sourceClassName;
-        if (typeof element == 'string')
-            sourceClassName = element;
-        else
-            sourceClassName = element.className || '';
-        if (sourceClassName.indexOf(targetClassName) < 0)
-            return sourceClassName;
-        sourceClassName = sourceClassName || '';
-        sourceClassName = sourceClassName.replace(new RegExp(targetClassName, 'g'), '');
-        sourceClassName = sourceClassName.trim();
-        if (typeof element != 'string')
-            element.className = sourceClassName;
+document.head.appendChild(element);
+function appendClassName(element, addonClassName) {
+    if (element == null)
+        throw errors_1.Errors.argumentNull('element');
+    if (!addonClassName)
+        throw errors_1.Errors.argumentNull('addonClassName');
+    let sourceClassName;
+    if (typeof element == 'string')
+        sourceClassName = element;
+    else
+        sourceClassName = element.className;
+    sourceClassName = sourceClassName || '';
+    console.assert(addonClassName);
+    if (sourceClassName.indexOf(addonClassName) >= 0)
         return sourceClassName;
-    }
-    exports.removeClassName = removeClassName;
-});
+    let className = `${sourceClassName} ${addonClassName}`;
+    if (typeof element != 'string')
+        element.className = className;
+    return className;
+}
+exports.appendClassName = appendClassName;
+function removeClassName(element, targetClassName) {
+    let sourceClassName;
+    if (typeof element == 'string')
+        sourceClassName = element;
+    else
+        sourceClassName = element.className || '';
+    if (sourceClassName.indexOf(targetClassName) < 0)
+        return sourceClassName;
+    sourceClassName = sourceClassName || '';
+    sourceClassName = sourceClassName.replace(new RegExp(targetClassName, 'g'), '');
+    sourceClassName = sourceClassName.trim();
+    if (typeof element != 'string')
+        element.className = sourceClassName;
+    return sourceClassName;
+}
+exports.removeClassName = removeClassName;
 //# sourceMappingURL=style.js.map

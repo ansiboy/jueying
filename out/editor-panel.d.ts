@@ -1,25 +1,23 @@
 import { ComponentData } from "./models";
-import { PageDesigner } from "./page-designer";
 import * as React from "react";
 import { EditorProps } from "./property-editor";
+import { ComponentDataHandler } from "./component-data-handler";
 interface EditorPanelState {
     componentDatas: ComponentData[];
-    designer?: PageDesigner;
 }
 export interface EditorPanelProps {
     className?: string;
     style?: React.CSSProperties;
     empty?: string | JSX.Element;
     customRender?: EditorProps["customRender"];
+    designer: ComponentDataHandler;
 }
 export declare class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
     element: HTMLElement;
     private editor;
     private _designer;
-    private designerComponentChanged;
     constructor(props: EditorPanelProps);
-    get designer(): PageDesigner<import("./page-designer").PageDesignerProps, import("./page-designer").PageDesignerState>;
-    set designer(value: PageDesigner<import("./page-designer").PageDesignerProps, import("./page-designer").PageDesignerState>);
+    readonly designer: ComponentDataHandler;
     render(): JSX.Element;
 }
 export {};

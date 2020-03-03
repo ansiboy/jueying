@@ -1,1 +1,1 @@
-{"version":3,"file":"component-factory.js","sourceRoot":"","sources":["../src/component-factory.ts"],"names":[],"mappings":";;;IAOA,MAAsB,gBAAgB;QAElC,yBAAyB,CAAoB,WAA0B,EAAE,OAAoB,EAAE,OAAW;YACtG,IAAI,CAAC,eAAe,CAAC,WAAW,EAAE,OAAO,EAAE,OAAO,CAAC,CAAC;QACxD,CAAC;KAGJ;IAPD,4CAOC"}
+{"version":3,"file":"component-factory.js","sourceRoot":"","sources":["../src/component-factory.ts"],"names":[],"mappings":";;AAOA,MAAsB,gBAAgB;IAElC,yBAAyB,CAAoB,WAA0B,EAAE,OAAoB,EAAE,OAAW;QACtG,IAAI,CAAC,eAAe,CAAC,WAAW,EAAE,OAAO,EAAE,OAAO,CAAC,CAAC;IACxD,CAAC;CAGJ;AAPD,4CAOC"}

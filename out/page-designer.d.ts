@@ -1,21 +1,9 @@
-/*******************************************************************************
- * Copyright (C) maishu All rights reserved.
- *
- * HTML 页面设计器
- *
- * 作者: 麦舒
- * 日期: 2018/5/30
- *
- * 个人博客：   http://www.cnblogs.com/ansiboy/
- * GITHUB:     http://github.com/ansiboy
- * QQ 讨论组：  119038574
- *
- ********************************************************************************/
 import React = require("react");
 import { ComponentData } from "./models";
 import { Callback } from "./common";
-import { ComponentProps } from "./component";
 import { ComponentFactory } from "./component-factory";
+import { ComponentProps } from "jueying-core";
+import { ComponentDataHandler } from "./component-data-handler";
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData | null;
     style?: React.CSSProperties;
@@ -23,42 +11,40 @@ export interface PageDesignerProps extends React.Props<PageDesigner> {
     componentFactory?: ComponentFactory;
     elementTag?: string;
     context?: any;
+    componentDataHandler: ComponentDataHandler;
 }
 export interface PageDesignerState {
     pageData: ComponentData | null;
-    components: {
-        [typeName: string]: React.Component[];
-    };
 }
 export declare class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S extends PageDesignerState = PageDesignerState> extends React.Component<P, S> {
     private _element;
     componentSelected: Callback<string[]>;
     componentRemoved: Callback<string[]>;
-    componentAppend: Callback<PageDesigner<PageDesignerProps, PageDesignerState>>;
+    componentAppend: Callback<PageDesigner>;
     componentUpdated: Callback<ComponentData[]>;
     designtimeComponentDidMount: Callback<{
         component: React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
         element: HTMLElement;
     }>;
     static defaultProps: PageDesignerProps;
+    private components;
     constructor(props: P);
-    private static setComponetRefProp;
-    private static initPageData;
+    private setComponetRefProp;
+    private initPageData;
     allComponents(): React.Component[];
     /** 页面数据 */
-    get pageData(): S["pageData"];
+    readonly pageData: S["pageData"];
     /** 获取已选择了的组件编号 */
-    get selectedComponentIds(): string[];
+    readonly selectedComponentIds: any[];
     /** 获取已选择了的组件 */
-    get selectedComponents(): ComponentData[];
-    get element(): HTMLElement;
+    readonly selectedComponents: ComponentData[];
+    readonly element: HTMLElement;
     updateComponentProp(componentId: string, propName: string, value: any): any;
     updateComponentProps(...componentProps: {
         componentId: string;
         propName: string;
         value: any;
     }[]): any;
-    private sortChildren;
     /**
      * 对组件及其子控件进行命名
      * @param component
@@ -107,16 +93,14 @@ export declare class PageDesigner<P extends PageDesignerProps = PageDesignerProp
      * 移动控件到另外一个控件容器
      * @param componentId 要移动的组件编号
      * @param parentId 目标组件编号
-     * @param beforeChildId 组件的前一个子组件编号
+     * @param targetComponentIndex 组件位置
      */
-    moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
+    moveComponent(componentId: string, parentId: string, targetComponentIndex?: number): void;
     private removeComponentFrom;
     private static travelComponentData;
-    findComponetsByTypeName(componentTypeName: string): React.Component<{}, {}, any>[];
     findComponentData(componentId: string): ComponentData | null;
     private onKeyDown;
     protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
-    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState>;
     render(): React.DOMElement<{
         className: string;
         tabIndex: number;

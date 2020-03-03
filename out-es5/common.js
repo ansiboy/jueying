@@ -1,74 +1,40 @@
 "use strict";
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+var components_1 = require("./components");
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+exports.proptDisplayNames = {};
 
-define(["require", "exports"], function (require, exports) {
-  "use strict";
+var maishu_toolkit_1 = require("maishu-toolkit");
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.constants = {
-    componentsDir: 'components',
-    connectorElementClassName: 'component-container',
-    componentTypeName: 'data-component-name',
-    componentData: 'component-data',
-    componentPosition: "component-position"
-  };
-  exports.proptDisplayNames = {};
+exports.guid = maishu_toolkit_1.guid;
+exports.Callback = maishu_toolkit_1.Callback;
 
-  function guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+function translateComponentDataChildren(children) {
+  if (children == null || children.length == 0) return [];
+  var r = [];
+
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+
+    if (typeof child == "string") {
+      child = {
+        type: components_1.ComponentTypes.Text,
+        props: {
+          text: child
+        }
+      };
+      r.push(child);
+    } else {
+      r.push(children[i]);
     }
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 
-  exports.guid = guid;
+  return r;
+}
 
-  var Callback =
-  /*#__PURE__*/
-  function () {
-    function Callback() {
-      _classCallCheck(this, Callback);
-
-      this.funcs = new Array();
-    }
-
-    _createClass(Callback, [{
-      key: "add",
-      value: function add(func) {
-        this.funcs.push(func);
-      }
-    }, {
-      key: "remove",
-      value: function remove(func) {
-        this.funcs = this.funcs.filter(function (o) {
-          return o != func;
-        });
-      }
-    }, {
-      key: "fire",
-      value: function fire(args) {
-        this.funcs.forEach(function (o) {
-          return o(args);
-        });
-      }
-    }], [{
-      key: "create",
-      value: function create() {
-        return new Callback();
-      }
-    }]);
-
-    return Callback;
-  }();
-
-  exports.Callback = Callback;
-});
+exports.translateComponentDataChildren = translateComponentDataChildren;
 //# sourceMappingURL=common.js.map

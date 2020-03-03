@@ -3,6 +3,8 @@
     "name": "mai.shu"
   },
   "dependencies": {
+    "jueying-core": "^1.0.2",
+    "maishu-toolkit": "^1.1.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
   },
@@ -34,5 +36,12 @@
     "build": "grunt build"
   },
   "typings": "out/index.d.ts",
-  "version": "1.7.6"
+  "version": "1.7.8",
+  "files": [
+    "dist",
+    "out",
+    "out-es5",
+    "src",
+    "test"
+  ]
 }

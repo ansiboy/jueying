@@ -18,97 +18,87 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-define(["require", "exports", "react", "./property-editor", "./style"], function (require, exports, React, property_editor_1, style_1) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var EditorPanel =
-  /*#__PURE__*/
-  function (_React$Component) {
-    _inherits(EditorPanel, _React$Component);
-
-    function EditorPanel(props) {
-      var _this;
-
-      _classCallCheck(this, EditorPanel);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(EditorPanel).call(this, props));
-      _this.state = {
-        componentDatas: [],
-        designer: null
-      };
-
-      _this.designerComponentChanged = function () {
-        console.assert(_this.designer != null);
-
-        _this.setState({
-          designer: _this.designer
-        });
-      };
-
-      return _this;
-    }
-
-    _createClass(EditorPanel, [{
-      key: "render",
-      value: function render() {
-        var _this2 = this;
-
-        var empty = this.props.empty;
-        empty = empty || React.createElement("div", {
-          className: "empty"
-        }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
-        var designer = this.state.designer;
-        return React.createElement("div", {
-          className: "".concat(style_1.classNames.editorPanel, " ").concat(this.props.className || ""),
-          ref: function ref(e) {
-            return _this2.element = e || _this2.element;
-          }
-        }, React.createElement(property_editor_1.PropertyEditor, {
-          designer: designer,
-          ref: function ref(e) {
-            return _this2.editor = e || _this2.editor;
-          },
-          empty: empty,
-          customRender: this.props.customRender
-        }));
-      }
-    }, {
-      key: "designer",
-      get: function get() {
-        return this._designer;
-      },
-      set: function set(value) {
-        if (this._designer) {
-          this._designer.componentRemoved.remove(this.designerComponentChanged);
-
-          this._designer.componentAppend.remove(this.designerComponentChanged);
-
-          this._designer.componentUpdated.remove(this.designerComponentChanged);
-
-          this._designer.componentSelected.remove(this.designerComponentChanged);
-        }
-
-        if (value) {
-          value.componentRemoved.add(this.designerComponentChanged);
-          value.componentAppend.add(this.designerComponentChanged);
-          value.componentUpdated.add(this.designerComponentChanged);
-          value.componentSelected.add(this.designerComponentChanged);
-        }
-
-        this._designer = value;
-        this.setState({
-          designer: value
-        });
-      }
-    }]);
-
-    return EditorPanel;
-  }(React.Component);
-
-  exports.EditorPanel = EditorPanel;
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
+
+var React = require("react");
+
+var property_editor_1 = require("./property-editor");
+
+var style_1 = require("./style");
+
+var EditorPanel =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(EditorPanel, _React$Component);
+
+  // private designerComponentChanged: (args: any) => void
+  function EditorPanel(props) {
+    var _this;
+
+    _classCallCheck(this, EditorPanel);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(EditorPanel).call(this, props));
+    _this.state = {
+      componentDatas: []
+    }; // this.designerComponentChanged = () => {
+    //     console.assert(this.designer != null)
+    //     this.setState({ designer: this.designer })
+    // }
+
+    return _this;
+  }
+
+  _createClass(EditorPanel, [{
+    key: "render",
+    // set designer(value) {
+    //     if (this._designer) {
+    //         this._designer.componentRemoved.remove(this.designerComponentChanged)
+    //         this._designer.componentAppend.remove(this.designerComponentChanged)
+    //         this._designer.componentUpdated.remove(this.designerComponentChanged)
+    //         this._designer.componentSelected.remove(this.designerComponentChanged)
+    //     }
+    //     if (value) {
+    //         value.componentRemoved.add(this.designerComponentChanged)
+    //         value.componentAppend.add(this.designerComponentChanged)
+    //         value.componentUpdated.add(this.designerComponentChanged)
+    //         value.componentSelected.add(this.designerComponentChanged)
+    //     }
+    //     this._designer = value;
+    //     this.setState({ designer: value });
+    // }
+    value: function render() {
+      var _this2 = this;
+
+      var empty = this.props.empty;
+      empty = empty || React.createElement("div", {
+        className: "empty"
+      }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
+      var designer = this.props.designer;
+      return React.createElement("div", {
+        className: "".concat(style_1.classNames.editorPanel, " ").concat(this.props.className || ""),
+        ref: function ref(e) {
+          return _this2.element = e || _this2.element;
+        }
+      }, React.createElement(property_editor_1.PropertyEditor, {
+        designer: designer,
+        ref: function ref(e) {
+          return _this2.editor = e || _this2.editor;
+        },
+        empty: empty,
+        customRender: this.props.customRender
+      }));
+    }
+  }, {
+    key: "designer",
+    get: function get() {
+      return this._designer;
+    }
+  }]);
+
+  return EditorPanel;
+}(React.Component);
+
+exports.EditorPanel = EditorPanel;
 //# sourceMappingURL=editor-panel.js.map

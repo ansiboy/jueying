@@ -6,30 +6,26 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-define(["require", "exports"], function (require, exports) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var ComponentFactory =
-  /*#__PURE__*/
-  function () {
-    function ComponentFactory() {
-      _classCallCheck(this, ComponentFactory);
-    }
-
-    _createClass(ComponentFactory, [{
-      key: "renderDesignTimeComponent",
-      value: function renderDesignTimeComponent(compentData, element, context) {
-        this.renderComponent(compentData, element, context);
-      }
-    }]);
-
-    return ComponentFactory;
-  }();
-
-  exports.ComponentFactory = ComponentFactory;
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
+
+var ComponentFactory =
+/*#__PURE__*/
+function () {
+  function ComponentFactory() {
+    _classCallCheck(this, ComponentFactory);
+  }
+
+  _createClass(ComponentFactory, [{
+    key: "renderDesignTimeComponent",
+    value: function renderDesignTimeComponent(compentData, element, context) {
+      this.renderComponent(compentData, element, context);
+    }
+  }]);
+
+  return ComponentFactory;
+}();
+
+exports.ComponentFactory = ComponentFactory;
 //# sourceMappingURL=component-factory.js.map

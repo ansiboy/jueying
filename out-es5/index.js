@@ -1,23 +1,65 @@
 "use strict";
 
-define(["require", "exports", "./common", "./component", "./component-panel", "./editor-panel", "./page-designer", "./prop-editor", "./style", "./component-factory", "./jquery", "../lib/jquery.event.drag-2.2", "../lib/jquery.event.drag.live-2.2", "../lib/jquery.event.drop-2.2", "../lib/jquery.event.drop.live-2.2"], function (require, exports, common_1, component_1, component_panel_1, editor_panel_1, page_designer_1, prop_editor_1, style_1, component_factory_1) {
-  "use strict";
+function __export(m) {
+  for (var p in m) {
+    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+  }
+}
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.strings = common_1.proptDisplayNames;
-  exports.proptDisplayNames = common_1.proptDisplayNames;
-  exports.Component = component_1.Component;
-  exports.DesignerContext = component_1.DesignerContext;
-  exports.MasterPage = component_1.MasterPage;
-  exports.MasterPageContext = component_1.MasterPageContext;
-  exports.ComponentPanel = component_panel_1.ComponentPanel;
-  exports.EditorPanel = editor_panel_1.EditorPanel;
-  exports.PageDesigner = page_designer_1.PageDesigner;
-  exports.PropEditor = prop_editor_1.PropEditor;
-  exports.TextInput = prop_editor_1.TextInput;
-  exports.classNames = style_1.classNames;
-  exports.ComponentFactory = component_factory_1.ComponentFactory;
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
+
+require("./jquery");
+
+require("../lib/jquery.event.drag-2.2");
+
+require("../lib/jquery.event.drag.live-2.2");
+
+require("../lib/jquery.event.drop-2.2");
+
+require("../lib/jquery.event.drop.live-2.2");
+
+var common_1 = require("./common");
+
+exports.strings = common_1.proptDisplayNames;
+exports.proptDisplayNames = common_1.proptDisplayNames;
+
+var component_1 = require("./component");
+
+exports.Component = component_1.Component;
+exports.DesignerContext = component_1.DesignerContext;
+
+var component_panel_1 = require("./component-panel");
+
+exports.ComponentPanel = component_panel_1.ComponentPanel;
+
+var editor_panel_1 = require("./editor-panel");
+
+exports.EditorPanel = editor_panel_1.EditorPanel;
+
+var page_designer_1 = require("./page-designer");
+
+exports.PageDesigner = page_designer_1.PageDesigner;
+
+var prop_editor_1 = require("./prop-editor");
+
+exports.PropEditor = prop_editor_1.PropEditor;
+exports.TextInput = prop_editor_1.TextInput;
+
+var style_1 = require("./style");
+
+exports.classNames = style_1.classNames;
+
+var component_factory_1 = require("./component-factory");
+
+exports.ComponentFactory = component_factory_1.ComponentFactory;
+
+var component_data_handler_1 = require("./component-data-handler");
+
+exports.ComponentDataHandler = component_data_handler_1.ComponentDataHandler;
+
+__export(require("./components"));
+
+__export(require("jueying-core"));
 //# sourceMappingURL=index.js.map

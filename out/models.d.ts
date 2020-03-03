@@ -1,10 +1,6 @@
 /// <reference types="react" />
-import { ComponentProps } from "./component";
-export interface ComponentData {
-    type: string;
-    props?: ComponentProps<any>;
-    children?: ComponentData[];
-}
+import { ComponentData } from "jueying-core";
+export { ComponentData } from "jueying-core";
 export interface ComponentDefine {
     componentData: ComponentData;
     displayName: string;
