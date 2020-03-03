@@ -2,11 +2,11 @@ import { ComponentProps } from "react";
 import * as React from "react";
 import { PageDesigner } from "./page-designer";
 import { Errors } from "./errors";
-import { constants } from "./common";
 import { ComponentPanel } from "./component-panel";
 import { classNames, appendClassName } from "./style";
-import { MasterPage, ComponentWrapperContext } from "./component";
+import { ComponentWrapperContext } from "./component";
 import { ReactComponentType, DragDropData } from "./models";
+import { MasterPage, constants } from "./components";
 
 type ComponentWrapperProps = {
     designer: PageDesigner,
@@ -139,7 +139,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         let startPos: JQuery.Coordinates
         let rect: { width?: number, height?: number, left?: number, top?: number };
         let dragStart: number
-        $(handler)
+        ($(handler) as any)
             .drag("init", function (ev) {
                 startPos = $(element).position()
                 if ($(this).is(`.${classNames.componentSelected}`))

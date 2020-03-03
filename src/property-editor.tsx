@@ -13,22 +13,23 @@
  ********************************************************************************/
 
 import React = require("react");
-import { PageDesigner } from "./page-designer";
-import { PropEditorInfo, Component, ErrorBoundary, ComponentProps } from "./component";
-import { proptDisplayNames, guid } from "./common";
+import { PropEditorInfo, Component } from "./component";
+import { proptDisplayNames } from "./common";
 import { PropEditorProps } from "./prop-editor";
 import { Errors } from "./errors";
 import { ComponentData } from "./models";
+import { ComponentDataHandler } from "./component-data-handler";
 
 
 export interface EditorProps extends React.Props<PropertyEditor> {
-    designer: PageDesigner,
+    designer: ComponentDataHandler,
     empty: string | JSX.Element,
     customRender?: (editComponents: ComponentData[], items: PropertyEditorInfo[]) => JSX.Element
 }
 
 interface EditorState {
-    designer: PageDesigner | null,
+    // designer: ComponentDataHandler | null,
+    groupedEditors: GroupedEditor[]
 }
 
 export interface PropertyEditorInfo {
@@ -38,6 +39,8 @@ export interface PropertyEditorInfo {
     editor: React.ReactElement<any>
 }
 
+type GroupedEditor = { group: string, prop: string, editor: React.ReactElement<any> };
+
 export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
     private _element: HTMLElement | null = null;
@@ -45,14 +48,19 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
     constructor(props: EditorProps) {
         super(props);
 
-        this.state = { designer: this.props.designer };
+        this.state = { groupedEditors: [] };
+
+        this.props.designer.componentSelected.add(() => {
+            let editors = this.getEditors(this.props.designer);
+            this.setState({ groupedEditors: editors });
+        })
     }
 
-    static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState> {
-        return { designer: props.designer };
-    }
+    // static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState> {
+    //     return { designer: props.designer };
+    // }
 
-    private getEditors(designer: PageDesigner) {
+    private getEditors(designer: ComponentDataHandler): GroupedEditor[] {
         if (designer == null) {
             return []
         }
@@ -101,7 +109,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
             }
         }
 
-        let editors: { group: string, prop: string, editor: React.ReactElement<any> }[] = []
+        let editors: GroupedEditor[] = []
         for (let i = 0; i < commonPropEditorInfos.length; i++) {
             let propEditorInfo = commonPropEditorInfos[i];
             let propName = propEditorInfo.propName;;
@@ -115,7 +123,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     let componentProps = selectedComponents.map(o => ({
                         componentId: o.props.id, propName: propEditorInfo.propName, value
                     }));
-                    designer.updateComponentProps(...componentProps);
+                    designer.updateComponentProps(componentProps);
                 }
             };
             let editor = React.createElement(editorType, editorProps);
@@ -145,8 +153,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
     }
 
     render() {
-        let { designer } = this.state
-        let editors = this.getEditors(designer)
+        let { designer } = this.props;
+        let editors = this.state.groupedEditors; //this.getEditors(designer)
         if (editors.length == 0) {
             let empty = this.props.empty
             return <div className="text-center">{empty}</div>
@@ -198,4 +206,32 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         return this._element;
     }
 
+}
+
+
+export class ErrorBoundary extends React.Component<{}, { error?: Error }> {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    componentDidCatch(error, info) {
+        // Display fallback UI
+        this.setState({ error });
+        // You can also log the error to an error reporting service
+        //   logErrorToMyService(error, info);
+        debugger
+    }
+
+    render() {
+        let { error } = this.state || {} as this["state"];
+        if (error) {
+            // You can render any custom fallback UI
+            return <div className="error">
+                <div>{error.message}</div>
+                <div>{error.stack}</div>
+            </div>;
+        }
+        return this.props.children;
+    }
 }

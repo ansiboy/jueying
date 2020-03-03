@@ -1,39 +1,30 @@
-export let constants = {
-    componentsDir: 'components',
-    connectorElementClassName: 'component-container',
-    componentTypeName: 'data-component-name',
-    componentData: 'component-data',
-    componentPosition: "component-position"
-}
+import { ComponentData } from "jueying-core";
+import { ComponentTypes } from "./components";
+
 
 export let proptDisplayNames: { [prop: string]: string } = {
 }
 
 
-export function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
+export { guid, Callback } from "maishu-toolkit";
+
+export function translateComponentDataChildren(children: ComponentData["children"]): ComponentData[] {
+    if (children == null || children.length == 0)
+        return [];
+
+    let r: ComponentData[] = [];
+
+    for (let i = 0; i < children.length; i++) {
+        let child = children[i];
+        if (typeof child == "string") {
+            child = { type: ComponentTypes.Text, props: { text: child } };
+            r.push(child);
+        }
+        else {
+            r.push(children[i] as ComponentData);
+        }
     }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
+
+    return r;
 }
 
-export class Callback<T> {
-    private funcs = new Array<(...args: Array<any>) => void>();
-
-    add(func: (args: T) => void) {
-        this.funcs.push(func);
-    }
-    remove(func: (args: T) => any) {
-        this.funcs = this.funcs.filter(o => o != func);
-    }
-    fire(args: T) {
-        this.funcs.forEach(o => o(args));
-    }
-
-    static create<T>() {
-        return new Callback<T>();
-    }
-}

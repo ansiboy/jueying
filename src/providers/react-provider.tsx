@@ -1,12 +1,13 @@
 import { ComponentFactory, Context } from "component-factory";
 import { Errors } from "errors";
 import { ComponentData, ReactComponentType } from "models";
-import { ComponentProps, Component } from "component";
+import { Component } from "component";
 import { appendClassName, classNames } from "style";
 import { ComponentWrapper } from "component-wrapper";
 import { PageDesigner } from "page-designer";
 import React = require("react");
 import ReactDOM = require("react-dom");
+import { ComponentProps } from "jueying-core";
 
 export class ReactComponentFacotry extends ComponentFactory {
 

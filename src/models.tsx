@@ -1,10 +1,12 @@
-import { ComponentProps } from "./component";
+// import { ComponentProps } from "./component";
+import { ComponentData } from "jueying-core";
+export { ComponentData } from "jueying-core";
 
-export interface ComponentData {
-    type: string;
-    props?: ComponentProps<any>;
-    children?: ComponentData[],
-}
+// export interface ComponentData {
+//     type: string;
+//     props?: ComponentProps<any>;
+//     children?: ComponentData[],
+// }
 
 export interface ComponentDefine {
     componentData: ComponentData,

@@ -1,43 +1,14 @@
 import * as React from "react";
-import { ComponentAttribute, ComponentWrapper, ComponentWrapperDrapData } from "./component-wrapper";
+import { ComponentAttribute, ComponentWrapper } from "./component-wrapper";
 import { PageDesigner } from "./page-designer";
 import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
-import { appendClassName, removeClassName, classNames } from "./style";
-import { constants, guid, proptDisplayNames, Callback } from "./common";
-import { ComponentPanel } from "./component-panel";
-
-/*******************************************************************************
- * Copyright (C) maishu All rights reserved.
- * 
- * 作者: 寒烟
- * 日期: 2018/5/30
- *
- * 个人博客：   http://www.cnblogs.com/ansiboy/
- * GITHUB:     http://github.com/ansiboy
- * QQ 讨论组：  119038574
- * 
- * component.tsx 文件用于运行时加载，所以要控制此文件的大小，用于在运行时创建页面
- * 
- ********************************************************************************/
-
-
-
+import { proptDisplayNames,} from "./common";
+import { MasterPage } from "./components";
+import { ComponentProps } from "jueying-core";
 
 type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element
-
-
-export interface ComponentProps<T> extends React.Props<T> {
-    id?: string,
-    name?: string,
-    className?: string,
-    style?: React.CSSProperties,
-    selected?: boolean,
-    text?: string,
-    parentId?: string;
-    attr?: ComponentAttribute
-}
 
 type DesignerContextValue = { designer: PageDesigner | null };
 export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
@@ -224,7 +195,16 @@ export class Component {
                 type = controlType;
             }
 
-            let children: (React.ReactElement<any> | string)[] = componentData.children ? componentData.children.map(o => Component._createElement(o, context, h)) : [];
+            let children: (React.ReactElement<any> | string)[] = [];
+            for (let i = 0; i < componentData.children.length; i++) {
+                let child = componentData.children[i];
+                if (typeof child == "string")
+                    children.push(child);
+                else
+                    children.push(Component._createElement(child, context, h));
+
+            }
+            //componentData.children ? componentData.children.map(o => Component._createElement(o, context, h)) : [];
             let props: ComponentProps<any> = componentData.props == null ? {} : Object.assign({}, componentData.props);//JSON.parse(JSON.stringify(componentData.props));
             if (controlType != null && controlType["defaultProps"]) {
                 props = Object.assign({}, controlType["defaultProps"], props);
@@ -302,262 +282,8 @@ export class Component {
 }
 
 
-export const MasterPageName = 'MasterPage'
-type MasterPageContextValue = { master: MasterPage | null };
-export const MasterPageContext = React.createContext<MasterPageContextValue>({ master: null });
-
-export class MasterPage extends React.Component<ComponentProps<MasterPage>, { children: React.ReactElement<ComponentProps<MasterPage>>[] }> {
-
-    childComponents: { [key: string]: React.Component[] } = {};
-
-    constructor(props: ComponentProps<MasterPage>) {
-        super(props)
-
-        let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-        this.state = { children };
-    }
-    private static children(props: ComponentProps<MasterPage>): React.ReactElement<ComponentProps<any>>[] {
-        let arr = props.children == null ? [] :
-            Array.isArray(props.children) ? props.children : [props.children];
-
-        let children: React.ReactElement<ComponentProps<any>>[] = []
-        arr.forEach(o => {
-            if (!React.isValidElement(o))
-                return
-
-            children.push(o as React.ReactElement<ComponentProps<any>>)
-        })
-
-        return children
-    }
-
-    static getDerivedStateFromProps(props: ComponentProps<MasterPage>) {
-        let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-        return { children } as MasterPage["state"];
-    }
-
-    render() {
-        let props = {} as any
-        for (let key in this.props) {
-            if (key == 'ref' || key == 'id')
-                continue
-
-            props[key] = this.props[key]
-        }
-
-        props.style = Object.assign({ minHeight: 40 }, props.style)
-        let children = this.state.children.filter(o => o.props.parentId == null);
-
-        let master = this;
-        console.assert(master != null);
-        return <MasterPageContext.Provider value={{ master }}>
-            {children}
-        </MasterPageContext.Provider>
-    }
-}
-Component.register(MasterPageName, MasterPage, { container: false })
-
-/**
- * 占位符，用于放置控件
- */
-export class PlaceHolder extends React.Component<{ id: string, empty?: string | JSX.Element }, {}>{
-    private element: HTMLElement;
-
-    constructor(props: PlaceHolder["props"]) {
-        super(props)
-
-        if (!this.props.id) {
-            throw Errors.placeHolderIdNull()
-        }
-    }
-
-    private designer: PageDesigner;
-    private wraper: ComponentWrapper;
-
-    /**
-     * 启用拖放操作，以便通过拖放图标添加控件
-     */
-    private enableAppendDroppable(element: HTMLElement, master: MasterPage) {
-        if (element.getAttribute('enable-append-droppable'))
-            return
-
-        element.setAttribute('enable-append-droppable', 'true')
-
-        console.assert(element != null)
-        element.addEventListener('dragover', function (event) {
-            event.preventDefault()
-            event.stopPropagation()
-
-            element.className = appendClassName(element.className || '', 'active')
-
-            let componentName = event.dataTransfer.getData(constants.componentData)
-            if (componentName)
-                event.dataTransfer.dropEffect = "copy"
-            else
-                event.dataTransfer.dropEffect = "move"
-
-            console.log(`dragover: left:${(event as any).layerX} top:${(event as any).layerX}`)
-        })
-
-        let func = function (event) {
-            event.preventDefault()
-            event.stopPropagation()
-            element.className = removeClassName(element.className, 'active')
-        }
-        element.addEventListener('dragleave', func)
-        element.addEventListener('dragend', func)
-        element.addEventListener('dragexit', func)
-
-        element.ondrop = (event) => {
-            event.preventDefault()
-            event.stopPropagation()
-
-            element.className = removeClassName(element.className, 'active')
-
-            let ctrl: ComponentData;
-            if (event.dataTransfer)
-                ctrl = ComponentPanel.getComponentData(event.dataTransfer);
-
-            if (!ctrl)
-                return
-
-            console.assert(this.props.id != null);
-            console.assert(this.designer != null);
-            ctrl.props.parentId = this.props.id;
-            console.assert(master != null, 'host is null')
-            this.designer.appendComponent(master.props.id, ctrl)
-        }
-    }
-    private enableMoveDroppable(element: HTMLElement, host: MasterPage) {
-        if (element.getAttribute('enable-move-droppable'))
-            return
-
-        element.setAttribute('enable-move-droppable', 'true')
-
-        $(element)
-            .drop('start', (event, dd: ComponentWrapperDrapData) => {
-                if (dd.sourceElement.id == this.wraper.props.source.props.id)
-                    return
-
-                appendClassName(element, 'active')
-            })
-            .drop('drop', (event, dd: ComponentWrapperDrapData) => {
-                if (dd.sourceElement.id == this.wraper.props.source.props.id)
-                    return
-
-                let componentData = this.designer.findComponentData(dd.sourceElement.id)
-                console.assert(componentData != null)
-
-                let propName: keyof ComponentProps<any> = 'parentId'
-                this.designer.moveComponent(dd.sourceElement.id, host.props.id)
-                this.designer.updateComponentProps({
-                    componentId: "string", propName: "string", value: "any"
-                })//dd.sourceElement.id, propName, this.props.id
-            })
-            .drop('end', (event, dd: ComponentWrapperDrapData) => {
-                if (dd.sourceElement.id == this.wraper.props.source.props.id)
-                    return
-
-                removeClassName(element, 'active')
-            })
-    }
-    render() {
-        let empty = this.props.empty || <div key={guid()} className="empty">可以拖拉控件到这里</div>
-        return <MasterPageContext.Consumer>
-            {(args) => {
-                let master = args.master
-                if (master == null) throw Errors.canntFindMasterPage(this.props.id)
-
-                let children: (typeof empty)[] = []
-                if (master.props && master.props.children) {
-                    let arr: React.ReactElement<ComponentProps<any>>[]
-                    if (Array.isArray(master.props.children)) {
-                        arr = master.props.children as any
-                    }
-                    else {
-                        arr = [master.props.children as any]
-                    }
-                    children = arr.filter((o: React.ReactElement<ComponentProps<any>>) => o.props.parentId != null && o.props.parentId == this.props.id)
-                }
 
 
-                return <DesignerContext.Consumer>
-                    {args => <ComponentWrapperContext.Consumer>
-                        {wraper => {
-                            this.wraper = wraper
-                            console.assert(this.wraper != null)
 
-                            if (args.designer != null && children.length == 0) {
-                                children = [empty]
-                            }
 
-                            let element = <React.Fragment>
-                                {this.props.children}
-                                {children}
-                            </React.Fragment>
 
-                            if (args.designer) {
-                                this.designer = args.designer
-                                element = <div key={guid()} className={classNames.placeholder}
-                                    ref={e => {
-                                        if (!e) return
-                                        this.element = e;
-                                        this.enableAppendDroppable(e, master)
-                                        this.enableMoveDroppable(e, master)
-                                    }}>
-                                    {element}
-                                </div>
-                            }
-
-                            return element
-                        }}
-                    </ComponentWrapperContext.Consumer>
-                    }
-                </DesignerContext.Consumer>
-            }}
-        </MasterPageContext.Consumer>
-
-    }
-}
-
-Component.register('PlaceHolder', PlaceHolder)
-
-export class PageView extends React.Component<{ pageData: ComponentData }, {}> {
-    constructor(props: PageView["props"]) {
-        super(props)
-
-        if (!this.props.pageData)
-            throw Errors.propCanntNull(PageView.name, 'pageData')
-    }
-    render() {
-        let element = Component.createElement(this.props.pageData)
-        return element
-    }
-}
-
-export class ErrorBoundary extends React.Component<{}, { error?: Error }> {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
-    componentDidCatch(error, info) {
-        // Display fallback UI
-        this.setState({ error });
-        // You can also log the error to an error reporting service
-        //   logErrorToMyService(error, info);
-        debugger
-    }
-
-    render() {
-        let { error } = this.state || {} as this["state"];
-        if (error) {
-            // You can render any custom fallback UI
-            return <div className="error">
-                <div>{error.message}</div>
-                <div>{error.stack}</div>
-            </div>;
-        }
-        return this.props.children;
-    }
-}
