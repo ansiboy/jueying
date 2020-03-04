@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import { ComponentData } from "jueying-core";
-export { ComponentData } from "jueying-core";
+import { ComponentData } from "maishu-jueying-core";
+export { ComponentData } from "maishu-jueying-core";
 export interface ComponentDefine {
     componentData: ComponentData;
     displayName: string;

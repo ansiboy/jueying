@@ -7,7 +7,7 @@ import { ComponentWrapper } from "component-wrapper";
 import { PageDesigner } from "page-designer";
 import React = require("react");
 import ReactDOM = require("react-dom");
-import { ComponentProps } from "jueying-core";
+import { ComponentProps } from "maishu-jueying-core";
 
 export class ReactComponentFacotry extends ComponentFactory {
 
@@ -19,7 +19,7 @@ export class ReactComponentFacotry extends ComponentFactory {
         ReactDOM.render(componentElement, element);
     }
 
-    renderComponent(compentData: ComponentData, element: HTMLElement, context?: any): void {
+    renderRunTimeComponent(compentData: ComponentData, element: HTMLElement, context?: any): void {
         let componentElement = Component.createElement(compentData);
         ReactDOM.render(componentElement, element);
     }

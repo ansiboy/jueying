@@ -3,7 +3,7 @@ import { ComponentAttribute, ComponentWrapper } from "./component-wrapper";
 import { PageDesigner } from "./page-designer";
 import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
-import { ComponentProps } from "jueying-core";
+import { ComponentProps } from "maishu-jueying-core";
 declare type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element;
 declare type DesignerContextValue = {
     designer: PageDesigner | null;

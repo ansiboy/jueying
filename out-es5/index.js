@@ -61,5 +61,9 @@ exports.ComponentDataHandler = component_data_handler_1.ComponentDataHandler;
 
 __export(require("./components"));
 
-__export(require("jueying-core"));
+__export(require("maishu-jueying-core"));
+
+var decorators_1 = require("maishu-jueying-core/decorators");
+
+exports.component = decorators_1.component;
 //# sourceMappingURL=index.js.map

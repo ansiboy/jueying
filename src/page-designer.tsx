@@ -7,7 +7,7 @@ import { Component } from "./component";
 import { appendClassName, classNames } from "./style";
 import { ComponentWrapper } from "./component-wrapper";
 import { ComponentFactory } from "./component-factory";
-import { ComponentProps } from "jueying-core";
+import { ComponentProps } from "maishu-jueying-core";
 import { ComponentDataHandler } from "./component-data-handler";
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {

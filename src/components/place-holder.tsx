@@ -4,7 +4,7 @@ import { ComponentWrapper, ComponentWrapperDrapData } from "../component-wrapper
 import { removeClassName, appendClassName, classNames } from "../style";
 import { ComponentPanel } from "../component-panel";
 import { MasterPage, MasterPageContext } from "./master-page";
-import { ComponentProps, ComponentData } from "jueying-core";
+import { ComponentProps, ComponentData } from "maishu-jueying-core";
 import { Component, DesignerContext, ComponentWrapperContext } from "../component";
 import { ComponentTypes, constants, guid } from "./common";
 import { PageDesigner } from "../page-designer";

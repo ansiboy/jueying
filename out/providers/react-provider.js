@@ -12,7 +12,7 @@ class ReactComponentFacotry extends component_factory_1.ComponentFactory {
         let componentElement = component_1.Component.createElement(compentData, (type, props, children) => this.createDesignTimeElement(type, props, context.designer, children));
         ReactDOM.render(componentElement, element);
     }
-    renderComponent(compentData, element, context) {
+    renderRunTimeComponent(compentData, element, context) {
         let componentElement = component_1.Component.createElement(compentData);
         ReactDOM.render(componentElement, element);
     }

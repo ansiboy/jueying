@@ -1,6 +1,6 @@
 // import { ComponentProps } from "./component";
-import { ComponentData } from "jueying-core";
-export { ComponentData } from "jueying-core";
+import { ComponentData } from "maishu-jueying-core";
+export { ComponentData } from "maishu-jueying-core";
 
 // export interface ComponentData {
 //     type: string;

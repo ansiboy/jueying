@@ -6,7 +6,7 @@ import { ComponentData } from "./models";
 import { Errors } from "./errors";
 import { proptDisplayNames,} from "./common";
 import { MasterPage } from "./components";
-import { ComponentProps } from "jueying-core";
+import { ComponentProps } from "maishu-jueying-core";
 
 type ReactFactory = (type: string | React.ComponentClass<any> | React.ComponentType, props: ComponentProps<any>, ...children: any[]) => JSX.Element
 

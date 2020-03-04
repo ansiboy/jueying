@@ -1,4 +1,4 @@
-import { ComponentData } from "jueying-core";
+import { ComponentData } from "maishu-jueying-core";
 import { ComponentTypes } from "./components";
 
 

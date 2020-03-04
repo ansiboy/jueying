@@ -58,8 +58,8 @@ function (_component_factory_1$) {
       ReactDOM.render(componentElement, element);
     }
   }, {
-    key: "renderComponent",
-    value: function renderComponent(compentData, element, context) {
+    key: "renderRunTimeComponent",
+    value: function renderRunTimeComponent(compentData, element, context) {
       var componentElement = component_1.Component.createElement(compentData);
       ReactDOM.render(componentElement, element);
     }

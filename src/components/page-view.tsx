@@ -1,5 +1,5 @@
 import React = require("react")
-import { ComponentData } from "jueying-core"
+import { ComponentData } from "maishu-jueying-core"
 import { Errors } from "./errors";
 import { Component } from "../component";
 import { ComponentTypes } from "./common";

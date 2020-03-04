@@ -1,4 +1,4 @@
-import { ComponentData } from "jueying-core";
+import { ComponentData } from "maishu-jueying-core";
 import { Errors } from "./errors";
 import { Callback, guid } from "maishu-toolkit";
 import { translateComponentDataChildren } from "./common";

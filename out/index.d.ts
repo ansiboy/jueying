@@ -15,4 +15,5 @@ export { classNames } from "./style";
 export { ComponentFactory, Context } from "./component-factory";
 export { ComponentDataHandler } from "./component-data-handler";
 export * from "./components";
-export * from "jueying-core";
+export * from "maishu-jueying-core";
+export { component } from "maishu-jueying-core/decorators";

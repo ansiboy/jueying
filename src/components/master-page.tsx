@@ -1,5 +1,5 @@
 import React = require("react");
-import { ComponentProps } from "jueying-core";
+import { ComponentProps } from "maishu-jueying-core";
 import { Component } from "../component";
 
 export const MasterPageName = 'MasterPage'
