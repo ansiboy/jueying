@@ -17,7 +17,7 @@ export function translateComponentDataChildren(children: ComponentData["children
     for (let i = 0; i < children.length; i++) {
         let child = children[i];
         if (typeof child == "string") {
-            child = { type: ComponentTypes.Text, props: { text: child } };
+            child = { type: ComponentTypes.Text, props: { text: child } as any};
             r.push(child);
         }
         else {

@@ -1,7 +1,6 @@
 import { ComponentData } from "maishu-jueying-core";
 import { Errors } from "./errors";
 import { Callback, guid } from "maishu-toolkit";
-import { translateComponentDataChildren } from "./common";
 
 type Components = { [typeName: string]: React.Component[] };
 export class ComponentDataHandler {
@@ -17,17 +16,18 @@ export class ComponentDataHandler {
 
     constructor(componentData: ComponentData) {
         this._pageData = componentData;
-        ComponentDataHandler.initPageData(this._pageData, this._components);
+        this.fillPageData(this._pageData);
     }
 
-    private static initPageData(pageData: ComponentData, components: Components) {
+    /** 对 pageData 字段补全 */
+    private fillPageData(pageData: ComponentData) {
         if (pageData == null) {
             return
         }
 
         pageData.children = pageData.children || [];
         ComponentDataHandler.nameComponent(pageData);
-        ComponentDataHandler.setComponetRefProp(pageData, components);
+        ComponentDataHandler.setComponetRefProp(pageData, this._components);
 
     }
 
@@ -38,12 +38,15 @@ export class ComponentDataHandler {
         stack.push(this._pageData)
         while (stack.length > 0) {
             let item = stack.pop()
-            if (item.props != null && item.props.selected == true)
+            if (item.props != null && item.selected == true)
                 arr.push(item);
 
-            let children = translateComponentDataChildren(item.children || []);
-            for (let i = 0; i < children.length; i++)
-                stack.push(children[i]);
+            item.children.forEach(child => {
+                if (typeof child == "string")
+                    return true;
+
+                stack.push(child);
+            })
         }
 
         return arr;
@@ -52,7 +55,7 @@ export class ComponentDataHandler {
 
     /** 获取已选择了的组件编号 */
     get selectedComponentIds() {
-        return this.selectedComponents.map(o => o.props.id)
+        return this.selectedComponents.map(o => o.id)
     }
 
     /**  */
@@ -65,6 +68,7 @@ export class ComponentDataHandler {
     }
     set pageData(value: ComponentData) {
         this._pageData = value;
+        this.fillPageData(value);
         this.pageDataChanged.fire(value);
     }
 
@@ -83,7 +87,7 @@ export class ComponentDataHandler {
 
         let pageData = this.pageData;
         console.assert(pageData.children != null);
-        let children = translateComponentDataChildren(pageData.children);
+        let children = pageData.children; //translateComponentDataChildren(pageData.children);
         this.removeComponentFrom(componentId, children);
         this.appendComponent(parentId, component, childComponentIndex);
     }
@@ -134,14 +138,18 @@ export class ComponentDataHandler {
         //     stack.push(...children);
         // }
 
-        let componentDatas = ComponentDataHandler.travelComponentData(pageData, (item) => item.props.id == componentId)
+        let componentDatas = ComponentDataHandler.travelComponentData(pageData, (item) => item.id == componentId)
         return componentDatas[0];
     }
 
-    private removeComponentFrom(controlId: string, collection: ComponentData[]): boolean {
+    private removeComponentFrom(controlId: string, collection: ComponentData["children"]): boolean {
         let controlIndex: number | null = null;
         for (let i = 0; i < collection.length; i++) {
-            if (controlId == collection[i].props.id) {
+            let child = collection[i];
+            if (typeof child == "string")
+                continue;
+
+            if (controlId == child.id) {
                 controlIndex = i;
                 break;
             }
@@ -150,7 +158,10 @@ export class ComponentDataHandler {
         if (controlIndex == null) {
             for (let i = 0; i < collection.length; i++) {
                 let o = collection[i];
-                let children = translateComponentDataChildren(o.children);
+                if (typeof o == "string")
+                    continue;
+
+                let children = o.children;
                 if (children && children.length > 0) {
                     let isRemoved = this.removeComponentFrom(controlId, children)
                     if (isRemoved) {
@@ -223,7 +234,7 @@ export class ComponentDataHandler {
 
 
 
-        this.selectComponents(componentData.props.id);
+        this.selectComponents(componentData.id);
         this.componentAppend.fire(this)
     }
 
@@ -233,8 +244,31 @@ export class ComponentDataHandler {
      */
     private static nameComponent(component: ComponentData) {
         let namedComponents: { [key: string]: ComponentData } = {}
-        let props = component.props = component.props || {};
-        if (!props.name) {
+        let props: any = component.props = component.props || {};
+
+        //==================================================
+        // 兼容旧代码
+        if (props.id) {
+            component.id = props.id;
+            delete props.id;
+        }
+
+        if (props.parentId) {
+            component.parentId = props.parentId;
+            delete component.parentId;
+        }
+
+        if (props.selected) {
+            component.selected = props.selected;
+        }
+
+        if (props.name) {
+            component.name = props.name;
+            delete props.name;
+        }
+        //==================================================
+
+        if (!component.name) {
             let num = 0;
             let name: string;
             do {
@@ -243,20 +277,26 @@ export class ComponentDataHandler {
             } while (namedComponents[name]);
 
             namedComponents[name] = component
-            props.name = name;
+            component.name = name;
         }
 
-        if (!props.id)
-            props.id = guid();
+        // if (!props.id)
+        //     props.id = guid();
+
+        component.children = component.children || [];
+
+
 
         if (!component.children || component.children.length == 0) {
             return;
         }
 
-        let children = translateComponentDataChildren(component.children);
-        for (let i = 0; i < children.length; i++) {
-            ComponentDataHandler.nameComponent(children[i]);
-        }
+        component.children.forEach(child => {
+            if (typeof child == "string")
+                return true;
+
+            ComponentDataHandler.nameComponent(child);
+        })
     }
 
     private static setComponetRefProp(pageData: ComponentData, components: Components) {
@@ -267,7 +307,7 @@ export class ComponentDataHandler {
         //=========================================================
         ComponentDataHandler.travelComponentData(pageData).forEach(item => {
 
-            console.assert(item.props != null && item.props.id != null);
+            console.assert(item.props != null && item.id != null);
             componentIds[item.type] = componentIds[item.type] || [];
             componentIds[item.type].push(item.props["id"] as string);
 
@@ -315,13 +355,15 @@ export class ComponentDataHandler {
         stack.push(this._pageData)
         while (stack.length > 0) {
             let item = stack.pop();
-            let isSelectedControl = componentIds.indexOf(item.props.id) >= 0;
-            item.props.selected = isSelectedControl;
+            let isSelectedControl = componentIds.indexOf(item.id) >= 0;
+            item.selected = isSelectedControl;
 
-            let children = translateComponentDataChildren(item.children || []);
-            for (let i = 0; i < children.length; i++) {
-                stack.push(children[i])
-            }
+            item.children.forEach(child => {
+                if (typeof child == "string")
+                    return true;
+
+                stack.push(child);
+            })
         }
 
         this.componentSelected.fire(this.selectedComponentIds)
@@ -338,7 +380,7 @@ export class ComponentDataHandler {
         if (!pageData || !pageData.children || pageData.children.length == 0)
             return;
 
-        let children = translateComponentDataChildren(pageData.children);
+        let children = pageData.children;
         componentIds.forEach(controlId => {
             this.removeComponentFrom(controlId, children);
         })

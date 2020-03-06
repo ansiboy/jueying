@@ -75,7 +75,7 @@ export class PlaceHolder extends React.Component<ComponentProps, {}>{
 
             console.assert(this.props.id != null);
             console.assert(this.designer != null);
-            ctrl.props.parentId = this.props.id;
+            ctrl.parentId = this.props.id;
             console.assert(master != null, 'host is null')
             this.designer.appendComponent(master.props.id, ctrl)
         }
