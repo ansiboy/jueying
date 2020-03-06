@@ -25,7 +25,7 @@ export declare class PageDesigner<P extends PageDesignerProps = PageDesignerProp
     /** 页面数据 */
     readonly pageData: S["pageData"];
     /** 获取已选择了的组件编号 */
-    readonly selectedComponentIds: any[];
+    readonly selectedComponentIds: string[];
     /** 获取已选择了的组件 */
     readonly selectedComponents: ComponentData[];
     readonly element: HTMLElement;
@@ -35,11 +35,6 @@ export declare class PageDesigner<P extends PageDesignerProps = PageDesignerProp
         propName: string;
         value: any;
     }[]): any;
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-    private static nameComponent;
     /**
      * 添加控件
      * @param parentId 父控件编号

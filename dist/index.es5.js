@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.7.8
+ *  maishu-jueying v2.1.8
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1779,8 +1779,6 @@ var errors_1 = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
 var maishu_toolkit_1 = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/dist/index.js");
 
-var common_1 = __webpack_require__(/*! ./common */ "./out-es5/common.js");
-
 var ComponentDataHandler =
 /*#__PURE__*/
 function () {
@@ -1794,10 +1792,25 @@ function () {
     this.componentUpdated = maishu_toolkit_1.Callback.create();
     this.pageDataChanged = maishu_toolkit_1.Callback.create();
     this._pageData = componentData;
-    ComponentDataHandler.initPageData(this._pageData, this._components);
+    this.fillPageData(this._pageData);
   }
+  /** 对 pageData 字段补全 */
+
 
   _createClass(ComponentDataHandler, [{
+    key: "fillPageData",
+    value: function fillPageData(pageData) {
+      if (pageData == null) {
+        return;
+      }
+
+      pageData.children = pageData.children || [];
+      ComponentDataHandler.nameComponent(pageData);
+      ComponentDataHandler.setComponetRefProp(pageData, this._components);
+    }
+    /** 获取已选择了的组件 */
+
+  }, {
     key: "moveComponent",
 
     /**
@@ -1812,7 +1825,8 @@ function () {
       console.assert(component != null, "Cannt find component by id ".concat(componentId));
       var pageData = this.pageData;
       console.assert(pageData.children != null);
-      var children = common_1.translateComponentDataChildren(pageData.children);
+      var children = pageData.children; //translateComponentDataChildren(pageData.children);
+
       this.removeComponentFrom(componentId, children);
       this.appendComponent(parentId, component, childComponentIndex);
     }
@@ -1861,7 +1875,7 @@ function () {
       // }
 
       var componentDatas = ComponentDataHandler.travelComponentData(pageData, function (item) {
-        return item.props.id == componentId;
+        return item.id == componentId;
       });
       return componentDatas[0];
     }
@@ -1871,7 +1885,10 @@ function () {
       var controlIndex = null;
 
       for (var i = 0; i < collection.length; i++) {
-        if (controlId == collection[i].props.id) {
+        var child = collection[i];
+        if (typeof child == "string") continue;
+
+        if (controlId == child.id) {
           controlIndex = i;
           break;
         }
@@ -1880,7 +1897,8 @@ function () {
       if (controlIndex == null) {
         for (var _i2 = 0; _i2 < collection.length; _i2++) {
           var o = collection[_i2];
-          var children = common_1.translateComponentDataChildren(o.children);
+          if (typeof o == "string") continue;
+          var children = o.children;
 
           if (children && children.length > 0) {
             var isRemoved = this.removeComponentFrom(controlId, children);
@@ -1928,7 +1946,7 @@ function () {
         parentControl.children.push(componentData);
       }
 
-      this.selectComponents(componentData.props.id);
+      this.selectComponents(componentData.id);
       this.componentAppend.fire(this);
     }
     /**
@@ -1937,12 +1955,22 @@ function () {
      */
 
   }, {
-    key: "selectComponents",
+    key: "selectComponent",
 
     /**
      * 选择指定的控件
      * @param control 指定的控件
      */
+    value: function selectComponent(componentId) {
+      return this.selectComponents(componentId);
+    }
+    /**
+     * 选择指定的控件，一个或多个
+     * @param control 指定的控件
+     */
+
+  }, {
+    key: "selectComponents",
     value: function selectComponents(componentIds) {
       if (typeof componentIds == 'string') componentIds = [componentIds];
       var stack = [];
@@ -1950,16 +1978,20 @@ function () {
 
       while (stack.length > 0) {
         var item = stack.pop();
-        var isSelectedControl = componentIds.indexOf(item.props.id) >= 0;
-        item.props.selected = isSelectedControl;
-        var children = common_1.translateComponentDataChildren(item.children || []);
-
-        for (var i = 0; i < children.length; i++) {
-          stack.push(children[i]);
-        }
+        var isSelectedControl = componentIds.indexOf(item.id) >= 0;
+        item.selected = isSelectedControl;
+        item.children.forEach(function (child) {
+          if (typeof child == "string") return true;
+          stack.push(child);
+        });
       }
 
       this.componentSelected.fire(this.selectedComponentIds);
+    }
+  }, {
+    key: "removeComponent",
+    value: function removeComponent(componentId) {
+      return this.removeComponents([componentId]);
     }
     /** 移除控件 */
 
@@ -1970,7 +2002,7 @@ function () {
 
       var pageData = this.pageData;
       if (!pageData || !pageData.children || pageData.children.length == 0) return;
-      var children = common_1.translateComponentDataChildren(pageData.children);
+      var children = pageData.children;
       componentIds.forEach(function (controlId) {
         _this.removeComponentFrom(controlId, children);
       });
@@ -1978,8 +2010,6 @@ function () {
     }
   }, {
     key: "selectedComponents",
-
-    /** 获取已选择了的组件 */
     get: function get() {
       var arr = new Array();
       var stack = new Array();
@@ -1987,12 +2017,11 @@ function () {
 
       while (stack.length > 0) {
         var item = stack.pop();
-        if (item.props != null && item.props.selected == true) arr.push(item);
-        var children = common_1.translateComponentDataChildren(item.children || []);
-
-        for (var i = 0; i < children.length; i++) {
-          stack.push(children[i]);
-        }
+        if (item.props != null && item.selected == true) arr.push(item);
+        item.children.forEach(function (child) {
+          if (typeof child == "string") return true;
+          stack.push(child);
+        });
       }
 
       return arr;
@@ -2003,7 +2032,7 @@ function () {
     key: "selectedComponentIds",
     get: function get() {
       return this.selectedComponents.map(function (o) {
-        return o.props.id;
+        return o.id;
       });
     }
     /**  */
@@ -2020,20 +2049,10 @@ function () {
     },
     set: function set(value) {
       this._pageData = value;
+      this.fillPageData(value);
       this.pageDataChanged.fire(value);
     }
   }], [{
-    key: "initPageData",
-    value: function initPageData(pageData, components) {
-      if (pageData == null) {
-        return;
-      }
-
-      pageData.children = pageData.children || [];
-      ComponentDataHandler.nameComponent(pageData);
-      ComponentDataHandler.setComponetRefProp(pageData, components);
-    }
-  }, {
     key: "travelComponentData",
     value: function travelComponentData(pageData, filter) {
       var stack = new Array();
@@ -2066,9 +2085,30 @@ function () {
     key: "nameComponent",
     value: function nameComponent(component) {
       var namedComponents = {};
-      var props = component.props = component.props || {};
+      var props = component.props = component.props || {}; //==================================================
+      // 兼容旧代码
 
-      if (!props.name) {
+      if (props.id) {
+        component.id = props.id;
+        delete props.id;
+      }
+
+      if (props.parentId) {
+        component.parentId = props.parentId;
+        delete component.parentId;
+      }
+
+      if (props.selected) {
+        component.selected = props.selected;
+      }
+
+      if (props.name) {
+        component.name = props.name;
+        delete props.name;
+      } //==================================================
+
+
+      if (!component.name) {
         var num = 0;
         var name;
 
@@ -2078,20 +2118,21 @@ function () {
         } while (namedComponents[name]);
 
         namedComponents[name] = component;
-        props.name = name;
-      }
+        component.name = name;
+      } // if (!props.id)
+      //     props.id = guid();
 
-      if (!props.id) props.id = maishu_toolkit_1.guid();
+
+      component.children = component.children || [];
 
       if (!component.children || component.children.length == 0) {
         return;
       }
 
-      var children = common_1.translateComponentDataChildren(component.children);
-
-      for (var i = 0; i < children.length; i++) {
-        ComponentDataHandler.nameComponent(children[i]);
-      }
+      component.children.forEach(function (child) {
+        if (typeof child == "string") return true;
+        ComponentDataHandler.nameComponent(child);
+      });
     }
   }, {
     key: "setComponetRefProp",
@@ -2101,7 +2142,7 @@ function () {
       var componentIds = {}; //=========================================================
 
       ComponentDataHandler.travelComponentData(pageData).forEach(function (item) {
-        console.assert(item.props != null && item.props.id != null);
+        console.assert(item.props != null && item.id != null);
         componentIds[item.type] = componentIds[item.type] || [];
         componentIds[item.type].push(item.props["id"]);
         var itemRef = item.props.ref;
@@ -3473,7 +3514,7 @@ function (_React$Component) {
         if (!ctrl) return;
         console.assert(_this2.props.id != null);
         console.assert(_this2.designer != null);
-        ctrl.props.parentId = _this2.props.id;
+        ctrl.parentId = _this2.props.id;
         console.assert(master != null, 'host is null');
 
         _this2.designer.appendComponent(master.props.id, ctrl);
@@ -4013,8 +4054,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var React = __webpack_require__(/*! react */ "react");
 
-var common_1 = __webpack_require__(/*! ./common */ "./out-es5/common.js");
-
 var errors_1 = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
 var component_1 = __webpack_require__(/*! ./component */ "./out-es5/component.js");
@@ -4041,9 +4080,7 @@ function (_React$Component) {
 
     _this.state = {
       pageData: pageData
-    }; // this.designtimeComponentDidMount.add((args) => {
-    //     console.log(`this:designer event:controlComponentDidMount`)
-    // })
+    };
 
     _this.props.componentDataHandler.componentSelected.add(function (args) {
       // this.componentSelected.fire(args);
@@ -4087,7 +4124,7 @@ function (_React$Component) {
       var componentIds = {}; //=========================================================
 
       PageDesigner.travelComponentData(pageData).forEach(function (item) {
-        console.assert(item.props != null && item.props.id != null);
+        console.assert(item.props != null && item.id != null);
         componentIds[item.type] = componentIds[item.type] || [];
         componentIds[item.type].push(item.props["id"]);
         var itemRef = item.props.ref;
@@ -4160,14 +4197,34 @@ function (_React$Component) {
       }
 
       this.props.componentDataHandler.updateComponentProps(componentProps);
-    }
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-
-  }, {
-    key: "appendComponent",
+    } // /**
+    //  * 对组件及其子控件进行命名
+    //  * @param component 
+    //  */
+    // private static nameComponent(component: ComponentData) {
+    //     let namedComponents: { [key: string]: ComponentData } = {}
+    //     let props = component.props = component.props || {};
+    //     if (!props.name) {
+    //         let num = 0;
+    //         let name: string;
+    //         do {
+    //             num = num + 1;
+    //             name = `${component.type}${num}`;
+    //         } while (namedComponents[name]);
+    //         namedComponents[name] = component
+    //         props.name = name;
+    //     }
+    //     if (!props.id)
+    //         props.id = guid();
+    //     if (!component.children || component.children.length == 0) {
+    //         return;
+    //     }
+    //     component.children.forEach(child => {
+    //         if (typeof child == "string")
+    //             return true;
+    //         PageDesigner.nameComponent(child);
+    //     })
+    // }
 
     /**
      * 添加控件
@@ -4175,6 +4232,9 @@ function (_React$Component) {
      * @param componentData 控件数据
      * @param componentIndex 新添加组件在子组件中的次序
      */
+
+  }, {
+    key: "appendComponent",
     value: function appendComponent(parentId, componentData, componentIndex) {
       this.props.componentDataHandler.appendComponent(parentId, componentData, componentIndex);
     }
@@ -4278,27 +4338,40 @@ function (_React$Component) {
   }, {
     key: "removeComponentFrom",
     value: function removeComponentFrom(controlId, collection) {
+      var _this4 = this;
+
       var controlIndex = null;
 
       for (var i = 0; i < collection.length; i++) {
-        if (controlId == collection[i].props.id) {
+        var child = collection[i];
+        if (typeof child == "string") continue;
+
+        if (controlId == child.id) {
           controlIndex = i;
           break;
         }
       }
 
       if (controlIndex == null) {
-        for (var _i = 0; _i < collection.length; _i++) {
+        var _loop2 = function _loop2(_i) {
           var o = collection[_i];
-          var children = common_1.translateComponentDataChildren(o.children);
+          if (typeof o == "string") return "continue";
+          var children = o.children || [];
+          children.forEach(function (child) {
+            if (typeof child == "string") return true;
 
-          if (children && children.length > 0) {
-            var isRemoved = this.removeComponentFrom(controlId, children);
+            var isRemoved = _this4.removeComponentFrom(controlId, children);
 
             if (isRemoved) {
               return true;
             }
-          }
+          });
+        };
+
+        for (var _i = 0; _i < collection.length; _i++) {
+          var _ret = _loop2(_i);
+
+          if (_ret === "continue") continue;
         }
 
         return false;
@@ -4367,7 +4440,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this4 = this;
+      var _this5 = this;
 
       var pageData = this.state.pageData;
       var style = this.props.style;
@@ -4378,14 +4451,14 @@ function (_React$Component) {
         style: style,
         ref: function ref(e) {
           if (!e) return;
-          _this4._element = e || _this4._element;
+          _this5._element = e || _this5._element;
 
-          _this4.props.componentFactory.renderDesignTimeComponent(pageData, e, {
-            handler: _this4.props.componentDataHandler
+          _this5.props.componentFactory.renderDesignTimeComponent(pageData, e, {
+            handler: _this5.props.componentDataHandler
           });
         },
         onKeyDown: function onKeyDown(t) {
-          return _this4.onKeyDown(t);
+          return _this5.onKeyDown(t);
         }
       });
       return result;
@@ -4401,7 +4474,7 @@ function (_React$Component) {
     key: "selectedComponentIds",
     get: function get() {
       return this.selectedComponents.map(function (o) {
-        return o.props.id;
+        return o.id;
       });
     }
     /** 获取已选择了的组件 */
@@ -4417,37 +4490,6 @@ function (_React$Component) {
       return this._element;
     }
   }], [{
-    key: "nameComponent",
-    value: function nameComponent(component) {
-      var namedComponents = {};
-      var props = component.props = component.props || {};
-
-      if (!props.name) {
-        var num = 0;
-        var name;
-
-        do {
-          num = num + 1;
-          name = "".concat(component.type).concat(num);
-        } while (namedComponents[name]);
-
-        namedComponents[name] = component;
-        props.name = name;
-      }
-
-      if (!props.id) props.id = common_1.guid();
-
-      if (!component.children || component.children.length == 0) {
-        return;
-      }
-
-      var children = common_1.translateComponentDataChildren(component.children);
-
-      for (var i = 0; i < children.length; i++) {
-        PageDesigner.nameComponent(children[i]);
-      }
-    }
-  }, {
     key: "travelComponentData",
     value: function travelComponentData(pageData, filter) {
       var stack = new Array();
@@ -4906,7 +4948,7 @@ function (_React$Component) {
           updateComponentProp: function updateComponentProp(value) {
             var componentProps = selectedComponents.map(function (o) {
               return {
-                componentId: o.props.id,
+                componentId: o.id,
                 propName: propEditorInfo.propName,
                 value: value
               };

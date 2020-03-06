@@ -150,7 +150,7 @@ function (_React$Component) {
           updateComponentProp: function updateComponentProp(value) {
             var componentProps = selectedComponents.map(function (o) {
               return {
-                componentId: o.props.id,
+                componentId: o.id,
                 propName: propEditorInfo.propName,
                 value: value
               };

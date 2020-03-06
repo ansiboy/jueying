@@ -32,8 +32,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var React = require("react");
 
-var common_1 = require("./common");
-
 var errors_1 = require("./errors");
 
 var component_1 = require("./component");
@@ -60,9 +58,7 @@ function (_React$Component) {
 
     _this.state = {
       pageData: pageData
-    }; // this.designtimeComponentDidMount.add((args) => {
-    //     console.log(`this:designer event:controlComponentDidMount`)
-    // })
+    };
 
     _this.props.componentDataHandler.componentSelected.add(function (args) {
       // this.componentSelected.fire(args);
@@ -106,7 +102,7 @@ function (_React$Component) {
       var componentIds = {}; //=========================================================
 
       PageDesigner.travelComponentData(pageData).forEach(function (item) {
-        console.assert(item.props != null && item.props.id != null);
+        console.assert(item.props != null && item.id != null);
         componentIds[item.type] = componentIds[item.type] || [];
         componentIds[item.type].push(item.props["id"]);
         var itemRef = item.props.ref;
@@ -179,14 +175,34 @@ function (_React$Component) {
       }
 
       this.props.componentDataHandler.updateComponentProps(componentProps);
-    }
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-
-  }, {
-    key: "appendComponent",
+    } // /**
+    //  * 对组件及其子控件进行命名
+    //  * @param component 
+    //  */
+    // private static nameComponent(component: ComponentData) {
+    //     let namedComponents: { [key: string]: ComponentData } = {}
+    //     let props = component.props = component.props || {};
+    //     if (!props.name) {
+    //         let num = 0;
+    //         let name: string;
+    //         do {
+    //             num = num + 1;
+    //             name = `${component.type}${num}`;
+    //         } while (namedComponents[name]);
+    //         namedComponents[name] = component
+    //         props.name = name;
+    //     }
+    //     if (!props.id)
+    //         props.id = guid();
+    //     if (!component.children || component.children.length == 0) {
+    //         return;
+    //     }
+    //     component.children.forEach(child => {
+    //         if (typeof child == "string")
+    //             return true;
+    //         PageDesigner.nameComponent(child);
+    //     })
+    // }
 
     /**
      * 添加控件
@@ -194,6 +210,9 @@ function (_React$Component) {
      * @param componentData 控件数据
      * @param componentIndex 新添加组件在子组件中的次序
      */
+
+  }, {
+    key: "appendComponent",
     value: function appendComponent(parentId, componentData, componentIndex) {
       this.props.componentDataHandler.appendComponent(parentId, componentData, componentIndex);
     }
@@ -297,27 +316,40 @@ function (_React$Component) {
   }, {
     key: "removeComponentFrom",
     value: function removeComponentFrom(controlId, collection) {
+      var _this4 = this;
+
       var controlIndex = null;
 
       for (var i = 0; i < collection.length; i++) {
-        if (controlId == collection[i].props.id) {
+        var child = collection[i];
+        if (typeof child == "string") continue;
+
+        if (controlId == child.id) {
           controlIndex = i;
           break;
         }
       }
 
       if (controlIndex == null) {
-        for (var _i = 0; _i < collection.length; _i++) {
+        var _loop2 = function _loop2(_i) {
           var o = collection[_i];
-          var children = common_1.translateComponentDataChildren(o.children);
+          if (typeof o == "string") return "continue";
+          var children = o.children || [];
+          children.forEach(function (child) {
+            if (typeof child == "string") return true;
 
-          if (children && children.length > 0) {
-            var isRemoved = this.removeComponentFrom(controlId, children);
+            var isRemoved = _this4.removeComponentFrom(controlId, children);
 
             if (isRemoved) {
               return true;
             }
-          }
+          });
+        };
+
+        for (var _i = 0; _i < collection.length; _i++) {
+          var _ret = _loop2(_i);
+
+          if (_ret === "continue") continue;
         }
 
         return false;
@@ -386,7 +418,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this4 = this;
+      var _this5 = this;
 
       var pageData = this.state.pageData;
       var style = this.props.style;
@@ -397,14 +429,14 @@ function (_React$Component) {
         style: style,
         ref: function ref(e) {
           if (!e) return;
-          _this4._element = e || _this4._element;
+          _this5._element = e || _this5._element;
 
-          _this4.props.componentFactory.renderDesignTimeComponent(pageData, e, {
-            handler: _this4.props.componentDataHandler
+          _this5.props.componentFactory.renderDesignTimeComponent(pageData, e, {
+            handler: _this5.props.componentDataHandler
           });
         },
         onKeyDown: function onKeyDown(t) {
-          return _this4.onKeyDown(t);
+          return _this5.onKeyDown(t);
         }
       });
       return result;
@@ -420,7 +452,7 @@ function (_React$Component) {
     key: "selectedComponentIds",
     get: function get() {
       return this.selectedComponents.map(function (o) {
-        return o.props.id;
+        return o.id;
       });
     }
     /** 获取已选择了的组件 */
@@ -436,37 +468,6 @@ function (_React$Component) {
       return this._element;
     }
   }], [{
-    key: "nameComponent",
-    value: function nameComponent(component) {
-      var namedComponents = {};
-      var props = component.props = component.props || {};
-
-      if (!props.name) {
-        var num = 0;
-        var name;
-
-        do {
-          num = num + 1;
-          name = "".concat(component.type).concat(num);
-        } while (namedComponents[name]);
-
-        namedComponents[name] = component;
-        props.name = name;
-      }
-
-      if (!props.id) props.id = common_1.guid();
-
-      if (!component.children || component.children.length == 0) {
-        return;
-      }
-
-      var children = common_1.translateComponentDataChildren(component.children);
-
-      for (var i = 0; i < children.length; i++) {
-        PageDesigner.nameComponent(children[i]);
-      }
-    }
-  }, {
     key: "travelComponentData",
     value: function travelComponentData(pageData, filter) {
       var stack = new Array();

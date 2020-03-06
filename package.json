@@ -36,7 +36,7 @@
     "build": "grunt build"
   },
   "typings": "out/index.d.ts",
-  "version": "1.7.8",
+  "version": "2.1.8",
   "files": [
     "dist",
     "out",

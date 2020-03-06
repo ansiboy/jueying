@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const common_1 = require("./common");
 const errors_1 = require("./errors");
 const component_1 = require("./component");
 const style_1 = require("./style");
@@ -13,9 +12,6 @@ class PageDesigner extends React.Component {
         let pageData = this.props.componentDataHandler.pageData;
         this.initPageData(pageData);
         this.state = { pageData };
-        // this.designtimeComponentDidMount.add((args) => {
-        //     console.log(`this:designer event:controlComponentDidMount`)
-        // })
         this.props.componentDataHandler.componentSelected.add(args => {
             // this.componentSelected.fire(args);
             this.setState({ pageData: this.props.componentDataHandler.pageData });
@@ -40,7 +36,7 @@ class PageDesigner extends React.Component {
         let componentIds = {};
         //=========================================================
         PageDesigner.travelComponentData(pageData).forEach(item => {
-            console.assert(item.props != null && item.props.id != null);
+            console.assert(item.props != null && item.id != null);
             componentIds[item.type] = componentIds[item.type] || [];
             componentIds[item.type].push(item.props["id"]);
             let itemRef = item.props.ref;
@@ -84,7 +80,7 @@ class PageDesigner extends React.Component {
     }
     /** 获取已选择了的组件编号 */
     get selectedComponentIds() {
-        return this.selectedComponents.map(o => o.props.id);
+        return this.selectedComponents.map(o => o.id);
     }
     /** 获取已选择了的组件 */
     get selectedComponents() {
@@ -99,33 +95,34 @@ class PageDesigner extends React.Component {
     updateComponentProps(...componentProps) {
         this.props.componentDataHandler.updateComponentProps(componentProps);
     }
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-    static nameComponent(component) {
-        let namedComponents = {};
-        let props = component.props = component.props || {};
-        if (!props.name) {
-            let num = 0;
-            let name;
-            do {
-                num = num + 1;
-                name = `${component.type}${num}`;
-            } while (namedComponents[name]);
-            namedComponents[name] = component;
-            props.name = name;
-        }
-        if (!props.id)
-            props.id = common_1.guid();
-        if (!component.children || component.children.length == 0) {
-            return;
-        }
-        let children = common_1.translateComponentDataChildren(component.children);
-        for (let i = 0; i < children.length; i++) {
-            PageDesigner.nameComponent(children[i]);
-        }
-    }
+    // /**
+    //  * 对组件及其子控件进行命名
+    //  * @param component 
+    //  */
+    // private static nameComponent(component: ComponentData) {
+    //     let namedComponents: { [key: string]: ComponentData } = {}
+    //     let props = component.props = component.props || {};
+    //     if (!props.name) {
+    //         let num = 0;
+    //         let name: string;
+    //         do {
+    //             num = num + 1;
+    //             name = `${component.type}${num}`;
+    //         } while (namedComponents[name]);
+    //         namedComponents[name] = component
+    //         props.name = name;
+    //     }
+    //     if (!props.id)
+    //         props.id = guid();
+    //     if (!component.children || component.children.length == 0) {
+    //         return;
+    //     }
+    //     component.children.forEach(child => {
+    //         if (typeof child == "string")
+    //             return true;
+    //         PageDesigner.nameComponent(child);
+    //     })
+    // }
     /**
      * 添加控件
      * @param parentId 父控件编号
@@ -208,7 +205,10 @@ class PageDesigner extends React.Component {
     removeComponentFrom(controlId, collection) {
         let controlIndex = null;
         for (let i = 0; i < collection.length; i++) {
-            if (controlId == collection[i].props.id) {
+            let child = collection[i];
+            if (typeof child == "string")
+                continue;
+            if (controlId == child.id) {
                 controlIndex = i;
                 break;
             }
@@ -216,13 +216,17 @@ class PageDesigner extends React.Component {
         if (controlIndex == null) {
             for (let i = 0; i < collection.length; i++) {
                 let o = collection[i];
-                let children = common_1.translateComponentDataChildren(o.children);
-                if (children && children.length > 0) {
+                if (typeof o == "string")
+                    continue;
+                let children = o.children || [];
+                children.forEach(child => {
+                    if (typeof child == "string")
+                        return true;
                     let isRemoved = this.removeComponentFrom(controlId, children);
                     if (isRemoved) {
                         return true;
                     }
-                }
+                });
             }
             return false;
         }

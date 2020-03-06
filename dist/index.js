@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v1.7.8
+ *  maishu-jueying v2.1.8
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1741,7 +1741,6 @@ exports.translateComponentDataChildren = translateComponentDataChildren;
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
 const maishu_toolkit_1 = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/dist/index.js");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
 class ComponentDataHandler {
     constructor(componentData) {
         this._components = {};
@@ -1751,15 +1750,16 @@ class ComponentDataHandler {
         this.componentUpdated = maishu_toolkit_1.Callback.create();
         this.pageDataChanged = maishu_toolkit_1.Callback.create();
         this._pageData = componentData;
-        ComponentDataHandler.initPageData(this._pageData, this._components);
+        this.fillPageData(this._pageData);
     }
-    static initPageData(pageData, components) {
+    /** 对 pageData 字段补全 */
+    fillPageData(pageData) {
         if (pageData == null) {
             return;
         }
         pageData.children = pageData.children || [];
         ComponentDataHandler.nameComponent(pageData);
-        ComponentDataHandler.setComponetRefProp(pageData, components);
+        ComponentDataHandler.setComponetRefProp(pageData, this._components);
     }
     /** 获取已选择了的组件 */
     get selectedComponents() {
@@ -1768,17 +1768,19 @@ class ComponentDataHandler {
         stack.push(this._pageData);
         while (stack.length > 0) {
             let item = stack.pop();
-            if (item.props != null && item.props.selected == true)
+            if (item.props != null && item.selected == true)
                 arr.push(item);
-            let children = common_1.translateComponentDataChildren(item.children || []);
-            for (let i = 0; i < children.length; i++)
-                stack.push(children[i]);
+            item.children.forEach(child => {
+                if (typeof child == "string")
+                    return true;
+                stack.push(child);
+            });
         }
         return arr;
     }
     /** 获取已选择了的组件编号 */
     get selectedComponentIds() {
-        return this.selectedComponents.map(o => o.props.id);
+        return this.selectedComponents.map(o => o.id);
     }
     /**  */
     get components() {
@@ -1789,6 +1791,7 @@ class ComponentDataHandler {
     }
     set pageData(value) {
         this._pageData = value;
+        this.fillPageData(value);
         this.pageDataChanged.fire(value);
     }
     /**
@@ -1804,7 +1807,7 @@ class ComponentDataHandler {
         console.assert(component != null, `Cannt find component by id ${componentId}`);
         let pageData = this.pageData;
         console.assert(pageData.children != null);
-        let children = common_1.translateComponentDataChildren(pageData.children);
+        let children = pageData.children; //translateComponentDataChildren(pageData.children);
         this.removeComponentFrom(componentId, children);
         this.appendComponent(parentId, component, childComponentIndex);
     }
@@ -1843,13 +1846,16 @@ class ComponentDataHandler {
         //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
         //     stack.push(...children);
         // }
-        let componentDatas = ComponentDataHandler.travelComponentData(pageData, (item) => item.props.id == componentId);
+        let componentDatas = ComponentDataHandler.travelComponentData(pageData, (item) => item.id == componentId);
         return componentDatas[0];
     }
     removeComponentFrom(controlId, collection) {
         let controlIndex = null;
         for (let i = 0; i < collection.length; i++) {
-            if (controlId == collection[i].props.id) {
+            let child = collection[i];
+            if (typeof child == "string")
+                continue;
+            if (controlId == child.id) {
                 controlIndex = i;
                 break;
             }
@@ -1857,7 +1863,9 @@ class ComponentDataHandler {
         if (controlIndex == null) {
             for (let i = 0; i < collection.length; i++) {
                 let o = collection[i];
-                let children = common_1.translateComponentDataChildren(o.children);
+                if (typeof o == "string")
+                    continue;
+                let children = o.children;
                 if (children && children.length > 0) {
                     let isRemoved = this.removeComponentFrom(controlId, children);
                     if (isRemoved) {
@@ -1920,7 +1928,7 @@ class ComponentDataHandler {
         else {
             parentControl.children.push(componentData);
         }
-        this.selectComponents(componentData.props.id);
+        this.selectComponents(componentData.id);
         this.componentAppend.fire(this);
     }
     /**
@@ -1930,7 +1938,25 @@ class ComponentDataHandler {
     static nameComponent(component) {
         let namedComponents = {};
         let props = component.props = component.props || {};
-        if (!props.name) {
+        //==================================================
+        // 兼容旧代码
+        if (props.id) {
+            component.id = props.id;
+            delete props.id;
+        }
+        if (props.parentId) {
+            component.parentId = props.parentId;
+            delete component.parentId;
+        }
+        if (props.selected) {
+            component.selected = props.selected;
+        }
+        if (props.name) {
+            component.name = props.name;
+            delete props.name;
+        }
+        //==================================================
+        if (!component.name) {
             let num = 0;
             let name;
             do {
@@ -1938,17 +1964,19 @@ class ComponentDataHandler {
                 name = `${component.type}${num}`;
             } while (namedComponents[name]);
             namedComponents[name] = component;
-            props.name = name;
+            component.name = name;
         }
-        if (!props.id)
-            props.id = maishu_toolkit_1.guid();
+        // if (!props.id)
+        //     props.id = guid();
+        component.children = component.children || [];
         if (!component.children || component.children.length == 0) {
             return;
         }
-        let children = common_1.translateComponentDataChildren(component.children);
-        for (let i = 0; i < children.length; i++) {
-            ComponentDataHandler.nameComponent(children[i]);
-        }
+        component.children.forEach(child => {
+            if (typeof child == "string")
+                return true;
+            ComponentDataHandler.nameComponent(child);
+        });
     }
     static setComponetRefProp(pageData, components) {
         //=========================================================
@@ -1956,7 +1984,7 @@ class ComponentDataHandler {
         let componentIds = {};
         //=========================================================
         ComponentDataHandler.travelComponentData(pageData).forEach(item => {
-            console.assert(item.props != null && item.props.id != null);
+            console.assert(item.props != null && item.id != null);
             componentIds[item.type] = componentIds[item.type] || [];
             componentIds[item.type].push(item.props["id"]);
             let itemRef = item.props.ref;
@@ -1983,6 +2011,13 @@ class ComponentDataHandler {
      * 选择指定的控件
      * @param control 指定的控件
      */
+    selectComponent(componentId) {
+        return this.selectComponents(componentId);
+    }
+    /**
+     * 选择指定的控件，一个或多个
+     * @param control 指定的控件
+     */
     selectComponents(componentIds) {
         if (typeof componentIds == 'string')
             componentIds = [componentIds];
@@ -1990,21 +2025,25 @@ class ComponentDataHandler {
         stack.push(this._pageData);
         while (stack.length > 0) {
             let item = stack.pop();
-            let isSelectedControl = componentIds.indexOf(item.props.id) >= 0;
-            item.props.selected = isSelectedControl;
-            let children = common_1.translateComponentDataChildren(item.children || []);
-            for (let i = 0; i < children.length; i++) {
-                stack.push(children[i]);
-            }
+            let isSelectedControl = componentIds.indexOf(item.id) >= 0;
+            item.selected = isSelectedControl;
+            item.children.forEach(child => {
+                if (typeof child == "string")
+                    return true;
+                stack.push(child);
+            });
         }
         this.componentSelected.fire(this.selectedComponentIds);
+    }
+    removeComponent(componentId) {
+        return this.removeComponents([componentId]);
     }
     /** 移除控件 */
     removeComponents(componentIds) {
         let pageData = this.pageData;
         if (!pageData || !pageData.children || pageData.children.length == 0)
             return;
-        let children = common_1.translateComponentDataChildren(pageData.children);
+        let children = pageData.children;
         componentIds.forEach(controlId => {
             this.removeComponentFrom(controlId, children);
         });
@@ -2855,7 +2894,7 @@ class PlaceHolder extends React.Component {
                 return;
             console.assert(this.props.id != null);
             console.assert(this.designer != null);
-            ctrl.props.parentId = this.props.id;
+            ctrl.parentId = this.props.id;
             console.assert(master != null, 'host is null');
             this.designer.appendComponent(master.props.id, ctrl);
         };
@@ -3148,7 +3187,6 @@ if (jquery == null) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
 const component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
 const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
@@ -3160,9 +3198,6 @@ class PageDesigner extends React.Component {
         let pageData = this.props.componentDataHandler.pageData;
         this.initPageData(pageData);
         this.state = { pageData };
-        // this.designtimeComponentDidMount.add((args) => {
-        //     console.log(`this:designer event:controlComponentDidMount`)
-        // })
         this.props.componentDataHandler.componentSelected.add(args => {
             // this.componentSelected.fire(args);
             this.setState({ pageData: this.props.componentDataHandler.pageData });
@@ -3187,7 +3222,7 @@ class PageDesigner extends React.Component {
         let componentIds = {};
         //=========================================================
         PageDesigner.travelComponentData(pageData).forEach(item => {
-            console.assert(item.props != null && item.props.id != null);
+            console.assert(item.props != null && item.id != null);
             componentIds[item.type] = componentIds[item.type] || [];
             componentIds[item.type].push(item.props["id"]);
             let itemRef = item.props.ref;
@@ -3231,7 +3266,7 @@ class PageDesigner extends React.Component {
     }
     /** 获取已选择了的组件编号 */
     get selectedComponentIds() {
-        return this.selectedComponents.map(o => o.props.id);
+        return this.selectedComponents.map(o => o.id);
     }
     /** 获取已选择了的组件 */
     get selectedComponents() {
@@ -3246,33 +3281,34 @@ class PageDesigner extends React.Component {
     updateComponentProps(...componentProps) {
         this.props.componentDataHandler.updateComponentProps(componentProps);
     }
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-    static nameComponent(component) {
-        let namedComponents = {};
-        let props = component.props = component.props || {};
-        if (!props.name) {
-            let num = 0;
-            let name;
-            do {
-                num = num + 1;
-                name = `${component.type}${num}`;
-            } while (namedComponents[name]);
-            namedComponents[name] = component;
-            props.name = name;
-        }
-        if (!props.id)
-            props.id = common_1.guid();
-        if (!component.children || component.children.length == 0) {
-            return;
-        }
-        let children = common_1.translateComponentDataChildren(component.children);
-        for (let i = 0; i < children.length; i++) {
-            PageDesigner.nameComponent(children[i]);
-        }
-    }
+    // /**
+    //  * 对组件及其子控件进行命名
+    //  * @param component 
+    //  */
+    // private static nameComponent(component: ComponentData) {
+    //     let namedComponents: { [key: string]: ComponentData } = {}
+    //     let props = component.props = component.props || {};
+    //     if (!props.name) {
+    //         let num = 0;
+    //         let name: string;
+    //         do {
+    //             num = num + 1;
+    //             name = `${component.type}${num}`;
+    //         } while (namedComponents[name]);
+    //         namedComponents[name] = component
+    //         props.name = name;
+    //     }
+    //     if (!props.id)
+    //         props.id = guid();
+    //     if (!component.children || component.children.length == 0) {
+    //         return;
+    //     }
+    //     component.children.forEach(child => {
+    //         if (typeof child == "string")
+    //             return true;
+    //         PageDesigner.nameComponent(child);
+    //     })
+    // }
     /**
      * 添加控件
      * @param parentId 父控件编号
@@ -3355,7 +3391,10 @@ class PageDesigner extends React.Component {
     removeComponentFrom(controlId, collection) {
         let controlIndex = null;
         for (let i = 0; i < collection.length; i++) {
-            if (controlId == collection[i].props.id) {
+            let child = collection[i];
+            if (typeof child == "string")
+                continue;
+            if (controlId == child.id) {
                 controlIndex = i;
                 break;
             }
@@ -3363,13 +3402,17 @@ class PageDesigner extends React.Component {
         if (controlIndex == null) {
             for (let i = 0; i < collection.length; i++) {
                 let o = collection[i];
-                let children = common_1.translateComponentDataChildren(o.children);
-                if (children && children.length > 0) {
+                if (typeof o == "string")
+                    continue;
+                let children = o.children || [];
+                children.forEach(child => {
+                    if (typeof child == "string")
+                        return true;
                     let isRemoved = this.removeComponentFrom(controlId, children);
                     if (isRemoved) {
                         return true;
                     }
-                }
+                });
             }
             return false;
         }
@@ -3672,7 +3715,7 @@ class PropertyEditor extends React.Component {
                 editComponents: selectedComponents,
                 updateComponentProp: (value) => {
                     let componentProps = selectedComponents.map(o => ({
-                        componentId: o.props.id, propName: propEditorInfo.propName, value
+                        componentId: o.id, propName: propEditorInfo.propName, value
                     }));
                     designer.updateComponentProps(componentProps);
                 }

@@ -88,7 +88,7 @@ class PropertyEditor extends React.Component {
                 editComponents: selectedComponents,
                 updateComponentProp: (value) => {
                     let componentProps = selectedComponents.map(o => ({
-                        componentId: o.props.id, propName: propEditorInfo.propName, value
+                        componentId: o.id, propName: propEditorInfo.propName, value
                     }));
                     designer.updateComponentProps(componentProps);
                 }
