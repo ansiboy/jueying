@@ -11,7 +11,7 @@ import { ComponentProps } from "maishu-jueying-core";
 import { ComponentDataHandler } from "./component-data-handler";
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {
-    pageData: ComponentData | null,
+    // pageData: ComponentData | null,
     style?: React.CSSProperties,
     className?: string,
     componentFactory?: ComponentFactory,
@@ -22,49 +22,49 @@ export interface PageDesignerProps extends React.Props<PageDesigner> {
 
 export interface PageDesignerState {
     pageData: ComponentData | null,
-    // components: { [typeName: string]: React.Component[] },
 }
 
 export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S extends PageDesignerState = PageDesignerState>
     extends React.Component<P, S> {
     private _element: HTMLElement;
 
-    componentSelected: Callback<string[]> = Callback.create<string[]>();
-    componentRemoved: Callback<string[]> = Callback.create<string[]>()
-    componentAppend: Callback<PageDesigner> = Callback.create<PageDesigner>()
-    componentUpdated: Callback<ComponentData[]> = Callback.create<ComponentData[]>()
+    // componentSelected: Callback<string[]> = Callback.create<string[]>();
+    // componentRemoved: Callback<string[]> = Callback.create<string[]>()
+    // componentAppend: Callback<PageDesigner> = Callback.create<PageDesigner>()
+    // componentUpdated: Callback<ComponentData[]> = Callback.create<ComponentData[]>()
 
-    designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
+    // designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
 
-    static defaultProps: PageDesignerProps = { pageData: null, componentDataHandler: null };
+    static defaultProps: PageDesignerProps = { componentDataHandler: null };
     private components: { [typeName: string]: React.Component[] } = {};
 
     constructor(props: P) {
         super(props);
 
-        // let components: PageDesignerState["components"] = {};
-        this.initPageData(props.pageData);
+        let pageData = this.props.componentDataHandler.pageData;
+        this.initPageData(pageData);
 
-        this.state = { pageData: props.pageData, } as S;
-        this.designtimeComponentDidMount.add((args) => {
-            console.log(`this:designer event:controlComponentDidMount`)
-        })
+        this.state = { pageData } as S;
 
         this.props.componentDataHandler.componentSelected.add(args => {
-            this.componentSelected.fire(args);
+            // this.componentSelected.fire(args);
             this.setState({ pageData: this.props.componentDataHandler.pageData });
         })
         this.props.componentDataHandler.componentRemoved.add(args => {
-            this.componentRemoved.fire(args);
+            // this.componentRemoved.fire(args);
             this.setState({ pageData: this.props.componentDataHandler.pageData });
         })
         this.props.componentDataHandler.componentUpdated.add(args => {
-            this.componentUpdated.fire(args);
+            // this.componentUpdated.fire(args);
             this.setState({ pageData: this.props.componentDataHandler.pageData });
         })
 
-        this.componentAppend = Callback.create();
-        this.props.componentDataHandler.componentAppend.add(() => this.componentAppend.fire(this));
+        this.props.componentDataHandler.pageDataChanged.add(args => {
+            this.setState({ pageData: args });
+        })
+
+        // this.componentAppend = Callback.create();
+        // this.props.componentDataHandler.componentAppend.add(() => this.componentAppend.fire(this));
 
     }
 
@@ -103,7 +103,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
         //=========================================================
     }
 
-    private  initPageData(pageData: ComponentData) {
+    private initPageData(pageData: ComponentData) {
         if (pageData == null) {
             return
         }
@@ -187,28 +187,6 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
      * @param componentIndex 新添加组件在子组件中的次序 
      */
     appendComponent(parentId: string, componentData: ComponentData, componentIndex?: number) {
-        // if (!parentId) throw Errors.argumentNull('parentId');
-        // if (!componentData) throw Errors.argumentNull('childComponent');
-
-        // PageDesigner.nameComponent(componentData)
-        // let parentControl = this.findComponentData(parentId);
-        // if (parentControl == null)
-        //     throw new Error('Parent is not exists')
-
-        // console.assert(parentControl != null);
-        // parentControl.children = parentControl.children || [];
-        // if (componentIndex != null) {
-        //     parentControl.children.splice(componentIndex, 0, componentData);
-        // }
-        // else {
-        //     parentControl.children.push(componentData);
-        // }
-
-        // let { pageData } = this.state;
-        // this.setState({ pageData });
-
-        // this.selectComponent(componentData.props.id);
-        // this.componentAppend.fire(this)
         this.props.componentDataHandler.appendComponent(parentId, componentData, componentIndex);
     }
 
@@ -244,11 +222,10 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
         let { pageData } = this.state;
         this.setState({ pageData });
 
-        this.componentUpdated.fire([componentData])
+        // this.componentUpdated.fire([componentData])
     }
 
     setComponentsPosition(positions: { componentId: string, position: { left: number | string, top: number | string } }[]) {
-        // let componentDatas = new Array<ComponentData>()
         let toUpdateProps: { componentId: string, propName: string, value: any }[] = [];
         positions.forEach(o => {
             let { componentId } = o
@@ -264,13 +241,8 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
             if (top)
                 style.top = top;
 
-            // let { pageData } = this.state;
-            // this.setState({ pageData });
-            // componentDatas.push(componentData)
             toUpdateProps.push({ componentId, propName: "style", value: style })
         })
-
-        // this.componentUpdated.fire(componentDatas);
 
         this.props.componentDataHandler.updateComponentProps(toUpdateProps);
     }
@@ -280,30 +252,6 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
      * @param control 指定的控件
      */
     selectComponent(componentIds: string[] | string): void {
-
-        // if (typeof componentIds == 'string')
-        //     componentIds = [componentIds]
-
-        // var stack: ComponentData[] = []
-        // stack.push(this.pageData)
-        // while (stack.length > 0) {
-        //     let item = stack.pop();
-        //     let isSelectedControl = componentIds.indexOf(item.props.id) >= 0;
-        //     item.props.selected = isSelectedControl;
-
-        //     let children = translateComponentDataChildren(item.children || []);
-        //     for (let i = 0; i < children.length; i++) {
-        //         stack.push(children[i])
-        //     }
-        // }
-
-        // this.setState({ pageData: this.pageData })
-        // this.componentSelected.fire(this.selectedComponentIds)
-        // //====================================================
-        // // 设置焦点，以便获取键盘事件
-        // if (this._element)
-        //     this._element.focus()
-        // //====================================================
 
         this.props.componentDataHandler.selectComponents(componentIds);
         //====================================================
@@ -315,18 +263,6 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
 
     /** 移除控件 */
     removeComponent(...componentIds: string[]) {
-        // let pageData = this.state.pageData;
-        // if (!pageData || !pageData.children || pageData.children.length == 0)
-        //     return;
-
-        // let children = translateComponentDataChildren(pageData.children);
-        // componentIds.forEach(controlId => {
-        //     this.removeComponentFrom(controlId, children);
-        // })
-
-
-        // this.setState({ pageData });
-        // this.componentRemoved.fire(componentIds)
         this.props.componentDataHandler.removeComponents(componentIds);
     }
 
@@ -337,18 +273,6 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
      * @param targetComponentIndex 组件位置
      */
     moveComponent(componentId: string, parentId: string, targetComponentIndex?: number) {
-        // let component = this.findComponentData(componentId);
-        // if (component == null)
-        //     throw new Error(`Cannt find component by id ${componentId}`)
-
-        // console.assert(component != null, `Cannt find component by id ${componentId}`);
-
-        // let pageData = this.state.pageData;
-        // console.assert(pageData.children != null);
-        // let children = translateComponentDataChildren(pageData.children);
-        // this.removeComponentFrom(componentId, children);
-        // this.appendComponent(parentId, component, childComponentIndex);
-
         return this.props.componentDataHandler.moveComponent(componentId, parentId, targetComponentIndex);
     }
 
@@ -411,32 +335,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
         return r;
     }
 
-    // findComponetsByTypeName(componentTypeName: string) {
-    //     let components = this.components[componentTypeName];
-    //     return components;
-    // }
-
     findComponentData(componentId: string): ComponentData | null {
-        // let pageData = this.state.pageData;
-        // if (!pageData)
-        //     throw Errors.pageDataIsNull();
-
-        // // let stack = new Array<ComponentData>();
-        // // stack.push(pageData);
-        // // while (stack.length > 0) {
-        // //     let item = stack.pop();
-        // //     if (item == null)
-        // //         continue
-
-        // //     if (item.props.id == componentId)
-        // //         return item;
-
-        // //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
-        // //     stack.push(...children);
-        // // }
-
-        // let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.props.id == componentId)
-        // return componentDatas[0];
         return this.props.componentDataHandler.findComponentData(componentId);
     }
 
@@ -483,13 +382,11 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
         </ComponentWrapper>
     }
 
-    // static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState) {
-    //     PageDesigner.initPageData(props.pageData);
-    //     return { pageData: props.pageData } as Partial<PageDesignerState>;
-    // }
+    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState) {
+        return { pageData: props.componentDataHandler.pageData } as Partial<PageDesignerState>;
+    }
 
     render() {
-        let designer = this;
         let { pageData } = this.state
         let style = this.props.style
         let elementTag: string = this.props.elementTag || "div";
@@ -498,7 +395,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
             ref: (e: HTMLElement) => {
                 if (!e) return;
                 this._element = e || this._element;
-                this.props.componentFactory.renderDesignTimeComponent(pageData, e, { designer: this });
+                this.props.componentFactory.renderDesignTimeComponent(pageData, e, { handler: this.props.componentDataHandler });
             },
             onKeyDown: (t) => this.onKeyDown(t)
         })

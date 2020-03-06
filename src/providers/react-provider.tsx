@@ -8,13 +8,14 @@ import { PageDesigner } from "page-designer";
 import React = require("react");
 import ReactDOM = require("react-dom");
 import { ComponentProps } from "maishu-jueying-core";
+import { ComponentDataHandler } from "component-data-handler";
 
 export class ReactComponentFacotry extends ComponentFactory {
 
     renderDesignTimeComponent(compentData: ComponentData, element: HTMLElement, context?: Context): void {
 
         let componentElement = Component.createElement(compentData,
-            (type, props, children) => this.createDesignTimeElement(type, props, context.designer, children));
+            (type, props, children) => this.createDesignTimeElement(type, props, context.handler, children));
 
         ReactDOM.render(componentElement, element);
     }
@@ -25,7 +26,7 @@ export class ReactComponentFacotry extends ComponentFactory {
     }
 
     protected createDesignTimeElement(type: ReactComponentType, props: ComponentProps<any>,
-        designer: PageDesigner, ...children: any[]) {
+        handler: ComponentDataHandler, ...children: any[]) {
 
         if (type == null) throw Errors.argumentNull('type')
         if (props == null) throw Errors.argumentNull('props')
@@ -53,7 +54,7 @@ export class ReactComponentFacotry extends ComponentFactory {
         delete wrapperProps.ref;
         wrapperProps.className = className;
 
-        return <ComponentWrapper {...wrapperProps} designer={designer}
+        return <ComponentWrapper {...wrapperProps} designer={handler}
             source={{ type, attr, props, children }
             }>
         </ComponentWrapper>

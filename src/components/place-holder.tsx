@@ -15,7 +15,7 @@ import { PageDesigner } from "../page-designer";
 export class PlaceHolder extends React.Component<ComponentProps, {}>{
     private element: HTMLElement;
 
-    constructor(props: PlaceHolder["props"]) {
+    constructor(props: ComponentProps) {
         super(props)
 
         if (!this.props.id) {

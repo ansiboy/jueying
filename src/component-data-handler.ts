@@ -10,9 +10,10 @@ export class ComponentDataHandler {
     private _components: Components = {};
 
     componentSelected = Callback.create<string[]>();
-    componentRemoved = Callback.create<string[]>()
-    componentAppend = Callback.create<ComponentDataHandler>()
-    componentUpdated = Callback.create<ComponentData[]>()
+    componentRemoved = Callback.create<string[]>();
+    componentAppend = Callback.create<ComponentDataHandler>();
+    componentUpdated = Callback.create<ComponentData[]>();
+    pageDataChanged = Callback.create<ComponentData>();
 
     constructor(componentData: ComponentData) {
         this._pageData = componentData;
@@ -61,6 +62,10 @@ export class ComponentDataHandler {
 
     get pageData() {
         return this._pageData;
+    }
+    set pageData(value: ComponentData) {
+        this._pageData = value;
+        this.pageDataChanged.fire(value);
     }
 
     /** 

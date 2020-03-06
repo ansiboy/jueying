@@ -1,8 +1,9 @@
 import { PageDesigner } from "./page-designer";
 import { ComponentData } from "./models";
+import { ComponentDataHandler } from "component-data-handler";
 
 export interface Context {
-    designer?: PageDesigner
+    handler?: ComponentDataHandler
 }
 
 /** 组件工厂 */
