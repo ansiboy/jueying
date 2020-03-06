@@ -294,10 +294,16 @@ export class ComponentDataHandler {
         //=========================================================
     }
 
-
-
     /**
      * 选择指定的控件
+     * @param control 指定的控件
+     */
+    selectComponent(componentId: string) {
+        return this.selectComponents(componentId);
+    }
+
+    /**
+     * 选择指定的控件，一个或多个
      * @param control 指定的控件
      */
     selectComponents(componentIds: string[] | string): void {
@@ -320,6 +326,10 @@ export class ComponentDataHandler {
 
         this.componentSelected.fire(this.selectedComponentIds)
 
+    }
+
+    removeComponent(componentId: string) {
+        return this.removeComponents([componentId]);
     }
 
     /** 移除控件 */

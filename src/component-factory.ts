@@ -1,6 +1,5 @@
-import { PageDesigner } from "./page-designer";
 import { ComponentData } from "./models";
-import { ComponentDataHandler } from "component-data-handler";
+import { ComponentDataHandler } from "./component-data-handler";
 
 export interface Context {
     handler?: ComponentDataHandler
