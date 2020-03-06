@@ -1792,6 +1792,7 @@ function () {
     this.componentRemoved = maishu_toolkit_1.Callback.create();
     this.componentAppend = maishu_toolkit_1.Callback.create();
     this.componentUpdated = maishu_toolkit_1.Callback.create();
+    this.pageDataChanged = maishu_toolkit_1.Callback.create();
     this._pageData = componentData;
     ComponentDataHandler.initPageData(this._pageData, this._components);
   }
@@ -2016,6 +2017,10 @@ function () {
     key: "pageData",
     get: function get() {
       return this._pageData;
+    },
+    set: function set(value) {
+      this._pageData = value;
+      this.pageDataChanged.fire(value);
     }
   }], [{
     key: "initPageData",
@@ -3994,9 +3999,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -4029,52 +4034,45 @@ function (_React$Component) {
     _classCallCheck(this, PageDesigner);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PageDesigner).call(this, props));
-    _this.componentSelected = common_1.Callback.create();
-    _this.componentRemoved = common_1.Callback.create();
-    _this.componentAppend = common_1.Callback.create();
-    _this.componentUpdated = common_1.Callback.create();
-    _this.designtimeComponentDidMount = common_1.Callback.create();
-    _this.components = {}; // let components: PageDesignerState["components"] = {};
+    _this.components = {};
+    var pageData = _this.props.componentDataHandler.pageData;
 
-    _this.initPageData(props.pageData);
+    _this.initPageData(pageData);
 
     _this.state = {
-      pageData: props.pageData
-    };
-
-    _this.designtimeComponentDidMount.add(function (args) {
-      console.log("this:designer event:controlComponentDidMount");
-    });
+      pageData: pageData
+    }; // this.designtimeComponentDidMount.add((args) => {
+    //     console.log(`this:designer event:controlComponentDidMount`)
+    // })
 
     _this.props.componentDataHandler.componentSelected.add(function (args) {
-      _this.componentSelected.fire(args);
-
+      // this.componentSelected.fire(args);
       _this.setState({
         pageData: _this.props.componentDataHandler.pageData
       });
     });
 
     _this.props.componentDataHandler.componentRemoved.add(function (args) {
-      _this.componentRemoved.fire(args);
-
+      // this.componentRemoved.fire(args);
       _this.setState({
         pageData: _this.props.componentDataHandler.pageData
       });
     });
 
     _this.props.componentDataHandler.componentUpdated.add(function (args) {
-      _this.componentUpdated.fire(args);
-
+      // this.componentUpdated.fire(args);
       _this.setState({
         pageData: _this.props.componentDataHandler.pageData
       });
     });
 
-    _this.componentAppend = common_1.Callback.create();
+    _this.props.componentDataHandler.pageDataChanged.add(function (args) {
+      _this.setState({
+        pageData: args
+      });
+    }); // this.componentAppend = Callback.create();
+    // this.props.componentDataHandler.componentAppend.add(() => this.componentAppend.fire(this));
 
-    _this.props.componentDataHandler.componentAppend.add(function () {
-      return _this.componentAppend.fire(_assertThisInitialized(_this));
-    });
 
     return _this;
   }
@@ -4178,24 +4176,6 @@ function (_React$Component) {
      * @param componentIndex 新添加组件在子组件中的次序
      */
     value: function appendComponent(parentId, componentData, componentIndex) {
-      // if (!parentId) throw Errors.argumentNull('parentId');
-      // if (!componentData) throw Errors.argumentNull('childComponent');
-      // PageDesigner.nameComponent(componentData)
-      // let parentControl = this.findComponentData(parentId);
-      // if (parentControl == null)
-      //     throw new Error('Parent is not exists')
-      // console.assert(parentControl != null);
-      // parentControl.children = parentControl.children || [];
-      // if (componentIndex != null) {
-      //     parentControl.children.splice(componentIndex, 0, componentData);
-      // }
-      // else {
-      //     parentControl.children.push(componentData);
-      // }
-      // let { pageData } = this.state;
-      // this.setState({ pageData });
-      // this.selectComponent(componentData.props.id);
-      // this.componentAppend.fire(this)
       this.props.componentDataHandler.appendComponent(parentId, componentData, componentIndex);
     }
     /**
@@ -4231,15 +4211,13 @@ function (_React$Component) {
       var pageData = this.state.pageData;
       this.setState({
         pageData: pageData
-      });
-      this.componentUpdated.fire([componentData]);
+      }); // this.componentUpdated.fire([componentData])
     }
   }, {
     key: "setComponentsPosition",
     value: function setComponentsPosition(positions) {
       var _this3 = this;
 
-      // let componentDatas = new Array<ComponentData>()
       var toUpdateProps = [];
       positions.forEach(function (o) {
         var componentId = o.componentId;
@@ -4252,17 +4230,13 @@ function (_React$Component) {
         if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
         var style = componentData.props.style = componentData.props.style || {};
         if (left) style.left = left;
-        if (top) style.top = top; // let { pageData } = this.state;
-        // this.setState({ pageData });
-        // componentDatas.push(componentData)
-
+        if (top) style.top = top;
         toUpdateProps.push({
           componentId: componentId,
           propName: "style",
           value: style
         });
-      }); // this.componentUpdated.fire(componentDatas);
-
+      });
       this.props.componentDataHandler.updateComponentProps(toUpdateProps);
     }
     /**
@@ -4273,26 +4247,6 @@ function (_React$Component) {
   }, {
     key: "selectComponent",
     value: function selectComponent(componentIds) {
-      // if (typeof componentIds == 'string')
-      //     componentIds = [componentIds]
-      // var stack: ComponentData[] = []
-      // stack.push(this.pageData)
-      // while (stack.length > 0) {
-      //     let item = stack.pop();
-      //     let isSelectedControl = componentIds.indexOf(item.props.id) >= 0;
-      //     item.props.selected = isSelectedControl;
-      //     let children = translateComponentDataChildren(item.children || []);
-      //     for (let i = 0; i < children.length; i++) {
-      //         stack.push(children[i])
-      //     }
-      // }
-      // this.setState({ pageData: this.pageData })
-      // this.componentSelected.fire(this.selectedComponentIds)
-      // //====================================================
-      // // 设置焦点，以便获取键盘事件
-      // if (this._element)
-      //     this._element.focus()
-      // //====================================================
       this.props.componentDataHandler.selectComponents(componentIds); //====================================================
       // 设置焦点，以便获取键盘事件
 
@@ -4307,15 +4261,6 @@ function (_React$Component) {
         componentIds[_key2] = arguments[_key2];
       }
 
-      // let pageData = this.state.pageData;
-      // if (!pageData || !pageData.children || pageData.children.length == 0)
-      //     return;
-      // let children = translateComponentDataChildren(pageData.children);
-      // componentIds.forEach(controlId => {
-      //     this.removeComponentFrom(controlId, children);
-      // })
-      // this.setState({ pageData });
-      // this.componentRemoved.fire(componentIds)
       this.props.componentDataHandler.removeComponents(componentIds);
     }
     /**
@@ -4328,15 +4273,6 @@ function (_React$Component) {
   }, {
     key: "moveComponent",
     value: function moveComponent(componentId, parentId, targetComponentIndex) {
-      // let component = this.findComponentData(componentId);
-      // if (component == null)
-      //     throw new Error(`Cannt find component by id ${componentId}`)
-      // console.assert(component != null, `Cannt find component by id ${componentId}`);
-      // let pageData = this.state.pageData;
-      // console.assert(pageData.children != null);
-      // let children = translateComponentDataChildren(pageData.children);
-      // this.removeComponentFrom(componentId, children);
-      // this.appendComponent(parentId, component, childComponentIndex);
       return this.props.componentDataHandler.moveComponent(componentId, parentId, targetComponentIndex);
     }
   }, {
@@ -4380,27 +4316,7 @@ function (_React$Component) {
     }
   }, {
     key: "findComponentData",
-    // findComponetsByTypeName(componentTypeName: string) {
-    //     let components = this.components[componentTypeName];
-    //     return components;
-    // }
     value: function findComponentData(componentId) {
-      // let pageData = this.state.pageData;
-      // if (!pageData)
-      //     throw Errors.pageDataIsNull();
-      // // let stack = new Array<ComponentData>();
-      // // stack.push(pageData);
-      // // while (stack.length > 0) {
-      // //     let item = stack.pop();
-      // //     if (item == null)
-      // //         continue
-      // //     if (item.props.id == componentId)
-      // //         return item;
-      // //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
-      // //     stack.push(...children);
-      // // }
-      // let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.props.id == componentId)
-      // return componentDatas[0];
       return this.props.componentDataHandler.findComponentData(componentId);
     }
   }, {
@@ -4447,17 +4363,12 @@ function (_React$Component) {
           children: children
         }
       }));
-    } // static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState) {
-    //     PageDesigner.initPageData(props.pageData);
-    //     return { pageData: props.pageData } as Partial<PageDesignerState>;
-    // }
-
+    }
   }, {
     key: "render",
     value: function render() {
       var _this4 = this;
 
-      var designer = this;
       var pageData = this.state.pageData;
       var style = this.props.style;
       var elementTag = this.props.elementTag || "div";
@@ -4470,7 +4381,7 @@ function (_React$Component) {
           _this4._element = e || _this4._element;
 
           _this4.props.componentFactory.renderDesignTimeComponent(pageData, e, {
-            designer: _this4
+            handler: _this4.props.componentDataHandler
           });
         },
         onKeyDown: function onKeyDown(t) {
@@ -4565,13 +4476,24 @@ function (_React$Component) {
 
       return r;
     }
+  }, {
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      return {
+        pageData: props.componentDataHandler.pageData
+      };
+    }
   }]);
 
   return PageDesigner;
-}(React.Component);
+}(React.Component); // componentSelected: Callback<string[]> = Callback.create<string[]>();
+// componentRemoved: Callback<string[]> = Callback.create<string[]>()
+// componentAppend: Callback<PageDesigner> = Callback.create<PageDesigner>()
+// componentUpdated: Callback<ComponentData[]> = Callback.create<ComponentData[]>()
+// designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
+
 
 PageDesigner.defaultProps = {
-  pageData: null,
   componentDataHandler: null
 };
 exports.PageDesigner = PageDesigner;

@@ -1749,6 +1749,7 @@ class ComponentDataHandler {
         this.componentRemoved = maishu_toolkit_1.Callback.create();
         this.componentAppend = maishu_toolkit_1.Callback.create();
         this.componentUpdated = maishu_toolkit_1.Callback.create();
+        this.pageDataChanged = maishu_toolkit_1.Callback.create();
         this._pageData = componentData;
         ComponentDataHandler.initPageData(this._pageData, this._components);
     }
@@ -1785,6 +1786,10 @@ class ComponentDataHandler {
     }
     get pageData() {
         return this._pageData;
+    }
+    set pageData(value) {
+        this._pageData = value;
+        this.pageDataChanged.fire(value);
     }
     /**
      * 移动控件到另外一个控件容器
@@ -3151,32 +3156,30 @@ const component_wrapper_1 = __webpack_require__(/*! ./component-wrapper */ "./ou
 class PageDesigner extends React.Component {
     constructor(props) {
         super(props);
-        this.componentSelected = common_1.Callback.create();
-        this.componentRemoved = common_1.Callback.create();
-        this.componentAppend = common_1.Callback.create();
-        this.componentUpdated = common_1.Callback.create();
-        this.designtimeComponentDidMount = common_1.Callback.create();
         this.components = {};
-        // let components: PageDesignerState["components"] = {};
-        this.initPageData(props.pageData);
-        this.state = { pageData: props.pageData, };
-        this.designtimeComponentDidMount.add((args) => {
-            console.log(`this:designer event:controlComponentDidMount`);
-        });
+        let pageData = this.props.componentDataHandler.pageData;
+        this.initPageData(pageData);
+        this.state = { pageData };
+        // this.designtimeComponentDidMount.add((args) => {
+        //     console.log(`this:designer event:controlComponentDidMount`)
+        // })
         this.props.componentDataHandler.componentSelected.add(args => {
-            this.componentSelected.fire(args);
+            // this.componentSelected.fire(args);
             this.setState({ pageData: this.props.componentDataHandler.pageData });
         });
         this.props.componentDataHandler.componentRemoved.add(args => {
-            this.componentRemoved.fire(args);
+            // this.componentRemoved.fire(args);
             this.setState({ pageData: this.props.componentDataHandler.pageData });
         });
         this.props.componentDataHandler.componentUpdated.add(args => {
-            this.componentUpdated.fire(args);
+            // this.componentUpdated.fire(args);
             this.setState({ pageData: this.props.componentDataHandler.pageData });
         });
-        this.componentAppend = common_1.Callback.create();
-        this.props.componentDataHandler.componentAppend.add(() => this.componentAppend.fire(this));
+        this.props.componentDataHandler.pageDataChanged.add(args => {
+            this.setState({ pageData: args });
+        });
+        // this.componentAppend = Callback.create();
+        // this.props.componentDataHandler.componentAppend.add(() => this.componentAppend.fire(this));
     }
     setComponetRefProp(pageData) {
         //=========================================================
@@ -3277,24 +3280,6 @@ class PageDesigner extends React.Component {
      * @param componentIndex 新添加组件在子组件中的次序
      */
     appendComponent(parentId, componentData, componentIndex) {
-        // if (!parentId) throw Errors.argumentNull('parentId');
-        // if (!componentData) throw Errors.argumentNull('childComponent');
-        // PageDesigner.nameComponent(componentData)
-        // let parentControl = this.findComponentData(parentId);
-        // if (parentControl == null)
-        //     throw new Error('Parent is not exists')
-        // console.assert(parentControl != null);
-        // parentControl.children = parentControl.children || [];
-        // if (componentIndex != null) {
-        //     parentControl.children.splice(componentIndex, 0, componentData);
-        // }
-        // else {
-        //     parentControl.children.push(componentData);
-        // }
-        // let { pageData } = this.state;
-        // this.setState({ pageData });
-        // this.selectComponent(componentData.props.id);
-        // this.componentAppend.fire(this)
         this.props.componentDataHandler.appendComponent(parentId, componentData, componentIndex);
     }
     /**
@@ -3323,10 +3308,9 @@ class PageDesigner extends React.Component {
             style.width = size.width;
         let { pageData } = this.state;
         this.setState({ pageData });
-        this.componentUpdated.fire([componentData]);
+        // this.componentUpdated.fire([componentData])
     }
     setComponentsPosition(positions) {
-        // let componentDatas = new Array<ComponentData>()
         let toUpdateProps = [];
         positions.forEach(o => {
             let { componentId } = o;
@@ -3339,12 +3323,8 @@ class PageDesigner extends React.Component {
                 style.left = left;
             if (top)
                 style.top = top;
-            // let { pageData } = this.state;
-            // this.setState({ pageData });
-            // componentDatas.push(componentData)
             toUpdateProps.push({ componentId, propName: "style", value: style });
         });
-        // this.componentUpdated.fire(componentDatas);
         this.props.componentDataHandler.updateComponentProps(toUpdateProps);
     }
     /**
@@ -3352,26 +3332,6 @@ class PageDesigner extends React.Component {
      * @param control 指定的控件
      */
     selectComponent(componentIds) {
-        // if (typeof componentIds == 'string')
-        //     componentIds = [componentIds]
-        // var stack: ComponentData[] = []
-        // stack.push(this.pageData)
-        // while (stack.length > 0) {
-        //     let item = stack.pop();
-        //     let isSelectedControl = componentIds.indexOf(item.props.id) >= 0;
-        //     item.props.selected = isSelectedControl;
-        //     let children = translateComponentDataChildren(item.children || []);
-        //     for (let i = 0; i < children.length; i++) {
-        //         stack.push(children[i])
-        //     }
-        // }
-        // this.setState({ pageData: this.pageData })
-        // this.componentSelected.fire(this.selectedComponentIds)
-        // //====================================================
-        // // 设置焦点，以便获取键盘事件
-        // if (this._element)
-        //     this._element.focus()
-        // //====================================================
         this.props.componentDataHandler.selectComponents(componentIds);
         //====================================================
         // 设置焦点，以便获取键盘事件
@@ -3381,15 +3341,6 @@ class PageDesigner extends React.Component {
     }
     /** 移除控件 */
     removeComponent(...componentIds) {
-        // let pageData = this.state.pageData;
-        // if (!pageData || !pageData.children || pageData.children.length == 0)
-        //     return;
-        // let children = translateComponentDataChildren(pageData.children);
-        // componentIds.forEach(controlId => {
-        //     this.removeComponentFrom(controlId, children);
-        // })
-        // this.setState({ pageData });
-        // this.componentRemoved.fire(componentIds)
         this.props.componentDataHandler.removeComponents(componentIds);
     }
     /**
@@ -3399,15 +3350,6 @@ class PageDesigner extends React.Component {
      * @param targetComponentIndex 组件位置
      */
     moveComponent(componentId, parentId, targetComponentIndex) {
-        // let component = this.findComponentData(componentId);
-        // if (component == null)
-        //     throw new Error(`Cannt find component by id ${componentId}`)
-        // console.assert(component != null, `Cannt find component by id ${componentId}`);
-        // let pageData = this.state.pageData;
-        // console.assert(pageData.children != null);
-        // let children = translateComponentDataChildren(pageData.children);
-        // this.removeComponentFrom(componentId, children);
-        // this.appendComponent(parentId, component, childComponentIndex);
         return this.props.componentDataHandler.moveComponent(componentId, parentId, targetComponentIndex);
     }
     removeComponentFrom(controlId, collection) {
@@ -3461,27 +3403,7 @@ class PageDesigner extends React.Component {
         }
         return r;
     }
-    // findComponetsByTypeName(componentTypeName: string) {
-    //     let components = this.components[componentTypeName];
-    //     return components;
-    // }
     findComponentData(componentId) {
-        // let pageData = this.state.pageData;
-        // if (!pageData)
-        //     throw Errors.pageDataIsNull();
-        // // let stack = new Array<ComponentData>();
-        // // stack.push(pageData);
-        // // while (stack.length > 0) {
-        // //     let item = stack.pop();
-        // //     if (item == null)
-        // //         continue
-        // //     if (item.props.id == componentId)
-        // //         return item;
-        // //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
-        // //     stack.push(...children);
-        // // }
-        // let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.props.id == componentId)
-        // return componentDatas[0];
         return this.props.componentDataHandler.findComponentData(componentId);
     }
     onKeyDown(e) {
@@ -3516,12 +3438,10 @@ class PageDesigner extends React.Component {
         wrapperProps.className = className;
         return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, { designer: this, source: { type, attr, props, children } }));
     }
-    // static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState) {
-    //     PageDesigner.initPageData(props.pageData);
-    //     return { pageData: props.pageData } as Partial<PageDesignerState>;
-    // }
+    static getDerivedStateFromProps(props, state) {
+        return { pageData: props.componentDataHandler.pageData };
+    }
     render() {
-        let designer = this;
         let { pageData } = this.state;
         let style = this.props.style;
         let elementTag = this.props.elementTag || "div";
@@ -3531,14 +3451,19 @@ class PageDesigner extends React.Component {
                 if (!e)
                     return;
                 this._element = e || this._element;
-                this.props.componentFactory.renderDesignTimeComponent(pageData, e, { designer: this });
+                this.props.componentFactory.renderDesignTimeComponent(pageData, e, { handler: this.props.componentDataHandler });
             },
             onKeyDown: (t) => this.onKeyDown(t)
         });
         return result;
     }
 }
-PageDesigner.defaultProps = { pageData: null, componentDataHandler: null };
+// componentSelected: Callback<string[]> = Callback.create<string[]>();
+// componentRemoved: Callback<string[]> = Callback.create<string[]>()
+// componentAppend: Callback<PageDesigner> = Callback.create<PageDesigner>()
+// componentUpdated: Callback<ComponentData[]> = Callback.create<ComponentData[]>()
+// designtimeComponentDidMount = Callback.create<{ component: React.ReactElement<any>, element: HTMLElement }>();
+PageDesigner.defaultProps = { componentDataHandler: null };
 exports.PageDesigner = PageDesigner;
 //# sourceMappingURL=page-designer.js.map
 

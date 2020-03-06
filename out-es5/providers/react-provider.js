@@ -53,7 +53,7 @@ function (_component_factory_1$) {
       var _this = this;
 
       var componentElement = component_1.Component.createElement(compentData, function (type, props, children) {
-        return _this.createDesignTimeElement(type, props, context.designer, children);
+        return _this.createDesignTimeElement(type, props, context.handler, children);
       });
       ReactDOM.render(componentElement, element);
     }
@@ -65,7 +65,7 @@ function (_component_factory_1$) {
     }
   }, {
     key: "createDesignTimeElement",
-    value: function createDesignTimeElement(type, props, designer) {
+    value: function createDesignTimeElement(type, props, handler) {
       if (type == null) throw errors_1.Errors.argumentNull('type');
       if (props == null) throw errors_1.Errors.argumentNull('props');
       if (props.id == null) throw errors_1.Errors.argumentFieldCanntNull('id', 'props');
@@ -89,7 +89,7 @@ function (_component_factory_1$) {
       }
 
       return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, {
-        designer: designer,
+        designer: handler,
         source: {
           type: type,
           attr: attr,

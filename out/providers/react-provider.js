@@ -9,14 +9,14 @@ const React = require("react");
 const ReactDOM = require("react-dom");
 class ReactComponentFacotry extends component_factory_1.ComponentFactory {
     renderDesignTimeComponent(compentData, element, context) {
-        let componentElement = component_1.Component.createElement(compentData, (type, props, children) => this.createDesignTimeElement(type, props, context.designer, children));
+        let componentElement = component_1.Component.createElement(compentData, (type, props, children) => this.createDesignTimeElement(type, props, context.handler, children));
         ReactDOM.render(componentElement, element);
     }
     renderRunTimeComponent(compentData, element, context) {
         let componentElement = component_1.Component.createElement(compentData);
         ReactDOM.render(componentElement, element);
     }
-    createDesignTimeElement(type, props, designer, ...children) {
+    createDesignTimeElement(type, props, handler, ...children) {
         if (type == null)
             throw errors_1.Errors.argumentNull('type');
         if (props == null)
@@ -38,7 +38,7 @@ class ReactComponentFacotry extends component_factory_1.ComponentFactory {
         let wrapperProps = Object.assign({}, props);
         delete wrapperProps.ref;
         wrapperProps.className = className;
-        return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, { designer: designer, source: { type, attr, props, children } }));
+        return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, { designer: handler, source: { type, attr, props, children } }));
     }
 }
 exports.ReactComponentFacotry = ReactComponentFacotry;

@@ -1,11 +1,9 @@
 import React = require("react");
 import { ComponentData } from "./models";
-import { Callback } from "./common";
 import { ComponentFactory } from "./component-factory";
 import { ComponentProps } from "maishu-jueying-core";
 import { ComponentDataHandler } from "./component-data-handler";
 export interface PageDesignerProps extends React.Props<PageDesigner> {
-    pageData: ComponentData | null;
     style?: React.CSSProperties;
     className?: string;
     componentFactory?: ComponentFactory;
@@ -18,14 +16,6 @@ export interface PageDesignerState {
 }
 export declare class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S extends PageDesignerState = PageDesignerState> extends React.Component<P, S> {
     private _element;
-    componentSelected: Callback<string[]>;
-    componentRemoved: Callback<string[]>;
-    componentAppend: Callback<PageDesigner>;
-    componentUpdated: Callback<ComponentData[]>;
-    designtimeComponentDidMount: Callback<{
-        component: React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
-        element: HTMLElement;
-    }>;
     static defaultProps: PageDesignerProps;
     private components;
     constructor(props: P);
@@ -101,6 +91,7 @@ export declare class PageDesigner<P extends PageDesignerProps = PageDesignerProp
     findComponentData(componentId: string): ComponentData | null;
     private onKeyDown;
     protected createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]): JSX.Element;
+    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState>;
     render(): React.DOMElement<{
         className: string;
         tabIndex: number;
