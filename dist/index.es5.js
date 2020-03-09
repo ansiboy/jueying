@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v2.1.8
+ *  maishu-jueying v2.1.10
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1792,21 +1792,21 @@ function () {
     this.componentUpdated = maishu_toolkit_1.Callback.create();
     this.pageDataChanged = maishu_toolkit_1.Callback.create();
     this._pageData = componentData;
-    this.fillPageData(this._pageData);
+    this.fillComponentData(this._pageData);
   }
   /** 对 pageData 字段补全 */
 
 
   _createClass(ComponentDataHandler, [{
-    key: "fillPageData",
-    value: function fillPageData(pageData) {
-      if (pageData == null) {
+    key: "fillComponentData",
+    value: function fillComponentData(componentData) {
+      if (componentData == null) {
         return;
       }
 
-      pageData.children = pageData.children || [];
-      ComponentDataHandler.nameComponent(pageData);
-      ComponentDataHandler.setComponetRefProp(pageData, this._components);
+      componentData.children = componentData.children || [];
+      ComponentDataHandler.nameComponent(componentData);
+      ComponentDataHandler.setComponetRefProp(componentData, this._components);
     }
     /** 获取已选择了的组件 */
 
@@ -1934,7 +1934,7 @@ function () {
     value: function appendComponent(parentId, componentData, componentIndex) {
       if (!parentId) throw errors_1.Errors.argumentNull('parentId');
       if (!componentData) throw errors_1.Errors.argumentNull('childComponent');
-      ComponentDataHandler.nameComponent(componentData);
+      this.fillComponentData(componentData);
       var parentControl = this.findComponentData(parentId);
       if (parentControl == null) throw new Error('Parent is not exists');
       console.assert(parentControl != null);
@@ -2049,7 +2049,7 @@ function () {
     },
     set: function set(value) {
       this._pageData = value;
-      this.fillPageData(value);
+      this.fillComponentData(value);
       this.pageDataChanged.fire(value);
     }
   }], [{
@@ -2086,7 +2086,7 @@ function () {
     value: function nameComponent(component) {
       var namedComponents = {};
       var props = component.props = component.props || {}; //==================================================
-      // 兼容旧代码
+      // 兼容旧版本代码
 
       if (props.id) {
         component.id = props.id;
@@ -2119,10 +2119,9 @@ function () {
 
         namedComponents[name] = component;
         component.name = name;
-      } // if (!props.id)
-      //     props.id = guid();
+      }
 
-
+      if (!component.id) component.id = maishu_toolkit_1.guid();
       component.children = component.children || [];
 
       if (!component.children || component.children.length == 0) {
