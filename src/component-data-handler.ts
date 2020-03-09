@@ -16,19 +16,18 @@ export class ComponentDataHandler {
 
     constructor(componentData: ComponentData) {
         this._pageData = componentData;
-        this.fillPageData(this._pageData);
+        this.fillComponentData(this._pageData);
     }
 
     /** 对 pageData 字段补全 */
-    private fillPageData(pageData: ComponentData) {
-        if (pageData == null) {
+    private fillComponentData(componentData: ComponentData) {
+        if (componentData == null) {
             return
         }
 
-        pageData.children = pageData.children || [];
-        ComponentDataHandler.nameComponent(pageData);
-        ComponentDataHandler.setComponetRefProp(pageData, this._components);
-
+        componentData.children = componentData.children || [];
+        ComponentDataHandler.nameComponent(componentData);
+        ComponentDataHandler.setComponetRefProp(componentData, this._components);
     }
 
     /** 获取已选择了的组件 */
@@ -68,7 +67,7 @@ export class ComponentDataHandler {
     }
     set pageData(value: ComponentData) {
         this._pageData = value;
-        this.fillPageData(value);
+        this.fillComponentData(value);
         this.pageDataChanged.fire(value);
     }
 
@@ -218,7 +217,7 @@ export class ComponentDataHandler {
         if (!parentId) throw Errors.argumentNull('parentId');
         if (!componentData) throw Errors.argumentNull('childComponent');
 
-        ComponentDataHandler.nameComponent(componentData)
+        this.fillComponentData(componentData)
         let parentControl = this.findComponentData(parentId);
         if (parentControl == null)
             throw new Error('Parent is not exists')
@@ -247,7 +246,7 @@ export class ComponentDataHandler {
         let props: any = component.props = component.props || {};
 
         //==================================================
-        // 兼容旧代码
+        // 兼容旧版本代码
         if (props.id) {
             component.id = props.id;
             delete props.id;
@@ -280,8 +279,8 @@ export class ComponentDataHandler {
             component.name = name;
         }
 
-        // if (!props.id)
-        //     props.id = guid();
+        if (!component.id)
+            component.id = guid();
 
         component.children = component.children || [];
 
