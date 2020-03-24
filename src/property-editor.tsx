@@ -1,4 +1,4 @@
-import React = require("react");
+import * as React from "react";
 import { PropEditorInfo, Component } from "./component";
 import { proptDisplayNames } from "./propt-display-names";
 import { PropEditorProps } from "./prop-editor";

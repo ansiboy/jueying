@@ -3,7 +3,7 @@
 // if (jquery == null) {
 //     window['$'] = window['jQuery'] = j
 // }
-import j = require("jquery");
+import * as j from "jquery";
 let jquery = window['$'] || window['jQuery'];
 if (jquery == null) {
     window['$'] = window['jQuery'] = j

@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v2.0.5
+ *  maishu-jueying v2.6.15
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -16,14 +16,14 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("$"), require("React"), require("ReactDOM"));
+		module.exports = factory(require("$"), require("React"));
 	else if(typeof define === 'function' && define.amd)
-		define(["$", "React", "ReactDOM"], factory);
+		define(["$", "React"], factory);
 	else if(typeof exports === 'object')
-		exports["jueying"] = factory(require("$"), require("React"), require("ReactDOM"));
+		exports["jueying"] = factory(require("$"), require("React"));
 	else
-		root["jueying"] = factory(root["$"], root["React"], root["ReactDOM"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE_jquery__, __WEBPACK_EXTERNAL_MODULE_react__, __WEBPACK_EXTERNAL_MODULE_react_dom__) {
+		root["jueying"] = factory(root["$"], root["React"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE_jquery__, __WEBPACK_EXTERNAL_MODULE_react__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -1036,10 +1036,813 @@ drop.delegate = function( event, dd ){
 
 /***/ }),
 
-/***/ "./out-es5/common.js":
+/***/ "./node_modules/maishu-jueying-core/decorators.js":
+/*!********************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/decorators.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!
+ * ~
+ *  maishu-jueying-core v1.1.4
+ * 
+ *  Copyright (c) 2016-2018, mais.shu <ansiboy@163.com>
+ *  Licensed under the MIT License.
+ * 
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory();
+	else { var i, a; }
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./out/decorators.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./out/decorators.js":
 /*!***************************!*\
-  !*** ./out-es5/common.js ***!
+  !*** ./out/decorators.js ***!
   \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/** 组件标记，用于将指定的组件标记为可被外部加载 */
+function component(options) {
+    return function classDecorator(constructor) {
+    };
+}
+exports.component = component;
+//# sourceMappingURL=decorators.js.map
+
+/***/ })
+
+/******/ });
+});
+//# sourceMappingURL=decorators.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/dist/index.js":
+/*!********************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/dist/index.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/*!
+ * ~
+ *  jueying-core v1.0.2
+ * 
+ *  Copyright (c) 2016-2018, mais.shu <ansiboy@163.com>
+ *  Licensed under the MIT License.
+ * 
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory(__webpack_require__(/*! react */ "react"));
+	else { var i, a; }
+})(typeof window === 'undefined' ? global : window, function(__WEBPACK_EXTERNAL_MODULE_react__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./out/index.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./out/component-factory.js":
+/*!**********************************!*\
+  !*** ./out/component-factory.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
+class CompoenntFactory {
+    constructor(compoenntTypes) {
+        this.compoenntTypes = compoenntTypes;
+    }
+    createComponent(componentData, context) {
+        try {
+            return this._createComponent(componentData, context);
+        }
+        catch (e) {
+            return this.createErrorElement(e);
+        }
+    }
+    /** 创建视图组件 */
+    createViewComponent(props, ...children) {
+        return React.createElement("div", props, ...children);
+    }
+    createErrorElement(err) {
+        // return <div>
+        //     <div>Error:</div>
+        //     <div>{err.message}</div>
+        // </div>
+        return this.createViewComponent(this.createViewComponent("Error:"), this.createViewComponent(err.message));
+    }
+    _createComponent(componentData, context) {
+        if (typeof componentData == "string")
+            return componentData;
+        let children = (componentData.children || []).map(c => this._createComponent(c));
+        let props = (componentData.props || {});
+        let defaultProps = { factory: this, context };
+        let name = componentData.typeName;
+        let compoenntType = this.compoenntTypes[name];
+        if (compoenntType == null) {
+            throw errors_1.errors.componentNotExists(name);
+        }
+        let r = React.createElement(compoenntType, props, children);
+        return r;
+    }
+}
+exports.CompoenntFactory = CompoenntFactory;
+//# sourceMappingURL=component-factory.js.map
+
+/***/ }),
+
+/***/ "./out/errors.js":
+/*!***********************!*\
+  !*** ./out/errors.js ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errors = {
+    pathFieldRequired(name) {
+        let msg = `Path field of '${name}' component config can not be null or empty.`;
+        return new Error(msg);
+    },
+    canntFindModule(name, path) {
+        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
+        return new Error(msg);
+    },
+    componentNotExists(name) {
+        let msg = `Component '${name}' not exists.`;
+        return new Error(msg);
+    }
+};
+//# sourceMappingURL=errors.js.map
+
+/***/ }),
+
+/***/ "./out/index.js":
+/*!**********************!*\
+  !*** ./out/index.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var component_factory_1 = __webpack_require__(/*! ./component-factory */ "./out/component-factory.js");
+exports.CompoenntFactory = component_factory_1.CompoenntFactory;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "react":
+/*!************************!*\
+  !*** external "react" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_react__;
+
+/***/ })
+
+/******/ });
+});
+//# sourceMappingURL=index.js.map
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/Errors.js":
+/*!***************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/Errors.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Errors {
+    argumentNull(argumentName) {
+        let error = new Error(`Argument ${argumentName} cannt be null or emtpy.`);
+        let name = "argumentNull";
+        error.name = name;
+        return error;
+    }
+    routeDataFieldNull(fieldName) {
+        let msg = `The ${fieldName} field of route data cannt be null.`;
+        let error = new Error(msg);
+        let name = "routeDataFieldNull";
+        error.name = name;
+        return error;
+    }
+    argumentFieldNull(fieldName, argumentName) {
+        let msg = `The ${fieldName} field of ${argumentName} cannt be null.`;
+        let error = new Error(msg);
+        let name = "argumentFieldNull";
+        error.name = name;
+        return error;
+    }
+    argumentTypeIncorrect(argumentName, expectedType) {
+        let msg = `Argument ${argumentName} type error, expected type is ${expectedType}.`;
+        let error = new Error(msg);
+        let name = "argumentTypeIncorrect";
+        error.name = name;
+        return error;
+    }
+    queryResultTypeError() {
+        let msg = 'Type of the query result is expected as Array or DataSourceSelectResult.';
+        return new Error(msg);
+    }
+}
+exports.Errors = Errors;
+exports.errors = new Errors();
+
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/callback.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/callback.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Callback {
+    constructor() {
+        this.funcs = new Array();
+    }
+    add(func) {
+        this.funcs.push(func);
+    }
+    remove(func) {
+        this.funcs = this.funcs.filter(o => o != func);
+    }
+    fire(args) {
+        this.funcs.forEach(o => o(args));
+    }
+    static create() {
+        return new Callback();
+    }
+}
+exports.Callback = Callback;
+
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/data.js":
+/*!*************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/data.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Errors_1 = __webpack_require__(/*! ./Errors */ "./node_modules/maishu-toolkit/out/Errors.js");
+const callback_1 = __webpack_require__(/*! ./callback */ "./node_modules/maishu-toolkit/out/callback.js");
+let errors = Object.assign(Errors_1.errors, {
+    dataSourceCanntInsert() {
+        return new Error("DataSource can not insert.");
+    },
+    dataSourceCanntDelete() {
+        return new Error("DataSource can not delete.");
+    },
+    dataSourceCanntUpdate() {
+        return new Error("DataSource can not update.");
+    },
+    primaryKeyNull(key) {
+        let msg = `Primary key named '${key}' value is null.`;
+        return new Error(msg);
+    }
+});
+class DataSource {
+    constructor(args) {
+        this.inserting = new callback_1.Callback(); //callbacks1<DataSource<T>, T, number>();
+        this.inserted = new callback_1.Callback();
+        this.deleting = new callback_1.Callback(); //callbacks<DataSource<T>, T>();
+        this.deleted = new callback_1.Callback(); //callbacks<DataSource<T>, T>();
+        this.updating = new callback_1.Callback();
+        this.updated = new callback_1.Callback();
+        this.selecting = new callback_1.Callback();
+        this.selected = new callback_1.Callback(); //callbacks<DataSource<T>, DataSourceSelectResult<T>>();
+        this.error = new callback_1.Callback(); //callbacks<this, DataSourceError>();
+        this.args = args;
+        this.primaryKeys = args.primaryKeys || [];
+    }
+    ; //callbacks<DataSource<T>, DataSourceSelectArguments>();
+    get canDelete() {
+        return this.args.delete != null && this.primaryKeys.length > 0;
+    }
+    get canInsert() {
+        return this.args.insert != null && this.primaryKeys.length > 0;
+    }
+    get canUpdate() {
+        return this.args.update != null && this.primaryKeys.length > 0;
+    }
+    executeInsert(item, args) {
+        return this.args.insert(item, args);
+    }
+    executeDelete(item, args) {
+        return this.args.delete(item, args);
+    }
+    executeUpdate(item, args) {
+        return this.args.update(item, args);
+    }
+    executeSelect(args) {
+        args = args || {};
+        return this.args.select(args);
+    }
+    insert(item, args, index) {
+        if (!this.canInsert)
+            throw errors.dataSourceCanntInsert();
+        if (!item)
+            throw errors.argumentNull("item");
+        if (typeof args == 'number') {
+            index = args;
+            args = null;
+        }
+        this.inserting.fire({ sender: this, dataItem: item, index });
+        return this.executeInsert(item, args).then((data) => {
+            Object.assign(item, data);
+            this.inserted.fire({ sender: this, dataItem: item, index });
+            return data;
+        }).catch(exc => {
+            this.processError(exc, 'insert');
+            throw exc;
+        });
+    }
+    delete(item, args) {
+        if (!this.canDelete)
+            throw errors.dataSourceCanntDelete();
+        if (!item)
+            throw errors.argumentNull("item");
+        this.checkPrimaryKeys(item);
+        this.deleting.fire({ sender: this, dataItem: item });
+        return this.executeDelete(item, args).then((data) => {
+            this.deleted.fire({ sender: this, dataItem: item });
+            return data;
+        }).catch(exc => {
+            this.processError(exc, 'delete');
+            throw exc;
+        });
+    }
+    update(item, args) {
+        if (!this.canUpdate)
+            throw errors.dataSourceCanntUpdate();
+        if (!item)
+            throw errors.argumentNull("item");
+        this.checkPrimaryKeys(item);
+        this.updating.fire({ sender: this, dataItem: item });
+        return this.executeUpdate(item, args).then((data) => {
+            Object.assign(item, data);
+            this.updated.fire({ sender: this, dataItem: item });
+            return data;
+        }).catch((exc) => {
+            this.processError(exc, 'update');
+            throw exc;
+        });
+    }
+    isSameItem(theItem, otherItem) {
+        if (theItem == null)
+            throw errors.argumentNull('theItem');
+        if (otherItem == null)
+            throw errors.argumentNull('otherItem');
+        if (this.primaryKeys.length == 0)
+            return theItem == otherItem;
+        this.checkPrimaryKeys(theItem);
+        this.checkPrimaryKeys(otherItem);
+        for (let pk of this.primaryKeys) {
+            if (theItem[pk] != otherItem[pk])
+                return false;
+        }
+        return true;
+    }
+    checkPrimaryKeys(item) {
+        for (let key in item) {
+            if (item[key] == null && this.primaryKeys.indexOf(key) >= 0)
+                throw errors.primaryKeyNull(key);
+        }
+    }
+    select(args) {
+        args = args || {};
+        // fireCallback(this.selecting, this, args);
+        this.selecting.fire({ sender: this, selectArguments: args });
+        return this.executeSelect(args).then((data) => {
+            let dataItems;
+            let totalRowCount;
+            if (Array.isArray(data)) {
+                dataItems = data;
+                totalRowCount = data.length;
+            }
+            else if (data.dataItems !== undefined && data.totalRowCount !== undefined) {
+                dataItems = data.dataItems;
+                totalRowCount = data.totalRowCount;
+            }
+            else {
+                throw errors.queryResultTypeError();
+            }
+            this.selected.fire({ sender: this, selectResult: { totalRowCount, dataItems } });
+            return { totalRowCount, dataItems };
+        }).catch(exc => {
+            this.processError(exc, 'select');
+            throw exc;
+        });
+    }
+    processError(exc, method) {
+        exc.method = method;
+        this.error.fire({ sender: this, error: exc });
+        if (!exc.handled)
+            throw exc;
+    }
+}
+exports.DataSource = DataSource;
+class DataSourceSelectArguments {
+    constructor() {
+        this.startRowIndex = 0;
+        this.maximumRows = 2147483647;
+    }
+}
+exports.DataSourceSelectArguments = DataSourceSelectArguments;
+class ArrayDataSource extends DataSource {
+    constructor(items) {
+        super({
+            select(args) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (args.sortExpression) {
+                    }
+                    let dataItems = items.slice(args.startRowIndex, args.startRowIndex + args.maximumRows);
+                    let result = { dataItems, totalRowCount: items.length };
+                    return result;
+                });
+            }
+        });
+    }
+}
+exports.ArrayDataSource = ArrayDataSource;
+// }
+
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/errors.js":
+/*!***************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/errors.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Errors {
+    argumentNull(argumentName) {
+        let error = new Error(`Argument ${argumentName} cannt be null or emtpy.`);
+        let name = "argumentNull";
+        error.name = name;
+        return error;
+    }
+    routeDataFieldNull(fieldName) {
+        let msg = `The ${fieldName} field of route data cannt be null.`;
+        let error = new Error(msg);
+        let name = "routeDataFieldNull";
+        error.name = name;
+        return error;
+    }
+    argumentFieldNull(fieldName, argumentName) {
+        let msg = `The ${fieldName} field of ${argumentName} cannt be null.`;
+        let error = new Error(msg);
+        let name = "argumentFieldNull";
+        error.name = name;
+        return error;
+    }
+    argumentTypeIncorrect(argumentName, expectedType) {
+        let msg = `Argument ${argumentName} type error, expected type is ${expectedType}.`;
+        let error = new Error(msg);
+        let name = "argumentTypeIncorrect";
+        error.name = name;
+        return error;
+    }
+    queryResultTypeError() {
+        let msg = 'Type of the query result is expected as Array or DataSourceSelectResult.';
+        return new Error(msg);
+    }
+}
+exports.Errors = Errors;
+exports.errors = new Errors();
+
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/guid.js":
+/*!*************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/guid.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+exports.guid = guid;
+
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/index.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var guid_1 = __webpack_require__(/*! ./guid */ "./node_modules/maishu-toolkit/out/guid.js");
+exports.guid = guid_1.guid;
+var path_1 = __webpack_require__(/*! ./path */ "./node_modules/maishu-toolkit/out/path.js");
+exports.pathContact = path_1.pathContact;
+var errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-toolkit/out/errors.js");
+exports.Errors = errors_1.Errors;
+exports.errors = errors_1.errors;
+var callback_1 = __webpack_require__(/*! ./callback */ "./node_modules/maishu-toolkit/out/callback.js");
+exports.Callback = callback_1.Callback;
+var data_1 = __webpack_require__(/*! ./data */ "./node_modules/maishu-toolkit/out/data.js");
+exports.DataSource = data_1.DataSource;
+exports.DataSourceSelectArguments = data_1.DataSourceSelectArguments;
+
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/path.js":
+/*!*************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/path.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/** 连接多个路径 */
+function pathContact(...paths) {
+    paths = paths || [];
+    if (paths.length == 0)
+        return "";
+    if (paths.length == 1) {
+        return paths[0];
+    }
+    let str = paths.join("");
+    // 将一个或多个的 / 变为一个 /，例如：/shop/test// 转换为 /shop/test/
+    str = str.replace(/\/+/g, '/');
+    return str;
+}
+exports.pathContact = pathContact;
+
+
+/***/ }),
+
+/***/ "./node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+
+/***/ "./out-es5/component-data-handler.js":
+/*!*******************************************!*\
+  !*** ./out-es5/component-data-handler.js ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1049,8 +1852,21 @@ drop.delegate = function( event, dd ){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.guid = guid;
-exports.Callback = exports.proptDisplayNames = exports.constants = void 0;
+exports.ComponentDataHandler = void 0;
+
+var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
+
+var _maishuToolkit = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1058,65 +1874,463 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var constants = {
-  componentsDir: 'components',
-  connectorElementClassName: 'component-container',
-  componentTypeName: 'data-component-name',
-  componentData: 'component-data',
-  componentPosition: "component-position"
-};
-exports.constants = constants;
-var proptDisplayNames = {};
-exports.proptDisplayNames = proptDisplayNames;
-
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  }
-
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}
-
-var Callback =
+var ComponentDataHandler =
 /*#__PURE__*/
 function () {
-  function Callback() {
-    _classCallCheck(this, Callback);
+  function ComponentDataHandler(componentData) {
+    _classCallCheck(this, ComponentDataHandler);
 
-    this.funcs = new Array();
+    this._components = {};
+    this.componentSelected = _maishuToolkit.Callback.create();
+    this.componentRemoved = _maishuToolkit.Callback.create();
+    this.componentAppend = _maishuToolkit.Callback.create();
+    this.componentUpdated = _maishuToolkit.Callback.create();
+    this.pageDataChanged = _maishuToolkit.Callback.create();
+    this._pageData = componentData;
+    this.initComponentData(this._pageData);
   }
+  /** 对 pageData 字段补全 */
 
-  _createClass(Callback, [{
-    key: "add",
-    value: function add(func) {
-      this.funcs.push(func);
+
+  _createClass(ComponentDataHandler, [{
+    key: "initComponentData",
+    value: function initComponentData(componentData) {
+      if (componentData == null) {
+        return;
+      }
+
+      componentData.children = componentData.children || [];
+      ComponentDataHandler.fillComponent(componentData);
+      ComponentDataHandler.setComponetRefProp(componentData, this._components);
+    }
+    /** 获取已选择了的组件 */
+
+  }, {
+    key: "moveComponent",
+
+    /**
+     * 移动控件到另外一个控件容器
+     * @param componentId 要移动的组件编号
+     * @param parentId 目标组件编号
+     * @param beforeChildId 组件的前一个子组件编号
+     */
+    value: function moveComponent(componentId, parentId, childComponentIndex) {
+      var component = this.findComponentData(componentId);
+      if (component == null) throw new Error("Cannt find component by id ".concat(componentId));
+      console.assert(component != null, "Cannt find component by id ".concat(componentId));
+      var pageData = this.pageData;
+      console.assert(pageData.children != null);
+      var children = pageData.children; //translateComponentDataChildren(pageData.children);
+
+      this.removeComponentFrom(componentId, children);
+      this.appendComponent(parentId, component, childComponentIndex);
     }
   }, {
-    key: "remove",
-    value: function remove(func) {
-      this.funcs = this.funcs.filter(function (o) {
-        return o != func;
-      });
+    key: "updateComponentProps",
+    value: function updateComponentProps(componentProps) {
+      var componentDatas = [];
+
+      for (var i = 0; i < componentProps.length; i++) {
+        var _componentProps$i = componentProps[i],
+            componentId = _componentProps$i.componentId,
+            propName = _componentProps$i.propName,
+            value = _componentProps$i.value;
+        var componentData = this.findComponentData(componentId);
+        if (componentData == null) continue;
+        var navPropsNames = propName.split(".");
+        console.assert(componentData != null);
+        console.assert(navPropsNames != null, 'props is null');
+        componentData.props = componentData.props || {};
+        var obj = componentData.props;
+
+        for (var _i = 0; _i < navPropsNames.length - 1; _i++) {
+          obj = obj[navPropsNames[_i]] = obj[navPropsNames[_i]] || {};
+        }
+
+        obj[navPropsNames[navPropsNames.length - 1]] = value;
+        componentDatas.push(componentData);
+      }
+
+      this.componentUpdated.fire(componentDatas);
     }
   }, {
-    key: "fire",
-    value: function fire(args) {
-      this.funcs.forEach(function (o) {
-        return o(args);
+    key: "findComponentData",
+    value: function findComponentData(componentId) {
+      var pageData = this._pageData;
+      if (!pageData) throw _errors.Errors.pageDataIsNull(); // let stack = new Array<ComponentData>();
+      // stack.push(pageData);
+      // while (stack.length > 0) {
+      //     let item = stack.pop();
+      //     if (item == null)
+      //         continue
+      //     if (item.props.id == componentId)
+      //         return item;
+      //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
+      //     stack.push(...children);
+      // }
+
+      var componentDatas = ComponentDataHandler.travelComponentData(pageData, function (item) {
+        return item.id == componentId;
       });
+      return componentDatas[0];
+    }
+  }, {
+    key: "removeComponentFrom",
+    value: function removeComponentFrom(controlId, collection) {
+      var controlIndex = null;
+
+      for (var i = 0; i < collection.length; i++) {
+        var child = collection[i];
+        if (typeof child == "string") continue;
+
+        if (controlId == child.id) {
+          controlIndex = i;
+          break;
+        }
+      }
+
+      if (controlIndex == null) {
+        for (var _i2 = 0; _i2 < collection.length; _i2++) {
+          var o = collection[_i2];
+          if (typeof o == "string") continue;
+          var children = o.children;
+
+          if (children && children.length > 0) {
+            var isRemoved = this.removeComponentFrom(controlId, children);
+
+            if (isRemoved) {
+              return true;
+            }
+          }
+        }
+
+        return false;
+      }
+
+      if (controlIndex == 0) {
+        collection.shift();
+      } else if (controlIndex == collection.length - 1) {
+        collection.pop();
+      } else {
+        collection.splice(controlIndex, 1);
+      }
+
+      return true;
+    }
+  }, {
+    key: "appendComponent",
+
+    /**
+     * 添加控件
+     * @param parentId 父控件编号
+     * @param componentData 控件数据
+     * @param componentIndex 新添加组件在子组件中的次序
+     */
+    value: function appendComponent(parentId, componentData, componentIndex) {
+      if (!parentId) throw _errors.Errors.argumentNull('parentId');
+      if (!componentData) throw _errors.Errors.argumentNull('childComponent');
+      this.initComponentData(componentData);
+      var parentControl = this.findComponentData(parentId);
+      if (parentControl == null) throw new Error('Parent is not exists');
+      console.assert(parentControl != null);
+      parentControl.children = parentControl.children || [];
+
+      if (componentIndex != null) {
+        parentControl.children.splice(componentIndex, 0, componentData);
+      } else {
+        parentControl.children.push(componentData);
+      }
+
+      this.selectComponents(componentData.id);
+      this.componentAppend.fire(this);
+    }
+    /**
+     * 对组件及其子控件进行命名
+     * @param component
+     */
+
+  }, {
+    key: "selectComponent",
+
+    /**
+     * 选择指定的控件
+     * @param control 指定的控件
+     */
+    value: function selectComponent(componentId) {
+      return this.selectComponents(componentId);
+    }
+    /**
+     * 选择指定的控件，一个或多个
+     * @param control 指定的控件
+     */
+
+  }, {
+    key: "selectComponents",
+    value: function selectComponents(componentIds) {
+      if (typeof componentIds == 'string') componentIds = [componentIds];
+      var stack = [];
+      stack.push(this._pageData);
+
+      while (stack.length > 0) {
+        var item = stack.pop();
+        var isSelectedControl = componentIds.indexOf(item.id) >= 0;
+        item.selected = isSelectedControl;
+        item.children.forEach(function (child) {
+          if (typeof child == "string") return true;
+          stack.push(child);
+        });
+      }
+
+      this.componentSelected.fire(this.selectedComponentIds);
+    }
+  }, {
+    key: "removeComponent",
+    value: function removeComponent(componentId) {
+      return this.removeComponents([componentId]);
+    }
+    /** 移除控件 */
+
+  }, {
+    key: "removeComponents",
+    value: function removeComponents(componentIds) {
+      var _this = this;
+
+      var pageData = this.pageData;
+      if (!pageData || !pageData.children || pageData.children.length == 0) return;
+      var children = pageData.children;
+      componentIds.forEach(function (controlId) {
+        _this.removeComponentFrom(controlId, children);
+      });
+      this.componentRemoved.fire(componentIds);
+    }
+  }, {
+    key: "setComponentPosition",
+    value: function setComponentPosition(componentId, position) {
+      return this.setComponentsPosition([{
+        componentId: componentId,
+        position: position
+      }]);
+    }
+  }, {
+    key: "setComponentsPosition",
+    value: function setComponentsPosition(positions) {
+      var _this2 = this;
+
+      var toUpdateProps = [];
+      positions.forEach(function (o) {
+        var componentId = o.componentId;
+        var _o$position = o.position,
+            left = _o$position.left,
+            top = _o$position.top;
+
+        var componentData = _this2.findComponentData(componentId);
+
+        if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
+        var style = componentData.props.style = componentData.props.style || {};
+        if (left) style.left = left;
+        if (top) style.top = top;
+        toUpdateProps.push({
+          componentId: componentId,
+          propName: "style",
+          value: style
+        });
+      });
+      this.updateComponentProps(toUpdateProps);
+    }
+    /**
+    * 设置控件大小
+    * @param componentId 组件编号
+    * @param size 组件大小
+    */
+
+  }, {
+    key: "setComponentSize",
+    value: function setComponentSize(componentId, size) {
+      console.assert(componentId != null);
+      console.assert(size != null);
+      var componentData = this.findComponentData(componentId);
+      if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
+      var style = componentData.props.style = componentData.props.style || {};
+      if (size.height) style.height = size.height;
+      if (size.width) style.width = size.width; // this.componentUpdated.fire([componentData])
+
+      this.updateComponentProps([{
+        componentId: componentId,
+        propName: "style",
+        value: style
+      }]);
+    }
+  }, {
+    key: "selectedComponents",
+    get: function get() {
+      var arr = new Array();
+      var stack = new Array();
+      stack.push(this._pageData);
+
+      while (stack.length > 0) {
+        var item = stack.pop();
+        if (item.props != null && item.selected == true) arr.push(item);
+        item.children.forEach(function (child) {
+          if (typeof child == "string") return true;
+          stack.push(child);
+        });
+      }
+
+      return arr;
+    }
+    /** 获取已选择了的组件编号 */
+
+  }, {
+    key: "selectedComponentIds",
+    get: function get() {
+      return this.selectedComponents.map(function (o) {
+        return o.id;
+      });
+    }
+    /**  */
+
+  }, {
+    key: "components",
+    get: function get() {
+      return this._components;
+    }
+  }, {
+    key: "pageData",
+    get: function get() {
+      return this._pageData;
+    },
+    set: function set(value) {
+      this._pageData = value;
+      this.initComponentData(value);
+      this.pageDataChanged.fire(value);
     }
   }], [{
-    key: "create",
-    value: function create() {
-      return new Callback();
+    key: "travelComponentData",
+    value: function travelComponentData(pageData, filter) {
+      var stack = new Array();
+      stack.push(pageData);
+      var r = []; // return new Promise((resolve, reject) => {
+
+      filter = filter || function () {
+        return true;
+      };
+
+      while (stack.length > 0) {
+        var item = stack.shift();
+
+        if (filter(item)) {
+          r.push(item);
+        } //===============================================
+        // 子元素有可能为字符串, 过滤出对象
+
+
+        var children = (item.children || []).filter(function (o) {
+          return _typeof(o) == 'object';
+        }); //===============================================
+
+        stack.push.apply(stack, _toConsumableArray(children));
+      }
+
+      return r;
+    }
+  }, {
+    key: "fillComponent",
+    value: function fillComponent(component) {
+      var namedComponents = {}; // let props: any = component.props = component.props || {};
+      //==================================================
+      // 兼容旧版本代码
+      // if (props.id) {
+      //     component.id = props.id;
+      //     delete props.id;
+      // }
+      // if (props.parentId) {
+      //     component.parentId = props.parentId;
+      //     delete component.parentId;
+      // }
+      // if (props.selected) {
+      //     component.selected = props.selected;
+      // }
+      // if (props.name) {
+      //     component.name = props.name;
+      //     delete props.name;
+      // }
+      // if (props.attr) {
+      //     component.attr = props.attr;
+      //     delete props.attr;
+      // }
+      //==================================================
+
+      if (!component.name) {
+        var num = 0;
+        var name;
+
+        do {
+          num = num + 1;
+          name = "".concat(component.type).concat(num);
+        } while (namedComponents[name]);
+
+        namedComponents[name] = component;
+        component.name = name;
+      }
+
+      if (!component.id) component.id = (0, _maishuToolkit.guid)();
+      component.children = component.children || [];
+
+      if (!component.children || component.children.length == 0) {
+        return;
+      }
+
+      component.children.forEach(function (child) {
+        if (typeof child == "string") return true;
+        ComponentDataHandler.fillComponent(child);
+      });
+    }
+  }, {
+    key: "setComponetRefProp",
+    value: function setComponetRefProp(pageData, components) {
+      //=========================================================
+      // 纪录当前 pageData 控件 ID
+      var componentIds = {}; //=========================================================
+
+      ComponentDataHandler.travelComponentData(pageData).forEach(function (item) {
+        console.assert(item.props != null && item.id != null);
+        componentIds[item.type] = componentIds[item.type] || [];
+        componentIds[item.type].push(item.props["id"]);
+        var itemRef = item.props.ref;
+
+        item.props.ref = function (e) {
+          if (e != null) {
+            components[item.type] = components[item.type] || [];
+            components[item.type].push(e);
+          }
+
+          if (typeof itemRef == "function") itemRef(e);
+        };
+      }); //=========================================================
+      // 仅保留 componentIds 中的控件 
+
+      var names = Object.getOwnPropertyNames(components);
+
+      var _loop = function _loop(i) {
+        var typename = names[i];
+        var ids = componentIds[typename] || [];
+        components[typename] = (components[typename] || []).filter(function (o) {
+          return ids.indexOf(o["id"] || o.props["id"]) >= 0;
+        });
+      };
+
+      for (var i = 0; i < names.length; i++) {
+        _loop(i);
+      } //=========================================================
+
     }
   }]);
 
-  return Callback;
+  return ComponentDataHandler;
 }();
 
-exports.Callback = Callback;
-//# sourceMappingURL=common.js.map
+exports.ComponentDataHandler = ComponentDataHandler;
+//# sourceMappingURL=component-data-handler.js.map
 
 
 /***/ }),
@@ -1138,7 +2352,7 @@ exports.ComponentPanel = void 0;
 
 var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
-var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
+var _index = __webpack_require__(/*! ./components/index */ "./out-es5/components/index.js");
 
 var _style = __webpack_require__(/*! ./style */ "./out-es5/style.js");
 
@@ -1176,6 +2390,7 @@ function (_React$Component) {
     _this.state = {
       componets: []
     };
+    _this.designer = _this.props.designer;
     return _this;
   }
 
@@ -1186,7 +2401,7 @@ function (_React$Component) {
       toolItemElement.draggable = true;
       toolItemElement.addEventListener('dragstart', function (ev) {
         componentData.props = componentData.props || {};
-        ev.dataTransfer.setData(_common.constants.componentData, JSON.stringify(componentData));
+        ev.dataTransfer.setData(_index.constants.componentData, JSON.stringify(componentData));
         ev.dataTransfer.setData('mousePosition', JSON.stringify({
           x: ev.offsetX,
           y: ev.offsetY
@@ -1209,10 +2424,7 @@ function (_React$Component) {
         className: "empty"
       }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
       var props = Object.assign({}, this.props);
-      var componets = this.state.componets || []; // return <DesignerContext.Consumer>
-      //     {context => {
-      //         this.designer = context.designer;
-
+      var componets = this.state.componets || [];
       return React.createElement("ul", Object.assign({}, props, {
         className: "".concat(_style.classNames.componentPanel, " ").concat(this.props.className || ""),
         ref: function ref(e) {
@@ -1240,13 +2452,7 @@ function (_React$Component) {
             _this2.componentDraggable(e, ctrl);
           }
         })), React.createElement("div", null, c.displayName));
-      })); // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
-      //     <div className="panel-heading">工具栏</div>
-      //     <div className="panel-body">
-      //     </div>
-      // </div>
-      //     }}
-      // </DesignerContext.Consumer>
+      }));
     }
   }, {
     key: "element",
@@ -1256,7 +2462,7 @@ function (_React$Component) {
   }], [{
     key: "getComponentData",
     value: function getComponentData(dataTransfer) {
-      var str = dataTransfer.getData(_common.constants.componentData);
+      var str = dataTransfer.getData(_index.constants.componentData);
       if (!str) return;
       return JSON.parse(str);
     }
@@ -1272,8 +2478,7 @@ function (_React$Component) {
   }]);
 
   return ComponentPanel;
-}(React.Component); // designer: PageDesigner;
-
+}(React.Component);
 
 exports.ComponentPanel = ComponentPanel;
 ComponentPanel.componentIndexName = "data-component-index";
@@ -1295,19 +2500,19 @@ ComponentPanel.componentIndexName = "data-component-index";
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.defaultComponentAttribute = exports.ComponentWrapper = void 0;
+exports.ComponentWrapper = void 0;
 
 var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
 var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
-
-var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
 
 var _componentPanel = __webpack_require__(/*! ./component-panel */ "./out-es5/component-panel.js");
 
 var _style = __webpack_require__(/*! ./style */ "./out-es5/style.js");
 
 var _component = __webpack_require__(/*! ./component */ "./out-es5/component.js");
+
+var _index = __webpack_require__(/*! ./components/index */ "./out-es5/components/index.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -1375,7 +2580,7 @@ function (_React$Component) {
       }
 
       element.setAttribute('data-behavior', 'behavior');
-      var designer = this.props.designer;
+      var designer = this.props.handler;
       console.assert(attr.container != null);
       console.assert(attr.movable != null);
 
@@ -1422,9 +2627,9 @@ function (_React$Component) {
       }
 
       var attr = this.props.source.attr;
-      var noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
+      var shouldWrapper = attr.resize || typeof this.props.source.type != 'string' && this.props.source.type != _index.MasterPage;
 
-      if (noWrapper) {
+      if (!shouldWrapper) {
         return this.renderWidthoutWrapper();
       }
 
@@ -1532,17 +2737,11 @@ function (_React$Component) {
   }, {
     key: "createRawElement",
     value: function createRawElement(type, props, children) {
-      props = Object.assign({}, props);
       var isEmptyElement = (children || []).length == 0;
 
       if (isEmptyElement) {
         var emtpy = this.designTimeEmptyElement(type, props);
         if (emtpy != null) children = [emtpy];
-      }
-
-      if (typeof type == "string") {
-        props["parent-id"] = props.parentId;
-        delete props.parentId;
       }
 
       return React.createElement.apply(React, [type, props].concat(_toConsumableArray(children)));
@@ -1574,7 +2773,7 @@ function (_React$Component) {
       element.addEventListener('dragover', function (event) {
         event.preventDefault();
         event.stopPropagation();
-        var componentName = event.dataTransfer.getData(_common.constants.componentData);
+        var componentName = event.dataTransfer.getData(_index.constants.componentData);
         if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
         console.log("dragover: left:".concat(event['layerX'], " top:").concat(event['layerX']));
       });
@@ -1745,7 +2944,7 @@ function (_React$Component) {
         selectedControlIds.push(elementID);
       }
 
-      designer.selectComponent(selectedControlIds);
+      designer.selectComponents(selectedControlIds);
     }
   }]);
 
@@ -1753,15 +2952,14 @@ function (_React$Component) {
 }(React.Component);
 
 exports.ComponentWrapper = ComponentWrapper;
-ComponentWrapper.isDrag = false;
-var defaultComponentAttribute = {
-  container: false,
-  movable: false,
-  showHandler: false,
-  resize: false,
-  noWrapper: false
-};
-exports.defaultComponentAttribute = defaultComponentAttribute;
+ComponentWrapper.isDrag = false; // export interface ComponentAttribute {
+//     /** 表示组件为容器，可以添加组件 */
+//     container?: boolean,
+//     /** 表示组件可移动 */
+//     movable?: boolean,
+//     showHandler?: boolean,
+//     resize?: boolean,
+// }
 //# sourceMappingURL=component-wrapper.js.map
 
 
@@ -1780,18 +2978,23 @@ exports.defaultComponentAttribute = defaultComponentAttribute;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.component = component;
-exports.Component = exports.ComponentWrapperContext = void 0;
+exports.defaultComponentFactory = exports.Component = exports.ComponentWrapperContext = void 0;
 
 var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
-var _componentWrapper = __webpack_require__(/*! ./component-wrapper */ "./out-es5/component-wrapper.js");
-
 var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
-var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
+var _proptDisplayNames = __webpack_require__(/*! ./propt-display-names */ "./out-es5/propt-display-names.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1801,18 +3004,10 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+// type DesignerContextValue = { designer: ComponentDataHandler | null };
+// export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
 var ComponentWrapperContext = React.createContext(null);
 exports.ComponentWrapperContext = ComponentWrapperContext;
-
-function component(args) {
-  return function (constructor) {
-    // if (PageDesigner) {
-    Component.setAttribute(constructor.name, args); // }
-
-    Component.register(constructor.name, constructor);
-    return constructor;
-  };
-}
 
 var Component =
 /*#__PURE__*/
@@ -1844,12 +3039,12 @@ function () {
       var attr = Component.componentAttributes[typename];
       return Object.assign({
         type: type
-      }, _componentWrapper.defaultComponentAttribute, attr || {});
+      }, Component.defaultComponentAttribute, attr || {});
     }
   }, {
     key: "getPropEditors",
     value: function getPropEditors(componentData) {
-      var componentType = typeof componentData == "string" ? "string" : componentData.type;
+      var componentType = componentData.type;
       var result = [];
       var propEditorInfo = this.componentPropEditors[componentType] || [];
 
@@ -1895,7 +3090,7 @@ function () {
         editorDisplay = options.display;
 
         if (options.displayName != null) {
-          _common.proptDisplayNames[propName] = options.displayName;
+          _proptDisplayNames.proptDisplayNames[propName] = options.displayName;
         }
       } else {
         componentType = componentTypeOrOptions;
@@ -1926,6 +3121,12 @@ function () {
       });
     }
   }, {
+    key: "createElement",
+    value: function createElement(componentData) {
+      // return Component._createElement(componentData, { components: [], componentTypes: [] }, h);
+      return defaultComponentFactory(componentData);
+    }
+  }, {
     key: "register",
     value: function register(componentName, componentType, attr) {
       if (componentType == null && typeof componentName == 'function') {
@@ -1939,12 +3140,6 @@ function () {
       Component.componentTypes[componentName] = componentType;
       if (attr) Component.setAttribute(componentName, attr);
     }
-  }, {
-    key: "getComponentType",
-    value: function getComponentType(componentName) {
-      var componentType = Component.componentTypes[componentName];
-      return componentType;
-    }
   }]);
 
   return Component;
@@ -1954,10 +3149,13 @@ function () {
 
 exports.Component = Component;
 Component.Fragment = ""; //==========================================
-// private static defaultComponentAttribute: ComponentAttribute = {
-//     container: false, movable: false, showHandler: false, resize: false
-// }
 
+Component.defaultComponentAttribute = {
+  container: false,
+  movable: false,
+  showHandler: false,
+  resize: false
+};
 Component.componentAttributes = {
   'div': {
     container: true,
@@ -2011,9 +3209,292 @@ Component.componentAttributes = {
   }
 };
 Component.componentPropEditors = {};
-Component.componentPropEditorDisplay = {};
+Component.componentPropEditorDisplay = {}; // /**
+//  * 将持久化的元素数据转换为 ReactElement
+//  * @param componentData 元素数据
+//  */
+// private static _createElement(componentData: ComponentData, context: CreateElementContext, h?: ComponentFactory): React.ReactElement<any> | null {
+//     if (!componentData) throw Errors.argumentNull('componentData')
+//     h = h || defaultComponentFactory;
+//     try {
+//         let type: string | React.ComponentClass | React.ComponentType = componentData.type;
+//         let componentName = componentData.type;
+//         let controlType = Component.componentTypes[componentName];
+//         if (controlType) {
+//             type = controlType;
+//         }
+//         let children: (React.ReactElement<any> | string)[] = [];
+//         for (let i = 0; i < componentData.children.length; i++) {
+//             let child = componentData.children[i];
+//             if (typeof child == "string")
+//                 children.push(child);
+//             else
+//                 children.push(Component._createElement(child, context, h));
+//         }
+//         //componentData.children ? componentData.children.map(o => Component._createElement(o, context, h)) : [];
+//         let props: ComponentProps<any> = componentData.props == null ? {} : Object.assign({}, componentData.props);//JSON.parse(JSON.stringify(componentData.props));
+//         if (controlType != null && controlType["defaultProps"]) {
+//             props = Object.assign({}, controlType["defaultProps"], props);
+//         }
+//         let result: JSX.Element
+//         if (typeof type == 'string') {
+//             if (props.text) {
+//                 children.push(props.text)
+//             }
+//             //=========================================
+//             // props.text 非 DOM 的 prop，并且已经使用完
+//             // delete props.text
+//             // if (h == React.createElement) {
+//             //     delete props.attr
+//             // }
+//             //=========================================
+//         }
+//         let masterPage: MasterPage;
+//         type = type == Component.Fragment ? React.Fragment : type
+//         let ref = props.ref;
+//         props.ref = function (e: any) {
+//             if (typeof ref == "function")
+//                 ref(e);
+//             if (e instanceof MasterPage) {
+//                 masterPage = e;
+//                 for (let i = 0; i < context.componentTypes.length; i++) {
+//                     let typeName = context.componentTypes[i];
+//                     let childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
+//                     childComponents.push(context.components[i]);
+//                 }
+//             }
+//             else if (e != null) {
+//                 context.components.push(e);
+//                 context.componentTypes.push(typeof type == "string" ? type : type.name);
+//                 // masterPage.componentCreated.fire({ component: e, type: typeof type == "string" ? type : type.name });
+//             }
+//         };
+//         result = h(componentData);
+//         return result
+//     }
+//     catch (e) {
+//         console.error(e);
+//         return null;
+//     }
+// }
+
 Component.componentTypes = {};
+
+var defaultComponentFactory = function defaultComponentFactory(c) {
+  var children = (c.children || []).map(function (c) {
+    return typeof c == "string" ? c : defaultComponentFactory(c);
+  });
+  var type = Component.componentTypes[c.type] || c.type;
+  var e = React.createElement.apply(React, [type, c.props || {}].concat(_toConsumableArray(children)));
+  return e;
+};
+
+exports.defaultComponentFactory = defaultComponentFactory;
 //# sourceMappingURL=component.js.map
+
+
+/***/ }),
+
+/***/ "./out-es5/components/common.js":
+/*!**************************************!*\
+  !*** ./out-es5/components/common.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "guid", {
+  enumerable: true,
+  get: function get() {
+    return _maishuToolkit.guid;
+  }
+});
+exports.constants = exports.ComponentTypes = void 0;
+
+var _maishuToolkit = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
+
+var ComponentTypes = {
+  Text: "Text",
+  PageView: "PageView",
+  PlaceHolder: "PlaceHolder"
+};
+exports.ComponentTypes = ComponentTypes;
+var constants = {
+  componentsDir: 'components',
+  connectorElementClassName: 'component-container',
+  componentTypeName: 'data-component-name',
+  componentData: 'component-data',
+  componentPosition: "component-position"
+};
+exports.constants = constants;
+//# sourceMappingURL=common.js.map
+
+
+/***/ }),
+
+/***/ "./out-es5/components/index.js":
+/*!*************************************!*\
+  !*** ./out-es5/components/index.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _exportNames = {
+  ComponentTypes: true,
+  constants: true
+};
+Object.defineProperty(exports, "ComponentTypes", {
+  enumerable: true,
+  get: function get() {
+    return _common.ComponentTypes;
+  }
+});
+Object.defineProperty(exports, "constants", {
+  enumerable: true,
+  get: function get() {
+    return _common.constants;
+  }
+});
+
+var _masterPage = __webpack_require__(/*! ./master-page */ "./out-es5/components/master-page.js");
+
+Object.keys(_masterPage).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _masterPage[key];
+    }
+  });
+});
+
+var _common = __webpack_require__(/*! ./common */ "./out-es5/components/common.js");
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ "./out-es5/components/master-page.js":
+/*!*******************************************!*\
+  !*** ./out-es5/components/master-page.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MasterPage = exports.MasterPageContext = exports.MasterPageName = void 0;
+
+var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
+
+var _component = __webpack_require__(/*! ../component */ "./out-es5/component.js");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var MasterPageName = 'MasterPage';
+exports.MasterPageName = MasterPageName;
+var MasterPageContext = React.createContext({
+  master: null
+});
+exports.MasterPageContext = MasterPageContext;
+
+var MasterPage =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(MasterPage, _React$Component);
+
+  function MasterPage(props) {
+    var _this;
+
+    _classCallCheck(this, MasterPage);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(MasterPage).call(this, props));
+    _this.childComponents = {}; // let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
+
+    _this.state = {};
+    return _this;
+  } // private static children(props: ComponentProps): React.ReactElement<ComponentProps<any>>[] {
+  //     let arr = props.children == null ? [] :
+  //         Array.isArray(props.children) ? props.children : [props.children];
+  //     let children: React.ReactElement<ComponentProps<any>>[] = []
+  //     arr.forEach(o => {
+  //         if (!React.isValidElement(o))
+  //             return
+  //         children.push(o as React.ReactElement<ComponentProps<any>>)
+  //     })
+  //     return children
+  // }
+  // static getDerivedStateFromProps(props: ComponentProps) {
+  //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
+  //     return { children } as MasterPage["state"];
+  // }
+
+
+  _createClass(MasterPage, [{
+    key: "render",
+    value: function render() {
+      // let props = {} as any
+      // for (let key in this.props) {
+      //     if (key == 'ref' || key == 'id')
+      //         continue
+      //     props[key] = this.props[key]
+      // }
+      // props.style = Object.assign({ minHeight: 40 }, props.style)
+      // let children = this.state.children.filter(o => o.props.parentId == null);
+      var master = this;
+      console.assert(master != null);
+      var children = this.props.children;
+      return React.createElement(MasterPageContext.Provider, {
+        value: {
+          master: master
+        }
+      }, children);
+    }
+  }]);
+
+  return MasterPage;
+}(React.Component);
+
+exports.MasterPage = MasterPage;
+
+_component.Component.register(MasterPageName, MasterPage, {
+  container: false
+});
+//# sourceMappingURL=master-page.js.map
 
 
 /***/ }),
@@ -2064,6 +3545,7 @@ var EditorPanel =
 function (_React$Component) {
   _inherits(EditorPanel, _React$Component);
 
+  // private designerComponentChanged: (args: any) => void
   function EditorPanel(props) {
     var _this;
 
@@ -2071,23 +3553,33 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(EditorPanel).call(this, props));
     _this.state = {
-      componentDatas: [],
-      designer: null
-    };
-
-    _this.designerComponentChanged = function () {
-      console.assert(_this.designer != null);
-
-      _this.setState({
-        designer: _this.designer
-      });
-    };
+      componentDatas: []
+    }; // this.designerComponentChanged = () => {
+    //     console.assert(this.designer != null)
+    //     this.setState({ designer: this.designer })
+    // }
 
     return _this;
   }
 
   _createClass(EditorPanel, [{
     key: "render",
+    // set designer(value) {
+    //     if (this._designer) {
+    //         this._designer.componentRemoved.remove(this.designerComponentChanged)
+    //         this._designer.componentAppend.remove(this.designerComponentChanged)
+    //         this._designer.componentUpdated.remove(this.designerComponentChanged)
+    //         this._designer.componentSelected.remove(this.designerComponentChanged)
+    //     }
+    //     if (value) {
+    //         value.componentRemoved.add(this.designerComponentChanged)
+    //         value.componentAppend.add(this.designerComponentChanged)
+    //         value.componentUpdated.add(this.designerComponentChanged)
+    //         value.componentSelected.add(this.designerComponentChanged)
+    //     }
+    //     this._designer = value;
+    //     this.setState({ designer: value });
+    // }
     value: function render() {
       var _this2 = this;
 
@@ -2095,7 +3587,7 @@ function (_React$Component) {
       empty = empty || React.createElement("div", {
         className: "empty"
       }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
-      var designer = this.state.designer;
+      var designer = this.props.designer;
       return React.createElement("div", {
         className: "".concat(_style.classNames.editorPanel, " ").concat(this.props.className || ""),
         ref: function ref(e) {
@@ -2114,29 +3606,6 @@ function (_React$Component) {
     key: "designer",
     get: function get() {
       return this._designer;
-    },
-    set: function set(value) {
-      if (this._designer) {
-        this._designer.componentRemoved.remove(this.designerComponentChanged);
-
-        this._designer.componentAppend.remove(this.designerComponentChanged);
-
-        this._designer.componentUpdated.remove(this.designerComponentChanged);
-
-        this._designer.componentSelected.remove(this.designerComponentChanged);
-      }
-
-      if (value) {
-        value.componentRemoved.add(this.designerComponentChanged);
-        value.componentAppend.add(this.designerComponentChanged);
-        value.componentUpdated.add(this.designerComponentChanged);
-        value.componentSelected.add(this.designerComponentChanged);
-      }
-
-      this._designer = value;
-      this.setState({
-        designer: value
-      });
     }
   }]);
 
@@ -2145,95 +3614,6 @@ function (_React$Component) {
 
 exports.EditorPanel = EditorPanel;
 //# sourceMappingURL=editor-panel.js.map
-
-
-/***/ }),
-
-/***/ "./out-es5/error-boundary.js":
-/*!***********************************!*\
-  !*** ./out-es5/error-boundary.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ErrorBoundary = void 0;
-
-var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var ErrorBoundary =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ErrorBoundary, _React$Component);
-
-  function ErrorBoundary(props) {
-    var _this;
-
-    _classCallCheck(this, ErrorBoundary);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ErrorBoundary).call(this, props));
-    _this.state = {};
-    return _this;
-  }
-
-  _createClass(ErrorBoundary, [{
-    key: "componentDidCatch",
-    value: function componentDidCatch(error, info) {
-      // Display fallback UI
-      this.setState({
-        error: error
-      }); // You can also log the error to an error reporting service
-      //   logErrorToMyService(error, info);
-
-      debugger;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _ref = this.state || {},
-          error = _ref.error;
-
-      if (error) {
-        // You can render any custom fallback UI
-        return React.createElement("div", {
-          className: "error"
-        }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
-      }
-
-      return this.props.children;
-    }
-  }]);
-
-  return ErrorBoundary;
-}(React.Component);
-
-exports.ErrorBoundary = ErrorBoundary;
-//# sourceMappingURL=error-boundary.js.map
 
 
 /***/ }),
@@ -2324,12 +3704,6 @@ function () {
       var msg = "".concat(fieldName, " of argument ").concat(argumentName, " cannt be null or empty.");
       return new Error(msg);
     }
-  }, {
-    key: "componentDataNotExists",
-    value: function componentDataNotExists(componentId) {
-      var msg = "Component data ".concat(componentId, " is not exists.");
-      return new Error(msg);
-    }
   }]);
 
   return Errors;
@@ -2354,16 +3728,29 @@ exports.Errors = Errors;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var _exportNames = {
+  strings: true,
+  proptDisplayNames: true,
+  Component: true,
+  ComponentPanel: true,
+  EditorPanel: true,
+  PageDesigner: true,
+  PropEditor: true,
+  TextInput: true,
+  classNames: true,
+  ComponentDataHandler: true,
+  component: true
+};
 Object.defineProperty(exports, "strings", {
   enumerable: true,
   get: function get() {
-    return _common.proptDisplayNames;
+    return _proptDisplayNames.proptDisplayNames;
   }
 });
 Object.defineProperty(exports, "proptDisplayNames", {
   enumerable: true,
   get: function get() {
-    return _common.proptDisplayNames;
+    return _proptDisplayNames.proptDisplayNames;
   }
 });
 Object.defineProperty(exports, "Component", {
@@ -2408,34 +3795,16 @@ Object.defineProperty(exports, "classNames", {
     return _style.classNames;
   }
 });
-Object.defineProperty(exports, "PageBuilderContext", {
+Object.defineProperty(exports, "ComponentDataHandler", {
   enumerable: true,
   get: function get() {
-    return _reactPageBuilder.PageBuilderContext;
+    return _componentDataHandler.ComponentDataHandler;
   }
 });
-Object.defineProperty(exports, "MasterPage", {
+Object.defineProperty(exports, "component", {
   enumerable: true,
   get: function get() {
-    return _reactPageBuilder.MasterPage;
-  }
-});
-Object.defineProperty(exports, "MasterPageContext", {
-  enumerable: true,
-  get: function get() {
-    return _reactPageBuilder.MasterPageContext;
-  }
-});
-Object.defineProperty(exports, "PlaceHolder", {
-  enumerable: true,
-  get: function get() {
-    return _reactPageBuilder.PlaceHolder;
-  }
-});
-Object.defineProperty(exports, "PageView", {
-  enumerable: true,
-  get: function get() {
-    return _reactPageBuilder.PageView;
+    return _decorators.component;
   }
 });
 
@@ -2449,7 +3818,7 @@ __webpack_require__(/*! ../lib/jquery.event.drop-2.2 */ "./lib/jquery.event.drop
 
 __webpack_require__(/*! ../lib/jquery.event.drop.live-2.2 */ "./lib/jquery.event.drop.live-2.2.js");
 
-var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
+var _proptDisplayNames = __webpack_require__(/*! ./propt-display-names */ "./out-es5/propt-display-names.js");
 
 var _component = __webpack_require__(/*! ./component */ "./out-es5/component.js");
 
@@ -2463,7 +3832,35 @@ var _propEditor = __webpack_require__(/*! ./prop-editor */ "./out-es5/prop-edito
 
 var _style = __webpack_require__(/*! ./style */ "./out-es5/style.js");
 
-var _reactPageBuilder = __webpack_require__(/*! ./react-page-builder */ "./out-es5/react-page-builder.js");
+var _componentDataHandler = __webpack_require__(/*! ./component-data-handler */ "./out-es5/component-data-handler.js");
+
+var _index = __webpack_require__(/*! ./components/index */ "./out-es5/components/index.js");
+
+Object.keys(_index).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _index[key];
+    }
+  });
+});
+
+var _maishuJueyingCore = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/dist/index.js");
+
+Object.keys(_maishuJueyingCore).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _maishuJueyingCore[key];
+    }
+  });
+});
+
+var _decorators = __webpack_require__(/*! maishu-jueying-core/decorators */ "./node_modules/maishu-jueying-core/decorators.js");
 //# sourceMappingURL=index.js.map
 
 
@@ -2515,13 +3912,13 @@ exports.PageDesigner = void 0;
 
 var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
-var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
-
 var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
+
+var _component = __webpack_require__(/*! ./component */ "./out-es5/component.js");
 
 var _style = __webpack_require__(/*! ./style */ "./out-es5/style.js");
 
-var _reactPageBuilder = __webpack_require__(/*! ./react-page-builder */ "./out-es5/react-page-builder.js");
+var _componentWrapper = __webpack_require__(/*! ./component-wrapper */ "./out-es5/component-wrapper.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -2543,9 +3940,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -2562,77 +3959,115 @@ function (_React$Component) {
     _classCallCheck(this, PageDesigner);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PageDesigner).call(this, props));
-    _this.componentSelected = _common.Callback.create();
-    _this.componentRemoved = _common.Callback.create();
-    _this.componentAppend = _common.Callback.create();
-    _this.componentUpdated = _common.Callback.create();
-    _this.designtimeComponentDidMount = _common.Callback.create(); // let components: PageDesignerState["components"] = {};
-    // PageDesigner.fillPageData(props.pageData);
+    _this.components = {};
+    var pageData = _this.props.handler.pageData;
 
-    _this.state = {};
+    _this.initPageData(pageData);
 
-    _this.designtimeComponentDidMount.add(function () {
-      console.log("this:designer event:controlComponentDidMount");
+    _this.state = {
+      pageData: pageData
+    };
+
+    _this.props.handler.componentSelected.add(function (args) {
+      // this.componentSelected.fire(args);
+      _this.setState({
+        pageData: _this.props.handler.pageData
+      });
     });
 
-    var pageBuilderType = props.pageBuilderType || _reactPageBuilder.ReactPageBuilder;
-    _this.pageBuilder = new pageBuilderType({
-      designer: _assertThisInitialized(_this)
+    _this.props.handler.componentRemoved.add(function (args) {
+      // this.componentRemoved.fire(args);
+      _this.setState({
+        pageData: _this.props.handler.pageData
+      });
     });
+
+    _this.props.handler.componentUpdated.add(function (args) {
+      // this.componentUpdated.fire(args);
+      _this.setState({
+        pageData: _this.props.handler.pageData
+      });
+    });
+
+    _this.props.handler.pageDataChanged.add(function (args) {
+      _this.setState({
+        pageData: args
+      });
+    }); // this.componentAppend = Callback.create();
+    // this.props.componentDataHandler.componentAppend.add(() => this.componentAppend.fire(this));
+
+
     return _this;
-  } // private static setComponetRefProp(pageData: ComponentData, components: PageDesignerState["components"]) {
-  //     //=========================================================
-  //     // 纪录当前 pageData 控件 ID
-  //     let componentIds: { [typeName: string]: string[] } = {};
-  //     //=========================================================
-  //     PageDesigner.travelComponentData(pageData).forEach(item => {
-  //         console.assert(item.props != null && item.props.id != null);
-  //         componentIds[item.type] = componentIds[item.type] || [];
-  //         componentIds[item.type].push(item.props["id"] as string);
-  //         let itemRef = item.props.ref;
-  //         item.props.ref = (e) => {
-  //             if (e != null) {
-  //                 components[item.type] = components[item.type] || [];
-  //                 components[item.type].push(e);
-  //             }
-  //             if (typeof itemRef == "function")
-  //                 itemRef(e);
-  //         }
-  //     })
-  //     //=========================================================
-  //     // 仅保留 componentIds 中的控件 
-  //     let names = Object.getOwnPropertyNames(components);
-  //     for (let i = 0; i < names.length; i++) {
-  //         let typename = names[i];
-  //         let ids = componentIds[typename] || [];
-  //         components[typename] = (components[typename] || []).filter(o => ids.indexOf(o["id"] || o.props["id"]) >= 0)
-  //     }
-  //     //=========================================================
-  // }
-  // /** 对 pageData 进行缺少的字段进行补充 */
-  // private static fillPageData(pageData: ComponentData) {
-  //     if (pageData == null) {
-  //         return
-  //     }
-  //     pageData.children = pageData.children || [];
-  //     PageDesigner.nameComponent(pageData);
-  //     // PageDesigner.setComponetRefProp(pageData, components);
-  // }
-  // allComponents(): React.Component[] {
-  //     let r: React.Component[] = [];
-  //     for (let key in this.state.components) {
-  //         r.push(...this.state.components[key]);
-  //     }
-  //     return r;
-  // }
-
-  /** 页面数据 */
-
+  }
 
   _createClass(PageDesigner, [{
-    key: "updateComponentProp",
+    key: "setComponetRefProp",
+    value: function setComponetRefProp(pageData) {
+      var _this2 = this;
 
-    /** 更新组件属性 */
+      //=========================================================
+      // 纪录当前 pageData 控件 ID
+      var componentIds = {}; //=========================================================
+
+      PageDesigner.travelComponentData(pageData).forEach(function (item) {
+        console.assert(item.props != null && item.id != null);
+        componentIds[item.type] = componentIds[item.type] || [];
+        componentIds[item.type].push(item.props["id"]);
+        var itemRef = item.props.ref;
+
+        item.props.ref = function (e) {
+          if (e != null) {
+            _this2.components[item.type] = _this2.components[item.type] || [];
+
+            _this2.components[item.type].push(e);
+          }
+
+          if (typeof itemRef == "function") itemRef(e);
+        };
+      }); //=========================================================
+      // 仅保留 componentIds 中的控件 
+
+      var names = Object.getOwnPropertyNames(this.components);
+
+      var _loop = function _loop(i) {
+        var typename = names[i];
+        var ids = componentIds[typename] || [];
+        _this2.components[typename] = (_this2.components[typename] || []).filter(function (o) {
+          return ids.indexOf(o["id"] || o.props["id"]) >= 0;
+        });
+      };
+
+      for (var i = 0; i < names.length; i++) {
+        _loop(i);
+      } //=========================================================
+
+    }
+  }, {
+    key: "initPageData",
+    value: function initPageData(pageData) {
+      if (pageData == null) {
+        return;
+      }
+
+      pageData.children = pageData.children || []; // PageDesigner.nameComponent(pageData);
+
+      this.setComponetRefProp(pageData);
+    }
+  }, {
+    key: "allComponents",
+    value: function allComponents() {
+      var r = [];
+
+      for (var key in this.components) {
+        r.push.apply(r, _toConsumableArray(this.components[key]));
+      }
+
+      return r;
+    }
+    /** 页面数据 */
+
+  }, {
+    key: "updateComponentProp",
     value: function updateComponentProp(componentId, propName, value) {
       return this.updateComponentProps({
         componentId: componentId,
@@ -2640,8 +4075,6 @@ function (_React$Component) {
         value: value
       });
     }
-    /** 更新组件多个属性 */
-
   }, {
     key: "updateComponentProps",
     value: function updateComponentProps() {
@@ -2649,16 +4082,35 @@ function (_React$Component) {
         componentProps[_key] = arguments[_key];
       }
 
-      var componentDatas = this.pageBuilder.updateComponentProps(componentProps);
-      this.componentUpdated.fire(componentDatas);
-    }
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-
-  }, {
-    key: "appendComponent",
+      this.props.handler.updateComponentProps(componentProps);
+    } // /**
+    //  * 对组件及其子控件进行命名
+    //  * @param component 
+    //  */
+    // private static nameComponent(component: ComponentData) {
+    //     let namedComponents: { [key: string]: ComponentData } = {}
+    //     let props = component.props = component.props || {};
+    //     if (!props.name) {
+    //         let num = 0;
+    //         let name: string;
+    //         do {
+    //             num = num + 1;
+    //             name = `${component.type}${num}`;
+    //         } while (namedComponents[name]);
+    //         namedComponents[name] = component
+    //         props.name = name;
+    //     }
+    //     if (!props.id)
+    //         props.id = guid();
+    //     if (!component.children || component.children.length == 0) {
+    //         return;
+    //     }
+    //     component.children.forEach(child => {
+    //         if (typeof child == "string")
+    //             return true;
+    //         PageDesigner.nameComponent(child);
+    //     })
+    // }
 
     /**
      * 添加控件
@@ -2666,12 +4118,11 @@ function (_React$Component) {
      * @param componentData 控件数据
      * @param componentIndex 新添加组件在子组件中的次序
      */
+
+  }, {
+    key: "appendComponent",
     value: function appendComponent(parentId, componentData, componentIndex) {
-      if (!parentId) throw _errors.Errors.argumentNull('parentId');
-      if (!componentData) throw _errors.Errors.argumentNull('childComponent');
-      this.pageBuilder.appendComponent(parentId, componentData, componentIndex);
-      this.selectComponent(componentData.props.id);
-      this.componentAppend.fire(this);
+      this.props.handler.appendComponent(parentId, componentData, componentIndex);
     }
     /**
      * 设置控件位置
@@ -2696,31 +4147,43 @@ function (_React$Component) {
   }, {
     key: "setComponentSize",
     value: function setComponentSize(componentId, size) {
-      // console.assert(componentId != null)
-      // console.assert(size != null)
-      // let componentData = this.findComponentData(componentId);
-      // if (!componentData)
-      //     throw new Error(`Control ${componentId} is not exits.`);
-      // let style = componentData.props.style = (componentData.props.style || {});
-      // if (size.height)
-      //     style.height = size.height
-      // if (size.width)
-      //     style.width = size.width
-      // let { pageData } = this.state;
-      // this.setState({ pageData });
-      var componentDatas = this.pageBuilder.setComponentsSize([{
-        componentId: componentId,
-        size: size
-      }]);
-      this.componentUpdated.fire(componentDatas);
+      console.assert(componentId != null);
+      console.assert(size != null);
+      var componentData = this.findComponentData(componentId);
+      if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
+      var style = componentData.props.style = componentData.props.style || {};
+      if (size.height) style.height = size.height;
+      if (size.width) style.width = size.width;
+      var pageData = this.state.pageData;
+      this.setState({
+        pageData: pageData
+      }); // this.componentUpdated.fire([componentData])
     }
-    /** 设置多个组件的位置 */
-
   }, {
     key: "setComponentsPosition",
     value: function setComponentsPosition(positions) {
-      var componentDatas = this.pageBuilder.setComponentsPosition(positions);
-      this.componentUpdated.fire(componentDatas);
+      var _this3 = this;
+
+      var toUpdateProps = [];
+      positions.forEach(function (o) {
+        var componentId = o.componentId;
+        var _o$position = o.position,
+            left = _o$position.left,
+            top = _o$position.top;
+
+        var componentData = _this3.props.handler.findComponentData(componentId);
+
+        if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
+        var style = componentData.props.style = componentData.props.style || {};
+        if (left) style.left = left;
+        if (top) style.top = top;
+        toUpdateProps.push({
+          componentId: componentId,
+          propName: "style",
+          value: style
+        });
+      });
+      this.props.handler.updateComponentProps(toUpdateProps);
     }
     /**
      * 选择指定的控件
@@ -2730,9 +4193,10 @@ function (_React$Component) {
   }, {
     key: "selectComponent",
     value: function selectComponent(componentIds) {
-      var ids = typeof componentIds == "string" ? [componentIds] : componentIds;
-      this.pageBuilder.selectComponents(ids);
-      this.componentSelected.fire(ids);
+      this.props.handler.selectComponents(componentIds); //====================================================
+      // 设置焦点，以便获取键盘事件
+
+      if (this._element) this._element.focus(); //====================================================
     }
     /** 移除控件 */
 
@@ -2743,52 +4207,77 @@ function (_React$Component) {
         componentIds[_key2] = arguments[_key2];
       }
 
-      if (!componentIds) throw _errors.Errors.argumentNull("componentIds");
-      this.pageBuilder.removeComponents(componentIds);
-      this.componentRemoved.fire(componentIds);
+      this.props.handler.removeComponents(componentIds);
     }
     /**
      * 移动控件到另外一个控件容器
      * @param componentId 要移动的组件编号
      * @param parentId 目标组件编号
-     * @param beforeChildId 组件的前一个子组件编号
+     * @param targetComponentIndex 组件位置
      */
 
   }, {
     key: "moveComponent",
-    value: function moveComponent(componentId, parentId, childComponentIndex) {
-      this.pageBuilder.moveComponent(componentId, parentId, childComponentIndex);
-    } // private static travelComponentData(pageData: ComponentData, filter?: (item: ComponentData) => boolean): ComponentData[] {
-    //     let stack = new Array<ComponentData>();
-    //     stack.push(pageData);
-    //     let r: ComponentData[] = [];
-    //     // return new Promise((resolve, reject) => {
-    //     filter = filter || (() => true);
-    //     while (stack.length > 0) {
-    //         let item = stack.shift();
-    //         if (filter(item)) {
-    //             r.push(item);
-    //         }
-    //         //===============================================
-    //         // 子元素有可能为字符串, 过滤出对象
-    //         let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
-    //         //===============================================
-    //         stack.push(...children);
-    //     }
-    //     return r;
-    // }
-    // findComponetsByTypeName(componentTypeName: string) {
-    //     let components = this.state.components[componentTypeName];
-    //     return components;
-    // }
-    // findComponentData(componentId: string): ComponentData | null {
-    //     let pageData = this.state.pageData;
-    //     if (!pageData)
-    //         throw Errors.pageDataIsNull();
-    //     let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.props.id == componentId)
-    //     return componentDatas[0];
-    // }
+    value: function moveComponent(componentId, parentId, targetComponentIndex) {
+      return this.props.handler.moveComponent(componentId, parentId, targetComponentIndex);
+    }
+  }, {
+    key: "removeComponentFrom",
+    value: function removeComponentFrom(controlId, collection) {
+      var _this4 = this;
 
+      var controlIndex = null;
+
+      for (var i = 0; i < collection.length; i++) {
+        var child = collection[i];
+        if (typeof child == "string") continue;
+
+        if (controlId == child.id) {
+          controlIndex = i;
+          break;
+        }
+      }
+
+      if (controlIndex == null) {
+        var _loop2 = function _loop2(_i) {
+          var o = collection[_i];
+          if (typeof o == "string") return "continue";
+          var children = o.children || [];
+          children.forEach(function (child) {
+            if (typeof child == "string") return true;
+
+            var isRemoved = _this4.removeComponentFrom(controlId, children);
+
+            if (isRemoved) {
+              return true;
+            }
+          });
+        };
+
+        for (var _i = 0; _i < collection.length; _i++) {
+          var _ret = _loop2(_i);
+
+          if (_ret === "continue") continue;
+        }
+
+        return false;
+      }
+
+      if (controlIndex == 0) {
+        collection.shift();
+      } else if (controlIndex == collection.length - 1) {
+        collection.pop();
+      } else {
+        collection.splice(controlIndex, 1);
+      }
+
+      return true;
+    }
+  }, {
+    key: "findComponentData",
+    value: function findComponentData(componentId) {
+      return this.props.handler.findComponentData(componentId);
+    }
   }, {
     key: "onKeyDown",
     value: function onKeyDown(e) {
@@ -2796,64 +4285,74 @@ function (_React$Component) {
 
       if (e.keyCode == DELETE_KEY_CODE) {
         if (this.selectedComponents.length == 0) return;
-        this.removeComponent.apply(this, _toConsumableArray(this.selectedComponentIds));
+        this.props.handler.removeComponents(this.selectedComponentIds);
       }
-    } // private createDesignTimeElement(type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]) {
-    //     if (type == null) throw Errors.argumentNull('type')
-    //     if (props == null) throw Errors.argumentNull('props')
-    //     if (props.id == null) throw Errors.argumentFieldCanntNull('id', 'props')
-    //     console.assert(props.id != null)
-    //     if (props.id != null)
-    //         props.key = props.id;
-    //     //===================================================
-    //     // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
-    //     let attr1 = Component.getAttribute(type)
-    //     console.assert(attr1 != null)
-    //     let attr2 = props.attr || {}
-    //     let attr = Object.assign({}, attr1, attr2)
-    //     delete props.attr
-    //     //===================================================
-    //     let className = props.selected ? appendClassName(props.className || '', classNames.componentSelected) : props.className
-    //     let wrapperProps = Object.assign({}, props);
-    //     delete wrapperProps.ref;
-    //     wrapperProps.className = className;
-    //     return <ComponentWrapper {...wrapperProps} designer={this}
-    //         source={{ type, attr, props, children }}>
-    //     </ComponentWrapper>
-    // }
-    // static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState) {
-    //     PageDesigner.fillPageData(props.pageData);
-    //     return { pageData: props.pageData } as Partial<PageDesignerState>;
-    // }
-
+    }
   }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.pageBuilder.createPage(this.pageData, this.element);
+    key: "createDesignTimeElement",
+    value: function createDesignTimeElement(componentData) {
+      //type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]
+      var type = componentData.type,
+          props = componentData.props,
+          children = componentData.children;
+      if (type == null) throw _errors.Errors.argumentFieldCanntNull("componentData", 'type');
+      if (props == null) throw _errors.Errors.argumentNull('props');
+      if (componentData.id == null) throw _errors.Errors.argumentFieldCanntNull('id', 'componentData');
+      console.assert(componentData.id != null);
+      if (componentData.id != null) props.key = componentData.id; //===================================================
+      // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
+
+      var attr1 = _component.Component.getAttribute(type);
+
+      console.assert(attr1 != null);
+      var attr2 = componentData.attr || {};
+      var attr = Object.assign({}, attr1, attr2); // delete props.attr
+      //===================================================
+
+      var className = componentData.selected ? (0, _style.appendClassName)(props.className || '', _style.classNames.componentSelected) : props.className;
+      var wrapperProps = Object.assign({}, props);
+      delete wrapperProps.ref;
+      wrapperProps.className = className; // let context: Context = this.props.handler;
+      // console.assert(context.handler != null);
+
+      return React.createElement(_componentWrapper.ComponentWrapper, Object.assign({}, wrapperProps, {
+        handler: this.props.handler,
+        source: {
+          type: type,
+          attr: attr,
+          props: props,
+          children: children
+        }
+      }));
+    }
+  }, {
+    key: "findComponetsByTypeName",
+    value: function findComponetsByTypeName(typeName) {
+      this.components[typeName];
     }
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
-
+      var pageData = this.state.pageData;
       var style = this.props.style;
-      var result = React.createElement("div", {
-        className: _style.classNames.designer,
-        tabIndex: 1,
-        style: style,
-        onKeyDown: function onKeyDown(e) {
-          return _this2.onKeyDown(e);
-        },
-        ref: function ref(e) {
-          _this2.element = e || _this2.element;
-        }
-      });
-      return result;
+      var elementTag = this.props.elementTag || "div"; // let result = React.createElement(elementTag, {
+      //     className: classNames.designer, tabIndex: 1, style,
+      //     ref: (e: HTMLElement) => {
+      //         if (!e) return;
+      //         this._element = e || this._element;
+      //         let c = this.props.componentFactory(pageData) //.renderDesignTimeComponent(pageData, e, { handler: this.props.componentDataHandler });
+      //         ReactDOM.render(c, e);
+      //     },
+      //     onKeyDown: (t) => this.onKeyDown(t)
+      // })
+      // return result;
+
+      return this.props.componentFactory(pageData);
     }
   }, {
     key: "pageData",
     get: function get() {
-      return this.props.pageData;
+      return this.state.pageData;
     }
     /** 获取已选择了的组件编号 */
 
@@ -2861,7 +4360,7 @@ function (_React$Component) {
     key: "selectedComponentIds",
     get: function get() {
       return this.selectedComponents.map(function (o) {
-        return o.props.id;
+        return o.id;
       });
     }
     /** 获取已选择了的组件 */
@@ -2869,50 +4368,48 @@ function (_React$Component) {
   }, {
     key: "selectedComponents",
     get: function get() {
-      var arr = new Array();
-      var stack = new Array();
-      stack.push(this.pageData);
-
-      while (stack.length > 0) {
-        var item = stack.pop();
-        if (item.props != null && item.props.selected == true) arr.push(item);
-        var children = item.children || [];
-
-        for (var i = 0; i < children.length; i++) {
-          stack.push(children[i]);
-        }
-      }
-
-      return arr;
+      return this.props.handler.selectedComponents;
+    }
+  }, {
+    key: "element",
+    get: function get() {
+      return this._element;
     }
   }], [{
-    key: "nameComponent",
-    value: function nameComponent(component) {
-      var namedComponents = {};
-      var props = component.props = component.props || {};
+    key: "travelComponentData",
+    value: function travelComponentData(pageData, filter) {
+      var stack = new Array();
+      stack.push(pageData);
+      var r = []; // return new Promise((resolve, reject) => {
 
-      if (!props.name) {
-        var num = 0;
-        var name;
+      filter = filter || function () {
+        return true;
+      };
 
-        do {
-          num = num + 1;
-          name = "".concat(component.type).concat(num);
-        } while (namedComponents[name]);
+      while (stack.length > 0) {
+        var item = stack.shift();
 
-        namedComponents[name] = component;
-        props.name = name;
+        if (filter(item)) {
+          r.push(item);
+        } //===============================================
+        // 子元素有可能为字符串, 过滤出对象
+
+
+        var children = (item.children || []).filter(function (o) {
+          return _typeof(o) == 'object';
+        }); //===============================================
+
+        stack.push.apply(stack, _toConsumableArray(children));
       }
 
-      if (!props.id) props.id = (0, _common.guid)();
-
-      if (!component.children || component.children.length == 0) {
-        return;
-      }
-
-      for (var i = 0; i < component.children.length; i++) {
-        PageDesigner.nameComponent(component.children[i]);
-      }
+      return r;
+    }
+  }, {
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      return {
+        pageData: props.handler.pageData
+      };
     }
   }]);
 
@@ -2921,8 +4418,8 @@ function (_React$Component) {
 
 exports.PageDesigner = PageDesigner;
 PageDesigner.defaultProps = {
-  pageData: null,
-  wrapDesignTimeElement: true
+  handler: null,
+  componentFactory: _component.defaultComponentFactory
 };
 //# sourceMappingURL=page-designer.js.map
 
@@ -3189,29 +4686,19 @@ function _dropdown(items, valueType) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PropertyEditor = void 0;
+exports.ErrorBoundary = exports.PropertyEditor = void 0;
 
 var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
 var _component = __webpack_require__(/*! ./component */ "./out-es5/component.js");
 
-var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
+var _proptDisplayNames = __webpack_require__(/*! ./propt-display-names */ "./out-es5/propt-display-names.js");
 
 var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
-
-var _errorBoundary = __webpack_require__(/*! ./error-boundary */ "./out-es5/error-boundary.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3242,10 +4729,22 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PropertyEditor).call(this, props));
     _this._element = null;
     _this.state = {
-      designer: _this.props.designer
+      groupedEditors: []
     };
+
+    _this.props.designer.componentSelected.add(function () {
+      var editors = _this.getEditors(_this.props.designer);
+
+      _this.setState({
+        groupedEditors: editors
+      });
+    });
+
     return _this;
-  }
+  } // static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState> {
+  //     return { designer: props.designer };
+  // }
+
 
   _createClass(PropertyEditor, [{
     key: "getEditors",
@@ -3325,12 +4824,12 @@ function (_React$Component) {
           updateComponentProp: function updateComponentProp(value) {
             var componentProps = selectedComponents.map(function (o) {
               return {
-                componentId: o.props.id,
+                componentId: o.id,
                 propName: propEditorInfo.propName,
                 value: value
               };
             });
-            designer.updateComponentProps.apply(designer, _toConsumableArray(componentProps));
+            designer.updateComponentProps(componentProps);
           }
         };
         var editor = React.createElement(editorType, editorProps);
@@ -3365,8 +4864,8 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var designer = this.state.designer;
-      var editors = this.getEditors(designer);
+      var designer = this.props.designer;
+      var editors = this.state.groupedEditors; //this.getEditors(designer)
 
       if (editors.length == 0) {
         var empty = this.props.empty;
@@ -3378,7 +4877,7 @@ function (_React$Component) {
       if (this.props.customRender) {
         var items = editors.map(function (o) {
           return Object.assign({
-            displayName: _common.proptDisplayNames[o.prop] || o.prop
+            displayName: _proptDisplayNames.proptDisplayNames[o.prop] || o.prop
           }, o);
         });
         var r = this.props.customRender(designer.selectedComponents, items);
@@ -3420,15 +4919,15 @@ function (_React$Component) {
           className: "panel panel-default"
         }, g.group ? React.createElement("div", {
           className: "panel-heading"
-        }, _common.proptDisplayNames[g.group] || g.group) : null, React.createElement("div", {
+        }, _proptDisplayNames.proptDisplayNames[g.group] || g.group) : null, React.createElement("div", {
           className: "panel-body"
         }, g.editors.map(function (o, i) {
           return React.createElement("div", {
             key: o.prop,
             className: "form-group clearfix"
-          }, React.createElement("label", null, _common.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
+          }, React.createElement("label", null, _proptDisplayNames.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
             className: "control"
-          }, React.createElement(_errorBoundary.ErrorBoundary, null, o.editor)));
+          }, React.createElement(ErrorBoundary, null, o.editor)));
         })));
       }));
     }
@@ -3437,28 +4936,69 @@ function (_React$Component) {
     get: function get() {
       return this._element;
     }
-  }], [{
-    key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(props, state) {
-      return {
-        designer: props.designer
-      };
-    }
   }]);
 
   return PropertyEditor;
 }(React.Component);
 
 exports.PropertyEditor = PropertyEditor;
+
+var ErrorBoundary =
+/*#__PURE__*/
+function (_React$Component2) {
+  _inherits(ErrorBoundary, _React$Component2);
+
+  function ErrorBoundary(props) {
+    var _this3;
+
+    _classCallCheck(this, ErrorBoundary);
+
+    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(ErrorBoundary).call(this, props));
+    _this3.state = {};
+    return _this3;
+  }
+
+  _createClass(ErrorBoundary, [{
+    key: "componentDidCatch",
+    value: function componentDidCatch(error, info) {
+      // Display fallback UI
+      this.setState({
+        error: error
+      }); // You can also log the error to an error reporting service
+      //   logErrorToMyService(error, info);
+
+      debugger;
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _ref = this.state || {},
+          error = _ref.error;
+
+      if (error) {
+        // You can render any custom fallback UI
+        return React.createElement("div", {
+          className: "error"
+        }, React.createElement("div", null, error.message), React.createElement("div", null, error.stack));
+      }
+
+      return this.props.children;
+    }
+  }]);
+
+  return ErrorBoundary;
+}(React.Component);
+
+exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=property-editor.js.map
 
 
 /***/ }),
 
-/***/ "./out-es5/react-page-builder.js":
-/*!***************************************!*\
-  !*** ./out-es5/react-page-builder.js ***!
-  \***************************************/
+/***/ "./out-es5/propt-display-names.js":
+/*!****************************************!*\
+  !*** ./out-es5/propt-display-names.js ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3468,769 +5008,10 @@ exports.PropertyEditor = PropertyEditor;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PageView = exports.PlaceHolder = exports.MasterPage = exports.MasterPageContext = exports.MasterPageName = exports.ReactPageBuilder = exports.PageBuilderContext = void 0;
-
-var _component = __webpack_require__(/*! ./component */ "./out-es5/component.js");
-
-var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
-
-var _style = __webpack_require__(/*! ./style */ "./out-es5/style.js");
-
-var _componentWrapper = __webpack_require__(/*! ./component-wrapper */ "./out-es5/component-wrapper.js");
-
-var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
-
-var ReactDOM = _interopRequireWildcard(__webpack_require__(/*! react-dom */ "react-dom"));
-
-var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
-
-var _componentPanel = __webpack_require__(/*! ./component-panel */ "./out-es5/component-panel.js");
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var PageBuilderContext = React.createContext({
-  pageBuilder: null
-});
-/** 基于 ReactJS 的页面渲染器 */
-
-exports.PageBuilderContext = PageBuilderContext;
-
-var ReactPageBuilder =
-/*#__PURE__*/
-function () {
-  function ReactPageBuilder(args) {
-    _classCallCheck(this, ReactPageBuilder);
-
-    if (!args) throw _errors.Errors.argumentNull("args");
-    this.designer = args.designer;
-  }
-
-  _createClass(ReactPageBuilder, [{
-    key: "createDesignTimeElement",
-    value: function createDesignTimeElement(type, props) {
-      if (type == null) throw _errors.Errors.argumentNull('type');
-      if (props == null) throw _errors.Errors.argumentNull('props');
-      if (props.id == null) throw _errors.Errors.argumentFieldCanntNull('id', 'props');
-      console.assert(props.id != null);
-      if (props.id != null) props.key = props.id; //===================================================
-      // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
-
-      var attr1 = _component.Component.getAttribute(type);
-
-      console.assert(attr1 != null);
-      var attr2 = props.attr || {};
-      var attr = Object.assign({}, attr1, attr2);
-      delete props.attr; //===================================================
-
-      var className = props.selected ? (0, _style.appendClassName)(props.className || '', _style.classNames.componentSelected) : props.className;
-      var wrapperProps = Object.assign({}, props);
-      delete wrapperProps.ref;
-      wrapperProps.className = className;
-
-      for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        children[_key - 2] = arguments[_key];
-      }
-
-      return React.createElement(_componentWrapper.ComponentWrapper, Object.assign({}, wrapperProps, {
-        designer: this.designer,
-        source: {
-          type: type,
-          attr: attr,
-          props: props,
-          children: children
-        }
-      }));
-    }
-  }, {
-    key: "createPage",
-    value: function createPage(pageData, pageElement) {
-      if (!pageData) throw _errors.Errors.argumentNull("pageData");
-      if (!pageElement) throw _errors.Errors.argumentNull("pageElement");
-      ReactPageBuilder.fillPageData(pageData);
-      this.pageData = pageData;
-      this.pageElement = pageElement;
-      this.render();
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      console.assert(this.pageData.props.id != null);
-      var c = ReactPageBuilder.createElement(this.pageData, this.createDesignTimeElement.bind(this));
-      ReactDOM.render(React.createElement(PageBuilderContext.Provider, {
-        value: {
-          pageBuilder: this
-        }
-      }, c), this.pageElement);
-    }
-  }, {
-    key: "updateComponentProps",
-    value: function updateComponentProps(componentProps) {
-      var componentDatas = [];
-
-      for (var i = 0; i < componentProps.length; i++) {
-        var _componentProps$i = componentProps[i],
-            componentId = _componentProps$i.componentId,
-            propName = _componentProps$i.propName,
-            value = _componentProps$i.value;
-        var componentData = this.findComponentData(componentId);
-        if (componentData == null) continue;
-        var navPropsNames = propName.split(".");
-        console.assert(componentData != null);
-        console.assert(navPropsNames != null, 'props is null');
-        componentData.props = componentData.props || {};
-        var obj = componentData.props;
-
-        for (var _i = 0; _i < navPropsNames.length - 1; _i++) {
-          obj = obj[navPropsNames[_i]] = obj[navPropsNames[_i]] || {};
-        }
-
-        obj[navPropsNames[navPropsNames.length - 1]] = value;
-        componentDatas.push(componentData);
-      }
-
-      this.render();
-      return componentDatas;
-    }
-  }, {
-    key: "setComponentsSize",
-    value: function setComponentsSize(componentSiezs) {
-      var componentDatas = [];
-
-      for (var i = 0; i < componentSiezs.length; i++) {
-        var _componentSiezs$i = componentSiezs[i],
-            componentId = _componentSiezs$i.componentId,
-            size = _componentSiezs$i.size;
-        var componentData = this.findComponentData(componentId);
-        if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
-        componentDatas.push(componentData);
-        var style = componentData.props.style = componentData.props.style || {};
-        if (size.height) style.height = size.height;
-        if (size.width) style.width = size.width;
-      }
-
-      this.render();
-      return componentDatas;
-    }
-  }, {
-    key: "findComponentData",
-    value: function findComponentData(componentId) {
-      var componentDatas = ReactPageBuilder.travelComponentData(this.pageData, function (item) {
-        return item.props.id == componentId;
-      });
-      return componentDatas[0];
-    }
-    /** 对 pageData 进行缺少的字段进行补充 */
-
-  }, {
-    key: "appendComponent",
-    value: function appendComponent(parentId, componentData, componentIndex) {
-      if (!parentId) throw _errors.Errors.argumentNull('parentId');
-      if (!componentData) throw _errors.Errors.argumentNull('childComponent');
-      ReactPageBuilder.nameComponent(componentData);
-      var parentControl = this.findComponentData(parentId);
-      if (parentControl == null) throw new Error('Parent is not exists');
-      console.assert(parentControl != null);
-      parentControl.children = parentControl.children || [];
-
-      if (componentIndex != null) {
-        parentControl.children.splice(componentIndex, 0, componentData);
-      } else {
-        parentControl.children.push(componentData);
-      } // let { pageData } = this.state;
-      // this.setState({ pageData });
-      // this.selectComponent(componentData.props.id);
-      // this.componentAppend.fire(this)
-
-
-      this.render();
-    }
-    /**
-     * 选择指定的控件
-     * @param control 指定的控件
-     */
-
-  }, {
-    key: "selectComponents",
-    value: function selectComponents(componentIds) {
-      if (typeof componentIds == 'string') componentIds = [componentIds];
-      var stack = [];
-      stack.push(this.pageData);
-
-      while (stack.length > 0) {
-        var item = stack.pop();
-        var isSelectedControl = componentIds.indexOf(item.props.id) >= 0;
-        item.props.selected = isSelectedControl;
-        var children = item.children || [];
-
-        for (var i = 0; i < children.length; i++) {
-          stack.push(children[i]);
-        }
-      } // this.setState({ pageData: this.pageData })
-      // this.componentSelected.fire(this.selectedComponentIds)
-
-
-      this.render(); //====================================================
-      // 设置焦点，以便获取键盘事件
-
-      this.pageElement.focus(); //====================================================
-    }
-  }, {
-    key: "setComponentsPosition",
-    value: function setComponentsPosition(positions) {
-      var _this = this;
-
-      var componentDatas = new Array();
-      positions.forEach(function (o) {
-        var componentId = o.componentId;
-        var _o$position = o.position,
-            left = _o$position.left,
-            top = _o$position.top;
-
-        var componentData = _this.findComponentData(componentId);
-
-        if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
-        var style = componentData.props.style = componentData.props.style || {};
-        if (left) style.left = left;
-        if (top) style.top = top;
-        componentDatas.push(componentData);
-      });
-      this.render();
-      return componentDatas;
-    }
-  }, {
-    key: "removeComponents",
-    value: function removeComponents(componentIds) {
-      var _this2 = this;
-
-      var pageData = this.pageData;
-      if (!pageData || !pageData.children || pageData.children.length == 0) return;
-      componentIds.forEach(function (controlId) {
-        _this2.removeComponentFrom(controlId, pageData.children);
-      });
-    }
-  }, {
-    key: "moveComponent",
-    value: function moveComponent(componentId, parentId, childComponentIndex) {
-      var component = this.findComponentData(componentId);
-      if (component == null) throw new Error("Cannt find component by id ".concat(componentId));
-      console.assert(component != null, "Cannt find component by id ".concat(componentId));
-      var pageData = this.pageData;
-      console.assert(pageData.children != null);
-      this.removeComponentFrom(componentId, pageData.children);
-      this.appendComponent(parentId, component, childComponentIndex);
-    }
-  }, {
-    key: "removeComponentFrom",
-    value: function removeComponentFrom(componentId, collection) {
-      var compoentIndex = null;
-
-      for (var i = 0; i < collection.length; i++) {
-        if (componentId == collection[i].props.id) {
-          compoentIndex = i;
-          break;
-        }
-      }
-
-      if (compoentIndex == null) {
-        for (var _i2 = 0; _i2 < collection.length; _i2++) {
-          var o = collection[_i2];
-
-          if (o.children && o.children.length > 0) {
-            var isRemoved = this.removeComponentFrom(componentId, o.children);
-
-            if (isRemoved) {
-              return true;
-            }
-          }
-        }
-
-        return false;
-      }
-
-      if (compoentIndex == 0) {
-        collection.shift();
-      } else if (compoentIndex == collection.length - 1) {
-        collection.pop();
-      } else {
-        collection.splice(compoentIndex, 1);
-      }
-
-      return true;
-    }
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-
-  }], [{
-    key: "fillPageData",
-    value: function fillPageData(pageData) {
-      if (pageData == null) {
-        return;
-      }
-
-      pageData.children = pageData.children || [];
-      ReactPageBuilder.nameComponent(pageData); // PageDesigner.setComponetRefProp(pageData, components);
-    }
-  }, {
-    key: "travelComponentData",
-    value: function travelComponentData(pageData, filter) {
-      var stack = new Array();
-      stack.push(pageData);
-      var r = []; // return new Promise((resolve, reject) => {
-
-      filter = filter || function () {
-        return true;
-      };
-
-      while (stack.length > 0) {
-        var item = stack.shift();
-
-        if (filter(item)) {
-          r.push(item);
-        } //===============================================
-        // 子元素有可能为字符串, 过滤出对象
-
-
-        var children = (item.children || []).filter(function (o) {
-          return _typeof(o) == 'object';
-        }); //===============================================
-
-        stack.push.apply(stack, _toConsumableArray(children));
-      }
-
-      return r;
-    }
-  }, {
-    key: "nameComponent",
-    value: function nameComponent(component) {
-      var namedComponents = {};
-      var props = component.props = component.props || {};
-
-      if (!props.name) {
-        var num = 0;
-        var name;
-
-        do {
-          num = num + 1;
-          name = "".concat(component.type).concat(num);
-        } while (namedComponents[name]);
-
-        namedComponents[name] = component;
-        props.name = name;
-      }
-
-      if (!props.id) props.id = (0, _common.guid)();
-
-      if (!component.children || component.children.length == 0) {
-        return;
-      }
-
-      for (var i = 0; i < component.children.length; i++) {
-        ReactPageBuilder.nameComponent(component.children[i]);
-      }
-    }
-  }, {
-    key: "createElement",
-    value: function createElement(componentData, h) {
-      return ReactPageBuilder._createElement(componentData, {
-        components: [],
-        componentTypes: []
-      }, h);
-    }
-    /**
-     * 将持久化的元素数据转换为 ReactElement
-     * @param componentData 元素数据
-     */
-
-  }, {
-    key: "_createElement",
-    value: function _createElement(componentData, context, h) {
-      if (!componentData) throw _errors.Errors.argumentNull('componentData');
-      h = h || React.createElement;
-
-      try {
-        var type = componentData.type;
-        var componentName = componentData.type;
-
-        var componentType = _component.Component.getComponentType(componentName);
-
-        if (componentType) {
-          type = componentType;
-        }
-
-        var children = componentData.children ? componentData.children.map(function (o) {
-          return ReactPageBuilder._createElement(o, context, h);
-        }) : [];
-        var props = componentData.props == null ? {} : Object.assign({}, componentData.props); //JSON.parse(JSON.stringify(componentData.props));
-
-        props.style = Object.assign({}, props.style || {});
-
-        if (componentType != null && componentType["defaultProps"]) {
-          props = Object.assign({}, componentType["defaultProps"], props);
-        }
-
-        var result;
-
-        if (typeof type == 'string') {
-          if (props.text) {
-            children.push(props.text);
-          } //=========================================
-          // props.text 非 DOM 的 prop，并且已经使用完
-
-
-          delete props.text;
-
-          if (h == React.createElement) {
-            delete props.attr;
-          } //=========================================
-
-        }
-
-        var masterPage;
-        type = type == _component.Component.Fragment ? React.Fragment : type;
-        var ref = props.ref;
-
-        props.ref = function (e) {
-          if (typeof ref == "function") ref(e);
-
-          if (e instanceof MasterPage) {
-            masterPage = e;
-
-            for (var i = 0; i < context.componentTypes.length; i++) {
-              var typeName = context.componentTypes[i];
-              var childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
-              childComponents.push(context.components[i]);
-            }
-          } else if (e != null) {
-            context.components.push(e);
-            context.componentTypes.push(typeof type == "string" ? type : type.name); // masterPage.componentCreated.fire({ component: e, type: typeof type == "string" ? type : type.name });
-          }
-        };
-
-        result = h.apply(void 0, [type, props].concat(_toConsumableArray(children)));
-        return result;
-      } catch (e) {
-        console.error(e);
-        return null;
-      }
-    }
-  }]);
-
-  return ReactPageBuilder;
-}();
-
-exports.ReactPageBuilder = ReactPageBuilder;
-var MasterPageName = 'MasterPage';
-exports.MasterPageName = MasterPageName;
-var MasterPageContext = React.createContext({
-  master: null
-});
-exports.MasterPageContext = MasterPageContext;
-
-var MasterPage =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(MasterPage, _React$Component);
-
-  function MasterPage(props) {
-    var _this3;
-
-    _classCallCheck(this, MasterPage);
-
-    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(MasterPage).call(this, props));
-    _this3.childComponents = {};
-    var children = MasterPage.children(props);
-    _this3.state = {
-      children: children
-    };
-    return _this3;
-  }
-
-  _createClass(MasterPage, [{
-    key: "render",
-    value: function render() {
-      var props = {};
-
-      for (var key in this.props) {
-        if (key == 'ref' || key == 'id') continue;
-        props[key] = this.props[key];
-      }
-
-      props.style = Object.assign({
-        minHeight: 40
-      }, props.style);
-      var children = this.state.children.filter(function (o) {
-        return o.props.parentId == null;
-      });
-      var master = this;
-      console.assert(master != null);
-      return React.createElement(MasterPageContext.Provider, {
-        value: {
-          master: master
-        }
-      }, children);
-    }
-  }], [{
-    key: "children",
-    value: function children(props) {
-      var arr = props.children == null ? [] : Array.isArray(props.children) ? props.children : [props.children];
-      var children = [];
-      arr.forEach(function (o) {
-        if (!React.isValidElement(o)) return;
-        children.push(o);
-      });
-      return children;
-    }
-  }, {
-    key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(props) {
-      var children = MasterPage.children(props);
-      return {
-        children: children
-      };
-    }
-  }]);
-
-  return MasterPage;
-}(React.Component);
-
-exports.MasterPage = MasterPage;
-
-_component.Component.register(MasterPageName, MasterPage, {
-  container: false,
-  resize: false,
-  noWrapper: true
-});
-/**
- * 占位符，用于放置控件
- */
-
-
-var PlaceHolder =
-/*#__PURE__*/
-function (_React$Component2) {
-  _inherits(PlaceHolder, _React$Component2);
-
-  function PlaceHolder(props) {
-    var _this4;
-
-    _classCallCheck(this, PlaceHolder);
-
-    _this4 = _possibleConstructorReturn(this, _getPrototypeOf(PlaceHolder).call(this, props));
-
-    if (!_this4.props.id) {
-      throw _errors.Errors.placeHolderIdNull();
-    }
-
-    return _this4;
-  }
-  /**
-   * 启用拖放操作，以便通过拖放图标添加控件
-   */
-
-
-  _createClass(PlaceHolder, [{
-    key: "enableAppendDroppable",
-    value: function enableAppendDroppable(element, master) {
-      var _this5 = this;
-
-      if (element.getAttribute('enable-append-droppable')) return;
-      element.setAttribute('enable-append-droppable', 'true');
-      console.assert(element != null);
-      element.addEventListener('dragover', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        element.className = (0, _style.appendClassName)(element.className || '', 'active');
-        var componentName = event.dataTransfer.getData(_common.constants.componentData);
-        if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
-        console.log("dragover: left:".concat(event.layerX, " top:").concat(event.layerX));
-      });
-
-      var func = function func(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        element.className = (0, _style.removeClassName)(element.className, 'active');
-      };
-
-      element.addEventListener('dragleave', func);
-      element.addEventListener('dragend', func);
-      element.addEventListener('dragexit', func);
-
-      element.ondrop = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        element.className = (0, _style.removeClassName)(element.className, 'active');
-        var ctrl;
-        if (event.dataTransfer) ctrl = _componentPanel.ComponentPanel.getComponentData(event.dataTransfer);
-        if (!ctrl) return;
-        console.assert(_this5.props.id != null);
-        console.assert(_this5.designer != null);
-        ctrl.props.parentId = _this5.props.id;
-        console.assert(master != null, 'host is null');
-
-        _this5.designer.appendComponent(master.props.id, ctrl);
-      };
-    }
-  }, {
-    key: "enableMoveDroppable",
-    value: function enableMoveDroppable(element, host) {
-      var _this6 = this;
-
-      if (element.getAttribute('enable-move-droppable')) return;
-      element.setAttribute('enable-move-droppable', 'true');
-      $(element).drop('start', function (event, dd) {
-        if (dd.sourceElement.id == _this6.wraper.props.source.props.id) return;
-        (0, _style.appendClassName)(element, 'active');
-      }).drop('drop', function (event, dd) {
-        if (dd.sourceElement.id == _this6.wraper.props.source.props.id) return;
-
-        var componentData = _this6.designer.findComponentData(dd.sourceElement.id);
-
-        console.assert(componentData != null);
-
-        _this6.designer.moveComponent(dd.sourceElement.id, host.props.id);
-
-        _this6.designer.updateComponentProps([{
-          componentId: "string",
-          propName: "string",
-          value: "any"
-        }]); //dd.sourceElement.id, propName, this.props.id
-
-      }).drop('end', function (event, dd) {
-        if (dd.sourceElement.id == _this6.wraper.props.source.props.id) return;
-        (0, _style.removeClassName)(element, 'active');
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this7 = this;
-
-      var empty = this.props.empty || React.createElement("div", {
-        key: (0, _common.guid)(),
-        className: "empty"
-      }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
-      return React.createElement(MasterPageContext.Consumer, null, function (args) {
-        var master = args.master;
-        if (master == null) throw _errors.Errors.canntFindMasterPage(_this7.props.id);
-        var children = [];
-
-        if (master.props && master.props.children) {
-          var arr;
-
-          if (Array.isArray(master.props.children)) {
-            arr = master.props.children;
-          } else {
-            arr = [master.props.children];
-          }
-
-          children = arr.filter(function (o) {
-            return o.props.parentId != null && o.props.parentId == _this7.props.id;
-          });
-        }
-
-        return React.createElement(PageBuilderContext.Consumer, null, function (args) {
-          return React.createElement(_component.ComponentWrapperContext.Consumer, null, function (wraper) {
-            _this7.wraper = wraper;
-            console.assert(_this7.wraper != null);
-
-            if (args.pageBuilder != null && children.length == 0) {
-              children = [empty];
-            }
-
-            var element = React.createElement(React.Fragment, null, _this7.props.children, children);
-
-            if (args.pageBuilder) {
-              _this7.designer = args.pageBuilder;
-              element = React.createElement("div", {
-                key: (0, _common.guid)(),
-                className: _style.classNames.placeholder,
-                ref: function ref(e) {
-                  if (!e) return;
-                  _this7.element = e;
-
-                  _this7.enableAppendDroppable(e, master);
-
-                  _this7.enableMoveDroppable(e, master);
-                }
-              }, element);
-            }
-
-            return element;
-          });
-        });
-      });
-    }
-  }]);
-
-  return PlaceHolder;
-}(React.Component);
-
-exports.PlaceHolder = PlaceHolder;
-
-_component.Component.register('PlaceHolder', PlaceHolder, {
-  resize: false,
-  movable: false,
-  container: true
-});
-/** 用于将 ComponentData 显示为组件 */
-
-
-var PageView =
-/*#__PURE__*/
-function (_React$Component3) {
-  _inherits(PageView, _React$Component3);
-
-  function PageView(props) {
-    var _this8;
-
-    _classCallCheck(this, PageView);
-
-    _this8 = _possibleConstructorReturn(this, _getPrototypeOf(PageView).call(this, props));
-    if (!_this8.props.pageData) throw _errors.Errors.propCanntNull(PageView.name, 'pageData');
-    return _this8;
-  }
-
-  _createClass(PageView, [{
-    key: "render",
-    value: function render() {
-      var element = ReactPageBuilder.createElement(this.props.pageData);
-      return element;
-    }
-  }]);
-
-  return PageView;
-}(React.Component);
-
-exports.PageView = PageView;
-//# sourceMappingURL=react-page-builder.js.map
+exports.proptDisplayNames = void 0;
+var proptDisplayNames = {};
+exports.proptDisplayNames = proptDisplayNames;
+//# sourceMappingURL=propt-display-names.js.map
 
 
 /***/ }),
@@ -4328,17 +5109,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_jquery__;
 /***/ (function(module, exports) {
 
 module.exports = __WEBPACK_EXTERNAL_MODULE_react__;
-
-/***/ }),
-
-/***/ "react-dom":
-/*!***************************!*\
-  !*** external "ReactDOM" ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_react_dom__;
 
 /***/ })
 

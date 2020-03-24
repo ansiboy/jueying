@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ComponentDefine, ComponentData } from "./models";
-import { constants } from "./components";
+import { constants } from "./components/index";
 import { classNames } from "./style";
 import { ComponentDataHandler } from "./component-data-handler";
 
@@ -9,7 +9,7 @@ interface ComponentProps extends React.Props<ComponentPanel> {
     style?: React.CSSProperties,
     className?: string,
     empty?: string | JSX.Element,
-    designer:ComponentDataHandler,
+    designer: ComponentDataHandler,
 }
 interface ComponentToolbarState {
     componets: ComponentDefine[],
@@ -64,7 +64,7 @@ export class ComponentPanel extends React.Component<ComponentProps, ComponentToo
         let empty = this.props.empty || <div className="empty">暂无可用组件</div>
         let props: ComponentProps = Object.assign({}, this.props);
         let componets = this.state.componets || [];
-        
+
         return <ul {...props as any} className={`${classNames.componentPanel} ${this.props.className || ""}`}
             ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
             {componets.length == 0 ? empty : componets.map((c, i) => {

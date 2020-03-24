@@ -16,7 +16,7 @@ export { PropertyEditorInfo } from "./property-editor";
 export { classNames } from "./style";
 export { ComponentFactory } from "./component-factory";
 export { ComponentDataHandler } from "./component-data-handler";
-export * from "./components";
+export * from "./components/index";
 export * from "maishu-jueying-core";
 export { component } from "maishu-jueying-core/decorators";
 

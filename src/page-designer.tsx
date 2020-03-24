@@ -1,4 +1,4 @@
-import React = require("react");
+import * as React from "react";
 
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
@@ -7,7 +7,6 @@ import { appendClassName, classNames } from "./style";
 import { ComponentWrapper } from "./component-wrapper";
 import { ComponentDataHandler } from "./component-data-handler";
 import {  ComponentFactory } from "./component-factory";
-import ReactDOM = require("react-dom");
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     // pageData: ComponentData | null,

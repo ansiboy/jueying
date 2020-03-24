@@ -5,7 +5,7 @@ import { ComponentPanel } from "./component-panel";
 import { classNames, appendClassName } from "./style";
 import { ComponentWrapperContext } from "./component";
 import { ReactComponentType, DragDropData } from "./models";
-import { MasterPage, constants } from "./components";
+import { MasterPage, constants } from "./components/index";
 import { ComponentDataHandler } from "./component-data-handler";
 import { ComponentAttribute } from "maishu-jueying-core";
 

@@ -2,7 +2,7 @@ import { Errors } from "errors";
 import { Component } from "../component";
 import { appendClassName, classNames } from "style";
 import { ComponentWrapper } from "../component-wrapper";
-import React = require("react");
+import * as  React from "react";
 import { ComponentFactory } from "../component-factory";
 
 export let designTimeComponentFactory: ComponentFactory = function (componentData, context) {
