@@ -1040,20 +1040,23 @@ drop.delegate = function( event, dd ){
 /*!***********************!*\
   !*** ./out/common.js ***!
   \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: constants, proptDisplayNames, guid, Callback */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.constants = {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return constants; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "proptDisplayNames", function() { return proptDisplayNames; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return guid; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Callback", function() { return Callback; });
+let constants = {
     componentsDir: 'components',
     connectorElementClassName: 'component-container',
     componentTypeName: 'data-component-name',
     componentData: 'component-data',
     componentPosition: "component-position"
 };
-exports.proptDisplayNames = {};
+let proptDisplayNames = {};
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -1063,7 +1066,6 @@ function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
         s4() + '-' + s4() + s4() + s4();
 }
-exports.guid = guid;
 class Callback {
     constructor() {
         this.funcs = new Array();
@@ -1081,7 +1083,6 @@ class Callback {
         return new Callback();
     }
 }
-exports.Callback = Callback;
 //# sourceMappingURL=common.js.map
 
 /***/ }),
@@ -1090,16 +1091,20 @@ exports.Callback = Callback;
 /*!********************************!*\
   !*** ./out/component-panel.js ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: ComponentPanel */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentPanel", function() { return ComponentPanel; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./common */ "./out/common.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style */ "./out/style.js");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
-const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
-class ComponentPanel extends React.Component {
+
+
+class ComponentPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
         this.state = { componets: [] };
@@ -1112,7 +1117,7 @@ class ComponentPanel extends React.Component {
         toolItemElement.draggable = true;
         toolItemElement.addEventListener('dragstart', function (ev) {
             componentData.props = componentData.props || {};
-            ev.dataTransfer.setData(common_1.constants.componentData, JSON.stringify(componentData));
+            ev.dataTransfer.setData(_common__WEBPACK_IMPORTED_MODULE_1__["constants"].componentData, JSON.stringify(componentData));
             ev.dataTransfer.setData('mousePosition', JSON.stringify({ x: ev.offsetX, y: ev.offsetY }));
         });
     }
@@ -1120,7 +1125,7 @@ class ComponentPanel extends React.Component {
         this.setState({ componets });
     }
     static getComponentData(dataTransfer) {
-        var str = dataTransfer.getData(common_1.constants.componentData);
+        var str = dataTransfer.getData(_common__WEBPACK_IMPORTED_MODULE_1__["constants"].componentData);
         if (!str)
             return;
         return JSON.parse(str);
@@ -1133,24 +1138,24 @@ class ComponentPanel extends React.Component {
         return JSON.parse(str);
     }
     render() {
-        let empty = this.props.empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
+        let empty = this.props.empty || react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
         let props = Object.assign({}, this.props);
         let componets = this.state.componets || [];
         // return <DesignerContext.Consumer>
         //     {context => {
         //         this.designer = context.designer;
-        return React.createElement("ul", Object.assign({}, props, { className: `${style_1.classNames.componentPanel} ${this.props.className || ""}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("ul", Object.assign({}, props, { className: `${_style__WEBPACK_IMPORTED_MODULE_2__["classNames"].componentPanel} ${this.props.className || ""}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
             let props = { key: i };
             props[ComponentPanel.componentIndexName] = `${i}`;
-            return React.createElement("li", Object.assign({}, props, { className: style_1.classNames.componentIcon }),
-                React.createElement("div", { className: "btn-link" },
-                    React.createElement("i", { className: c.icon, style: { fontSize: 44, color: 'black' }, ref: e => {
+            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("li", Object.assign({}, props, { className: _style__WEBPACK_IMPORTED_MODULE_2__["classNames"].componentIcon }),
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "btn-link" },
+                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("i", { className: c.icon, style: { fontSize: 44, color: 'black' }, ref: e => {
                             if (!e)
                                 return;
                             let ctrl = c.componentData;
                             this.componentDraggable(e, ctrl);
                         } })),
-                React.createElement("div", null, c.displayName));
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, c.displayName));
         }));
         // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
         //     <div className="panel-heading">工具栏</div>
@@ -1163,7 +1168,6 @@ class ComponentPanel extends React.Component {
 }
 // designer: PageDesigner;
 ComponentPanel.componentIndexName = "data-component-index";
-exports.ComponentPanel = ComponentPanel;
 //# sourceMappingURL=component-panel.js.map
 
 /***/ }),
@@ -1172,25 +1176,33 @@ exports.ComponentPanel = ComponentPanel;
 /*!**********************************!*\
   !*** ./out/component-wrapper.js ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: ComponentWrapper, defaultComponentAttribute */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentWrapper", function() { return ComponentWrapper; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultComponentAttribute", function() { return defaultComponentAttribute; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./common */ "./out/common.js");
+/* harmony import */ var _component_panel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./style */ "./out/style.js");
+/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./component */ "./out/component.js");
 /// <reference path="./typings/declare.d.ts"/>
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
-const component_panel_1 = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
-const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
-const component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
+
+
+
+
+
+
 /**
  * 组件包装器，对组件进行包装，实现组件设计时的行为。
  * 1. 组件的移动
  * 2. 组件的拖放
  */
-class ComponentWrapper extends React.Component {
+class ComponentWrapper extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
     }
@@ -1203,9 +1215,9 @@ class ComponentWrapper extends React.Component {
     }
     designtimeBehavior(element, attr) {
         if (!element)
-            throw errors_1.Errors.argumentNull('element');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('element');
         if (!attr)
-            throw errors_1.Errors.argumentNull('args');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('args');
         if (element.getAttribute('data-behavior')) {
             return;
         }
@@ -1234,7 +1246,7 @@ class ComponentWrapper extends React.Component {
         element.addEventListener('dragover', function (event) {
             event.preventDefault();
             event.stopPropagation();
-            let componentName = event.dataTransfer.getData(common_1.constants.componentData);
+            let componentName = event.dataTransfer.getData(_common__WEBPACK_IMPORTED_MODULE_2__["constants"].componentData);
             if (componentName)
                 event.dataTransfer.dropEffect = "copy";
             else
@@ -1247,7 +1259,7 @@ class ComponentWrapper extends React.Component {
             let args1 = arguments[1];
             if (!event.dataTransfer)
                 return;
-            let ctrl = component_panel_1.ComponentPanel.getComponentData(event.dataTransfer);
+            let ctrl = _component_panel__WEBPACK_IMPORTED_MODULE_3__["ComponentPanel"].getComponentData(event.dataTransfer);
             if (!ctrl)
                 return;
             ctrl.props.style = ctrl.props.style || {};
@@ -1255,7 +1267,7 @@ class ComponentWrapper extends React.Component {
             if (!ctrl.props.style.position) {
                 ctrl.props.style.position = designer.pageData.props.style.position;
             }
-            let pos = component_panel_1.ComponentPanel.mouseInnerPosition(event.dataTransfer);
+            let pos = _component_panel__WEBPACK_IMPORTED_MODULE_3__["ComponentPanel"].mouseInnerPosition(event.dataTransfer);
             console.assert(pos != null);
             if (ctrl.props.style.position == 'absolute') {
                 ctrl.props.style.left = event['layerX'] - pos.x;
@@ -1274,9 +1286,9 @@ class ComponentWrapper extends React.Component {
     }
     static draggable(designer, element, handler) {
         if (!designer)
-            throw errors_1.Errors.argumentNull('designer');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('designer');
         if (!element)
-            throw errors_1.Errors.argumentNull('element');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('element');
         console.assert(element.id != "");
         handler = handler || element;
         let componentId = element.id;
@@ -1287,8 +1299,8 @@ class ComponentWrapper extends React.Component {
         $(handler)
             .drag("init", function (ev) {
             startPos = $(element).position();
-            if ($(this).is(`.${style_1.classNames.componentSelected}`))
-                return $(`.${style_1.classNames.componentSelected}`);
+            if ($(this).is(`.${_style__WEBPACK_IMPORTED_MODULE_4__["classNames"].componentSelected}`))
+                return $(`.${_style__WEBPACK_IMPORTED_MODULE_4__["classNames"].componentSelected}`);
         })
             .drag('start', function (ev, dd) {
             dd.attr = $(ev.target).prop("className");
@@ -1400,9 +1412,9 @@ class ComponentWrapper extends React.Component {
     render() {
         let { error } = this.state || {};
         if (error) {
-            return React.createElement("div", { className: "error" },
-                React.createElement("div", null, error.message),
-                React.createElement("div", null, error.stack));
+            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "error" },
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.message),
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.stack));
         }
         let attr = this.props.source.attr;
         let noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
@@ -1412,15 +1424,15 @@ class ComponentWrapper extends React.Component {
         let props = this.props.source.props;
         let style = props.style = JSON.parse(JSON.stringify(props.style || {})); // 深复制 style
         let { top, left, position, width, height, display, visibility } = style;
-        let className = style_1.appendClassName(props.className || '', style_1.classNames.componentWrapper);
-        className = props.selected ? style_1.appendClassName(className, style_1.classNames.componentSelected) : className;
+        let className = Object(_style__WEBPACK_IMPORTED_MODULE_4__["appendClassName"])(props.className || '', _style__WEBPACK_IMPORTED_MODULE_4__["classNames"].componentWrapper);
+        className = props.selected ? Object(_style__WEBPACK_IMPORTED_MODULE_4__["appendClassName"])(className, _style__WEBPACK_IMPORTED_MODULE_4__["classNames"].componentSelected) : className;
         let wrapperProps = {
             id: props.id,
             className,
             style: { top, left, position, width, height, display, visibility },
             ref: (e) => this.element = e || this.element
         };
-        let move_handle = props.selected && attr.showHandler ? React.createElement("div", { className: "move_handle", style: {}, ref: e => this.handler = e || this.handler }) : null;
+        let move_handle = props.selected && attr.showHandler ? react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "move_handle", style: {}, ref: e => this.handler = e || this.handler }) : null;
         let showResizeHandle = attr.resize && props.style.position == 'absolute' && props.selected;
         let source = this.props.source;
         if (props.style) {
@@ -1434,19 +1446,19 @@ class ComponentWrapper extends React.Component {
         }
         // source.props.ref = function (e) {
         // };
-        return React.createElement(component_1.ComponentWrapperContext.Provider, { value: this },
-            React.createElement("div", Object.assign({}, wrapperProps),
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_component__WEBPACK_IMPORTED_MODULE_5__["ComponentWrapperContext"].Provider, { value: this },
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", Object.assign({}, wrapperProps),
                 move_handle,
                 showResizeHandle ?
-                    React.createElement(React.Fragment, null,
-                        React.createElement("div", { className: "resize_handle NE" }),
-                        React.createElement("div", { className: "resize_handle NN" }),
-                        React.createElement("div", { className: "resize_handle NW" }),
-                        React.createElement("div", { className: "resize_handle WW" }),
-                        React.createElement("div", { className: "resize_handle EE" }),
-                        React.createElement("div", { className: "resize_handle SW" }),
-                        React.createElement("div", { className: "resize_handle SS" }),
-                        React.createElement("div", { className: "resize_handle SE" })) : null,
+                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle NE" }),
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle NN" }),
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle NW" }),
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle WW" }),
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle EE" }),
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle SW" }),
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle SS" }),
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle SE" })) : null,
                 this.createRawElement(source.type, source.props, source.children)));
     }
     renderWidthoutWrapper() {
@@ -1464,10 +1476,10 @@ class ComponentWrapper extends React.Component {
             }
         };
         if (props.selected) {
-            props.className = style_1.appendClassName(props.className || '', style_1.classNames.componentSelected);
+            props.className = Object(_style__WEBPACK_IMPORTED_MODULE_4__["appendClassName"])(props.className || '', _style__WEBPACK_IMPORTED_MODULE_4__["classNames"].componentSelected);
         }
         let element = this.createRawElement(type, props, children);
-        return React.createElement(component_1.ComponentWrapperContext.Provider, { value: this }, element);
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_component__WEBPACK_IMPORTED_MODULE_5__["ComponentWrapperContext"].Provider, { value: this }, element);
     }
     createRawElement(type, props, children) {
         props = Object.assign({}, props);
@@ -1481,7 +1493,7 @@ class ComponentWrapper extends React.Component {
             props["parent-id"] = props.parentId;
             delete props.parentId;
         }
-        return React.createElement(type, props, ...children);
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](type, props, ...children);
     }
     designTimeEmptyElement(type, props) {
         if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
@@ -1500,8 +1512,7 @@ class ComponentWrapper extends React.Component {
     }
 }
 ComponentWrapper.isDrag = false;
-exports.ComponentWrapper = ComponentWrapper;
-exports.defaultComponentAttribute = {
+let defaultComponentAttribute = {
     container: false,
     movable: false,
     showHandler: false,
@@ -1516,17 +1527,24 @@ exports.defaultComponentAttribute = {
 /*!**************************!*\
   !*** ./out/component.js ***!
   \**************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: ComponentWrapperContext, component, Component */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentWrapperContext", function() { return ComponentWrapperContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "component", function() { return component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return Component; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _component_wrapper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component-wrapper */ "./out/component-wrapper.js");
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./common */ "./out/common.js");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const component_wrapper_1 = __webpack_require__(/*! ./component-wrapper */ "./out/component-wrapper.js");
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
-exports.ComponentWrapperContext = React.createContext(null);
+
+
+
+const ComponentWrapperContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"](null);
 function component(args) {
     return function (constructor) {
         // if (PageDesigner) {
@@ -1536,7 +1554,6 @@ function component(args) {
         return constructor;
     };
 }
-exports.component = component;
 class Component {
     /**
      * 设置组件特性
@@ -1553,7 +1570,7 @@ class Component {
     static getAttribute(type) {
         let typename = typeof type == 'string' ? type : type.name;
         let attr = Component.componentAttributes[typename];
-        return Object.assign({ type }, component_wrapper_1.defaultComponentAttribute, attr || {});
+        return Object.assign({ type }, _component_wrapper__WEBPACK_IMPORTED_MODULE_1__["defaultComponentAttribute"], attr || {});
     }
     static getPropEditors(componentData) {
         let componentType = typeof componentData == "string" ? "string" : componentData.type;
@@ -1591,7 +1608,7 @@ class Component {
             group = options.group;
             editorDisplay = options.display;
             if (options.displayName != null) {
-                common_1.proptDisplayNames[propName] = options.displayName;
+                _common__WEBPACK_IMPORTED_MODULE_3__["proptDisplayNames"][propName] = options.displayName;
             }
         }
         else {
@@ -1620,9 +1637,9 @@ class Component {
             componentType['componentName'] = componentName;
         }
         if (!componentName)
-            throw errors_1.Errors.argumentNull('componentName');
+            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull('componentName');
         if (!componentType)
-            throw errors_1.Errors.argumentNull('componentType');
+            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull('componentType');
         Component.componentTypes[componentName] = componentType;
         if (attr)
             Component.setAttribute(componentName, attr);
@@ -1655,7 +1672,6 @@ Component.componentAttributes = {
 Component.componentPropEditors = {};
 Component.componentPropEditorDisplay = {};
 Component.componentTypes = {};
-exports.Component = Component;
 //# sourceMappingURL=component.js.map
 
 /***/ }),
@@ -1664,16 +1680,20 @@ exports.Component = Component;
 /*!*****************************!*\
   !*** ./out/editor-panel.js ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: EditorPanel */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorPanel", function() { return EditorPanel; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _property_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style */ "./out/style.js");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const property_editor_1 = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
-const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
-class EditorPanel extends React.Component {
+
+
+class EditorPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
         this.state = { componentDatas: [], designer: null };
@@ -1703,13 +1723,12 @@ class EditorPanel extends React.Component {
     }
     render() {
         let { empty } = this.props;
-        empty = empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
+        empty = empty || react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
         let { designer } = this.state;
-        return React.createElement("div", { className: `${style_1.classNames.editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
-            React.createElement(property_editor_1.PropertyEditor, { designer: designer, ref: e => this.editor = e || this.editor, empty: empty, customRender: this.props.customRender }));
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: `${_style__WEBPACK_IMPORTED_MODULE_2__["classNames"].editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_property_editor__WEBPACK_IMPORTED_MODULE_1__["PropertyEditor"], { designer: designer, ref: e => this.editor = e || this.editor, empty: empty, customRender: this.props.customRender }));
     }
 }
-exports.EditorPanel = EditorPanel;
 //# sourceMappingURL=editor-panel.js.map
 
 /***/ }),
@@ -1718,14 +1737,16 @@ exports.EditorPanel = EditorPanel;
 /*!*******************************!*\
   !*** ./out/error-boundary.js ***!
   \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: ErrorBoundary */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ErrorBoundary", function() { return ErrorBoundary; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
         this.state = {};
@@ -1741,14 +1762,13 @@ class ErrorBoundary extends React.Component {
         let { error } = this.state || {};
         if (error) {
             // You can render any custom fallback UI
-            return React.createElement("div", { className: "error" },
-                React.createElement("div", null, error.message),
-                React.createElement("div", null, error.stack));
+            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "error" },
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.message),
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.stack));
         }
         return this.props.children;
     }
 }
-exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=error-boundary.js.map
 
 /***/ }),
@@ -1757,12 +1777,12 @@ exports.ErrorBoundary = ErrorBoundary;
 /*!***********************!*\
   !*** ./out/errors.js ***!
   \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: Errors */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Errors", function() { return Errors; });
 class Errors {
     static placeHolderIdNull() {
         let msg = `Place holder property id cannt be null or empty.`;
@@ -1805,7 +1825,6 @@ class Errors {
         return new Error(msg);
     }
 }
-exports.Errors = Errors;
 //# sourceMappingURL=errors.js.map
 
 /***/ }),
@@ -1814,39 +1833,69 @@ exports.Errors = Errors;
 /*!**********************!*\
   !*** ./out/index.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: strings, proptDisplayNames, Component, ComponentPanel, EditorPanel, PageDesigner, PropEditor, TextInput, classNames, PageBuilderContext, MasterPage, MasterPageContext, PlaceHolder, PageView */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./jquery */ "./out/jquery.js");
+/* harmony import */ var _lib_jquery_event_drag_2_2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/jquery.event.drag-2.2 */ "./lib/jquery.event.drag-2.2.js");
+/* harmony import */ var _lib_jquery_event_drag_2_2__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_lib_jquery_event_drag_2_2__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _lib_jquery_event_drag_live_2_2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/jquery.event.drag.live-2.2 */ "./lib/jquery.event.drag.live-2.2.js");
+/* harmony import */ var _lib_jquery_event_drag_live_2_2__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_lib_jquery_event_drag_live_2_2__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_jquery_event_drop_2_2__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../lib/jquery.event.drop-2.2 */ "./lib/jquery.event.drop-2.2.js");
+/* harmony import */ var _lib_jquery_event_drop_2_2__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_lib_jquery_event_drop_2_2__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_jquery_event_drop_live_2_2__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../lib/jquery.event.drop.live-2.2 */ "./lib/jquery.event.drop.live-2.2.js");
+/* harmony import */ var _lib_jquery_event_drop_live_2_2__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_lib_jquery_event_drop_live_2_2__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./common */ "./out/common.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "strings", function() { return _common__WEBPACK_IMPORTED_MODULE_5__["proptDisplayNames"]; });
 
-Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(/*! ./jquery */ "./out/jquery.js");
-__webpack_require__(/*! ../lib/jquery.event.drag-2.2 */ "./lib/jquery.event.drag-2.2.js");
-__webpack_require__(/*! ../lib/jquery.event.drag.live-2.2 */ "./lib/jquery.event.drag.live-2.2.js");
-__webpack_require__(/*! ../lib/jquery.event.drop-2.2 */ "./lib/jquery.event.drop-2.2.js");
-__webpack_require__(/*! ../lib/jquery.event.drop.live-2.2 */ "./lib/jquery.event.drop.live-2.2.js");
-var common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
-exports.strings = common_1.proptDisplayNames;
-exports.proptDisplayNames = common_1.proptDisplayNames;
-var component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
-exports.Component = component_1.Component;
-var component_panel_1 = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
-exports.ComponentPanel = component_panel_1.ComponentPanel;
-var editor_panel_1 = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
-exports.EditorPanel = editor_panel_1.EditorPanel;
-var page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
-exports.PageDesigner = page_designer_1.PageDesigner;
-var prop_editor_1 = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
-exports.PropEditor = prop_editor_1.PropEditor;
-exports.TextInput = prop_editor_1.TextInput;
-var style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
-exports.classNames = style_1.classNames;
-var react_page_builder_1 = __webpack_require__(/*! ./react-page-builder */ "./out/react-page-builder.js");
-exports.PageBuilderContext = react_page_builder_1.PageBuilderContext;
-exports.MasterPage = react_page_builder_1.MasterPage;
-exports.MasterPageContext = react_page_builder_1.MasterPageContext;
-exports.PlaceHolder = react_page_builder_1.PlaceHolder;
-exports.PageView = react_page_builder_1.PageView;
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "proptDisplayNames", function() { return _common__WEBPACK_IMPORTED_MODULE_5__["proptDisplayNames"]; });
+
+/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./component */ "./out/component.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return _component__WEBPACK_IMPORTED_MODULE_6__["Component"]; });
+
+/* harmony import */ var _component_panel__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentPanel", function() { return _component_panel__WEBPACK_IMPORTED_MODULE_7__["ComponentPanel"]; });
+
+/* harmony import */ var _editor_panel__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EditorPanel", function() { return _editor_panel__WEBPACK_IMPORTED_MODULE_8__["EditorPanel"]; });
+
+/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_9__["PageDesigner"]; });
+
+/* harmony import */ var _prop_editor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PropEditor", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_10__["PropEditor"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TextInput", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_10__["TextInput"]; });
+
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./style */ "./out/style.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return _style__WEBPACK_IMPORTED_MODULE_11__["classNames"]; });
+
+/* harmony import */ var _react_page_builder__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./react-page-builder */ "./out/react-page-builder.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PageBuilderContext", function() { return _react_page_builder__WEBPACK_IMPORTED_MODULE_12__["PageBuilderContext"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return _react_page_builder__WEBPACK_IMPORTED_MODULE_12__["MasterPage"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return _react_page_builder__WEBPACK_IMPORTED_MODULE_12__["MasterPageContext"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PlaceHolder", function() { return _react_page_builder__WEBPACK_IMPORTED_MODULE_12__["PlaceHolder"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PageView", function() { return _react_page_builder__WEBPACK_IMPORTED_MODULE_12__["PageView"]; });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -1855,21 +1904,22 @@ exports.PageView = react_page_builder_1.PageView;
 /*!***********************!*\
   !*** ./out/jquery.js ***!
   \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "jquery");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 // import * as j from '../lib/jquery-2.1.3'
 // let jquery = window['$'] || window['jQuery'];
 // if (jquery == null) {
 //     window['$'] = window['jQuery'] = j
 // }
-const j = __webpack_require__(/*! jquery */ "jquery");
+
 let jquery = window['$'] || window['jQuery'];
 if (jquery == null) {
-    window['$'] = window['jQuery'] = j;
+    window['$'] = window['jQuery'] = jquery__WEBPACK_IMPORTED_MODULE_0__;
 }
 //# sourceMappingURL=jquery.js.map
 
@@ -1879,32 +1929,38 @@ if (jquery == null) {
 /*!******************************!*\
   !*** ./out/page-designer.js ***!
   \******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: PageDesigner */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return PageDesigner; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./common */ "./out/common.js");
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style */ "./out/style.js");
+/* harmony import */ var _react_page_builder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./react-page-builder */ "./out/react-page-builder.js");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
-const react_page_builder_1 = __webpack_require__(/*! ./react-page-builder */ "./out/react-page-builder.js");
-class PageDesigner extends React.Component {
+
+
+
+
+class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
-        this.componentSelected = common_1.Callback.create();
-        this.componentRemoved = common_1.Callback.create();
-        this.componentAppend = common_1.Callback.create();
-        this.componentUpdated = common_1.Callback.create();
-        this.designtimeComponentDidMount = common_1.Callback.create();
+        this.componentSelected = _common__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
+        this.componentRemoved = _common__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
+        this.componentAppend = _common__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
+        this.componentUpdated = _common__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
+        this.designtimeComponentDidMount = _common__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
         // let components: PageDesignerState["components"] = {};
         // PageDesigner.fillPageData(props.pageData);
         this.state = {};
         this.designtimeComponentDidMount.add(() => {
             console.log(`this:designer event:controlComponentDidMount`);
         });
-        let pageBuilderType = props.pageBuilderType || react_page_builder_1.ReactPageBuilder;
+        let pageBuilderType = props.pageBuilderType || _react_page_builder__WEBPACK_IMPORTED_MODULE_4__["ReactPageBuilder"];
         this.pageBuilder = new pageBuilderType({ designer: this });
     }
     // private static setComponetRefProp(pageData: ComponentData, components: PageDesignerState["components"]) {
@@ -2002,7 +2058,7 @@ class PageDesigner extends React.Component {
             props.name = name;
         }
         if (!props.id)
-            props.id = common_1.guid();
+            props.id = Object(_common__WEBPACK_IMPORTED_MODULE_1__["guid"])();
         if (!component.children || component.children.length == 0) {
             return;
         }
@@ -2018,9 +2074,9 @@ class PageDesigner extends React.Component {
      */
     appendComponent(parentId, componentData, componentIndex) {
         if (!parentId)
-            throw errors_1.Errors.argumentNull('parentId');
+            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull('parentId');
         if (!componentData)
-            throw errors_1.Errors.argumentNull('childComponent');
+            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull('childComponent');
         this.pageBuilder.appendComponent(parentId, componentData, componentIndex);
         this.selectComponent(componentData.props.id);
         this.componentAppend.fire(this);
@@ -2071,7 +2127,7 @@ class PageDesigner extends React.Component {
     /** 移除控件 */
     removeComponent(...componentIds) {
         if (!componentIds)
-            throw errors_1.Errors.argumentNull("componentIds");
+            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull("componentIds");
         this.pageBuilder.removeComponents(componentIds);
         this.componentRemoved.fire(componentIds);
     }
@@ -2154,14 +2210,13 @@ class PageDesigner extends React.Component {
     }
     render() {
         let style = this.props.style;
-        let result = React.createElement("div", { className: style_1.classNames.designer, tabIndex: 1, style: style, onKeyDown: (e) => this.onKeyDown(e), ref: e => {
+        let result = react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: _style__WEBPACK_IMPORTED_MODULE_3__["classNames"].designer, tabIndex: 1, style: style, onKeyDown: (e) => this.onKeyDown(e), ref: e => {
                 this.element = e || this.element;
             } });
         return result;
     }
 }
 PageDesigner.defaultProps = { pageData: null, wrapDesignTimeElement: true };
-exports.PageDesigner = PageDesigner;
 //# sourceMappingURL=page-designer.js.map
 
 /***/ }),
@@ -2170,12 +2225,16 @@ exports.PageDesigner = PageDesigner;
 /*!****************************!*\
   !*** ./out/prop-editor.js ***!
   \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: PropEditor, TextInput */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PropEditor", function() { return PropEditor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TextInput", function() { return TextInput; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
@@ -2183,9 +2242,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-class PropEditor extends React.Component {
+
+class PropEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
     }
@@ -2196,17 +2254,15 @@ class PropEditor extends React.Component {
         return TextInput;
     }
 }
-exports.PropEditor = PropEditor;
 class TextInput extends PropEditor {
     render() {
         let { value } = this.props;
-        return React.createElement("input", { className: 'form-control', value: value || '', onChange: e => {
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { className: 'form-control', value: value || '', onChange: e => {
                 // this.setState({ value: e.target.value })
                 this.props.updateComponentProp(e.target.value);
             } });
     }
 }
-exports.TextInput = TextInput;
 function dropdown(items, valueType) {
     let itemsPromise;
     let textValues = [];
@@ -2246,7 +2302,7 @@ function dropdown(items, valueType) {
             let { items } = this.state;
             let { value } = this.props;
             items = items || textValues;
-            return React.createElement("select", { className: 'form-control', value: value == null ? "" : value, onChange: e => {
+            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("select", { className: 'form-control', value: value == null ? "" : value, onChange: e => {
                     let textValue = e.target.value;
                     if (valueType == "number") {
                         let integerRegex = /^\d+$/;
@@ -2262,7 +2318,7 @@ function dropdown(items, valueType) {
                         value = textValue;
                     }
                     this.props.updateComponentProp(value);
-                } }, items.map(o => React.createElement("option", { key: o.value, value: o.value }, o.text)));
+                } }, items.map(o => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("option", { key: o.value, value: o.value }, o.text)));
         }
     }
     return Dropdown;
@@ -2275,18 +2331,24 @@ function dropdown(items, valueType) {
 /*!********************************!*\
   !*** ./out/property-editor.js ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: PropertyEditor */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PropertyEditor", function() { return PropertyEditor; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component */ "./out/component.js");
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./common */ "./out/common.js");
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _error_boundary__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./error-boundary */ "./out/error-boundary.js");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-const error_boundary_1 = __webpack_require__(/*! ./error-boundary */ "./out/error-boundary.js");
-class PropertyEditor extends React.Component {
+
+
+
+
+class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
         this._element = null;
@@ -2304,7 +2366,7 @@ class PropertyEditor extends React.Component {
         let selectedComponents = designer.selectedComponents;
         for (let i = 0; i < selectedComponents.length; i++) {
             let componentData = selectedComponents[i];
-            let propEditorInfos = component_1.Component.getPropEditors(componentData);
+            let propEditorInfos = _component__WEBPACK_IMPORTED_MODULE_1__["Component"].getPropEditors(componentData);
             if (i == 0) {
                 commonPropEditorInfos = propEditorInfos || [];
             }
@@ -2358,16 +2420,16 @@ class PropertyEditor extends React.Component {
                     designer.updateComponentProps(...componentProps);
                 }
             };
-            let editor = React.createElement(editorType, editorProps);
+            let editor = react__WEBPACK_IMPORTED_MODULE_0__["createElement"](editorType, editorProps);
             editors.push({ prop: propEditorInfo.propName, editor, group: propEditorInfo.group });
         }
         return editors;
     }
     propValue(propName, props) {
         if (!propName)
-            throw errors_1.Errors.argumentNull("propName");
+            throw _errors__WEBPACK_IMPORTED_MODULE_3__["Errors"].argumentNull("propName");
         if (!props)
-            throw errors_1.Errors.argumentNull("props");
+            throw _errors__WEBPACK_IMPORTED_MODULE_3__["Errors"].argumentNull("props");
         let navPropsNames = propName.split(".");
         let obj = props;
         for (let i = 0; i < navPropsNames.length; i++) {
@@ -2382,10 +2444,10 @@ class PropertyEditor extends React.Component {
         let editors = this.getEditors(designer);
         if (editors.length == 0) {
             let empty = this.props.empty;
-            return React.createElement("div", { className: "text-center" }, empty);
+            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "text-center" }, empty);
         }
         if (this.props.customRender) {
-            let items = editors.map(o => Object.assign({ displayName: common_1.proptDisplayNames[o.prop] || o.prop }, o));
+            let items = editors.map(o => Object.assign({ displayName: _common__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][o.prop] || o.prop }, o));
             let r = this.props.customRender(designer.selectedComponents, items);
             if (r != null) {
                 return r;
@@ -2401,18 +2463,17 @@ class PropertyEditor extends React.Component {
             }
             groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor });
         }
-        return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
-            g.group ? React.createElement("div", { className: "panel-heading" }, common_1.proptDisplayNames[g.group] || g.group) : null,
-            React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
-                React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop),
-                React.createElement("div", { className: "control" },
-                    React.createElement(error_boundary_1.ErrorBoundary, null, o.editor))))))));
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, groupEditorsArray.map((g) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: g.group, className: "panel panel-default" },
+            g.group ? react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-heading" }, _common__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][g.group] || g.group) : null,
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-body" }, g.editors.map((o, i) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: o.prop, className: "form-group clearfix" },
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", null, _common__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][o.prop] || o.prop),
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "control" },
+                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_error_boundary__WEBPACK_IMPORTED_MODULE_4__["ErrorBoundary"], null, o.editor))))))));
     }
     get element() {
         return this._element;
     }
 }
-exports.PropertyEditor = PropertyEditor;
 //# sourceMappingURL=property-editor.js.map
 
 /***/ }),
@@ -2421,57 +2482,73 @@ exports.PropertyEditor = PropertyEditor;
 /*!***********************************!*\
   !*** ./out/react-page-builder.js ***!
   \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: PageBuilderContext, ReactPageBuilder, MasterPageName, MasterPageContext, MasterPage, PlaceHolder, PageView */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageBuilderContext", function() { return PageBuilderContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReactPageBuilder", function() { return ReactPageBuilder; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MasterPageName", function() { return MasterPageName; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return MasterPageContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return MasterPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlaceHolder", function() { return PlaceHolder; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageView", function() { return PageView; });
+/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./component */ "./out/component.js");
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style */ "./out/style.js");
+/* harmony import */ var _component_wrapper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./component-wrapper */ "./out/component-wrapper.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-dom */ "react-dom");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./common */ "./out/common.js");
+/* harmony import */ var _component_panel__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
-const component_wrapper_1 = __webpack_require__(/*! ./component-wrapper */ "./out/component-wrapper.js");
-const React = __webpack_require__(/*! react */ "react");
-const ReactDOM = __webpack_require__(/*! react-dom */ "react-dom");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
-const component_panel_1 = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
-exports.PageBuilderContext = React.createContext({ pageBuilder: null });
+
+
+
+
+
+
+
+const PageBuilderContext = react__WEBPACK_IMPORTED_MODULE_4__["createContext"]({ pageBuilder: null });
 /** 基于 ReactJS 的页面渲染器 */
 class ReactPageBuilder {
     constructor(args) {
         if (!args)
-            throw errors_1.Errors.argumentNull("args");
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull("args");
         this.designer = args.designer;
     }
     createDesignTimeElement(type, props, ...children) {
         if (type == null)
-            throw errors_1.Errors.argumentNull('type');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('type');
         if (props == null)
-            throw errors_1.Errors.argumentNull('props');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('props');
         if (props.id == null)
-            throw errors_1.Errors.argumentFieldCanntNull('id', 'props');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentFieldCanntNull('id', 'props');
         console.assert(props.id != null);
         if (props.id != null)
             props.key = props.id;
         //===================================================
         // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
-        let attr1 = component_1.Component.getAttribute(type);
+        let attr1 = _component__WEBPACK_IMPORTED_MODULE_0__["Component"].getAttribute(type);
         console.assert(attr1 != null);
         let attr2 = props.attr || {};
         let attr = Object.assign({}, attr1, attr2);
         delete props.attr;
         //===================================================
-        let className = props.selected ? style_1.appendClassName(props.className || '', style_1.classNames.componentSelected) : props.className;
+        let className = props.selected ? Object(_style__WEBPACK_IMPORTED_MODULE_2__["appendClassName"])(props.className || '', _style__WEBPACK_IMPORTED_MODULE_2__["classNames"].componentSelected) : props.className;
         let wrapperProps = Object.assign({}, props);
         delete wrapperProps.ref;
         wrapperProps.className = className;
-        return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, { designer: this.designer, source: { type, attr, props, children } }));
+        return react__WEBPACK_IMPORTED_MODULE_4__["createElement"](_component_wrapper__WEBPACK_IMPORTED_MODULE_3__["ComponentWrapper"], Object.assign({}, wrapperProps, { designer: this.designer, source: { type, attr, props, children } }));
     }
     createPage(pageData, pageElement) {
         if (!pageData)
-            throw errors_1.Errors.argumentNull("pageData");
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull("pageData");
         if (!pageElement)
-            throw errors_1.Errors.argumentNull("pageElement");
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull("pageElement");
         ReactPageBuilder.fillPageData(pageData);
         this.pageData = pageData;
         this.pageElement = pageElement;
@@ -2480,7 +2557,7 @@ class ReactPageBuilder {
     render() {
         console.assert(this.pageData.props.id != null);
         let c = ReactPageBuilder.createElement(this.pageData, this.createDesignTimeElement.bind(this));
-        ReactDOM.render(React.createElement(exports.PageBuilderContext.Provider, { value: { pageBuilder: this } }, c), this.pageElement);
+        react_dom__WEBPACK_IMPORTED_MODULE_5__["render"](react__WEBPACK_IMPORTED_MODULE_4__["createElement"](PageBuilderContext.Provider, { value: { pageBuilder: this } }, c), this.pageElement);
     }
     updateComponentProps(componentProps) {
         let componentDatas = [];
@@ -2554,9 +2631,9 @@ class ReactPageBuilder {
     }
     appendComponent(parentId, componentData, componentIndex) {
         if (!parentId)
-            throw errors_1.Errors.argumentNull('parentId');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('parentId');
         if (!componentData)
-            throw errors_1.Errors.argumentNull('childComponent');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('childComponent');
         ReactPageBuilder.nameComponent(componentData);
         let parentControl = this.findComponentData(parentId);
         if (parentControl == null)
@@ -2686,7 +2763,7 @@ class ReactPageBuilder {
             props.name = name;
         }
         if (!props.id)
-            props.id = common_1.guid();
+            props.id = Object(_common__WEBPACK_IMPORTED_MODULE_6__["guid"])();
         if (!component.children || component.children.length == 0) {
             return;
         }
@@ -2703,12 +2780,12 @@ class ReactPageBuilder {
      */
     static _createElement(componentData, context, h) {
         if (!componentData)
-            throw errors_1.Errors.argumentNull('componentData');
-        h = h || React.createElement;
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('componentData');
+        h = h || react__WEBPACK_IMPORTED_MODULE_4__["createElement"];
         try {
             let type = componentData.type;
             let componentName = componentData.type;
-            let componentType = component_1.Component.getComponentType(componentName);
+            let componentType = _component__WEBPACK_IMPORTED_MODULE_0__["Component"].getComponentType(componentName);
             if (componentType) {
                 type = componentType;
             }
@@ -2726,13 +2803,13 @@ class ReactPageBuilder {
                 //=========================================
                 // props.text 非 DOM 的 prop，并且已经使用完
                 delete props.text;
-                if (h == React.createElement) {
+                if (h == react__WEBPACK_IMPORTED_MODULE_4__["createElement"]) {
                     delete props.attr;
                 }
                 //=========================================
             }
             let masterPage;
-            type = type == component_1.Component.Fragment ? React.Fragment : type;
+            type = type == _component__WEBPACK_IMPORTED_MODULE_0__["Component"].Fragment ? react__WEBPACK_IMPORTED_MODULE_4__["Fragment"] : type;
             let ref = props.ref;
             props.ref = function (e) {
                 if (typeof ref == "function")
@@ -2760,10 +2837,9 @@ class ReactPageBuilder {
         }
     }
 }
-exports.ReactPageBuilder = ReactPageBuilder;
-exports.MasterPageName = 'MasterPage';
-exports.MasterPageContext = React.createContext({ master: null });
-class MasterPage extends React.Component {
+const MasterPageName = 'MasterPage';
+const MasterPageContext = react__WEBPACK_IMPORTED_MODULE_4__["createContext"]({ master: null });
+class MasterPage extends react__WEBPACK_IMPORTED_MODULE_4__["Component"] {
     constructor(props) {
         super(props);
         this.childComponents = {};
@@ -2775,7 +2851,7 @@ class MasterPage extends React.Component {
             Array.isArray(props.children) ? props.children : [props.children];
         let children = [];
         arr.forEach(o => {
-            if (!React.isValidElement(o))
+            if (!react__WEBPACK_IMPORTED_MODULE_4__["isValidElement"](o))
                 return;
             children.push(o);
         });
@@ -2796,19 +2872,18 @@ class MasterPage extends React.Component {
         let children = this.state.children.filter(o => o.props.parentId == null);
         let master = this;
         console.assert(master != null);
-        return React.createElement(exports.MasterPageContext.Provider, { value: { master } }, children);
+        return react__WEBPACK_IMPORTED_MODULE_4__["createElement"](MasterPageContext.Provider, { value: { master } }, children);
     }
 }
-exports.MasterPage = MasterPage;
-component_1.Component.register(exports.MasterPageName, MasterPage, { container: false, resize: false, noWrapper: true });
+_component__WEBPACK_IMPORTED_MODULE_0__["Component"].register(MasterPageName, MasterPage, { container: false, resize: false, noWrapper: true });
 /**
  * 占位符，用于放置控件
  */
-class PlaceHolder extends React.Component {
+class PlaceHolder extends react__WEBPACK_IMPORTED_MODULE_4__["Component"] {
     constructor(props) {
         super(props);
         if (!this.props.id) {
-            throw errors_1.Errors.placeHolderIdNull();
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].placeHolderIdNull();
         }
     }
     /**
@@ -2822,8 +2897,8 @@ class PlaceHolder extends React.Component {
         element.addEventListener('dragover', function (event) {
             event.preventDefault();
             event.stopPropagation();
-            element.className = style_1.appendClassName(element.className || '', 'active');
-            let componentName = event.dataTransfer.getData(common_1.constants.componentData);
+            element.className = Object(_style__WEBPACK_IMPORTED_MODULE_2__["appendClassName"])(element.className || '', 'active');
+            let componentName = event.dataTransfer.getData(_common__WEBPACK_IMPORTED_MODULE_6__["constants"].componentData);
             if (componentName)
                 event.dataTransfer.dropEffect = "copy";
             else
@@ -2833,7 +2908,7 @@ class PlaceHolder extends React.Component {
         let func = function (event) {
             event.preventDefault();
             event.stopPropagation();
-            element.className = style_1.removeClassName(element.className, 'active');
+            element.className = Object(_style__WEBPACK_IMPORTED_MODULE_2__["removeClassName"])(element.className, 'active');
         };
         element.addEventListener('dragleave', func);
         element.addEventListener('dragend', func);
@@ -2841,10 +2916,10 @@ class PlaceHolder extends React.Component {
         element.ondrop = (event) => {
             event.preventDefault();
             event.stopPropagation();
-            element.className = style_1.removeClassName(element.className, 'active');
+            element.className = Object(_style__WEBPACK_IMPORTED_MODULE_2__["removeClassName"])(element.className, 'active');
             let ctrl;
             if (event.dataTransfer)
-                ctrl = component_panel_1.ComponentPanel.getComponentData(event.dataTransfer);
+                ctrl = _component_panel__WEBPACK_IMPORTED_MODULE_7__["ComponentPanel"].getComponentData(event.dataTransfer);
             if (!ctrl)
                 return;
             console.assert(this.props.id != null);
@@ -2862,7 +2937,7 @@ class PlaceHolder extends React.Component {
             .drop('start', (event, dd) => {
             if (dd.sourceElement.id == this.wraper.props.source.props.id)
                 return;
-            style_1.appendClassName(element, 'active');
+            Object(_style__WEBPACK_IMPORTED_MODULE_2__["appendClassName"])(element, 'active');
         })
             .drop('drop', (event, dd) => {
             if (dd.sourceElement.id == this.wraper.props.source.props.id)
@@ -2877,15 +2952,15 @@ class PlaceHolder extends React.Component {
             .drop('end', (event, dd) => {
             if (dd.sourceElement.id == this.wraper.props.source.props.id)
                 return;
-            style_1.removeClassName(element, 'active');
+            Object(_style__WEBPACK_IMPORTED_MODULE_2__["removeClassName"])(element, 'active');
         });
     }
     render() {
-        let empty = this.props.empty || React.createElement("div", { key: common_1.guid(), className: "empty" }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
-        return React.createElement(exports.MasterPageContext.Consumer, null, (args) => {
+        let empty = this.props.empty || react__WEBPACK_IMPORTED_MODULE_4__["createElement"]("div", { key: Object(_common__WEBPACK_IMPORTED_MODULE_6__["guid"])(), className: "empty" }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
+        return react__WEBPACK_IMPORTED_MODULE_4__["createElement"](MasterPageContext.Consumer, null, (args) => {
             let master = args.master;
             if (master == null)
-                throw errors_1.Errors.canntFindMasterPage(this.props.id);
+                throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].canntFindMasterPage(this.props.id);
             let children = [];
             if (master.props && master.props.children) {
                 let arr;
@@ -2897,19 +2972,19 @@ class PlaceHolder extends React.Component {
                 }
                 children = arr.filter((o) => o.props.parentId != null && o.props.parentId == this.props.id);
             }
-            return React.createElement(exports.PageBuilderContext.Consumer, null, args => {
-                return React.createElement(component_1.ComponentWrapperContext.Consumer, null, wraper => {
+            return react__WEBPACK_IMPORTED_MODULE_4__["createElement"](PageBuilderContext.Consumer, null, args => {
+                return react__WEBPACK_IMPORTED_MODULE_4__["createElement"](_component__WEBPACK_IMPORTED_MODULE_0__["ComponentWrapperContext"].Consumer, null, wraper => {
                     this.wraper = wraper;
                     console.assert(this.wraper != null);
                     if (args.pageBuilder != null && children.length == 0) {
                         children = [empty];
                     }
-                    let element = React.createElement(React.Fragment, null,
+                    let element = react__WEBPACK_IMPORTED_MODULE_4__["createElement"](react__WEBPACK_IMPORTED_MODULE_4__["Fragment"], null,
                         this.props.children,
                         children);
                     if (args.pageBuilder) {
                         this.designer = args.pageBuilder;
-                        element = React.createElement("div", { key: common_1.guid(), className: style_1.classNames.placeholder, ref: e => {
+                        element = react__WEBPACK_IMPORTED_MODULE_4__["createElement"]("div", { key: Object(_common__WEBPACK_IMPORTED_MODULE_6__["guid"])(), className: _style__WEBPACK_IMPORTED_MODULE_2__["classNames"].placeholder, ref: e => {
                                 if (!e)
                                     return;
                                 this.element = e;
@@ -2923,21 +2998,19 @@ class PlaceHolder extends React.Component {
         });
     }
 }
-exports.PlaceHolder = PlaceHolder;
-component_1.Component.register('PlaceHolder', PlaceHolder, { resize: false, movable: false, container: true });
+_component__WEBPACK_IMPORTED_MODULE_0__["Component"].register('PlaceHolder', PlaceHolder, { resize: false, movable: false, container: true });
 /** 用于将 ComponentData 显示为组件 */
-class PageView extends React.Component {
+class PageView extends react__WEBPACK_IMPORTED_MODULE_4__["Component"] {
     constructor(props) {
         super(props);
         if (!this.props.pageData)
-            throw errors_1.Errors.propCanntNull(PageView.name, 'pageData');
+            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].propCanntNull(PageView.name, 'pageData');
     }
     render() {
         let element = ReactPageBuilder.createElement(this.props.pageData);
         return element;
     }
 }
-exports.PageView = PageView;
 //# sourceMappingURL=react-page-builder.js.map
 
 /***/ }),
@@ -2946,14 +3019,17 @@ exports.PageView = PageView;
 /*!**********************!*\
   !*** ./out/style.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: classNames, appendClassName, removeClassName */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return classNames; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "appendClassName", function() { return appendClassName; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeClassName", function() { return removeClassName; });
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-exports.classNames = {
+let classNames = {
     componentSelected: `component-selected`,
     emptyTemplates: `empty-templates`,
     loadingTemplates: `loading-templates`,
@@ -2977,20 +3053,20 @@ let element = document.createElement('style');
 element.type = 'text/css';
 element.setAttribute("data-name", "jueying");
 element.innerHTML = `
-            .${exports.classNames.componentSelected} {
+            .${classNames.componentSelected} {
                 border: solid 1px #337ab7!important;
             }
-            .${exports.classNames.componentSelected} > :first-child {
+            .${classNames.componentSelected} > :first-child {
                 border-color: blue;
               }
-              .${exports.classNames.componentSelected} .resize_handle {
+              .${classNames.componentSelected} .resize_handle {
                 position: absolute;
                 height: 6px;
                 width: 6px;
                 border: 1px solid #89B;
                 background: #9AC;
               }
-              .${exports.classNames.componentSelected} .move_handle {
+              .${classNames.componentSelected} .move_handle {
                 height: 12px;
                 width: 12px;
                 top: 6px;
@@ -2999,58 +3075,58 @@ element.innerHTML = `
                 position: relative;
                 margin-top: -12px;
               }
-              .${exports.classNames.componentSelected} .NW,
-              .${exports.classNames.componentSelected} .NN,
-              .${exports.classNames.componentSelected} .NE {
+              .${classNames.componentSelected} .NW,
+              .${classNames.componentSelected} .NN,
+              .${classNames.componentSelected} .NE {
                 top: -4px;
               }
-              .${exports.classNames.componentSelected} .NE,
-              .${exports.classNames.componentSelected} .EE,
-              .${exports.classNames.componentSelected} .SE {
+              .${classNames.componentSelected} .NE,
+              .${classNames.componentSelected} .EE,
+              .${classNames.componentSelected} .SE {
                 right: -4px;
               }
-              .${exports.classNames.componentSelected} .SW,
-              .${exports.classNames.componentSelected}.SS,
-              .${exports.classNames.componentSelected} .SE {
+              .${classNames.componentSelected} .SW,
+              .${classNames.componentSelected}.SS,
+              .${classNames.componentSelected} .SE {
                 bottom: -4px;
               }
-              .${exports.classNames.componentSelected} .NW,
-              .${exports.classNames.componentSelected} .WW,
-              .${exports.classNames.componentSelected} .SW {
+              .${classNames.componentSelected} .NW,
+              .${classNames.componentSelected} .WW,
+              .${classNames.componentSelected} .SW {
                 left: -4px;
               }
-              .${exports.classNames.componentSelected} .SE,
-              .${exports.classNames.componentSelected} .NW {
+              .${classNames.componentSelected} .SE,
+              .${classNames.componentSelected} .NW {
                 cursor: nw-resize;
               }
-              .${exports.classNames.componentSelected} .SW,
-              .${exports.classNames.componentSelected} .NE {
+              .${classNames.componentSelected} .SW,
+              .${classNames.componentSelected} .NE {
                 cursor: ne-resize;
               }
-              .${exports.classNames.componentSelected} .NN,
-              .${exports.classNames.componentSelected} .SS {
+              .${classNames.componentSelected} .NN,
+              .${classNames.componentSelected} .SS {
                 cursor: n-resize;
                 left: 50%;
                 margin-left: -4px;
               }
-              .${exports.classNames.componentSelected} .EE,
-              .${exports.classNames.componentSelected} .WW {
+              .${classNames.componentSelected} .EE,
+              .${classNames.componentSelected} .WW {
                 cursor: e-resize;
                 top: 50%;
                 margin-top: -4px;
               }
-            .${exports.classNames.emptyTemplates} {
+            .${classNames.emptyTemplates} {
                 padding:50px 0;
                 text-align: center;
             }
-            .${exports.classNames.loadingTemplates} {
+            .${classNames.loadingTemplates} {
                 padding:50px 0;
                 text-align: center;
             }
-            .${exports.classNames.templateSelected} .page-view {
+            .${classNames.templateSelected} .page-view {
                 border: solid 1px #337ab7!important;
             }
-            .${exports.classNames.templateDialog} .name {
+            .${classNames.templateDialog} .name {
                 margin-top: -${templateDialog.nameHeight}px;
                 height: ${templateDialog.nameHeight}px;
                 font-size: ${templateDialog.fontSize}px;
@@ -3059,43 +3135,43 @@ element.innerHTML = `
                 background-color: black;
                 opacity: 0.5;
             }
-            .${exports.classNames.templateDialog} .name span {
+            .${classNames.templateDialog} .name span {
                 color: white;
             }
-            .${exports.classNames.emptyDocument} {
+            .${classNames.emptyDocument} {
                 text-align: center;
                 padding: 100px 0;
             }
-            .${exports.classNames.component} > .NW,
-            .${exports.classNames.component} > .NN,
-            .${exports.classNames.component} > .NE,
-            .${exports.classNames.component} > .EE,
-            .${exports.classNames.component} > .SE,
-            .${exports.classNames.component} > .SW,
-            .${exports.classNames.component} > .SS,
-            .${exports.classNames.component} > .WW {
+            .${classNames.component} > .NW,
+            .${classNames.component} > .NN,
+            .${classNames.component} > .NE,
+            .${classNames.component} > .EE,
+            .${classNames.component} > .SE,
+            .${classNames.component} > .SW,
+            .${classNames.component} > .SS,
+            .${classNames.component} > .WW {
                 display: none;
             }
-            .${exports.classNames.componentSelected}.component > .NW,
-            .${exports.classNames.componentSelected}.component > .NN,
-            .${exports.classNames.componentSelected}.component > .NE,
-            .${exports.classNames.componentSelected}.component > .EE,
-            .${exports.classNames.componentSelected}.component > .SE,
-            .${exports.classNames.componentSelected}.component > .SW,
-            .${exports.classNames.componentSelected}.component > .SS,
-            .${exports.classNames.componentSelected}.component > .WW {
+            .${classNames.componentSelected}.component > .NW,
+            .${classNames.componentSelected}.component > .NN,
+            .${classNames.componentSelected}.component > .NE,
+            .${classNames.componentSelected}.component > .EE,
+            .${classNames.componentSelected}.component > .SE,
+            .${classNames.componentSelected}.component > .SW,
+            .${classNames.componentSelected}.component > .SS,
+            .${classNames.componentSelected}.component > .WW {
                 display: block;
             }
-            .${exports.classNames.placeholder} {
+            .${classNames.placeholder} {
                 min-height: 40px;
                 width: 100%;
             }
-            .${exports.classNames.placeholder}.active,
-            .${exports.classNames.componentWrapper}.active,
-            .${exports.classNames.componentWrapper}.${exports.classNames.componentSelected}.active {
+            .${classNames.placeholder}.active,
+            .${classNames.componentWrapper}.active,
+            .${classNames.componentWrapper}.${classNames.componentSelected}.active {
                 border: 1px solid green;
             }
-            .${exports.classNames.editorPanel} {
+            .${classNames.editorPanel} {
                 width: 300px;
                 background: white;
                 color: black;
@@ -3104,25 +3180,25 @@ element.innerHTML = `
                 z-index: 100;
                 overflow: auto;
             }
-            .${exports.classNames.editorPanel} label {
+            .${classNames.editorPanel} label {
                 width: 80px;
                 float: left;
                 padding: 4px;
                 text-overflow: ellipsis;
                 overflow: hidden;
             }
-            .${exports.classNames.editorPanel} .control {
+            .${classNames.editorPanel} .control {
                 padding-left: 90px;
             }
-            .${exports.classNames.editorPanel} .empty {
+            .${classNames.editorPanel} .empty {
                 padding-top: 200px;
                 text-align: center;
             }
-            .${exports.classNames.designer} .error,
-            .${exports.classNames.editorPanel} .error {
+            .${classNames.designer} .error,
+            .${classNames.editorPanel} .error {
                 color: red;
             }
-            .${exports.classNames.componentPanel} {
+            .${classNames.componentPanel} {
                 background: white;
                 color: black;
                 font-size: 14px;
@@ -3131,23 +3207,23 @@ element.innerHTML = `
                 padding: 0;
                 text-align: center
             }
-            .${exports.classNames.componentPanel} .panel-heading {
+            .${classNames.componentPanel} .panel-heading {
                 text-align: center;
             }
-            .${exports.classNames.componentPanel} li {
+            .${classNames.componentPanel} li {
                 text-align: center;
                 padding: 8px;
             }
-            .${exports.classNames.componentWrapper}.${exports.classNames.moveDown} {
+            .${classNames.componentWrapper}.${classNames.moveDown} {
          
             }
         `;
 document.head.appendChild(element);
 function appendClassName(element, addonClassName) {
     if (element == null)
-        throw errors_1.Errors.argumentNull('element');
+        throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('element');
     if (!addonClassName)
-        throw errors_1.Errors.argumentNull('addonClassName');
+        throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('addonClassName');
     let sourceClassName;
     if (typeof element == 'string')
         sourceClassName = element;
@@ -3162,7 +3238,6 @@ function appendClassName(element, addonClassName) {
         element.className = className;
     return className;
 }
-exports.appendClassName = appendClassName;
 function removeClassName(element, targetClassName) {
     let sourceClassName;
     if (typeof element == 'string')
@@ -3178,7 +3253,6 @@ function removeClassName(element, targetClassName) {
         element.className = sourceClassName;
     return sourceClassName;
 }
-exports.removeClassName = removeClassName;
 //# sourceMappingURL=style.js.map
 
 /***/ }),

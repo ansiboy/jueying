@@ -1,18 +1,21 @@
 import * as React from "react";
 import { ComponentDefine, ComponentData } from "./models";
-interface ComponentToolbarProps extends React.Props<ComponentPanel> {
+import { ComponentDataHandler } from "./component-data-handler";
+interface ComponentProps extends React.Props<ComponentPanel> {
     style?: React.CSSProperties;
     className?: string;
     empty?: string | JSX.Element;
+    designer: ComponentDataHandler;
 }
 interface ComponentToolbarState {
     componets: ComponentDefine[];
 }
-export declare class ComponentPanel extends React.Component<ComponentToolbarProps, ComponentToolbarState> {
+export declare class ComponentPanel extends React.Component<ComponentProps, ComponentToolbarState> {
+    designer: ComponentDataHandler;
     static componentIndexName: string;
     private toolbarElement;
-    constructor(props: ComponentToolbarProps);
-    readonly element: HTMLElement;
+    constructor(props: ComponentProps);
+    get element(): HTMLElement;
     private componentDraggable;
     setComponets(componets: ComponentDefine[]): void;
     static getComponentData(dataTransfer: DataTransfer): ComponentData;

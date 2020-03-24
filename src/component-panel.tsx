@@ -1,26 +1,28 @@
 import * as React from "react";
-
 import { ComponentDefine, ComponentData } from "./models";
-import { constants } from "./common";
+import { constants } from "./components";
 import { classNames } from "./style";
+import { ComponentDataHandler } from "./component-data-handler";
 
-interface ComponentToolbarProps extends React.Props<ComponentPanel> {
+interface ComponentProps extends React.Props<ComponentPanel> {
     // componets: ComponentDefine[],
     style?: React.CSSProperties,
     className?: string,
     empty?: string | JSX.Element,
+    designer:ComponentDataHandler,
 }
 interface ComponentToolbarState {
     componets: ComponentDefine[],
 }
-export class ComponentPanel extends React.Component<ComponentToolbarProps, ComponentToolbarState> {
-    // designer: PageDesigner;
+export class ComponentPanel extends React.Component<ComponentProps, ComponentToolbarState> {
+    designer: ComponentDataHandler;
     static componentIndexName = "data-component-index";
     private toolbarElement: HTMLElement;
 
-    constructor(props: ComponentToolbarProps) {
+    constructor(props: ComponentProps) {
         super(props)
         this.state = { componets: [] }
+        this.designer = this.props.designer;
     }
 
     get element() {
@@ -60,11 +62,9 @@ export class ComponentPanel extends React.Component<ComponentToolbarProps, Compo
 
     render() {
         let empty = this.props.empty || <div className="empty">暂无可用组件</div>
-        let props: ComponentToolbarProps = Object.assign({}, this.props);
+        let props: ComponentProps = Object.assign({}, this.props);
         let componets = this.state.componets || [];
-        // return <DesignerContext.Consumer>
-        //     {context => {
-        //         this.designer = context.designer;
+        
         return <ul {...props as any} className={`${classNames.componentPanel} ${this.props.className || ""}`}
             ref={(e: HTMLElement) => this.toolbarElement = this.toolbarElement || e}>
             {componets.length == 0 ? empty : componets.map((c, i) => {
@@ -86,13 +86,5 @@ export class ComponentPanel extends React.Component<ComponentToolbarProps, Compo
                 </li>
             })}
         </ul>
-        // return <div {...props as any} className={`${classNames.componentPanel} panel panel-primary`}>
-        //     <div className="panel-heading">工具栏</div>
-        //     <div className="panel-body">
-
-        //     </div>
-        // </div>
-        //     }}
-        // </DesignerContext.Consumer>
     }
 }

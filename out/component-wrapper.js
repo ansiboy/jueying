@@ -1,12 +1,11 @@
 "use strict";
-/// <reference path="./typings/declare.d.ts"/>
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const errors_1 = require("./errors");
-const common_1 = require("./common");
 const component_panel_1 = require("./component-panel");
 const style_1 = require("./style");
 const component_1 = require("./component");
+const components_1 = require("./components");
 /**
  * 组件包装器，对组件进行包装，实现组件设计时的行为。
  * 1. 组件的移动
@@ -32,7 +31,7 @@ class ComponentWrapper extends React.Component {
             return;
         }
         element.setAttribute('data-behavior', 'behavior');
-        let designer = this.props.designer;
+        let designer = this.props.handler;
         console.assert(attr.container != null);
         console.assert(attr.movable != null);
         if (attr.container) {
@@ -56,7 +55,7 @@ class ComponentWrapper extends React.Component {
         element.addEventListener('dragover', function (event) {
             event.preventDefault();
             event.stopPropagation();
-            let componentName = event.dataTransfer.getData(common_1.constants.componentData);
+            let componentName = event.dataTransfer.getData(components_1.constants.componentData);
             if (componentName)
                 event.dataTransfer.dropEffect = "copy";
             else
@@ -210,7 +209,7 @@ class ComponentWrapper extends React.Component {
         else {
             selectedControlIds.push(elementID);
         }
-        designer.selectComponent(selectedControlIds);
+        designer.selectComponents(selectedControlIds);
     }
     componentDidMount() {
         if (!this.element) {
@@ -227,8 +226,8 @@ class ComponentWrapper extends React.Component {
                 React.createElement("div", null, error.stack));
         }
         let attr = this.props.source.attr;
-        let noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
-        if (noWrapper) {
+        let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != components_1.MasterPage);
+        if (!shouldWrapper) {
             return this.renderWidthoutWrapper();
         }
         let props = this.props.source.props;
@@ -292,16 +291,11 @@ class ComponentWrapper extends React.Component {
         return React.createElement(component_1.ComponentWrapperContext.Provider, { value: this }, element);
     }
     createRawElement(type, props, children) {
-        props = Object.assign({}, props);
         let isEmptyElement = (children || []).length == 0;
         if (isEmptyElement) {
             let emtpy = this.designTimeEmptyElement(type, props);
             if (emtpy != null)
                 children = [emtpy];
-        }
-        if (typeof type == "string") {
-            props["parent-id"] = props.parentId;
-            delete props.parentId;
         }
         return React.createElement(type, props, ...children);
     }
@@ -321,13 +315,14 @@ class ComponentWrapper extends React.Component {
         return text;
     }
 }
-ComponentWrapper.isDrag = false;
 exports.ComponentWrapper = ComponentWrapper;
-exports.defaultComponentAttribute = {
-    container: false,
-    movable: false,
-    showHandler: false,
-    resize: false,
-    noWrapper: false,
-};
+ComponentWrapper.isDrag = false;
+// export interface ComponentAttribute {
+//     /** 表示组件为容器，可以添加组件 */
+//     container?: boolean,
+//     /** 表示组件可移动 */
+//     movable?: boolean,
+//     showHandler?: boolean,
+//     resize?: boolean,
+// }
 //# sourceMappingURL=component-wrapper.js.map

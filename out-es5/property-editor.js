@@ -1,5 +1,22 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PropertyEditor = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _component = require("./component");
+
+var _common = require("./common");
+
+var _errors = require("./errors");
+
+var _errorBoundary = require("./error-boundary");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -25,20 +42,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var React = require("react");
-
-var component_1 = require("./component");
-
-var common_1 = require("./common");
-
-var errors_1 = require("./errors");
-
-var error_boundary_1 = require("./error-boundary");
 
 var PropertyEditor =
 /*#__PURE__*/
@@ -73,7 +76,8 @@ function (_React$Component) {
 
       var _loop = function _loop(i) {
         var componentData = selectedComponents[i];
-        var propEditorInfos = component_1.Component.getPropEditors(componentData);
+
+        var propEditorInfos = _component.Component.getPropEditors(componentData);
 
         if (i == 0) {
           commonPropEditorInfos = propEditorInfos || [];
@@ -160,8 +164,8 @@ function (_React$Component) {
   }, {
     key: "propValue",
     value: function propValue(propName, props) {
-      if (!propName) throw errors_1.Errors.argumentNull("propName");
-      if (!props) throw errors_1.Errors.argumentNull("props");
+      if (!propName) throw _errors.Errors.argumentNull("propName");
+      if (!props) throw _errors.Errors.argumentNull("props");
       var navPropsNames = propName.split(".");
       var obj = props;
 
@@ -188,7 +192,7 @@ function (_React$Component) {
       if (this.props.customRender) {
         var items = editors.map(function (o) {
           return Object.assign({
-            displayName: common_1.proptDisplayNames[o.prop] || o.prop
+            displayName: _common.proptDisplayNames[o.prop] || o.prop
           }, o);
         });
         var r = this.props.customRender(designer.selectedComponents, items);
@@ -230,15 +234,15 @@ function (_React$Component) {
           className: "panel panel-default"
         }, g.group ? React.createElement("div", {
           className: "panel-heading"
-        }, common_1.proptDisplayNames[g.group] || g.group) : null, React.createElement("div", {
+        }, _common.proptDisplayNames[g.group] || g.group) : null, React.createElement("div", {
           className: "panel-body"
         }, g.editors.map(function (o, i) {
           return React.createElement("div", {
             key: o.prop,
             className: "form-group clearfix"
-          }, React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
+          }, React.createElement("label", null, _common.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
             className: "control"
-          }, React.createElement(error_boundary_1.ErrorBoundary, null, o.editor)));
+          }, React.createElement(_errorBoundary.ErrorBoundary, null, o.editor)));
         })));
       }));
     }

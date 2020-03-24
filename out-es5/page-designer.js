@@ -1,5 +1,22 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PageDesigner = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _common = require("./common");
+
+var _errors = require("./errors");
+
+var _style = require("./style");
+
+var _reactPageBuilder = require("./react-page-builder");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -26,20 +43,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var React = require("react");
-
-var common_1 = require("./common");
-
-var errors_1 = require("./errors");
-
-var style_1 = require("./style");
-
-var react_page_builder_1 = require("./react-page-builder");
-
 var PageDesigner =
 /*#__PURE__*/
 function (_React$Component) {
@@ -51,11 +54,11 @@ function (_React$Component) {
     _classCallCheck(this, PageDesigner);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PageDesigner).call(this, props));
-    _this.componentSelected = common_1.Callback.create();
-    _this.componentRemoved = common_1.Callback.create();
-    _this.componentAppend = common_1.Callback.create();
-    _this.componentUpdated = common_1.Callback.create();
-    _this.designtimeComponentDidMount = common_1.Callback.create(); // let components: PageDesignerState["components"] = {};
+    _this.componentSelected = _common.Callback.create();
+    _this.componentRemoved = _common.Callback.create();
+    _this.componentAppend = _common.Callback.create();
+    _this.componentUpdated = _common.Callback.create();
+    _this.designtimeComponentDidMount = _common.Callback.create(); // let components: PageDesignerState["components"] = {};
     // PageDesigner.fillPageData(props.pageData);
 
     _this.state = {};
@@ -64,7 +67,7 @@ function (_React$Component) {
       console.log("this:designer event:controlComponentDidMount");
     });
 
-    var pageBuilderType = props.pageBuilderType || react_page_builder_1.ReactPageBuilder;
+    var pageBuilderType = props.pageBuilderType || _reactPageBuilder.ReactPageBuilder;
     _this.pageBuilder = new pageBuilderType({
       designer: _assertThisInitialized(_this)
     });
@@ -156,8 +159,8 @@ function (_React$Component) {
      * @param componentIndex 新添加组件在子组件中的次序
      */
     value: function appendComponent(parentId, componentData, componentIndex) {
-      if (!parentId) throw errors_1.Errors.argumentNull('parentId');
-      if (!componentData) throw errors_1.Errors.argumentNull('childComponent');
+      if (!parentId) throw _errors.Errors.argumentNull('parentId');
+      if (!componentData) throw _errors.Errors.argumentNull('childComponent');
       this.pageBuilder.appendComponent(parentId, componentData, componentIndex);
       this.selectComponent(componentData.props.id);
       this.componentAppend.fire(this);
@@ -232,7 +235,7 @@ function (_React$Component) {
         componentIds[_key2] = arguments[_key2];
       }
 
-      if (!componentIds) throw errors_1.Errors.argumentNull("componentIds");
+      if (!componentIds) throw _errors.Errors.argumentNull("componentIds");
       this.pageBuilder.removeComponents(componentIds);
       this.componentRemoved.fire(componentIds);
     }
@@ -327,7 +330,7 @@ function (_React$Component) {
 
       var style = this.props.style;
       var result = React.createElement("div", {
-        className: style_1.classNames.designer,
+        className: _style.classNames.designer,
         tabIndex: 1,
         style: style,
         onKeyDown: function onKeyDown(e) {
@@ -393,7 +396,7 @@ function (_React$Component) {
         props.name = name;
       }
 
-      if (!props.id) props.id = common_1.guid();
+      if (!props.id) props.id = (0, _common.guid)();
 
       if (!component.children || component.children.length == 0) {
         return;
@@ -408,9 +411,9 @@ function (_React$Component) {
   return PageDesigner;
 }(React.Component);
 
+exports.PageDesigner = PageDesigner;
 PageDesigner.defaultProps = {
   pageData: null,
   wrapDesignTimeElement: true
 };
-exports.PageDesigner = PageDesigner;
 //# sourceMappingURL=page-designer.js.map

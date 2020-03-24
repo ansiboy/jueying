@@ -1,22 +1,27 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.guid = guid;
+exports.Callback = exports.proptDisplayNames = exports.constants = void 0;
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.constants = {
+var constants = {
   componentsDir: 'components',
   connectorElementClassName: 'component-container',
   componentTypeName: 'data-component-name',
   componentData: 'component-data',
   componentPosition: "component-position"
 };
-exports.proptDisplayNames = {};
+exports.constants = constants;
+var proptDisplayNames = {};
+exports.proptDisplayNames = proptDisplayNames;
 
 function guid() {
   function s4() {
@@ -25,8 +30,6 @@ function guid() {
 
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
-
-exports.guid = guid;
 
 var Callback =
 /*#__PURE__*/

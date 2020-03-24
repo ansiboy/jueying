@@ -2,18 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const component_1 = require("./component");
-const common_1 = require("./common");
+const propt_display_names_1 = require("./propt-display-names");
 const errors_1 = require("./errors");
-const error_boundary_1 = require("./error-boundary");
 class PropertyEditor extends React.Component {
     constructor(props) {
         super(props);
         this._element = null;
-        this.state = { designer: this.props.designer };
+        this.state = { groupedEditors: [] };
+        this.props.designer.componentSelected.add(() => {
+            let editors = this.getEditors(this.props.designer);
+            this.setState({ groupedEditors: editors });
+        });
     }
-    static getDerivedStateFromProps(props, state) {
-        return { designer: props.designer };
-    }
+    // static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState> {
+    //     return { designer: props.designer };
+    // }
     getEditors(designer) {
         if (designer == null) {
             return [];
@@ -72,9 +75,9 @@ class PropertyEditor extends React.Component {
                 editComponents: selectedComponents,
                 updateComponentProp: (value) => {
                     let componentProps = selectedComponents.map(o => ({
-                        componentId: o.props.id, propName: propEditorInfo.propName, value
+                        componentId: o.id, propName: propEditorInfo.propName, value
                     }));
-                    designer.updateComponentProps(...componentProps);
+                    designer.updateComponentProps(componentProps);
                 }
             };
             let editor = React.createElement(editorType, editorProps);
@@ -97,14 +100,14 @@ class PropertyEditor extends React.Component {
         return obj;
     }
     render() {
-        let { designer } = this.state;
-        let editors = this.getEditors(designer);
+        let { designer } = this.props;
+        let editors = this.state.groupedEditors; //this.getEditors(designer)
         if (editors.length == 0) {
             let empty = this.props.empty;
             return React.createElement("div", { className: "text-center" }, empty);
         }
         if (this.props.customRender) {
-            let items = editors.map(o => Object.assign({ displayName: common_1.proptDisplayNames[o.prop] || o.prop }, o));
+            let items = editors.map(o => Object.assign({ displayName: propt_display_names_1.proptDisplayNames[o.prop] || o.prop }, o));
             let r = this.props.customRender(designer.selectedComponents, items);
             if (r != null) {
                 return r;
@@ -121,15 +124,39 @@ class PropertyEditor extends React.Component {
             groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor });
         }
         return React.createElement(React.Fragment, null, groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
-            g.group ? React.createElement("div", { className: "panel-heading" }, common_1.proptDisplayNames[g.group] || g.group) : null,
+            g.group ? React.createElement("div", { className: "panel-heading" }, propt_display_names_1.proptDisplayNames[g.group] || g.group) : null,
             React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
-                React.createElement("label", null, common_1.proptDisplayNames[o.prop] || o.prop),
+                React.createElement("label", null, propt_display_names_1.proptDisplayNames[o.prop] || o.prop),
                 React.createElement("div", { className: "control" },
-                    React.createElement(error_boundary_1.ErrorBoundary, null, o.editor))))))));
+                    React.createElement(ErrorBoundary, null, o.editor))))))));
     }
     get element() {
         return this._element;
     }
 }
 exports.PropertyEditor = PropertyEditor;
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+    componentDidCatch(error, info) {
+        // Display fallback UI
+        this.setState({ error });
+        // You can also log the error to an error reporting service
+        //   logErrorToMyService(error, info);
+        debugger;
+    }
+    render() {
+        let { error } = this.state || {};
+        if (error) {
+            // You can render any custom fallback UI
+            return React.createElement("div", { className: "error" },
+                React.createElement("div", null, error.message),
+                React.createElement("div", null, error.stack));
+        }
+        return this.props.children;
+    }
+}
+exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=property-editor.js.map

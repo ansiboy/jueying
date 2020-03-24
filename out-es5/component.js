@@ -1,5 +1,21 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.component = component;
+exports.Component = exports.ComponentWrapperContext = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _componentWrapper = require("./component-wrapper");
+
+var _errors = require("./errors");
+
+var _common = require("./common");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -8,19 +24,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var React = require("react");
-
-var component_wrapper_1 = require("./component-wrapper");
-
-var errors_1 = require("./errors");
-
-var common_1 = require("./common");
-
-exports.ComponentWrapperContext = React.createContext(null);
+var ComponentWrapperContext = React.createContext(null);
+exports.ComponentWrapperContext = ComponentWrapperContext;
 
 function component(args) {
   return function (constructor) {
@@ -31,8 +36,6 @@ function component(args) {
     return constructor;
   };
 }
-
-exports.component = component;
 
 var Component =
 /*#__PURE__*/
@@ -64,7 +67,7 @@ function () {
       var attr = Component.componentAttributes[typename];
       return Object.assign({
         type: type
-      }, component_wrapper_1.defaultComponentAttribute, attr || {});
+      }, _componentWrapper.defaultComponentAttribute, attr || {});
     }
   }, {
     key: "getPropEditors",
@@ -115,7 +118,7 @@ function () {
         editorDisplay = options.display;
 
         if (options.displayName != null) {
-          common_1.proptDisplayNames[propName] = options.displayName;
+          _common.proptDisplayNames[propName] = options.displayName;
         }
       } else {
         componentType = componentTypeOrOptions;
@@ -154,8 +157,8 @@ function () {
         componentType['componentName'] = componentName;
       }
 
-      if (!componentName) throw errors_1.Errors.argumentNull('componentName');
-      if (!componentType) throw errors_1.Errors.argumentNull('componentType');
+      if (!componentName) throw _errors.Errors.argumentNull('componentName');
+      if (!componentType) throw _errors.Errors.argumentNull('componentType');
       Component.componentTypes[componentName] = componentType;
       if (attr) Component.setAttribute(componentName, attr);
     }
@@ -172,6 +175,7 @@ function () {
 // 用于创建 React 的 React.Fragment 
 
 
+exports.Component = Component;
 Component.Fragment = ""; //==========================================
 // private static defaultComponentAttribute: ComponentAttribute = {
 //     container: false, movable: false, showHandler: false, resize: false
@@ -232,5 +236,4 @@ Component.componentAttributes = {
 Component.componentPropEditors = {};
 Component.componentPropEditorDisplay = {};
 Component.componentTypes = {};
-exports.Component = Component;
 //# sourceMappingURL=component.js.map

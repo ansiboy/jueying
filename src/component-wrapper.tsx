@@ -1,17 +1,19 @@
-/// <reference path="./typings/declare.d.ts"/>
-
+import { ComponentProps } from "react";
 import * as React from "react";
-import { PageDesigner } from "./page-designer";
 import { Errors } from "./errors";
-import { constants } from "./common";
 import { ComponentPanel } from "./component-panel";
 import { classNames, appendClassName } from "./style";
-import { ComponentWrapperContext, ComponentProps } from "./component";
+import { ComponentWrapperContext } from "./component";
+import { ReactComponentType, DragDropData } from "./models";
+import { MasterPage, constants } from "./components";
+import { ComponentDataHandler } from "./component-data-handler";
+import { ComponentAttribute } from "maishu-jueying-core";
+
 
 type ComponentWrapperProps = {
-    designer: PageDesigner,
+    handler: ComponentDataHandler,
     source: {
-        type: string | React.ComponentClass,
+        type: ReactComponentType,
         attr: ComponentAttribute,
         props: ComponentProps<any>,
         children: any[]
@@ -54,7 +56,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         }
 
         element.setAttribute('data-behavior', 'behavior')
-        let designer = this.props.designer
+        let designer = this.props.handler
         console.assert(attr.container != null)
         console.assert(attr.movable != null)
         if (attr.container) {
@@ -76,7 +78,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
     /**
      * 启用拖放操作，以便通过拖放图标添加控件
      */
-    private static enableAppendDroppable(element: HTMLElement, designer: PageDesigner) {
+    private static enableAppendDroppable(element: HTMLElement, designer: ComponentDataHandler) {
         console.assert(element != null)
         element.addEventListener('dragover', function (event) {
             event.preventDefault()
@@ -127,7 +129,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         ]
         return classNames.indexOf(className) >= 0
     }
-    private static draggable(designer: PageDesigner, element: HTMLElement, handler?: HTMLElement) {
+    private static draggable(designer: ComponentDataHandler, element: HTMLElement, handler?: HTMLElement) {
 
         if (!designer) throw Errors.argumentNull('designer')
         if (!element) throw Errors.argumentNull('element')
@@ -139,7 +141,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         let startPos: JQuery.Coordinates
         let rect: { width?: number, height?: number, left?: number, top?: number };
         let dragStart: number
-        $(handler)
+        ($(handler) as any)
             .drag("init", function (ev) {
                 startPos = $(element).position()
                 if ($(this).is(`.${classNames.componentSelected}`))
@@ -240,7 +242,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         }
     }
 
-    static invokeOnClick(ev: MouseEvent, designer: PageDesigner, element: HTMLElement) {
+    static invokeOnClick(ev: MouseEvent, designer: ComponentDataHandler, element: HTMLElement) {
         ev.preventDefault()
         ev.stopPropagation()
 
@@ -263,7 +265,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         else {
             selectedControlIds.push(elementID)
         }
-        designer.selectComponent(selectedControlIds)
+        designer.selectComponents(selectedControlIds)
     }
 
     componentDidMount() {
@@ -286,8 +288,8 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         }
 
         let attr = this.props.source.attr
-        let noWrapper = attr.noWrapper; //attr.resize || typeof this.props.source.type != 'string';// || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
-        if (noWrapper) {
+        let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != MasterPage)
+        if (!shouldWrapper) {
             return this.renderWidthoutWrapper()
         }
 
@@ -369,24 +371,17 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         </ComponentWrapperContext.Provider>
     }
 
-    private createRawElement(type: string | React.ComponentClass, props: ComponentProps<any>, children: any[]) {
-        props = Object.assign({}, props);
+    private createRawElement(type: ReactComponentType, props: ComponentProps<any>, children: any[]) {
         let isEmptyElement = (children || []).length == 0
         if (isEmptyElement) {
             let emtpy = this.designTimeEmptyElement(type, props)
             if (emtpy != null)
                 children = [emtpy]
         }
-
-        if (typeof type == "string") {
-            props["parent-id"] = props.parentId;
-            delete props.parentId;
-        }
-
         return React.createElement(type, props, ...children)
     }
 
-    private designTimeEmptyElement(type: string | React.ComponentClass, props: ComponentProps<any>) {
+    private designTimeEmptyElement(type: ReactComponentType, props: ComponentProps<any>) {
         if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
             return null
 
@@ -408,28 +403,13 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
 }
 
 
-export interface ComponentAttribute {
-    /** 组件在设计设计时，是否可以作为容器添加子组件 */
-    container?: boolean,
-    /** 组件在设计设计时，是否可移动 */
-    movable?: boolean,
-
-    /** 组件在设计设计时，是否显示操作按钮 */
-    showHandler?: boolean,
-
-    /** 组件在设计设计时，是否可以设置大小 */
-    resize?: boolean,
-
-    /** 组件在设计设计时，不对元素进行包裹 */
-    noWrapper?: boolean,
-}
-
-export let defaultComponentAttribute: ComponentAttribute = {
-    container: false,
-    movable: false,
-    showHandler: false,
-    resize: false,
-    noWrapper: false,
-}
+// export interface ComponentAttribute {
+//     /** 表示组件为容器，可以添加组件 */
+//     container?: boolean,
+//     /** 表示组件可移动 */
+//     movable?: boolean,
+//     showHandler?: boolean,
+//     resize?: boolean,
+// }
 
 

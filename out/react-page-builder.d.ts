@@ -44,7 +44,7 @@ export declare class ReactPageBuilder implements PageBuilder {
             left: number | string;
             top: number | string;
         };
-    }[]): ComponentData[];
+    }[]): any[];
     removeComponents(componentIds: string[]): void;
     moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
     private removeComponentFrom;
@@ -74,7 +74,7 @@ export declare class MasterPage extends React.Component<ComponentProps<MasterPag
     constructor(props: ComponentProps<MasterPage>);
     private static children;
     static getDerivedStateFromProps(props: ComponentProps<MasterPage>): Readonly<{
-        children: React.ReactElement<ComponentProps<MasterPage>, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>[];
+        children: React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>[];
     }>;
     render(): React.ReactNode;
 }

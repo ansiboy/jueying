@@ -1,4 +1,23 @@
-"use strict"; /// <reference path="./typings/declare.d.ts"/>
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.defaultComponentAttribute = exports.ComponentWrapper = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _errors = require("./errors");
+
+var _common = require("./common");
+
+var _componentPanel = require("./component-panel");
+
+var _style = require("./style");
+
+var _component = require("./component");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -26,28 +45,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var React = require("react");
-
-var errors_1 = require("./errors");
-
-var common_1 = require("./common");
-
-var component_panel_1 = require("./component-panel");
-
-var style_1 = require("./style");
-
-var component_1 = require("./component");
 /**
  * 组件包装器，对组件进行包装，实现组件设计时的行为。
  * 1. 组件的移动
  * 2. 组件的拖放
  */
-
-
 var ComponentWrapper =
 /*#__PURE__*/
 function (_React$Component) {
@@ -73,8 +75,8 @@ function (_React$Component) {
   }, {
     key: "designtimeBehavior",
     value: function designtimeBehavior(element, attr) {
-      if (!element) throw errors_1.Errors.argumentNull('element');
-      if (!attr) throw errors_1.Errors.argumentNull('args');
+      if (!element) throw _errors.Errors.argumentNull('element');
+      if (!attr) throw _errors.Errors.argumentNull('args');
 
       if (element.getAttribute('data-behavior')) {
         return;
@@ -144,8 +146,8 @@ function (_React$Component) {
           height = style.height,
           display = style.display,
           visibility = style.visibility;
-      var className = style_1.appendClassName(props.className || '', style_1.classNames.componentWrapper);
-      className = props.selected ? style_1.appendClassName(className, style_1.classNames.componentSelected) : className;
+      var className = (0, _style.appendClassName)(props.className || '', _style.classNames.componentWrapper);
+      className = props.selected ? (0, _style.appendClassName)(className, _style.classNames.componentSelected) : className;
       var wrapperProps = {
         id: props.id,
         className: className,
@@ -182,7 +184,7 @@ function (_React$Component) {
       // };
 
 
-      return React.createElement(component_1.ComponentWrapperContext.Provider, {
+      return React.createElement(_component.ComponentWrapperContext.Provider, {
         value: this
       }, React.createElement("div", Object.assign({}, wrapperProps), move_handle, showResizeHandle ? React.createElement(React.Fragment, null, React.createElement("div", {
         className: "resize_handle NE"
@@ -227,11 +229,11 @@ function (_React$Component) {
       };
 
       if (props.selected) {
-        props.className = style_1.appendClassName(props.className || '', style_1.classNames.componentSelected);
+        props.className = (0, _style.appendClassName)(props.className || '', _style.classNames.componentSelected);
       }
 
       var element = this.createRawElement(type, props, children);
-      return React.createElement(component_1.ComponentWrapperContext.Provider, {
+      return React.createElement(_component.ComponentWrapperContext.Provider, {
         value: this
       }, element);
     }
@@ -280,7 +282,7 @@ function (_React$Component) {
       element.addEventListener('dragover', function (event) {
         event.preventDefault();
         event.stopPropagation();
-        var componentName = event.dataTransfer.getData(common_1.constants.componentData);
+        var componentName = event.dataTransfer.getData(_common.constants.componentData);
         if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
         console.log("dragover: left:".concat(event['layerX'], " top:").concat(event['layerX']));
       });
@@ -289,7 +291,9 @@ function (_React$Component) {
         event.stopPropagation();
         var args1 = arguments[1];
         if (!event.dataTransfer) return;
-        var ctrl = component_panel_1.ComponentPanel.getComponentData(event.dataTransfer);
+
+        var ctrl = _componentPanel.ComponentPanel.getComponentData(event.dataTransfer);
+
         if (!ctrl) return;
         ctrl.props.style = ctrl.props.style || {};
         designer.pageData.props.style = designer.pageData.props.style || {};
@@ -298,7 +302,8 @@ function (_React$Component) {
           ctrl.props.style.position = designer.pageData.props.style.position;
         }
 
-        var pos = component_panel_1.ComponentPanel.mouseInnerPosition(event.dataTransfer);
+        var pos = _componentPanel.ComponentPanel.mouseInnerPosition(event.dataTransfer);
+
         console.assert(pos != null);
 
         if (ctrl.props.style.position == 'absolute') {
@@ -318,8 +323,8 @@ function (_React$Component) {
   }, {
     key: "draggable",
     value: function draggable(designer, element, handler) {
-      if (!designer) throw errors_1.Errors.argumentNull('designer');
-      if (!element) throw errors_1.Errors.argumentNull('element');
+      if (!designer) throw _errors.Errors.argumentNull('designer');
+      if (!element) throw _errors.Errors.argumentNull('element');
       console.assert(element.id != "");
       handler = handler || element;
       var componentId = element.id;
@@ -329,7 +334,7 @@ function (_React$Component) {
       var dragStart;
       $(handler).drag("init", function (ev) {
         startPos = $(element).position();
-        if ($(this).is(".".concat(style_1.classNames.componentSelected))) return $(".".concat(style_1.classNames.componentSelected));
+        if ($(this).is(".".concat(_style.classNames.componentSelected))) return $(".".concat(_style.classNames.componentSelected));
       }).drag('start', function (ev, dd) {
         dd.attr = $(ev.target).prop("className");
         dd.width = $(this).width();
@@ -455,13 +460,14 @@ function (_React$Component) {
   return ComponentWrapper;
 }(React.Component);
 
-ComponentWrapper.isDrag = false;
 exports.ComponentWrapper = ComponentWrapper;
-exports.defaultComponentAttribute = {
+ComponentWrapper.isDrag = false;
+var defaultComponentAttribute = {
   container: false,
   movable: false,
   showHandler: false,
   resize: false,
   noWrapper: false
 };
+exports.defaultComponentAttribute = defaultComponentAttribute;
 //# sourceMappingURL=component-wrapper.js.map

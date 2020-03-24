@@ -3,6 +3,90 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+Object.defineProperty(exports, "strings", {
+  enumerable: true,
+  get: function get() {
+    return _common.proptDisplayNames;
+  }
+});
+Object.defineProperty(exports, "proptDisplayNames", {
+  enumerable: true,
+  get: function get() {
+    return _common.proptDisplayNames;
+  }
+});
+Object.defineProperty(exports, "Component", {
+  enumerable: true,
+  get: function get() {
+    return _component.Component;
+  }
+});
+Object.defineProperty(exports, "ComponentPanel", {
+  enumerable: true,
+  get: function get() {
+    return _componentPanel.ComponentPanel;
+  }
+});
+Object.defineProperty(exports, "EditorPanel", {
+  enumerable: true,
+  get: function get() {
+    return _editorPanel.EditorPanel;
+  }
+});
+Object.defineProperty(exports, "PageDesigner", {
+  enumerable: true,
+  get: function get() {
+    return _pageDesigner.PageDesigner;
+  }
+});
+Object.defineProperty(exports, "PropEditor", {
+  enumerable: true,
+  get: function get() {
+    return _propEditor.PropEditor;
+  }
+});
+Object.defineProperty(exports, "TextInput", {
+  enumerable: true,
+  get: function get() {
+    return _propEditor.TextInput;
+  }
+});
+Object.defineProperty(exports, "classNames", {
+  enumerable: true,
+  get: function get() {
+    return _style.classNames;
+  }
+});
+Object.defineProperty(exports, "PageBuilderContext", {
+  enumerable: true,
+  get: function get() {
+    return _reactPageBuilder.PageBuilderContext;
+  }
+});
+Object.defineProperty(exports, "MasterPage", {
+  enumerable: true,
+  get: function get() {
+    return _reactPageBuilder.MasterPage;
+  }
+});
+Object.defineProperty(exports, "MasterPageContext", {
+  enumerable: true,
+  get: function get() {
+    return _reactPageBuilder.MasterPageContext;
+  }
+});
+Object.defineProperty(exports, "PlaceHolder", {
+  enumerable: true,
+  get: function get() {
+    return _reactPageBuilder.PlaceHolder;
+  }
+});
+Object.defineProperty(exports, "PageView", {
+  enumerable: true,
+  get: function get() {
+    return _reactPageBuilder.PageView;
+  }
+});
 
 require("./jquery");
 
@@ -14,41 +98,19 @@ require("../lib/jquery.event.drop-2.2");
 
 require("../lib/jquery.event.drop.live-2.2");
 
-var common_1 = require("./common");
+var _common = require("./common");
 
-exports.strings = common_1.proptDisplayNames;
-exports.proptDisplayNames = common_1.proptDisplayNames;
+var _component = require("./component");
 
-var component_1 = require("./component");
+var _componentPanel = require("./component-panel");
 
-exports.Component = component_1.Component;
+var _editorPanel = require("./editor-panel");
 
-var component_panel_1 = require("./component-panel");
+var _pageDesigner = require("./page-designer");
 
-exports.ComponentPanel = component_panel_1.ComponentPanel;
+var _propEditor = require("./prop-editor");
 
-var editor_panel_1 = require("./editor-panel");
+var _style = require("./style");
 
-exports.EditorPanel = editor_panel_1.EditorPanel;
-
-var page_designer_1 = require("./page-designer");
-
-exports.PageDesigner = page_designer_1.PageDesigner;
-
-var prop_editor_1 = require("./prop-editor");
-
-exports.PropEditor = prop_editor_1.PropEditor;
-exports.TextInput = prop_editor_1.TextInput;
-
-var style_1 = require("./style");
-
-exports.classNames = style_1.classNames;
-
-var react_page_builder_1 = require("./react-page-builder");
-
-exports.PageBuilderContext = react_page_builder_1.PageBuilderContext;
-exports.MasterPage = react_page_builder_1.MasterPage;
-exports.MasterPageContext = react_page_builder_1.MasterPageContext;
-exports.PlaceHolder = react_page_builder_1.PlaceHolder;
-exports.PageView = react_page_builder_1.PageView;
+var _reactPageBuilder = require("./react-page-builder");
 //# sourceMappingURL=index.js.map

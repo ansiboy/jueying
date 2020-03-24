@@ -1,47 +1,39 @@
 import React = require("react");
 import { ComponentData } from "./models";
-import { Callback } from "./common";
-import { PageBuilderConstructor } from "./page-builder";
+import { ComponentDataHandler } from "./component-data-handler";
+import { ComponentFactory } from "./component-factory";
 export interface PageDesignerProps extends React.Props<PageDesigner> {
-    pageData: ComponentData | null;
     style?: React.CSSProperties;
-    wrapDesignTimeElement?: boolean;
-    pageBuilderType?: PageBuilderConstructor;
+    className?: string;
+    componentFactory?: ComponentFactory;
+    elementTag?: string;
+    context?: any;
+    handler: ComponentDataHandler;
 }
 export interface PageDesignerState {
+    pageData: ComponentData | null;
 }
-export declare class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
-    private element;
-    componentSelected: Callback<string[]>;
-    componentRemoved: Callback<string[]>;
-    componentAppend: Callback<PageDesigner>;
-    componentUpdated: Callback<ComponentData[]>;
-    designtimeComponentDidMount: Callback<{
-        component: React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)>) | (new (props: any) => React.Component<any, any, any>)>;
-        element: HTMLElement;
-    }>;
+export declare class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S extends PageDesignerState = PageDesignerState> extends React.Component<P, S> {
+    private _element;
     static defaultProps: PageDesignerProps;
-    private pageBuilder;
-    constructor(props: PageDesignerProps);
+    private components;
+    constructor(props: P);
+    private setComponetRefProp;
+    private initPageData;
+    allComponents(): React.Component[];
     /** 页面数据 */
-    readonly pageData: ComponentData;
+    get pageData(): S["pageData"];
     /** 获取已选择了的组件编号 */
-    readonly selectedComponentIds: string[];
+    get selectedComponentIds(): any[];
     /** 获取已选择了的组件 */
-    readonly selectedComponents: ComponentData[];
-    /** 更新组件属性 */
-    updateComponentProp(componentId: string, propName: string, value: any): void;
-    /** 更新组件多个属性 */
+    get selectedComponents(): ComponentData[];
+    get element(): HTMLElement;
+    updateComponentProp(componentId: string, propName: string, value: any): any;
     updateComponentProps(...componentProps: {
         componentId: string;
         propName: string;
         value: any;
-    }[]): void;
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-    private static nameComponent;
+    }[]): any;
     /**
      * 添加控件
      * @param parentId 父控件编号
@@ -67,7 +59,6 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
         width?: number | string;
         height?: number | string;
     }): void;
-    /** 设置多个组件的位置 */
     setComponentsPosition(positions: {
         componentId: string;
         position: {
@@ -86,10 +77,15 @@ export declare class PageDesigner extends React.Component<PageDesignerProps, Pag
      * 移动控件到另外一个控件容器
      * @param componentId 要移动的组件编号
      * @param parentId 目标组件编号
-     * @param beforeChildId 组件的前一个子组件编号
+     * @param targetComponentIndex 组件位置
      */
-    moveComponent(componentId: string, parentId: string, childComponentIndex?: number): void;
+    moveComponent(componentId: string, parentId: string, targetComponentIndex?: number): void;
+    private removeComponentFrom;
+    private static travelComponentData;
+    findComponentData(componentId: string): ComponentData | null;
     private onKeyDown;
-    componentDidMount(): void;
+    protected createDesignTimeElement(componentData: ComponentData): JSX.Element;
+    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState>;
+    findComponetsByTypeName(typeName: string): void;
     render(): JSX.Element;
 }

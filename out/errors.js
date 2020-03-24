@@ -37,10 +37,6 @@ class Errors {
         let msg = `${fieldName} of argument ${argumentName} cannt be null or empty.`;
         return new Error(msg);
     }
-    static componentDataNotExists(componentId) {
-        let msg = `Component data ${componentId} is not exists.`;
-        return new Error(msg);
-    }
 }
 exports.Errors = Errors;
 //# sourceMappingURL=errors.js.map

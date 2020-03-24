@@ -1,38 +1,22 @@
 import * as React from "react";
-import { ComponentAttribute, ComponentWrapper, defaultComponentAttribute } from "./component-wrapper";
+import { ComponentWrapper } from "./component-wrapper";
 import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
-import { proptDisplayNames } from "./common";
+// import { MasterPage } from "./components";
+import { ComponentFactory } from "./component-factory";
 
-export interface ComponentProps<T> extends React.Props<T> {
-    id?: string,
-    name?: string,
-    className?: string,
-    style?: React.CSSProperties,
-    selected?: boolean,
-    text?: string,
-    parentId?: string;
-    attr?: ComponentAttribute
-}
+import { ComponentAttribute } from "maishu-jueying-core";
+import { proptDisplayNames } from "./propt-display-names";
 
+// type DesignerContextValue = { designer: ComponentDataHandler | null };
+// export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
 export const ComponentWrapperContext = React.createContext<ComponentWrapper>(null);
 
 export interface PropEditorInfo {
     // propNames: string[],
     propName: string,
     editorType: PropEditorConstructor, group: string,
-}
-
-export function component<T extends React.Component>(args?: ComponentAttribute) {
-    return function (constructor: { new(...args): T }) {
-        // if (PageDesigner) {
-        Component.setAttribute(constructor.name, args)
-        // }
-
-        Component.register(constructor.name, constructor)
-        return constructor
-    }
 }
 
 interface SetPropEditorOptions {
@@ -46,6 +30,7 @@ interface SetPropEditorOptions {
 
 /** 组件是否显示回调函数 */
 type ComponentPropEditorDisplay = (componentData: ComponentData) => boolean;
+type CreateElementContext = { components: React.Component[], componentTypes: string[] };
 
 export class Component {
 
@@ -54,9 +39,9 @@ export class Component {
     static readonly Fragment = ""
     //==========================================
 
-    // private static defaultComponentAttribute: ComponentAttribute = {
-    //     container: false, movable: false, showHandler: false, resize: false
-    // }
+    private static defaultComponentAttribute: ComponentAttribute = {
+        container: false, movable: false, showHandler: false, resize: false
+    }
 
     private static componentAttributes: { [key: string]: ComponentAttribute } = {
 
@@ -90,10 +75,10 @@ export class Component {
      * 获取组件特性
      * @param typename 组件类型名称
      */
-    static getAttribute(type: string | React.ComponentClass<any>) {
+    static getAttribute(type: string | React.ComponentClass<any> | React.ComponentType) {
         let typename = typeof type == 'string' ? type : type.name
         let attr = Component.componentAttributes[typename]
-        return Object.assign({ type }, defaultComponentAttribute, attr || {})
+        return Object.assign({ type }, Component.defaultComponentAttribute, attr || {})
     }
 
     private static componentPropEditors: {
@@ -106,7 +91,7 @@ export class Component {
 
 
     static getPropEditors(componentData: ComponentData): PropEditorInfo[] {
-        let componentType: string = typeof componentData == "string" ? "string" : componentData.type;
+        let componentType: string = componentData.type;
         let result: PropEditorInfo[] = [];
         let propEditorInfo = this.componentPropEditors[componentType] || [];
         for (let i = 0; i < propEditorInfo.length; i++) {
@@ -137,7 +122,6 @@ export class Component {
         return editor
     }
 
-    /** 设置组件属性编辑器 */
     static setPropEditor(options: SetPropEditorOptions): void;
     static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
     static setPropEditor(componentTypeOrOptions: React.ComponentClass | string | SetPropEditorOptions, propName?: string, editorType?: PropEditorConstructor, group?: string): void {
@@ -178,7 +162,95 @@ export class Component {
         classProps.push({ propName, editorType, group })
     }
 
-    private static componentTypes = {} as { [key: string]: React.ComponentClass<any> | string }
+    static createElement(componentData: ComponentData): React.ReactElement<any> | null {
+        // return Component._createElement(componentData, { components: [], componentTypes: [] }, h);
+        return defaultComponentFactory(componentData)
+    }
+
+    // /**
+    //  * 将持久化的元素数据转换为 ReactElement
+    //  * @param componentData 元素数据
+    //  */
+    // private static _createElement(componentData: ComponentData, context: CreateElementContext, h?: ComponentFactory): React.ReactElement<any> | null {
+    //     if (!componentData) throw Errors.argumentNull('componentData')
+
+    //     h = h || defaultComponentFactory;
+
+    //     try {
+
+    //         let type: string | React.ComponentClass | React.ComponentType = componentData.type;
+    //         let componentName = componentData.type;
+    //         let controlType = Component.componentTypes[componentName];
+    //         if (controlType) {
+    //             type = controlType;
+    //         }
+
+    //         let children: (React.ReactElement<any> | string)[] = [];
+    //         for (let i = 0; i < componentData.children.length; i++) {
+    //             let child = componentData.children[i];
+    //             if (typeof child == "string")
+    //                 children.push(child);
+    //             else
+    //                 children.push(Component._createElement(child, context, h));
+
+    //         }
+    //         //componentData.children ? componentData.children.map(o => Component._createElement(o, context, h)) : [];
+    //         let props: ComponentProps<any> = componentData.props == null ? {} : Object.assign({}, componentData.props);//JSON.parse(JSON.stringify(componentData.props));
+    //         if (controlType != null && controlType["defaultProps"]) {
+    //             props = Object.assign({}, controlType["defaultProps"], props);
+    //         }
+
+    //         let result: JSX.Element
+
+
+    //         if (typeof type == 'string') {
+    //             if (props.text) {
+    //                 children.push(props.text)
+    //             }
+
+    //             //=========================================
+    //             // props.text 非 DOM 的 prop，并且已经使用完
+    //             // delete props.text
+    //             // if (h == React.createElement) {
+    //             //     delete props.attr
+    //             // }
+    //             //=========================================
+    //         }
+
+
+    //         let masterPage: MasterPage;
+    //         type = type == Component.Fragment ? React.Fragment : type
+    //         let ref = props.ref;
+    //         props.ref = function (e: any) {
+
+    //             if (typeof ref == "function")
+    //                 ref(e);
+
+    //             if (e instanceof MasterPage) {
+    //                 masterPage = e;
+    //                 for (let i = 0; i < context.componentTypes.length; i++) {
+    //                     let typeName = context.componentTypes[i];
+    //                     let childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
+    //                     childComponents.push(context.components[i]);
+    //                 }
+    //             }
+    //             else if (e != null) {
+    //                 context.components.push(e);
+    //                 context.componentTypes.push(typeof type == "string" ? type : type.name);
+    //                 // masterPage.componentCreated.fire({ component: e, type: typeof type == "string" ? type : type.name });
+    //             }
+    //         };
+
+    //         result = h(componentData);
+    //         return result
+    //     }
+    //     catch (e) {
+    //         console.error(e);
+    //         return null;
+    //     }
+    // }
+
+    static componentTypes = {} as { [key: string]: React.ComponentClass<any> | string }
     static register(componentName: string, componentType: React.ComponentClass<any>, attr?: ComponentAttribute): void {
         if (componentType == null && typeof componentName == 'function') {
             componentType = componentName;
@@ -197,12 +269,18 @@ export class Component {
             Component.setAttribute(componentName, attr)
     }
 
-    static getComponentType(componentName: string): string | React.ComponentClass | null {
-        let componentType = Component.componentTypes[componentName];
-        return componentType;
-    }
-
 }
+
+export let defaultComponentFactory: ComponentFactory = (c) => {
+    let children = (c.children || []).map(c => typeof c == "string" ? c : defaultComponentFactory(c));
+    let type = Component.componentTypes[c.type] || c.type;
+    let e: JSX.Element = React.createElement(type, c.props || {}, ...children);
+    return e;
+}
+
+
+
+
 
 
 

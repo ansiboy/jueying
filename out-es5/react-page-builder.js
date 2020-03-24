@@ -1,5 +1,28 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PageView = exports.PlaceHolder = exports.MasterPage = exports.MasterPageContext = exports.MasterPageName = exports.ReactPageBuilder = exports.PageBuilderContext = void 0;
+
+var _component = require("./component");
+
+var _errors = require("./errors");
+
+var _style = require("./style");
+
+var _componentWrapper = require("./component-wrapper");
+
+var React = _interopRequireWildcard(require("react"));
+
+var ReactDOM = _interopRequireWildcard(require("react-dom"));
+
+var _common = require("./common");
+
+var _componentPanel = require("./component-panel");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
@@ -26,30 +49,12 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var component_1 = require("./component");
-
-var errors_1 = require("./errors");
-
-var style_1 = require("./style");
-
-var component_wrapper_1 = require("./component-wrapper");
-
-var React = require("react");
-
-var ReactDOM = require("react-dom");
-
-var common_1 = require("./common");
-
-var component_panel_1 = require("./component-panel");
-
-exports.PageBuilderContext = React.createContext({
+var PageBuilderContext = React.createContext({
   pageBuilder: null
 });
 /** 基于 ReactJS 的页面渲染器 */
+
+exports.PageBuilderContext = PageBuilderContext;
 
 var ReactPageBuilder =
 /*#__PURE__*/
@@ -57,27 +62,28 @@ function () {
   function ReactPageBuilder(args) {
     _classCallCheck(this, ReactPageBuilder);
 
-    if (!args) throw errors_1.Errors.argumentNull("args");
+    if (!args) throw _errors.Errors.argumentNull("args");
     this.designer = args.designer;
   }
 
   _createClass(ReactPageBuilder, [{
     key: "createDesignTimeElement",
     value: function createDesignTimeElement(type, props) {
-      if (type == null) throw errors_1.Errors.argumentNull('type');
-      if (props == null) throw errors_1.Errors.argumentNull('props');
-      if (props.id == null) throw errors_1.Errors.argumentFieldCanntNull('id', 'props');
+      if (type == null) throw _errors.Errors.argumentNull('type');
+      if (props == null) throw _errors.Errors.argumentNull('props');
+      if (props.id == null) throw _errors.Errors.argumentFieldCanntNull('id', 'props');
       console.assert(props.id != null);
       if (props.id != null) props.key = props.id; //===================================================
       // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
 
-      var attr1 = component_1.Component.getAttribute(type);
+      var attr1 = _component.Component.getAttribute(type);
+
       console.assert(attr1 != null);
       var attr2 = props.attr || {};
       var attr = Object.assign({}, attr1, attr2);
       delete props.attr; //===================================================
 
-      var className = props.selected ? style_1.appendClassName(props.className || '', style_1.classNames.componentSelected) : props.className;
+      var className = props.selected ? (0, _style.appendClassName)(props.className || '', _style.classNames.componentSelected) : props.className;
       var wrapperProps = Object.assign({}, props);
       delete wrapperProps.ref;
       wrapperProps.className = className;
@@ -86,7 +92,7 @@ function () {
         children[_key - 2] = arguments[_key];
       }
 
-      return React.createElement(component_wrapper_1.ComponentWrapper, Object.assign({}, wrapperProps, {
+      return React.createElement(_componentWrapper.ComponentWrapper, Object.assign({}, wrapperProps, {
         designer: this.designer,
         source: {
           type: type,
@@ -99,8 +105,8 @@ function () {
   }, {
     key: "createPage",
     value: function createPage(pageData, pageElement) {
-      if (!pageData) throw errors_1.Errors.argumentNull("pageData");
-      if (!pageElement) throw errors_1.Errors.argumentNull("pageElement");
+      if (!pageData) throw _errors.Errors.argumentNull("pageData");
+      if (!pageElement) throw _errors.Errors.argumentNull("pageElement");
       ReactPageBuilder.fillPageData(pageData);
       this.pageData = pageData;
       this.pageElement = pageElement;
@@ -111,7 +117,7 @@ function () {
     value: function render() {
       console.assert(this.pageData.props.id != null);
       var c = ReactPageBuilder.createElement(this.pageData, this.createDesignTimeElement.bind(this));
-      ReactDOM.render(React.createElement(exports.PageBuilderContext.Provider, {
+      ReactDOM.render(React.createElement(PageBuilderContext.Provider, {
         value: {
           pageBuilder: this
         }
@@ -179,8 +185,8 @@ function () {
   }, {
     key: "appendComponent",
     value: function appendComponent(parentId, componentData, componentIndex) {
-      if (!parentId) throw errors_1.Errors.argumentNull('parentId');
-      if (!componentData) throw errors_1.Errors.argumentNull('childComponent');
+      if (!parentId) throw _errors.Errors.argumentNull('parentId');
+      if (!componentData) throw _errors.Errors.argumentNull('childComponent');
       ReactPageBuilder.nameComponent(componentData);
       var parentControl = this.findComponentData(parentId);
       if (parentControl == null) throw new Error('Parent is not exists');
@@ -375,7 +381,7 @@ function () {
         props.name = name;
       }
 
-      if (!props.id) props.id = common_1.guid();
+      if (!props.id) props.id = (0, _common.guid)();
 
       if (!component.children || component.children.length == 0) {
         return;
@@ -401,13 +407,14 @@ function () {
   }, {
     key: "_createElement",
     value: function _createElement(componentData, context, h) {
-      if (!componentData) throw errors_1.Errors.argumentNull('componentData');
+      if (!componentData) throw _errors.Errors.argumentNull('componentData');
       h = h || React.createElement;
 
       try {
         var type = componentData.type;
         var componentName = componentData.type;
-        var componentType = component_1.Component.getComponentType(componentName);
+
+        var componentType = _component.Component.getComponentType(componentName);
 
         if (componentType) {
           type = componentType;
@@ -442,7 +449,7 @@ function () {
         }
 
         var masterPage;
-        type = type == component_1.Component.Fragment ? React.Fragment : type;
+        type = type == _component.Component.Fragment ? React.Fragment : type;
         var ref = props.ref;
 
         props.ref = function (e) {
@@ -475,10 +482,12 @@ function () {
 }();
 
 exports.ReactPageBuilder = ReactPageBuilder;
-exports.MasterPageName = 'MasterPage';
-exports.MasterPageContext = React.createContext({
+var MasterPageName = 'MasterPage';
+exports.MasterPageName = MasterPageName;
+var MasterPageContext = React.createContext({
   master: null
 });
+exports.MasterPageContext = MasterPageContext;
 
 var MasterPage =
 /*#__PURE__*/
@@ -517,7 +526,7 @@ function (_React$Component) {
       });
       var master = this;
       console.assert(master != null);
-      return React.createElement(exports.MasterPageContext.Provider, {
+      return React.createElement(MasterPageContext.Provider, {
         value: {
           master: master
         }
@@ -548,7 +557,8 @@ function (_React$Component) {
 }(React.Component);
 
 exports.MasterPage = MasterPage;
-component_1.Component.register(exports.MasterPageName, MasterPage, {
+
+_component.Component.register(MasterPageName, MasterPage, {
   container: false,
   resize: false,
   noWrapper: true
@@ -556,6 +566,7 @@ component_1.Component.register(exports.MasterPageName, MasterPage, {
 /**
  * 占位符，用于放置控件
  */
+
 
 var PlaceHolder =
 /*#__PURE__*/
@@ -570,7 +581,7 @@ function (_React$Component2) {
     _this4 = _possibleConstructorReturn(this, _getPrototypeOf(PlaceHolder).call(this, props));
 
     if (!_this4.props.id) {
-      throw errors_1.Errors.placeHolderIdNull();
+      throw _errors.Errors.placeHolderIdNull();
     }
 
     return _this4;
@@ -591,8 +602,8 @@ function (_React$Component2) {
       element.addEventListener('dragover', function (event) {
         event.preventDefault();
         event.stopPropagation();
-        element.className = style_1.appendClassName(element.className || '', 'active');
-        var componentName = event.dataTransfer.getData(common_1.constants.componentData);
+        element.className = (0, _style.appendClassName)(element.className || '', 'active');
+        var componentName = event.dataTransfer.getData(_common.constants.componentData);
         if (componentName) event.dataTransfer.dropEffect = "copy";else event.dataTransfer.dropEffect = "move";
         console.log("dragover: left:".concat(event.layerX, " top:").concat(event.layerX));
       });
@@ -600,7 +611,7 @@ function (_React$Component2) {
       var func = function func(event) {
         event.preventDefault();
         event.stopPropagation();
-        element.className = style_1.removeClassName(element.className, 'active');
+        element.className = (0, _style.removeClassName)(element.className, 'active');
       };
 
       element.addEventListener('dragleave', func);
@@ -610,9 +621,9 @@ function (_React$Component2) {
       element.ondrop = function (event) {
         event.preventDefault();
         event.stopPropagation();
-        element.className = style_1.removeClassName(element.className, 'active');
+        element.className = (0, _style.removeClassName)(element.className, 'active');
         var ctrl;
-        if (event.dataTransfer) ctrl = component_panel_1.ComponentPanel.getComponentData(event.dataTransfer);
+        if (event.dataTransfer) ctrl = _componentPanel.ComponentPanel.getComponentData(event.dataTransfer);
         if (!ctrl) return;
         console.assert(_this5.props.id != null);
         console.assert(_this5.designer != null);
@@ -631,7 +642,7 @@ function (_React$Component2) {
       element.setAttribute('enable-move-droppable', 'true');
       $(element).drop('start', function (event, dd) {
         if (dd.sourceElement.id == _this6.wraper.props.source.props.id) return;
-        style_1.appendClassName(element, 'active');
+        (0, _style.appendClassName)(element, 'active');
       }).drop('drop', function (event, dd) {
         if (dd.sourceElement.id == _this6.wraper.props.source.props.id) return;
 
@@ -649,7 +660,7 @@ function (_React$Component2) {
 
       }).drop('end', function (event, dd) {
         if (dd.sourceElement.id == _this6.wraper.props.source.props.id) return;
-        style_1.removeClassName(element, 'active');
+        (0, _style.removeClassName)(element, 'active');
       });
     }
   }, {
@@ -658,12 +669,12 @@ function (_React$Component2) {
       var _this7 = this;
 
       var empty = this.props.empty || React.createElement("div", {
-        key: common_1.guid(),
+        key: (0, _common.guid)(),
         className: "empty"
       }, "\u53EF\u4EE5\u62D6\u62C9\u63A7\u4EF6\u5230\u8FD9\u91CC");
-      return React.createElement(exports.MasterPageContext.Consumer, null, function (args) {
+      return React.createElement(MasterPageContext.Consumer, null, function (args) {
         var master = args.master;
-        if (master == null) throw errors_1.Errors.canntFindMasterPage(_this7.props.id);
+        if (master == null) throw _errors.Errors.canntFindMasterPage(_this7.props.id);
         var children = [];
 
         if (master.props && master.props.children) {
@@ -680,8 +691,8 @@ function (_React$Component2) {
           });
         }
 
-        return React.createElement(exports.PageBuilderContext.Consumer, null, function (args) {
-          return React.createElement(component_1.ComponentWrapperContext.Consumer, null, function (wraper) {
+        return React.createElement(PageBuilderContext.Consumer, null, function (args) {
+          return React.createElement(_component.ComponentWrapperContext.Consumer, null, function (wraper) {
             _this7.wraper = wraper;
             console.assert(_this7.wraper != null);
 
@@ -694,8 +705,8 @@ function (_React$Component2) {
             if (args.pageBuilder) {
               _this7.designer = args.pageBuilder;
               element = React.createElement("div", {
-                key: common_1.guid(),
-                className: style_1.classNames.placeholder,
+                key: (0, _common.guid)(),
+                className: _style.classNames.placeholder,
                 ref: function ref(e) {
                   if (!e) return;
                   _this7.element = e;
@@ -718,12 +729,14 @@ function (_React$Component2) {
 }(React.Component);
 
 exports.PlaceHolder = PlaceHolder;
-component_1.Component.register('PlaceHolder', PlaceHolder, {
+
+_component.Component.register('PlaceHolder', PlaceHolder, {
   resize: false,
   movable: false,
   container: true
 });
 /** 用于将 ComponentData 显示为组件 */
+
 
 var PageView =
 /*#__PURE__*/
@@ -736,7 +749,7 @@ function (_React$Component3) {
     _classCallCheck(this, PageView);
 
     _this8 = _possibleConstructorReturn(this, _getPrototypeOf(PageView).call(this, props));
-    if (!_this8.props.pageData) throw errors_1.Errors.propCanntNull(PageView.name, 'pageData');
+    if (!_this8.props.pageData) throw _errors.Errors.propCanntNull(PageView.name, 'pageData');
     return _this8;
   }
 
