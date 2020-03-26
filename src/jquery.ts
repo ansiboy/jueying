@@ -4,8 +4,8 @@
 //     window['$'] = window['jQuery'] = j
 // }
 import * as j from "jquery";
-let jquery = window['$'] || window['jQuery'];
+let jquery = (window as any)['$'] || (window as any)['jQuery'];
 if (jquery == null) {
-    window['$'] = window['jQuery'] = j
+    (window as any)["$"] = (window as any)["jQuery"] = j as any;
 }
 

@@ -1,12 +1,12 @@
 import * as React from "react";
 
 export class ErrorBoundary extends React.Component<{}, { error?: Error }> {
-    constructor(props) {
+    constructor(props: {}) {
         super(props);
         this.state = {};
     }
 
-    componentDidCatch(error, info) {
+    componentDidCatch(error: Error, info: any) {
         // Display fallback UI
         this.setState({ error });
         // You can also log the error to an error reporting service

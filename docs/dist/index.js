@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v2.6.18
+ *  maishu-jueying v2.6.20
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1395,65 +1395,16 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_react__;
 
 /***/ }),
 
-/***/ "./node_modules/maishu-toolkit/out/Errors.js":
-/*!***************************************************!*\
-  !*** ./node_modules/maishu-toolkit/out/Errors.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-class Errors {
-    argumentNull(argumentName) {
-        let error = new Error(`Argument ${argumentName} cannt be null or emtpy.`);
-        let name = "argumentNull";
-        error.name = name;
-        return error;
-    }
-    routeDataFieldNull(fieldName) {
-        let msg = `The ${fieldName} field of route data cannt be null.`;
-        let error = new Error(msg);
-        let name = "routeDataFieldNull";
-        error.name = name;
-        return error;
-    }
-    argumentFieldNull(fieldName, argumentName) {
-        let msg = `The ${fieldName} field of ${argumentName} cannt be null.`;
-        let error = new Error(msg);
-        let name = "argumentFieldNull";
-        error.name = name;
-        return error;
-    }
-    argumentTypeIncorrect(argumentName, expectedType) {
-        let msg = `Argument ${argumentName} type error, expected type is ${expectedType}.`;
-        let error = new Error(msg);
-        let name = "argumentTypeIncorrect";
-        error.name = name;
-        return error;
-    }
-    queryResultTypeError() {
-        let msg = 'Type of the query result is expected as Array or DataSourceSelectResult.';
-        return new Error(msg);
-    }
-}
-exports.Errors = Errors;
-exports.errors = new Errors();
-
-
-/***/ }),
-
 /***/ "./node_modules/maishu-toolkit/out/callback.js":
 /*!*****************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/callback.js ***!
   \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: Callback */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Callback", function() { return Callback; });
 class Callback {
     constructor() {
         this.funcs = new Array();
@@ -1471,7 +1422,6 @@ class Callback {
         return new Callback();
     }
 }
-exports.Callback = Callback;
 
 
 /***/ }),
@@ -1480,12 +1430,17 @@ exports.Callback = Callback;
 /*!*************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/data.js ***!
   \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: DataSource, DataSourceSelectArguments, ArrayDataSource */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DataSource", function() { return DataSource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DataSourceSelectArguments", function() { return DataSourceSelectArguments; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ArrayDataSource", function() { return ArrayDataSource; });
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors */ "./node_modules/maishu-toolkit/out/errors.js");
+/* harmony import */ var _callback__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./callback */ "./node_modules/maishu-toolkit/out/callback.js");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -1494,10 +1449,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const Errors_1 = __webpack_require__(/*! ./Errors */ "./node_modules/maishu-toolkit/out/Errors.js");
-const callback_1 = __webpack_require__(/*! ./callback */ "./node_modules/maishu-toolkit/out/callback.js");
-let errors = Object.assign(Errors_1.errors, {
+
+
+let errors = Object.assign(_errors__WEBPACK_IMPORTED_MODULE_0__["errors"], {
     dataSourceCanntInsert() {
         return new Error("DataSource can not insert.");
     },
@@ -1514,15 +1468,15 @@ let errors = Object.assign(Errors_1.errors, {
 });
 class DataSource {
     constructor(args) {
-        this.inserting = new callback_1.Callback(); //callbacks1<DataSource<T>, T, number>();
-        this.inserted = new callback_1.Callback();
-        this.deleting = new callback_1.Callback(); //callbacks<DataSource<T>, T>();
-        this.deleted = new callback_1.Callback(); //callbacks<DataSource<T>, T>();
-        this.updating = new callback_1.Callback();
-        this.updated = new callback_1.Callback();
-        this.selecting = new callback_1.Callback();
-        this.selected = new callback_1.Callback(); //callbacks<DataSource<T>, DataSourceSelectResult<T>>();
-        this.error = new callback_1.Callback(); //callbacks<this, DataSourceError>();
+        this.inserting = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"](); //callbacks1<DataSource<T>, T, number>();
+        this.inserted = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"]();
+        this.deleting = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"](); //callbacks<DataSource<T>, T>();
+        this.deleted = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"](); //callbacks<DataSource<T>, T>();
+        this.updating = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"]();
+        this.updated = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"]();
+        this.selecting = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"]();
+        this.selected = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"](); //callbacks<DataSource<T>, DataSourceSelectResult<T>>();
+        this.error = new _callback__WEBPACK_IMPORTED_MODULE_1__["Callback"](); //callbacks<this, DataSourceError>();
         this.args = args;
         this.primaryKeys = args.primaryKeys || [];
     }
@@ -1652,14 +1606,12 @@ class DataSource {
             throw exc;
     }
 }
-exports.DataSource = DataSource;
 class DataSourceSelectArguments {
     constructor() {
         this.startRowIndex = 0;
         this.maximumRows = 2147483647;
     }
 }
-exports.DataSourceSelectArguments = DataSourceSelectArguments;
 class ArrayDataSource extends DataSource {
     constructor(items) {
         super({
@@ -1675,7 +1627,6 @@ class ArrayDataSource extends DataSource {
         });
     }
 }
-exports.ArrayDataSource = ArrayDataSource;
 // }
 
 
@@ -1685,12 +1636,13 @@ exports.ArrayDataSource = ArrayDataSource;
 /*!***************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/errors.js ***!
   \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: Errors, errors */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Errors", function() { return Errors; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "errors", function() { return errors; });
 class Errors {
     argumentNull(argumentName) {
         let error = new Error(`Argument ${argumentName} cannt be null or emtpy.`);
@@ -1724,8 +1676,7 @@ class Errors {
         return new Error(msg);
     }
 }
-exports.Errors = Errors;
-exports.errors = new Errors();
+let errors = new Errors();
 
 
 /***/ }),
@@ -1734,12 +1685,12 @@ exports.errors = new Errors();
 /*!*************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/guid.js ***!
   \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: guid */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return guid; });
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -1749,7 +1700,6 @@ function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
         s4() + '-' + s4() + s4() + s4();
 }
-exports.guid = guid;
 
 
 /***/ }),
@@ -1758,24 +1708,35 @@ exports.guid = guid;
 /*!**************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/index.js ***!
   \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: guid, pathContact, Errors, errors, Callback, DataSource, DataSourceSelectArguments */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _guid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./guid */ "./node_modules/maishu-toolkit/out/guid.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return _guid__WEBPACK_IMPORTED_MODULE_0__["guid"]; });
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var guid_1 = __webpack_require__(/*! ./guid */ "./node_modules/maishu-toolkit/out/guid.js");
-exports.guid = guid_1.guid;
-var path_1 = __webpack_require__(/*! ./path */ "./node_modules/maishu-toolkit/out/path.js");
-exports.pathContact = path_1.pathContact;
-var errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-toolkit/out/errors.js");
-exports.Errors = errors_1.Errors;
-exports.errors = errors_1.errors;
-var callback_1 = __webpack_require__(/*! ./callback */ "./node_modules/maishu-toolkit/out/callback.js");
-exports.Callback = callback_1.Callback;
-var data_1 = __webpack_require__(/*! ./data */ "./node_modules/maishu-toolkit/out/data.js");
-exports.DataSource = data_1.DataSource;
-exports.DataSourceSelectArguments = data_1.DataSourceSelectArguments;
+/* harmony import */ var _path__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./path */ "./node_modules/maishu-toolkit/out/path.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "pathContact", function() { return _path__WEBPACK_IMPORTED_MODULE_1__["pathContact"]; });
+
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./errors */ "./node_modules/maishu-toolkit/out/errors.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Errors", function() { return _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "errors", function() { return _errors__WEBPACK_IMPORTED_MODULE_2__["errors"]; });
+
+/* harmony import */ var _callback__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./callback */ "./node_modules/maishu-toolkit/out/callback.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Callback", function() { return _callback__WEBPACK_IMPORTED_MODULE_3__["Callback"]; });
+
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./data */ "./node_modules/maishu-toolkit/out/data.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataSource", function() { return _data__WEBPACK_IMPORTED_MODULE_4__["DataSource"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataSourceSelectArguments", function() { return _data__WEBPACK_IMPORTED_MODULE_4__["DataSourceSelectArguments"]; });
+
+
+
+
+
+
 
 
 /***/ }),
@@ -1784,12 +1745,12 @@ exports.DataSourceSelectArguments = data_1.DataSourceSelectArguments;
 /*!*************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/path.js ***!
   \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: pathContact */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pathContact", function() { return pathContact; });
 /** 连接多个路径 */
 function pathContact(...paths) {
     paths = paths || [];
@@ -1803,7 +1764,6 @@ function pathContact(...paths) {
     str = str.replace(/\/+/g, '/');
     return str;
 }
-exports.pathContact = pathContact;
 
 
 /***/ }),
@@ -1851,7 +1811,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentDataHandler", function() { return ComponentDataHandler; });
 /* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
 /* harmony import */ var maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
-/* harmony import */ var maishu_toolkit__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__);
 
 
 class ComponentDataHandler {
@@ -1883,7 +1842,7 @@ class ComponentDataHandler {
             let item = stack.pop();
             if (item.props != null && item.selected == true)
                 arr.push(item);
-            item.children.forEach(child => {
+            (item.children || []).forEach(child => {
                 if (typeof child == "string")
                     return true;
                 stack.push(child);
@@ -1964,6 +1923,7 @@ class ComponentDataHandler {
     }
     removeComponentFrom(controlId, collection) {
         let controlIndex = null;
+        collection = collection || [];
         for (let i = 0; i < collection.length; i++) {
             let child = collection[i];
             if (typeof child == "string")
@@ -2144,7 +2104,7 @@ class ComponentDataHandler {
             let item = stack.pop();
             let isSelectedControl = componentIds.indexOf(item.id) >= 0;
             item.selected = isSelectedControl;
-            item.children.forEach(child => {
+            (item.children || []).forEach(child => {
                 if (typeof child == "string")
                     return true;
                 stack.push(child);
@@ -2240,6 +2200,8 @@ class ComponentPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         console.assert(toolItemElement != null);
         toolItemElement.draggable = true;
         toolItemElement.addEventListener('dragstart', function (ev) {
+            if (ev.dataTransfer == null)
+                return;
             componentData.props = componentData.props || {};
             ev.dataTransfer.setData(_components_index__WEBPACK_IMPORTED_MODULE_1__["constants"].componentData, JSON.stringify(componentData));
             ev.dataTransfer.setData('mousePosition', JSON.stringify({ x: ev.offsetX, y: ev.offsetY }));
@@ -2250,15 +2212,13 @@ class ComponentPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }
     static getComponentData(dataTransfer) {
         var str = dataTransfer.getData(_components_index__WEBPACK_IMPORTED_MODULE_1__["constants"].componentData);
-        if (!str)
-            return;
+        console.assert(str != null);
         return JSON.parse(str);
     }
     /** 获取光标在图标内的位置 */
     static mouseInnerPosition(dataTransfer) {
         let str = dataTransfer.getData('mousePosition');
-        if (!str)
-            return;
+        console.assert(str != null);
         return JSON.parse(str);
     }
     render() {
@@ -2357,6 +2317,8 @@ class ComponentWrapper extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         element.addEventListener('dragover', function (event) {
             event.preventDefault();
             event.stopPropagation();
+            if (event.dataTransfer == null)
+                return;
             let componentName = event.dataTransfer.getData(_components_index__WEBPACK_IMPORTED_MODULE_5__["constants"].componentData);
             if (componentName)
                 event.dataTransfer.dropEffect = "copy";
@@ -2415,8 +2377,8 @@ class ComponentWrapper extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         })
             .drag('start', function (ev, dd) {
             dd.attr = $(ev.target).prop("className");
-            dd.width = $(this).width();
-            dd.height = $(this).height();
+            dd.width = $(this).width() || 0;
+            dd.height = $(this).height() || 0;
             dd.sourceElement = element;
             dragStart = Date.now();
         })
@@ -2466,14 +2428,17 @@ class ComponentWrapper extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                 element.style.transform = '';
             }
             else {
-                let left, top;
+                let left = null;
+                let top = null;
                 if (dd.attr.indexOf("W") > -1)
                     left = startPos.left + dd.deltaX;
                 if (dd.attr.indexOf("N") > -1)
                     top = startPos.top + dd.deltaY;
                 element.style.transform = '';
-                designer.setComponentPosition(element.id, { left, top });
-                designer.setComponentSize(componentId, rect);
+                if (left != null && top != null) {
+                    designer.setComponentPosition(element.id, { left, top: top });
+                    designer.setComponentSize(componentId, rect);
+                }
             }
         })
             .click((ev) => {
@@ -2697,7 +2662,7 @@ class Component {
     }
     static setPropEditor(componentTypeOrOptions, propName, editorType, group) {
         let componentType;
-        let editorDisplay;
+        let editorDisplay = null;
         if (typeof componentTypeOrOptions == "object") {
             let options = componentTypeOrOptions;
             componentType = options.componentType;
@@ -2712,7 +2677,10 @@ class Component {
         else {
             componentType = componentTypeOrOptions;
         }
+        if (editorDisplay == null)
+            throw new Error("Editor display is null.");
         group = group || '';
+        propName = propName || "";
         // 属性可能为导航属性,例如 style.width
         let propNames = propName.split('.');
         let className = typeof componentType == 'string' ? componentType : componentType.prototype.typename || componentType.name;
@@ -2726,7 +2694,7 @@ class Component {
                 return;
             }
         }
-        classProps.push({ propName, editorType, group });
+        classProps.push({ propName, editorType: editorType, group });
     }
     static createElement(componentData) {
         // return Component._createElement(componentData, { components: [], componentTypes: [] }, h);
@@ -2860,7 +2828,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentTypes", function() { return ComponentTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return constants; });
 /* harmony import */ var maishu_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
-/* harmony import */ var maishu_toolkit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(maishu_toolkit__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return maishu_toolkit__WEBPACK_IMPORTED_MODULE_0__["guid"]; });
 
 const ComponentTypes = {
@@ -3183,7 +3150,7 @@ __webpack_require__.r(__webpack_exports__);
 
 let jquery = window['$'] || window['jQuery'];
 if (jquery == null) {
-    window['$'] = window['jQuery'] = jquery__WEBPACK_IMPORTED_MODULE_0__;
+    window["$"] = window["jQuery"] = jquery__WEBPACK_IMPORTED_MODULE_0__;
 }
 //# sourceMappingURL=jquery.js.map
 
@@ -3409,6 +3376,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }
     removeComponentFrom(controlId, collection) {
         let controlIndex = null;
+        collection = collection || [];
         for (let i = 0; i < collection.length; i++) {
             let child = collection[i];
             if (typeof child == "string")
@@ -3502,7 +3470,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         wrapperProps.className = className;
         // let context: Context = this.props.handler;
         // console.assert(context.handler != null);
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_component_wrapper__WEBPACK_IMPORTED_MODULE_4__["ComponentWrapper"], Object.assign({}, wrapperProps, { handler: this.props.handler, source: { type: type, attr, props, children } }));
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_component_wrapper__WEBPACK_IMPORTED_MODULE_4__["ComponentWrapper"], Object.assign({}, wrapperProps, { handler: this.props.handler, source: { type: type, attr, props, children: typeof children == "string" ? [] : (children || []) } }));
     }
     static getDerivedStateFromProps(props, state) {
         return { pageData: props.handler.pageData };
@@ -3511,24 +3479,16 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         this.components[typeName];
     }
     render() {
-        let { pageData } = this.state;
-        let style = this.props.style;
-        let elementTag = this.props.elementTag || "div";
-        // let result = React.createElement(elementTag, {
-        //     className: classNames.designer, tabIndex: 1, style,
-        //     ref: (e: HTMLElement) => {
-        //         if (!e) return;
-        //         this._element = e || this._element;
-        //         let c = this.props.componentFactory(pageData) //.renderDesignTimeComponent(pageData, e, { handler: this.props.componentDataHandler });
-        //         ReactDOM.render(c, e);
-        //     },
-        //     onKeyDown: (t) => this.onKeyDown(t)
-        // })
-        // return result;
-        return this.props.componentFactory(pageData);
+        let pageData = this.state.pageData;
+        if (pageData == null)
+            return null;
+        let componentFactory = this.props.componentFactory;
+        if (componentFactory == null)
+            return Object(_component__WEBPACK_IMPORTED_MODULE_2__["defaultComponentFactory"])(pageData);
+        return componentFactory(pageData);
     }
 }
-PageDesigner.defaultProps = { handler: null, componentFactory: _component__WEBPACK_IMPORTED_MODULE_2__["defaultComponentFactory"] };
+PageDesigner.defaultProps = { componentFactory: _component__WEBPACK_IMPORTED_MODULE_2__["defaultComponentFactory"] };
 //# sourceMappingURL=page-designer.js.map
 
 /***/ }),
@@ -3700,7 +3660,7 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             }
         }
         // 各个控件相同的属性值
-        let commonFlatProps;
+        let commonFlatProps = {};
         for (let i = 0; i < selectedComponents.length; i++) {
             let control = selectedComponents[i];
             let controlProps = Object.assign({}, control.props);
@@ -3799,7 +3759,6 @@ class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         this.setState({ error });
         // You can also log the error to an error reporting service
         //   logErrorToMyService(error, info);
-        debugger;
     }
     render() {
         let { error } = this.state || {};
@@ -4034,7 +3993,9 @@ element.innerHTML = `
          
             }
         `;
-document.head.appendChild(element);
+if (document.head != null) {
+    document.head.appendChild(element);
+}
 function appendClassName(element, addonClassName) {
     if (element == null)
         throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('element');
@@ -4046,7 +4007,7 @@ function appendClassName(element, addonClassName) {
     else
         sourceClassName = element.className;
     sourceClassName = sourceClassName || '';
-    console.assert(addonClassName);
+    console.assert(addonClassName != null);
     if (sourceClassName.indexOf(addonClassName) >= 0)
         return sourceClassName;
     let className = `${sourceClassName} ${addonClassName}`;

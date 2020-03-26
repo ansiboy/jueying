@@ -2,11 +2,11 @@ import * as React from "react";
 import { ComponentData } from "./models";
 
 export interface PropEditorConstructor {
-    new(props: PropEditorProps<any>)
+    new(props: PropEditorProps<any>): any;
 }
 export interface PropEditorProps<T> {
-    value: T,
-    updateComponentProp: (value: T) => void,
+    value: T | null,
+    updateComponentProp: (value: T | null) => void,
 
     /** 该编辑器所编辑的控件 */
     editComponents: ComponentData[],
@@ -27,7 +27,7 @@ export abstract class PropEditor<S, T> extends React.Component<PropEditorProps<T
         return dropdown(items, valueType)
     }
 
-    static textInput(): React.ComponentClass {
+    static textInput(): React.ComponentClass<any, any> {
         return TextInput
     }
 }
@@ -44,11 +44,11 @@ export class TextInput extends PropEditor<PropEditorState<string>, string> {
 }
 type DropDownValue = string | number;
 export type DropDownItem = { text: string, value: DropDownValue }
-function dropdown<T extends DropDownValue>(items: Promise<DropDownItem[]>, valueType: "string" | "number")
-function dropdown<T extends DropDownValue>(items: DropDownItem[], valueType: "string" | "number")
-function dropdown<T extends DropDownValue>(items: T[])
-function dropdown(items: { [value: string]: string })
-function dropdown(items: any, valueType?: "string" | "number") {
+function dropdown<T extends DropDownValue>(items: Promise<DropDownItem[]>, valueType?: "string" | "number"): React.ComponentClass<any, any>
+function dropdown<T extends DropDownValue>(items: DropDownItem[], valueType?: "string" | "number"): React.ComponentClass<any, any>
+function dropdown<T extends DropDownValue>(items: T[]): React.ComponentClass<any, any>
+function dropdown(items: { [value: string]: string }): React.ComponentClass<any, any>
+function dropdown(items: any, valueType?: "string" | "number"): React.ComponentClass<any, any> {
 
     let itemsPromise: Promise<DropDownItem[]>;
     let textValues: DropDownItem[] = [];
@@ -73,7 +73,7 @@ function dropdown(items: any, valueType?: "string" | "number") {
     }
 
     class Dropdown extends PropEditor<{ items?: DropDownItem[] }, DropDownValue>{
-        constructor(props) {
+        constructor(props: Dropdown["props"]) {
             super(props);
 
             this.state = {};

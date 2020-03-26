@@ -57,7 +57,7 @@ export interface PageBuilder {
      * 移除控件
      * @param componentIds 控件编号
      */
-    removeComponents(componentIds: string[]);
+    removeComponents(componentIds: string[]): void;
 
     /** 
      * 移动控件到另外一个控件容器 

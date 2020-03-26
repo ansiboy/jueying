@@ -39,7 +39,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         super(props);
     }
 
-    componentDidCatch(error, info) {
+    componentDidCatch(error: Error, info: any) {
         // Display fallback UI
         this.setState({ error });
         // You can also log the error to an error reporting service
@@ -83,6 +83,9 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         element.addEventListener('dragover', function (event) {
             event.preventDefault()
             event.stopPropagation()
+
+            if (event.dataTransfer == null)
+                return;
 
             let componentName = event.dataTransfer.getData(constants.componentData)
             if (componentName)
@@ -142,15 +145,15 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
         let rect: { width?: number, height?: number, left?: number, top?: number };
         let dragStart: number
         ($(handler) as any)
-            .drag("init", function (ev) {
+            .drag("init", function (ev: any) {
                 startPos = $(element).position()
                 if ($(this).is(`.${classNames.componentSelected}`))
                     return $(`.${classNames.componentSelected}`);
             })
-            .drag('start', function (ev, dd: ComponentWrapperDrapData) {
+            .drag('start', function (ev: any, dd: ComponentWrapperDrapData) {
                 dd.attr = $(ev.target).prop("className");
-                dd.width = $(this).width();
-                dd.height = $(this).height();
+                dd.width = $(this).width() || 0;
+                dd.height = $(this).height() || 0;
                 dd.sourceElement = element;
 
                 dragStart = Date.now()
@@ -198,7 +201,7 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
                 }
 
                 if (dd.attr)
-                    $(this).css(rect);
+                    $(this as any).css(rect as any);
 
             }, { click: true })
             .drag('end', function (ev, dd: DragDropData & { attr: string }) {
@@ -212,7 +215,8 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
                     element.style.transform = ''
                 }
                 else {
-                    let left, top: number
+                    let left: number | null = null;
+                    let top: number | null = null;
                     if (dd.attr.indexOf("W") > -1)
                         left = startPos.left + dd.deltaX
 
@@ -220,8 +224,10 @@ export class ComponentWrapper extends React.Component<ComponentWrapperProps, { e
                         top = startPos.top + dd.deltaY
 
                     element.style.transform = ''
-                    designer.setComponentPosition(element.id, { left, top })
-                    designer.setComponentSize(componentId, rect)
+                    if (left != null && top != null) {
+                        designer.setComponentPosition(element.id, { left, top: top })
+                        designer.setComponentSize(componentId, rect)
+                    }
                 }
             })
             .click((ev) => {

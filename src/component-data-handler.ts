@@ -36,11 +36,11 @@ export class ComponentDataHandler {
         let stack = new Array<ComponentData>()
         stack.push(this._pageData)
         while (stack.length > 0) {
-            let item = stack.pop()
+            let item = stack.pop() as ComponentData;
             if (item.props != null && item.selected == true)
                 arr.push(item);
 
-            item.children.forEach(child => {
+            (item.children || []).forEach(child => {
                 if (typeof child == "string")
                     return true;
 
@@ -143,6 +143,7 @@ export class ComponentDataHandler {
 
     private removeComponentFrom(controlId: string, collection: ComponentData["children"]): boolean {
         let controlIndex: number | null = null;
+        collection = collection || [];
         for (let i = 0; i < collection.length; i++) {
             let child = collection[i];
             if (typeof child == "string")
@@ -192,7 +193,7 @@ export class ComponentDataHandler {
         // return new Promise((resolve, reject) => {
         filter = filter || (() => true);
         while (stack.length > 0) {
-            let item = stack.shift();
+            let item = stack.shift() as ComponentData;
             if (filter(item)) {
                 r.push(item);
             }
@@ -358,11 +359,11 @@ export class ComponentDataHandler {
         var stack: ComponentData[] = []
         stack.push(this._pageData)
         while (stack.length > 0) {
-            let item = stack.pop();
+            let item = stack.pop() as ComponentData;
             let isSelectedControl = componentIds.indexOf(item.id) >= 0;
             item.selected = isSelectedControl;
 
-            item.children.forEach(child => {
+            (item.children || []).forEach(child => {
                 if (typeof child == "string")
                     return true;
 

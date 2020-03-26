@@ -61,7 +61,7 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
         empty = empty || <div className="empty">暂无可用的属性</div>;
         let { designer } = this.props;
         return <div className={`${classNames.editorPanel} ${this.props.className || ""}`}
-            ref={(e: HTMLElement) => this.element = e || this.element}>
+            ref={(e: any) => this.element = e || this.element}>
             {/* <select className="form-control"
                     ref={e => {
                         if (!e) return

@@ -6,7 +6,7 @@ import { Component, defaultComponentFactory, } from "./component";
 import { appendClassName, classNames } from "./style";
 import { ComponentWrapper } from "./component-wrapper";
 import { ComponentDataHandler } from "./component-data-handler";
-import {  ComponentFactory } from "./component-factory";
+import { ComponentFactory } from "./component-factory";
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     // pageData: ComponentData | null,
@@ -26,7 +26,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
     extends React.Component<P, S> {
     private _element: HTMLElement;
 
-    static defaultProps: PageDesignerProps = { handler: null, componentFactory: defaultComponentFactory };
+    static defaultProps: Partial<PageDesignerProps> = { componentFactory: defaultComponentFactory };
     private components: { [typeName: string]: React.Component[] } = {};
 
     constructor(props: P) {
@@ -72,7 +72,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
             componentIds[item.type].push(item.props["id"] as string);
 
             let itemRef = item.props.ref;
-            item.props.ref = (e) => {
+            item.props.ref = (e: any) => {
                 if (e != null) {
                     this.components[item.type] = this.components[item.type] || [];
                     this.components[item.type].push(e);
@@ -271,6 +271,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
 
     private removeComponentFrom(controlId: string, collection: ComponentData["children"]): boolean {
         let controlIndex: number | null = null;
+        collection = collection || [];
         for (let i = 0; i < collection.length; i++) {
             let child = collection[i];
             if (typeof child == "string")
@@ -323,7 +324,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
         // return new Promise((resolve, reject) => {
         filter = filter || (() => true);
         while (stack.length > 0) {
-            let item = stack.shift();
+            let item = stack.shift() as ComponentData;
             if (filter(item)) {
                 r.push(item);
             }
@@ -385,8 +386,8 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
         // let context: Context = this.props.handler;
         // console.assert(context.handler != null);
 
-        return <ComponentWrapper {...wrapperProps} handler={ this.props.handler}
-            source={{ type: type, attr, props, children }}>
+        return <ComponentWrapper {...wrapperProps} handler={this.props.handler}
+            source={{ type: type, attr, props, children: typeof children == "string" ? [] : (children || []) }}>
         </ComponentWrapper>
     }
 
@@ -399,21 +400,14 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
     }
 
     render() {
-        let { pageData } = this.state
-        let style = this.props.style
-        let elementTag: string = this.props.elementTag || "div";
-        // let result = React.createElement(elementTag, {
-        //     className: classNames.designer, tabIndex: 1, style,
-        //     ref: (e: HTMLElement) => {
-        //         if (!e) return;
-        //         this._element = e || this._element;
-        //         let c = this.props.componentFactory(pageData) //.renderDesignTimeComponent(pageData, e, { handler: this.props.componentDataHandler });
-        //         ReactDOM.render(c, e);
-        //     },
-        //     onKeyDown: (t) => this.onKeyDown(t)
-        // })
+        let pageData: ComponentData | null = this.state.pageData;
+        if (pageData == null)
+            return null;
 
-        // return result;
-        return this.props.componentFactory(pageData);
+        let componentFactory = this.props.componentFactory;
+        if (componentFactory == null)
+            return defaultComponentFactory(pageData);
+
+        return componentFactory(pageData);
     }
 }

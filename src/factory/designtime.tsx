@@ -35,7 +35,7 @@ export let designTimeComponentFactory: ComponentFactory = function (componentDat
     wrapperProps.className = className;
     let handler = context.handler;
     return <ComponentWrapper {...wrapperProps} handler={handler}
-        source={{ type, attr, props, children }
+        source={{ type, attr, props, children: typeof children == "string" ? [] : children || [] }
         }>
     </ComponentWrapper>
 }

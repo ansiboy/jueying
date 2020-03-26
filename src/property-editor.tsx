@@ -76,7 +76,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         }
 
         // 各个控件相同的属性值
-        let commonFlatProps: { [navName: string]: any }
+        let commonFlatProps: { [navName: string]: any } = {};
         for (let i = 0; i < selectedComponents.length; i++) {
             let control = selectedComponents[i]
             let controlProps: { [key: string]: any } = Object.assign({}, control.props);
@@ -196,17 +196,16 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
 
 export class ErrorBoundary extends React.Component<{}, { error?: Error }> {
-    constructor(props) {
+    constructor(props: {}) {
         super(props);
         this.state = {};
     }
 
-    componentDidCatch(error, info) {
+    componentDidCatch(error: Error, info: any) {
         // Display fallback UI
         this.setState({ error });
         // You can also log the error to an error reporting service
         //   logErrorToMyService(error, info);
-        debugger
     }
 
     render() {

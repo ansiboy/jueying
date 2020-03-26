@@ -8,6 +8,8 @@
         "rootDir": ".",
         "jsx": "react",
         "strict": false,
+        "strictPropertyInitialization": false,
+        "strictNullChecks": true,
         "experimentalDecorators": true,
         "baseUrl": "./",
         "paths": {

@@ -11,7 +11,7 @@ import { proptDisplayNames } from "./propt-display-names";
 
 // type DesignerContextValue = { designer: ComponentDataHandler | null };
 // export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
-export const ComponentWrapperContext = React.createContext<ComponentWrapper>(null);
+export const ComponentWrapperContext = React.createContext<ComponentWrapper | null>(null);
 
 export interface PropEditorInfo {
     // propNames: string[],
@@ -24,7 +24,7 @@ interface SetPropEditorOptions {
     propName: string,
     editorType: PropEditorConstructor,
     group?: string,
-    display?: ComponentPropEditorDisplay,
+    display: ComponentPropEditorDisplay,
     displayName?: string,
 }
 
@@ -127,7 +127,7 @@ export class Component {
     static setPropEditor(componentTypeOrOptions: React.ComponentClass | string | SetPropEditorOptions, propName?: string, editorType?: PropEditorConstructor, group?: string): void {
 
         let componentType: React.ComponentClass | string;
-        let editorDisplay: ComponentPropEditorDisplay;
+        let editorDisplay: ComponentPropEditorDisplay | null = null;
         if (typeof componentTypeOrOptions == "object") {
             let options = componentTypeOrOptions as SetPropEditorOptions;
             componentType = options.componentType;
@@ -143,8 +143,11 @@ export class Component {
             componentType = componentTypeOrOptions;
         }
 
-        group = group || '';
+        if (editorDisplay == null)
+            throw new Error("Editor display is null.");
 
+        group = group || '';
+        propName = propName || "";
         // 属性可能为导航属性,例如 style.width
         let propNames = (propName as string).split('.');
 
@@ -155,11 +158,11 @@ export class Component {
             let propName1 = classProps[i].propName; //classProps[i].propNames.join('.')
             let propName2 = propNames.join('.')
             if (propName1 == propName2) {
-                classProps[i].editorType = editorType
+                classProps[i].editorType = editorType as PropEditorConstructor;
                 return
             }
         }
-        classProps.push({ propName, editorType, group })
+        classProps.push({ propName, editorType: editorType as PropEditorConstructor, group })
     }
 
     static createElement(componentData: ComponentData): React.ReactElement<any> | null {

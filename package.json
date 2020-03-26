@@ -4,7 +4,7 @@
   },
   "dependencies": {
     "maishu-jueying-core": "^1.1.4",
-    "maishu-toolkit": "^1.1.1",
+    "maishu-toolkit": "^1.2.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
   },
@@ -32,6 +32,7 @@
   },
   "files": [
     "dist",
+    "lib",
     "out",
     "out-es5",
     "src",
@@ -43,5 +44,5 @@
     "build": "grunt build"
   },
   "typings": "out/index.d.ts",
-  "version": "2.6.18"
+  "version": "2.6.22"
 }

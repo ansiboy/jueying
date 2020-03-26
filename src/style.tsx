@@ -194,11 +194,14 @@ element.innerHTML = `
          
             }
         `;
-document.head.appendChild(element);
 
-export function appendClassName(sourceClassName: string, addonClassName)
-export function appendClassName(element: HTMLElement, addonClassName)
-export function appendClassName(element: string | HTMLElement, addonClassName) {
+if (document.head != null) {
+    document.head.appendChild(element);
+}
+
+export function appendClassName(sourceClassName: string, addonClassName: string): string
+export function appendClassName(element: HTMLElement, addonClassName: string): string
+export function appendClassName(element: string | HTMLElement, addonClassName: string): string {
     if (element == null) throw Errors.argumentNull('element')
     if (!addonClassName) throw Errors.argumentNull('addonClassName')
 
@@ -209,7 +212,7 @@ export function appendClassName(element: string | HTMLElement, addonClassName) {
         sourceClassName = element.className
 
     sourceClassName = sourceClassName || ''
-    console.assert(addonClassName)
+    console.assert(addonClassName != null)
 
     if (sourceClassName.indexOf(addonClassName) >= 0)
         return sourceClassName
@@ -221,9 +224,9 @@ export function appendClassName(element: string | HTMLElement, addonClassName) {
     return className
 }
 
-export function removeClassName(sourceClassName: string, targetClassName)
-export function removeClassName(element: HTMLElement, targetClassName)
-export function removeClassName(element: string | HTMLElement, targetClassName) {
+export function removeClassName(sourceClassName: string, targetClassName: string): string
+export function removeClassName(element: HTMLElement, targetClassName: string): string
+export function removeClassName(element: string | HTMLElement, targetClassName: string): string {
     let sourceClassName: string
     if (typeof element == 'string')
         sourceClassName = element

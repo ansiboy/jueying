@@ -33,6 +33,9 @@ export class ComponentPanel extends React.Component<ComponentProps, ComponentToo
         console.assert(toolItemElement != null)
         toolItemElement.draggable = true
         toolItemElement.addEventListener('dragstart', function (ev) {
+            if (ev.dataTransfer == null)
+                return;
+
             componentData.props = componentData.props || {}
             ev.dataTransfer.setData(constants.componentData, JSON.stringify(componentData))
             ev.dataTransfer.setData('mousePosition', JSON.stringify({ x: ev.offsetX, y: ev.offsetY }))
@@ -45,19 +48,16 @@ export class ComponentPanel extends React.Component<ComponentProps, ComponentToo
 
     static getComponentData(dataTransfer: DataTransfer): ComponentData {
         var str = dataTransfer.getData(constants.componentData)
-        if (!str)
-            return
-
+        console.assert(str != null);
         return JSON.parse(str)
     }
 
     /** 获取光标在图标内的位置 */
     static mouseInnerPosition(dataTransfer: DataTransfer): { x: number, y: number } {
-        let str = dataTransfer.getData('mousePosition')
-        if (!str)
-            return
+        let str = dataTransfer.getData('mousePosition');
+        console.assert(str != null);
 
-        return JSON.parse(str)
+        return JSON.parse(str) as any;
     }
 
     render() {
