@@ -122,26 +122,28 @@ export class Component {
         return editor
     }
 
-    static setPropEditor(options: SetPropEditorOptions): void;
-    static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
-    static setPropEditor(componentTypeOrOptions: React.ComponentClass | string | SetPropEditorOptions, propName?: string, editorType?: PropEditorConstructor, group?: string): void {
+    // static setPropEditor(options: SetPropEditorOptions): void;
+    // static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
+    // static setPropEditor(componentTypeOrOptions: React.ComponentClass | string | SetPropEditorOptions, propName?: string, editorType?: PropEditorConstructor, group?: string): void {
+    static setPropEditor(options: SetPropEditorOptions): void {
+        // let componentType: React.ComponentClass | string;
+        // let editorDisplay: ComponentPropEditorDisplay | null = null;
+        // if (typeof componentTypeOrOptions == "object") {
+        //     let options = componentTypeOrOptions as SetPropEditorOptions;
+        //     componentType = options.componentType;
+        //     propName = options.propName;
+        //     editorType = options.editorType;
+        //     group = options.group;
+        //     editorDisplay = options.display;
+        //     if (options.displayName != null) {
+        //         proptDisplayNames[propName] = options.displayName;
+        //     }
+        // }
+        // else {
+        //     componentType = componentTypeOrOptions;
+        // }
 
-        let componentType: React.ComponentClass | string;
-        let editorDisplay: ComponentPropEditorDisplay | null = null;
-        if (typeof componentTypeOrOptions == "object") {
-            let options = componentTypeOrOptions as SetPropEditorOptions;
-            componentType = options.componentType;
-            propName = options.propName;
-            editorType = options.editorType;
-            group = options.group;
-            editorDisplay = options.display;
-            if (options.displayName != null) {
-                proptDisplayNames[propName] = options.displayName;
-            }
-        }
-        else {
-            componentType = componentTypeOrOptions;
-        }
+        let { componentType, editorType, display: editorDisplay, group, propName } = options;
 
         if (editorDisplay == null)
             throw new Error("Editor display is null.");

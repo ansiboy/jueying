@@ -1,10 +1,13 @@
 import * as  React from "react";
-import { ComponentProps } from "maishu-jueying-core";
 import { Component } from "../component";
 
 export const MasterPageName = 'MasterPage'
 type MasterPageContextValue = { master: MasterPage | null };
 export const MasterPageContext = React.createContext<MasterPageContextValue>({ master: null });
+
+export interface ComponentProps {
+
+}
 
 export class MasterPage extends React.Component<ComponentProps> {
 

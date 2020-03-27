@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v2.6.22
+ *  maishu-jueying v2.7.0
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1036,118 +1036,10 @@ drop.delegate = function( event, dd ){
 
 /***/ }),
 
-/***/ "./node_modules/maishu-jueying-core/decorators.js":
-/*!********************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/decorators.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*!
- * ~
- *  maishu-jueying-core v1.1.4
- * 
- *  Copyright (c) 2016-2018, mais.shu <ansiboy@163.com>
- *  Licensed under the MIT License.
- * 
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(true)
-		module.exports = factory();
-	else { var i, a; }
-})(window, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./out/decorators.js");
-/******/ })
-/************************************************************************/
-/******/ ({
-
-/***/ "./out/decorators.js":
-/*!***************************!*\
-  !*** ./out/decorators.js ***!
-  \***************************/
+/***/ "./node_modules/maishu-jueying-core/out/decorators.js":
+/*!************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/decorators.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1162,236 +1054,21 @@ function component(options) {
 exports.component = component;
 //# sourceMappingURL=decorators.js.map
 
-/***/ })
-
-/******/ });
-});
-//# sourceMappingURL=decorators.js.map
-
 /***/ }),
 
-/***/ "./node_modules/maishu-jueying-core/dist/index.js":
-/*!********************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/dist/index.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {/*!
- * ~
- *  jueying-core v1.0.2
- * 
- *  Copyright (c) 2016-2018, mais.shu <ansiboy@163.com>
- *  Licensed under the MIT License.
- * 
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(true)
-		module.exports = factory(__webpack_require__(/*! react */ "react"));
-	else { var i, a; }
-})(typeof window === 'undefined' ? global : window, function(__WEBPACK_EXTERNAL_MODULE_react__) {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./out/index.js");
-/******/ })
-/************************************************************************/
-/******/ ({
-
-/***/ "./out/component-factory.js":
-/*!**********************************!*\
-  !*** ./out/component-factory.js ***!
-  \**********************************/
+/***/ "./node_modules/maishu-jueying-core/out/index.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/index.js ***!
+  \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-class CompoenntFactory {
-    constructor(compoenntTypes) {
-        this.compoenntTypes = compoenntTypes;
-    }
-    createComponent(componentData, context) {
-        try {
-            return this._createComponent(componentData, context);
-        }
-        catch (e) {
-            return this.createErrorElement(e);
-        }
-    }
-    /** 创建视图组件 */
-    createViewComponent(props, ...children) {
-        return React.createElement("div", props, ...children);
-    }
-    createErrorElement(err) {
-        // return <div>
-        //     <div>Error:</div>
-        //     <div>{err.message}</div>
-        // </div>
-        return this.createViewComponent(this.createViewComponent("Error:"), this.createViewComponent(err.message));
-    }
-    _createComponent(componentData, context) {
-        if (typeof componentData == "string")
-            return componentData;
-        let children = (componentData.children || []).map(c => this._createComponent(c));
-        let props = (componentData.props || {});
-        let defaultProps = { factory: this, context };
-        let name = componentData.typeName;
-        let compoenntType = this.compoenntTypes[name];
-        if (compoenntType == null) {
-            throw errors_1.errors.componentNotExists(name);
-        }
-        let r = React.createElement(compoenntType, props, children);
-        return r;
-    }
-}
-exports.CompoenntFactory = CompoenntFactory;
-//# sourceMappingURL=component-factory.js.map
-
-/***/ }),
-
-/***/ "./out/errors.js":
-/*!***********************!*\
-  !*** ./out/errors.js ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = {
-    pathFieldRequired(name) {
-        let msg = `Path field of '${name}' component config can not be null or empty.`;
-        return new Error(msg);
-    },
-    canntFindModule(name, path) {
-        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
-        return new Error(msg);
-    },
-    componentNotExists(name) {
-        let msg = `Component '${name}' not exists.`;
-        return new Error(msg);
-    }
-};
-//# sourceMappingURL=errors.js.map
-
-/***/ }),
-
-/***/ "./out/index.js":
-/*!**********************!*\
-  !*** ./out/index.js ***!
-  \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var component_factory_1 = __webpack_require__(/*! ./component-factory */ "./out/component-factory.js");
-exports.CompoenntFactory = component_factory_1.CompoenntFactory;
+var decorators_1 = __webpack_require__(/*! ./decorators */ "./node_modules/maishu-jueying-core/out/decorators.js");
+exports.component = decorators_1.component;
 //# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "react":
-/*!************************!*\
-  !*** external "react" ***!
-  \************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_react__;
-
-/***/ })
-
-/******/ });
-});
-//# sourceMappingURL=index.js.map
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
 /***/ }),
 
@@ -1764,37 +1441,6 @@ function pathContact(...paths) {
     str = str.replace(/\/+/g, '/');
     return str;
 }
-
-
-/***/ }),
-
-/***/ "./node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ }),
@@ -2950,8 +2596,6 @@ var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
 var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
-var _proptDisplayNames = __webpack_require__(/*! ./propt-display-names */ "./out-es5/propt-display-names.js");
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -2961,8 +2605,6 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3040,28 +2682,34 @@ function () {
         return o.propName == propNames;
       })[0];
       return editor;
-    }
+    } // static setPropEditor(options: SetPropEditorOptions): void;
+    // static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
+    // static setPropEditor(componentTypeOrOptions: React.ComponentClass | string | SetPropEditorOptions, propName?: string, editorType?: PropEditorConstructor, group?: string): void {
+
   }, {
     key: "setPropEditor",
-    value: function setPropEditor(componentTypeOrOptions, propName, editorType, group) {
-      var componentType;
-      var editorDisplay = null;
-
-      if (_typeof(componentTypeOrOptions) == "object") {
-        var options = componentTypeOrOptions;
-        componentType = options.componentType;
-        propName = options.propName;
-        editorType = options.editorType;
-        group = options.group;
-        editorDisplay = options.display;
-
-        if (options.displayName != null) {
-          _proptDisplayNames.proptDisplayNames[propName] = options.displayName;
-        }
-      } else {
-        componentType = componentTypeOrOptions;
-      }
-
+    value: function setPropEditor(options) {
+      // let componentType: React.ComponentClass | string;
+      // let editorDisplay: ComponentPropEditorDisplay | null = null;
+      // if (typeof componentTypeOrOptions == "object") {
+      //     let options = componentTypeOrOptions as SetPropEditorOptions;
+      //     componentType = options.componentType;
+      //     propName = options.propName;
+      //     editorType = options.editorType;
+      //     group = options.group;
+      //     editorDisplay = options.display;
+      //     if (options.displayName != null) {
+      //         proptDisplayNames[propName] = options.displayName;
+      //     }
+      // }
+      // else {
+      //     componentType = componentTypeOrOptions;
+      // }
+      var componentType = options.componentType,
+          editorType = options.editorType,
+          editorDisplay = options.display,
+          group = options.group,
+          propName = options.propName;
       if (editorDisplay == null) throw new Error("Editor display is null.");
       group = group || '';
       propName = propName || ""; // 属性可能为导航属性,例如 style.width
@@ -3772,7 +3420,7 @@ Object.defineProperty(exports, "ComponentDataHandler", {
 Object.defineProperty(exports, "component", {
   enumerable: true,
   get: function get() {
-    return _decorators.component;
+    return _maishuJueyingCore.component;
   }
 });
 
@@ -3815,7 +3463,7 @@ Object.keys(_index).forEach(function (key) {
   });
 });
 
-var _maishuJueyingCore = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/dist/index.js");
+var _maishuJueyingCore = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
 
 Object.keys(_maishuJueyingCore).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -3827,8 +3475,6 @@ Object.keys(_maishuJueyingCore).forEach(function (key) {
     }
   });
 });
-
-var _decorators = __webpack_require__(/*! maishu-jueying-core/decorators */ "./node_modules/maishu-jueying-core/decorators.js");
 //# sourceMappingURL=index.js.map
 
 

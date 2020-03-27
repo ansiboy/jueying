@@ -18,7 +18,7 @@ export { ComponentFactory } from "./component-factory";
 export { ComponentDataHandler } from "./component-data-handler";
 export * from "./components/index";
 export * from "maishu-jueying-core";
-export { component } from "maishu-jueying-core/decorators";
+export { component } from "maishu-jueying-core";
 
 
 
