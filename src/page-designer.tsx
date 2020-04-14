@@ -1,62 +1,49 @@
 import * as React from "react";
 
 import { ComponentData } from "./models";
-import { Errors } from "./errors";
-import { Component, defaultComponentFactory, } from "./component";
-import { appendClassName, classNames } from "./style";
-import { ComponentWrapper } from "./component-wrapper";
 import { ComponentDataHandler } from "./component-data-handler";
-import { ComponentFactory } from "./component-factory";
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {
-    // pageData: ComponentData | null,
-    style?: React.CSSProperties,
+    pageData: ComponentData,
     className?: string,
-    componentFactory?: ComponentFactory,
-    elementTag?: string;
-    context?: any,
-    handler: ComponentDataHandler
+    style?: React.CSSProperties,
 }
 
 export interface PageDesignerState {
-    pageData: ComponentData | null,
+    pageData: ComponentData,
 }
 
-export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S extends PageDesignerState = PageDesignerState>
-    extends React.Component<P, S> {
+export let DesignerContext = React.createContext<{ designer: PageDesigner | null }>({ designer: null })
+
+export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private _element: HTMLElement;
 
-    static defaultProps: Partial<PageDesignerProps> = { componentFactory: defaultComponentFactory };
+    // static defaultProps: Partial<PageDesignerProps> = { componentFactory: defaultComponentFactory };
     private components: { [typeName: string]: React.Component[] } = {};
+    private handler: ComponentDataHandler;
 
-    constructor(props: P) {
+    constructor(props: PageDesignerProps) {
         super(props);
 
-        let pageData = this.props.handler.pageData;
+        let pageData = this.props.pageData;
         this.initPageData(pageData);
 
-        this.state = { pageData } as S;
+        this.state = { pageData };
 
-        this.props.handler.componentSelected.add(args => {
-            // this.componentSelected.fire(args);
-            this.setState({ pageData: this.props.handler.pageData });
+        this.handler = new ComponentDataHandler(pageData);
+        this.handler.componentSelected.add(() => {
+            this.setState({ pageData: this.handler.pageData });
         })
-        this.props.handler.componentRemoved.add(args => {
-            // this.componentRemoved.fire(args);
-            this.setState({ pageData: this.props.handler.pageData });
+        this.handler.componentRemoved.add(() => {
+            this.setState({ pageData: this.handler.pageData });
         })
-        this.props.handler.componentUpdated.add(args => {
-            // this.componentUpdated.fire(args);
-            this.setState({ pageData: this.props.handler.pageData });
+        this.handler.componentUpdated.add(() => {
+            this.setState({ pageData: this.handler.pageData });
         })
 
-        this.props.handler.pageDataChanged.add(args => {
+        this.handler.pageDataChanged.add(args => {
             this.setState({ pageData: args });
         })
-
-        // this.componentAppend = Callback.create();
-        // this.props.componentDataHandler.componentAppend.add(() => this.componentAppend.fire(this));
-
     }
 
     private setComponetRefProp(pageData: ComponentData) {
@@ -125,7 +112,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
 
     /** 获取已选择了的组件 */
     get selectedComponents(): ComponentData[] {
-        return this.props.handler.selectedComponents;
+        return this.handler.selectedComponents;
     }
 
     get element(): HTMLElement {
@@ -136,42 +123,8 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
         return this.updateComponentProps({ componentId, propName, value });
     }
     updateComponentProps(...componentProps: { componentId: string, propName: string, value: any }[]): any {
-        this.props.handler.updateComponentProps(componentProps);
+        this.handler.updateComponentProps(componentProps);
     }
-
-    // /**
-    //  * 对组件及其子控件进行命名
-    //  * @param component 
-    //  */
-    // private static nameComponent(component: ComponentData) {
-    //     let namedComponents: { [key: string]: ComponentData } = {}
-    //     let props = component.props = component.props || {};
-    //     if (!props.name) {
-    //         let num = 0;
-    //         let name: string;
-    //         do {
-    //             num = num + 1;
-    //             name = `${component.type}${num}`;
-    //         } while (namedComponents[name]);
-
-    //         namedComponents[name] = component
-    //         props.name = name;
-    //     }
-
-    //     if (!props.id)
-    //         props.id = guid();
-
-    //     if (!component.children || component.children.length == 0) {
-    //         return;
-    //     }
-
-    //     component.children.forEach(child => {
-    //         if (typeof child == "string")
-    //             return true;
-
-    //         PageDesigner.nameComponent(child);
-    //     })
-    // }
 
     /** 
      * 添加控件 
@@ -180,7 +133,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
      * @param componentIndex 新添加组件在子组件中的次序 
      */
     appendComponent(parentId: string, componentData: ComponentData, componentIndex?: number) {
-        this.props.handler.appendComponent(parentId, componentData, componentIndex);
+        this.handler.appendComponent(parentId, componentData, componentIndex);
     }
 
     /** 
@@ -223,7 +176,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
         positions.forEach(o => {
             let { componentId } = o
             let { left, top } = o.position
-            let componentData = this.props.handler.findComponentData(componentId);
+            let componentData = this.handler.findComponentData(componentId);
             if (!componentData)
                 throw new Error(`Control ${componentId} is not exits.`);
 
@@ -237,7 +190,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
             toUpdateProps.push({ componentId, propName: "style", value: style })
         })
 
-        this.props.handler.updateComponentProps(toUpdateProps);
+        this.handler.updateComponentProps(toUpdateProps);
     }
 
     /**
@@ -246,7 +199,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
      */
     selectComponent(componentIds: string[] | string): void {
 
-        this.props.handler.selectComponents(componentIds);
+        this.handler.selectComponents(componentIds);
         //====================================================
         // 设置焦点，以便获取键盘事件
         if (this._element)
@@ -256,7 +209,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
 
     /** 移除控件 */
     removeComponent(...componentIds: string[]) {
-        this.props.handler.removeComponents(componentIds);
+        this.handler.removeComponents(componentIds);
     }
 
     /** 
@@ -266,7 +219,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
      * @param targetComponentIndex 组件位置
      */
     moveComponent(componentId: string, parentId: string, targetComponentIndex?: number) {
-        return this.props.handler.moveComponent(componentId, parentId, targetComponentIndex);
+        return this.handler.moveComponent(componentId, parentId, targetComponentIndex);
     }
 
     private removeComponentFrom(controlId: string, collection: ComponentData["children"]): boolean {
@@ -340,7 +293,7 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
     }
 
     findComponentData(componentId: string): ComponentData | null {
-        return this.props.handler.findComponentData(componentId);
+        return this.handler.findComponentData(componentId);
     }
 
     private onKeyDown(e: React.KeyboardEvent<HTMLElement>) {
@@ -349,65 +302,21 @@ export class PageDesigner<P extends PageDesignerProps = PageDesignerProps, S ext
             if (this.selectedComponents.length == 0)
                 return
 
-            this.props.handler.removeComponents(this.selectedComponentIds)
+            this.handler.removeComponents(this.selectedComponentIds)
         }
     }
 
-    protected createDesignTimeElement(componentData: ComponentData) {
-        //type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]
-        let { type, props, children } = componentData;
-
-        if (type == null) throw Errors.argumentFieldCanntNull("componentData", 'type')
-        if (props == null) throw Errors.argumentNull('props')
-        if (componentData.id == null) throw Errors.argumentFieldCanntNull('id', 'componentData')
-
-
-        console.assert(componentData.id != null)
-        if (componentData.id != null)
-            props.key = componentData.id;
-
-        //===================================================
-        // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
-
-        let attr1 = Component.getAttribute(type)
-        console.assert(attr1 != null)
-
-        let attr2 = componentData.attr || {}
-        let attr = Object.assign({}, attr1, attr2)
-        // delete props.attr
-        //===================================================
-
-        let className = componentData.selected ? appendClassName(props.className || '', classNames.componentSelected) : props.className
-
-        let wrapperProps = Object.assign({}, props);
-        delete wrapperProps.ref;
-        wrapperProps.className = className;
-
-        // let context: Context = this.props.handler;
-        // console.assert(context.handler != null);
-
-        return <ComponentWrapper {...wrapperProps} handler={this.props.handler}
-            source={{ type: type, attr, props, children: typeof children == "string" ? [] : (children || []) }}>
-        </ComponentWrapper>
-    }
-
-    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState) {
-        return { pageData: props.handler.pageData } as Partial<PageDesignerState>;
-    }
 
     findComponetsByTypeName(typeName: string) {
         this.components[typeName];
     }
 
     render() {
-        let pageData: ComponentData | null = this.state.pageData;
-        if (pageData == null)
-            return null;
-
-        let componentFactory = this.props.componentFactory;
-        if (componentFactory == null)
-            return defaultComponentFactory(pageData);
-
-        return componentFactory(pageData);
+        return <div ref={e => this._element = this._element || e} onKeyDown={e => this.onKeyDown(e)}
+            className={this.props.className} style={this.props.style}>
+            <DesignerContext.Provider value={{ designer: this }}>
+                {this.props.children}
+            </DesignerContext.Provider>
+        </div>
     }
 }

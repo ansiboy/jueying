@@ -4,18 +4,15 @@ import { proptDisplayNames } from "./propt-display-names";
 import { PropEditorProps } from "./prop-editor";
 import { Errors } from "./errors";
 import { ComponentData } from "./models";
-import { ComponentDataHandler } from "./component-data-handler";
+import { DesignerContext, PageDesigner } from "./page-designer";
 
 
 export interface EditorProps extends React.Props<PropertyEditor> {
-    designer: ComponentDataHandler,
     empty: string | JSX.Element,
     customRender?: (editComponents: ComponentData[], items: PropertyEditorInfo[]) => JSX.Element
 }
 
 interface EditorState {
-    // designer: ComponentDataHandler | null,
-    groupedEditors: GroupedEditor[]
 }
 
 export interface PropertyEditorInfo {
@@ -34,26 +31,17 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
     constructor(props: EditorProps) {
         super(props);
 
-        this.state = { groupedEditors: [] };
-
-        this.props.designer.componentSelected.add(() => {
-            let editors = this.getEditors(this.props.designer);
-            this.setState({ groupedEditors: editors });
-        })
+        this.state = {};
     }
 
-    // static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState> {
-    //     return { designer: props.designer };
-    // }
-
-    private getEditors(designer: ComponentDataHandler): GroupedEditor[] {
+    private getEditors(designer: PageDesigner): GroupedEditor[] {
         if (designer == null) {
             return []
         }
 
         // 各个控件相同的编辑器
         let commonPropEditorInfos: PropEditorInfo[] = []
-        let selectedComponents = designer.selectedComponents
+        let selectedComponents = designer.selectedComponents;
         for (let i = 0; i < selectedComponents.length; i++) {
             let componentData = selectedComponents[i]
             let propEditorInfos = Component.getPropEditors(componentData)
@@ -109,7 +97,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     let componentProps = selectedComponents.map(o => ({
                         componentId: o.id, propName: propEditorInfo.propName, value
                     }));
-                    designer.updateComponentProps(componentProps);
+                    designer.updateComponentProps(...componentProps);
                 }
             };
             let editor = React.createElement(editorType, editorProps);
@@ -139,53 +127,60 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
     }
 
     render() {
-        let { designer } = this.props;
-        let editors = this.state.groupedEditors; //this.getEditors(designer)
-        if (editors.length == 0) {
-            let empty = this.props.empty
-            return <div className="text-center">{empty}</div>
-        }
+        return <DesignerContext.Consumer>
+            {args => {
 
-        if (this.props.customRender) {
-            let items = editors.map(o => Object.assign({ displayName: proptDisplayNames[o.prop] || o.prop }, o));
-            let r = this.props.customRender(designer.selectedComponents, items);
-            if (r != null) {
-                return r;
-            }
-        }
+                let designer = args.designer;
+                if (designer == null)
+                    return null;
 
-        let groupEditorsArray: { group: string, editors: { prop: string, editor: React.ReactElement<any> }[] }[] = []
-        for (let i = 0; i < editors.length; i++) {
-            let group = editors[i].group || ''
-            let groupEditors = groupEditorsArray.filter(o => o.group == group)[0]
-            if (groupEditors == null) {
-                groupEditors = { group: editors[i].group, editors: [] }
-                groupEditorsArray.push(groupEditors)
-            }
+                let editors = this.getEditors(designer)
+                if (editors.length == 0) {
+                    let empty = this.props.empty
+                    return <div className="text-center">{empty}</div>
+                }
 
-            groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor })
-        }
+                if (this.props.customRender) {
+                    let items = editors.map(o => Object.assign({ displayName: proptDisplayNames[o.prop] || o.prop }, o));
+                    let r = this.props.customRender(designer.selectedComponents, items);
+                    if (r != null) {
+                        return r;
+                    }
+                }
 
-        return <React.Fragment>
-            {groupEditorsArray.map((g) =>
-                <div key={g.group} className="panel panel-default">
-                    {g.group ? <div className="panel-heading">{proptDisplayNames[g.group] || g.group}</div> : null}
-                    <div className="panel-body">
-                        {g.editors.map((o, i) =>
-                            <div key={o.prop} className="form-group clearfix">
-                                <label>{proptDisplayNames[o.prop] || o.prop}</label>
-                                <div className="control">
-                                    <ErrorBoundary>
-                                        {o.editor}
-                                    </ErrorBoundary>
+                let groupEditorsArray: { group: string, editors: { prop: string, editor: React.ReactElement<any> }[] }[] = []
+                for (let i = 0; i < editors.length; i++) {
+                    let group = editors[i].group || ''
+                    let groupEditors = groupEditorsArray.filter(o => o.group == group)[0]
+                    if (groupEditors == null) {
+                        groupEditors = { group: editors[i].group, editors: [] }
+                        groupEditorsArray.push(groupEditors)
+                    }
+
+                    groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor })
+                }
+
+
+                return groupEditorsArray.map((g) =>
+                    <div key={g.group} className="panel panel-default">
+                        {g.group ? <div className="panel-heading">{proptDisplayNames[g.group] || g.group}</div> : null}
+                        <div className="panel-body">
+                            {g.editors.map((o, i) =>
+                                <div key={o.prop} className="form-group clearfix">
+                                    <label>{proptDisplayNames[o.prop] || o.prop}</label>
+                                    <div className="control">
+                                        <ErrorBoundary>
+                                            {o.editor}
+                                        </ErrorBoundary>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
 
-                </div>
-            )}
-        </React.Fragment>
+                    </div>
+                )
+            }}
+        </DesignerContext.Consumer>
     }
 
     get element() {
@@ -193,6 +188,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
     }
 
 }
+
+PropertyEditor.contextType = DesignerContext;
 
 
 export class ErrorBoundary extends React.Component<{}, { error?: Error }> {
@@ -211,7 +208,6 @@ export class ErrorBoundary extends React.Component<{}, { error?: Error }> {
     render() {
         let { error } = this.state || {} as this["state"];
         if (error) {
-            // You can render any custom fallback UI
             return <div className="error">
                 <div>{error.message}</div>
                 <div>{error.stack}</div>

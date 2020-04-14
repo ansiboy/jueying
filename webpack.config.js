@@ -26,8 +26,8 @@ module.exports = {
     mode: 'development',
     devtool: 'source-map',
     externals: {
-        'react': "React",
-        'react-dom': "ReactDOM",
+        'react': "react",
+        'react-dom': "react-dom",
         'jquery': "$"
     },
     plugins: [

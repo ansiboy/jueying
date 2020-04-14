@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v2.7.0
+ *  maishu-jueying v3.0.2
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -16,14 +16,14 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("$"), require("React"));
+		module.exports = factory(require("react"));
 	else if(typeof define === 'function' && define.amd)
-		define(["$", "React"], factory);
+		define(["react"], factory);
 	else if(typeof exports === 'object')
-		exports["jueying"] = factory(require("$"), require("React"));
+		exports["jueying"] = factory(require("react"));
 	else
-		root["jueying"] = factory(root["$"], root["React"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE_jquery__, __WEBPACK_EXTERNAL_MODULE_react__) {
+		root["jueying"] = factory(root["react"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE_react__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -111,930 +111,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ })
 /************************************************************************/
 /******/ ({
-
-/***/ "./lib/jquery.event.drag-2.2.js":
-/*!**************************************!*\
-  !*** ./lib/jquery.event.drag-2.2.js ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*! 
- * jquery.event.drag - v 2.2
- * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
- * Open Source MIT License - http://threedubmedia.com/code/license
- */
-// Created: 2008-06-04 
-// Updated: 2012-05-21
-// REQUIRES: jquery 1.7.x
-
-;(function( $ ){
-
-// add the jquery instance method
-$.fn.drag = function( str, arg, opts ){
-	// figure out the event type
-	var type = typeof str == "string" ? str : "",
-	// figure out the event handler...
-	fn = $.isFunction( str ) ? str : $.isFunction( arg ) ? arg : null;
-	// fix the event type
-	if ( type.indexOf("drag") !== 0 ) 
-		type = "drag"+ type;
-	// were options passed
-	opts = ( str == fn ? arg : opts ) || {};
-	// trigger or bind event handler
-	return fn ? this.bind( type, opts, fn ) : this.trigger( type );
-};
-
-// local refs (increase compression)
-var $event = $.event, 
-$special = $event.special,
-// configure the drag special event 
-drag = $special.drag = {
-	
-	// these are the default settings
-	defaults: {
-		which: 1, // mouse button pressed to start drag sequence
-		distance: 0, // distance dragged before dragstart
-		not: ':input', // selector to suppress dragging on target elements
-		handle: null, // selector to match handle target elements
-		relative: false, // true to use "position", false to use "offset"
-		drop: true, // false to suppress drop events, true or selector to allow
-		click: false // false to suppress click events after dragend (no proxy)
-	},
-	
-	// the key name for stored drag data
-	datakey: "dragdata",
-	
-	// prevent bubbling for better performance
-	noBubble: true,
-	
-	// count bound related events
-	add: function( obj ){ 
-		// read the interaction data
-		var data = $.data( this, drag.datakey ),
-		// read any passed options 
-		opts = obj.data || {};
-		// count another realted event
-		data.related += 1;
-		// extend data options bound with this event
-		// don't iterate "opts" in case it is a node 
-		$.each( drag.defaults, function( key, def ){
-			if ( opts[ key ] !== undefined )
-				data[ key ] = opts[ key ];
-		});
-	},
-	
-	// forget unbound related events
-	remove: function(){
-		$.data( this, drag.datakey ).related -= 1;
-	},
-	
-	// configure interaction, capture settings
-	setup: function(){
-		// check for related events
-		if ( $.data( this, drag.datakey ) ) 
-			return;
-		// initialize the drag data with copied defaults
-		var data = $.extend({ related:0 }, drag.defaults );
-		// store the interaction data
-		$.data( this, drag.datakey, data );
-		// bind the mousedown event, which starts drag interactions
-		$event.add( this, "touchstart mousedown", drag.init, data );
-		// prevent image dragging in IE...
-		if ( this.attachEvent ) 
-			this.attachEvent("ondragstart", drag.dontstart ); 
-	},
-	
-	// destroy configured interaction
-	teardown: function(){
-		var data = $.data( this, drag.datakey ) || {};
-		// check for related events
-		if ( data.related ) 
-			return;
-		// remove the stored data
-		$.removeData( this, drag.datakey );
-		// remove the mousedown event
-		$event.remove( this, "touchstart mousedown", drag.init );
-		// enable text selection
-		drag.textselect( true ); 
-		// un-prevent image dragging in IE...
-		if ( this.detachEvent ) 
-			this.detachEvent("ondragstart", drag.dontstart ); 
-	},
-		
-	// initialize the interaction
-	init: function( event ){ 
-		// sorry, only one touch at a time
-		if ( drag.touched ) 
-			return;
-		// the drag/drop interaction data
-		var dd = event.data, results;
-		// check the which directive
-		if ( event.which != 0 && dd.which > 0 && event.which != dd.which ) 
-			return; 
-		// check for suppressed selector
-		if ( $( event.target ).is( dd.not ) ) 
-			return;
-		// check for handle selector
-		if ( dd.handle && !$( event.target ).closest( dd.handle, event.currentTarget ).length ) 
-			return;
-
-		drag.touched = event.type == 'touchstart' ? this : null;
-		dd.propagates = 1;
-		dd.mousedown = this;
-		dd.interactions = [ drag.interaction( this, dd ) ];
-		dd.target = event.target;
-		dd.pageX = event.pageX;
-		dd.pageY = event.pageY;
-		dd.dragging = null;
-		// handle draginit event... 
-		results = drag.hijack( event, "draginit", dd );
-		// early cancel
-		if ( !dd.propagates )
-			return;
-		// flatten the result set
-		results = drag.flatten( results );
-		// insert new interaction elements
-		if ( results && results.length ){
-			dd.interactions = [];
-			$.each( results, function(){
-				dd.interactions.push( drag.interaction( this, dd ) );
-			});
-		}
-		// remember how many interactions are propagating
-		dd.propagates = dd.interactions.length;
-		// locate and init the drop targets
-		if ( dd.drop !== false && $special.drop ) 
-			$special.drop.handler( event, dd );
-		// disable text selection
-		drag.textselect( false ); 
-		// bind additional events...
-		if ( drag.touched )
-			$event.add( drag.touched, "touchmove touchend", drag.handler, dd );
-		else 
-			$event.add( document, "mousemove mouseup", drag.handler, dd );
-		// helps prevent text selection or scrolling
-		if ( !drag.touched || dd.live )
-			return false;
-	},	
-	
-	// returns an interaction object
-	interaction: function( elem, dd ){
-		var offset = $( elem )[ dd.relative ? "position" : "offset" ]() || { top:0, left:0 };
-		return {
-			drag: elem, 
-			callback: new drag.callback(), 
-			droppable: [],
-			offset: offset
-		};
-	},
-	
-	// handle drag-releatd DOM events
-	handler: function( event ){ 
-		// read the data before hijacking anything
-		var dd = event.data;	
-		// handle various events
-		switch ( event.type ){
-			// mousemove, check distance, start dragging
-			case !dd.dragging && 'touchmove': 
-				event.preventDefault();
-			case !dd.dragging && 'mousemove':
-				//  drag tolerance, x� + y� = distance�
-				if ( Math.pow(  event.pageX-dd.pageX, 2 ) + Math.pow(  event.pageY-dd.pageY, 2 ) < Math.pow( dd.distance, 2 ) ) 
-					break; // distance tolerance not reached
-				event.target = dd.target; // force target from "mousedown" event (fix distance issue)
-				drag.hijack( event, "dragstart", dd ); // trigger "dragstart"
-				if ( dd.propagates ) // "dragstart" not rejected
-					dd.dragging = true; // activate interaction
-			// mousemove, dragging
-			case 'touchmove':
-				event.preventDefault();
-			case 'mousemove':
-				if ( dd.dragging ){
-					// trigger "drag"		
-					drag.hijack( event, "drag", dd );
-					if ( dd.propagates ){
-						// manage drop events
-						if ( dd.drop !== false && $special.drop )
-							$special.drop.handler( event, dd ); // "dropstart", "dropend"							
-						break; // "drag" not rejected, stop		
-					}
-					event.type = "mouseup"; // helps "drop" handler behave
-				}
-			// mouseup, stop dragging
-			case 'touchend': 
-			case 'mouseup': 
-			default:
-				if ( drag.touched )
-					$event.remove( drag.touched, "touchmove touchend", drag.handler ); // remove touch events
-				else 
-					$event.remove( document, "mousemove mouseup", drag.handler ); // remove page events	
-				if ( dd.dragging ){
-					if ( dd.drop !== false && $special.drop )
-						$special.drop.handler( event, dd ); // "drop"
-					drag.hijack( event, "dragend", dd ); // trigger "dragend"	
-				}
-				drag.textselect( true ); // enable text selection
-				// if suppressing click events...
-				if ( dd.click === false && dd.dragging )
-					$.data( dd.mousedown, "suppress.click", new Date().getTime() + 5 );
-				dd.dragging = drag.touched = false; // deactivate element	
-				break;
-		}
-	},
-		
-	// re-use event object for custom events
-	hijack: function( event, type, dd, x, elem ){
-		// not configured
-		if ( !dd ) 
-			return;
-		// remember the original event and type
-		var orig = { event:event.originalEvent, type:event.type },
-		// is the event drag related or drog related?
-		mode = type.indexOf("drop") ? "drag" : "drop",
-		// iteration vars
-		result, i = x || 0, ia, $elems, callback,
-		len = !isNaN( x ) ? x : dd.interactions.length;
-		// modify the event type
-		event.type = type;
-		// remove the original event
-		event.originalEvent = null;
-		// initialize the results
-		dd.results = [];
-		// handle each interacted element
-		do if ( ia = dd.interactions[ i ] ){
-			// validate the interaction
-			if ( type !== "dragend" && ia.cancelled )
-				continue;
-			// set the dragdrop properties on the event object
-			callback = drag.properties( event, dd, ia );
-			// prepare for more results
-			ia.results = [];
-			// handle each element
-			$( elem || ia[ mode ] || dd.droppable ).each(function( p, subject ){
-				// identify drag or drop targets individually
-				callback.target = subject;
-				// force propagtion of the custom event
-				event.isPropagationStopped = function(){ return false; };
-				// handle the event	
-				result = subject ? $event.dispatch.call( subject, event, callback ) : null;
-				// stop the drag interaction for this element
-				if ( result === false ){
-					if ( mode == "drag" ){
-						ia.cancelled = true;
-						dd.propagates -= 1;
-					}
-					if ( type == "drop" ){
-						ia[ mode ][p] = null;
-					}
-				}
-				// assign any dropinit elements
-				else if ( type == "dropinit" )
-					ia.droppable.push( drag.element( result ) || subject );
-				// accept a returned proxy element 
-				if ( type == "dragstart" )
-					ia.proxy = $( drag.element( result ) || ia.drag )[0];
-				// remember this result	
-				ia.results.push( result );
-				// forget the event result, for recycling
-				delete event.result;
-				// break on cancelled handler
-				if ( type !== "dropinit" )
-					return result;
-			});	
-			// flatten the results	
-			dd.results[ i ] = drag.flatten( ia.results );	
-			// accept a set of valid drop targets
-			if ( type == "dropinit" )
-				ia.droppable = drag.flatten( ia.droppable );
-			// locate drop targets
-			if ( type == "dragstart" && !ia.cancelled )
-				callback.update(); 
-		}
-		while ( ++i < len )
-		// restore the original event & type
-		event.type = orig.type;
-		event.originalEvent = orig.event;
-		// return all handler results
-		return drag.flatten( dd.results );
-	},
-		
-	// extend the callback object with drag/drop properties...
-	properties: function( event, dd, ia ){		
-		var obj = ia.callback;
-		// elements
-		obj.drag = ia.drag;
-		obj.proxy = ia.proxy || ia.drag;
-		// starting mouse position
-		obj.startX = dd.pageX;
-		obj.startY = dd.pageY;
-		// current distance dragged
-		obj.deltaX = event.pageX - dd.pageX;
-		obj.deltaY = event.pageY - dd.pageY;
-		// original element position
-		obj.originalX = ia.offset.left;
-		obj.originalY = ia.offset.top;
-		// adjusted element position
-		obj.offsetX = obj.originalX + obj.deltaX; 
-		obj.offsetY = obj.originalY + obj.deltaY;
-		// assign the drop targets information
-		obj.drop = drag.flatten( ( ia.drop || [] ).slice() );
-		obj.available = drag.flatten( ( ia.droppable || [] ).slice() );
-		return obj;	
-	},
-	
-	// determine is the argument is an element or jquery instance
-	element: function( arg ){
-		if ( arg && ( arg.jquery || arg.nodeType == 1 ) )
-			return arg;
-	},
-	
-	// flatten nested jquery objects and arrays into a single dimension array
-	flatten: function( arr ){
-		return $.map( arr, function( member ){
-			return member && member.jquery ? $.makeArray( member ) : 
-				member && member.length ? drag.flatten( member ) : member;
-		});
-	},
-	
-	// toggles text selection attributes ON (true) or OFF (false)
-	textselect: function( bool ){ 
-		$( document )[ bool ? "unbind" : "bind" ]("selectstart", drag.dontstart )
-			.css("MozUserSelect", bool ? "" : "none" );
-		// .attr("unselectable", bool ? "off" : "on" )
-		document.unselectable = bool ? "off" : "on"; 
-	},
-	
-	// suppress "selectstart" and "ondragstart" events
-	dontstart: function(){ 
-		return false; 
-	},
-	
-	// a callback instance contructor
-	callback: function(){}
-	
-};
-
-// callback methods
-drag.callback.prototype = {
-	update: function(){
-		if ( $special.drop && this.available.length )
-			$.each( this.available, function( i ){
-				$special.drop.locate( this, i );
-			});
-	}
-};
-
-// patch $.event.$dispatch to allow suppressing clicks
-var $dispatch = $event.dispatch;
-$event.dispatch = function( event ){
-	if ( $.data( this, "suppress."+ event.type ) - new Date().getTime() > 0 ){
-		$.removeData( this, "suppress."+ event.type );
-		return;
-	}
-	return $dispatch.apply( this, arguments );
-};
-
-// event fix hooks for touch events...
-var touchHooks = 
-$event.fixHooks.touchstart = 
-$event.fixHooks.touchmove = 
-$event.fixHooks.touchend =
-$event.fixHooks.touchcancel = {
-	props: "clientX clientY pageX pageY screenX screenY".split( " " ),
-	filter: function( event, orig ) {
-		if ( orig ){
-			var touched = ( orig.touches && orig.touches[0] )
-				|| ( orig.changedTouches && orig.changedTouches[0] )
-				|| null; 
-			// iOS webkit: touchstart, touchmove, touchend
-			if ( touched ) 
-				$.each( touchHooks.props, function( i, prop ){
-					event[ prop ] = touched[ prop ];
-				});
-		}
-		return event;
-	}
-};
-
-// share the same special event configuration with related events...
-$special.draginit = $special.dragstart = $special.dragend = drag;
-
-})( jQuery );
-
-/***/ }),
-
-/***/ "./lib/jquery.event.drag.live-2.2.js":
-/*!*******************************************!*\
-  !*** ./lib/jquery.event.drag.live-2.2.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*! 
- * jquery.event.drag.live - v 2.2
- * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
- * Open Source MIT License - http://threedubmedia.com/code/license
- */
-// Created: 2010-06-07
-// Updated: 2012-05-21
-// REQUIRES: jquery 1.7.x, event.drag 2.2
-
-;(function( $ ){
-	
-// local refs (increase compression)
-var $event = $.event,
-// ref the special event config
-drag = $event.special.drag,
-// old drag event add method
-origadd = drag.add,
-// old drag event teradown method
-origteardown = drag.teardown;
-
-// allow events to bubble for delegation
-drag.noBubble = false;
-
-// the namespace for internal live events
-drag.livekey = "livedrag";
-
-// new drop event add method
-drag.add = function( obj ){ 
-	// call the old method
-	origadd.apply( this, arguments );
-	// read the data
-	var data = $.data( this, drag.datakey );
-	// bind the live "draginit" delegator
-	if ( !data.live && obj.selector ){
-		data.live = true;
-		$event.add( this, "draginit."+ drag.livekey, drag.delegate );
-	}
-};
-
-// new drop event teardown method
-drag.teardown = function(){ 
-	// call the old method
-	origteardown.apply( this, arguments );
-	// read the data
-	var data = $.data( this, drag.datakey ) || {};
-	// bind the live "draginit" delegator
-	if ( data.live ){
-		// remove the "live" delegation
-		$event.remove( this, "draginit."+ drag.livekey, drag.delegate );
-		data.live = false;
-	}
-};
-
-// identify potential delegate elements
-drag.delegate = function( event ){
-	// local refs
-	var elems = [], target, 
-	// element event structure
-	events = $.data( this, "events" ) || {};
-	// query live events
-	$.each( events || [], function( key, arr ){
-		// no event type matches
-		if ( key.indexOf("drag") !== 0 )
-			return;
-		$.each( arr || [], function( i, obj ){
-			// locate the element to delegate
-			target = $( event.target ).closest( obj.selector, event.currentTarget )[0];
-			// no element found
-			if ( !target ) 
-				return;
-			// add an event handler
-			$event.add( target, obj.origType+'.'+drag.livekey, obj.origHandler || obj.handler, obj.data );
-			// remember new elements
-			if ( $.inArray( target, elems ) < 0 )
-				elems.push( target );		
-		});
-	});
-	// if there are no elements, break
-	if ( !elems.length ) 
-		return false;
-	// return the matched results, and clenup when complete		
-	return $( elems ).bind("dragend."+ drag.livekey, function(){
-		$event.remove( this, "."+ drag.livekey ); // cleanup delegation
-	});
-};
-	
-})( jQuery );
-
-/***/ }),
-
-/***/ "./lib/jquery.event.drop-2.2.js":
-/*!**************************************!*\
-  !*** ./lib/jquery.event.drop-2.2.js ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*! 
- * jquery.event.drop - v 2.2
- * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
- * Open Source MIT License - http://threedubmedia.com/code/license
- */
-// Created: 2008-06-04 
-// Updated: 2012-05-21
-// REQUIRES: jquery 1.7.x, event.drag 2.2
-
-;(function($){ // secure $ jQuery alias
-
-// Events: drop, dropstart, dropend
-
-// add the jquery instance method
-$.fn.drop = function( str, arg, opts ){
-	// figure out the event type
-	var type = typeof str == "string" ? str : "",
-	// figure out the event handler...
-	fn = $.isFunction( str ) ? str : $.isFunction( arg ) ? arg : null;
-	// fix the event type
-	if ( type.indexOf("drop") !== 0 ) 
-		type = "drop"+ type;
-	// were options passed
-	opts = ( str == fn ? arg : opts ) || {};
-	// trigger or bind event handler
-	return fn ? this.bind( type, opts, fn ) : this.trigger( type );
-};
-
-// DROP MANAGEMENT UTILITY
-// returns filtered drop target elements, caches their positions
-$.drop = function( opts ){ 
-	opts = opts || {};
-	// safely set new options...
-	drop.multi = opts.multi === true ? Infinity : 
-		opts.multi === false ? 1 : !isNaN( opts.multi ) ? opts.multi : drop.multi;
-	drop.delay = opts.delay || drop.delay;
-	drop.tolerance = $.isFunction( opts.tolerance ) ? opts.tolerance : 
-		opts.tolerance === null ? null : drop.tolerance;
-	drop.mode = opts.mode || drop.mode || 'intersect';
-};
-
-// local refs (increase compression)
-var $event = $.event, 
-$special = $event.special,
-// configure the drop special event
-drop = $.event.special.drop = {
-
-	// these are the default settings
-	multi: 1, // allow multiple drop winners per dragged element
-	delay: 20, // async timeout delay
-	mode: 'overlap', // drop tolerance mode
-		
-	// internal cache
-	targets: [], 
-	
-	// the key name for stored drop data
-	datakey: "dropdata",
-		
-	// prevent bubbling for better performance
-	noBubble: true,
-	
-	// count bound related events
-	add: function( obj ){ 
-		// read the interaction data
-		var data = $.data( this, drop.datakey );
-		// count another realted event
-		data.related += 1;
-	},
-	
-	// forget unbound related events
-	remove: function(){
-		$.data( this, drop.datakey ).related -= 1;
-	},
-	
-	// configure the interactions
-	setup: function(){
-		// check for related events
-		if ( $.data( this, drop.datakey ) ) 
-			return;
-		// initialize the drop element data
-		var data = { 
-			related: 0,
-			active: [],
-			anyactive: 0,
-			winner: 0,
-			location: {}
-		};
-		// store the drop data on the element
-		$.data( this, drop.datakey, data );
-		// store the drop target in internal cache
-		drop.targets.push( this );
-	},
-	
-	// destroy the configure interaction	
-	teardown: function(){ 
-		var data = $.data( this, drop.datakey ) || {};
-		// check for related events
-		if ( data.related ) 
-			return;
-		// remove the stored data
-		$.removeData( this, drop.datakey );
-		// reference the targeted element
-		var element = this;
-		// remove from the internal cache
-		drop.targets = $.grep( drop.targets, function( target ){ 
-			return ( target !== element ); 
-		});
-	},
-	
-	// shared event handler
-	handler: function( event, dd ){ 
-		// local vars
-		var results, $targets;
-		// make sure the right data is available
-		if ( !dd ) 
-			return;
-		// handle various events
-		switch ( event.type ){
-			// draginit, from $.event.special.drag
-			case 'mousedown': // DROPINIT >>
-			case 'touchstart': // DROPINIT >>
-				// collect and assign the drop targets
-				$targets =  $( drop.targets );
-				if ( typeof dd.drop == "string" )
-					$targets = $targets.filter( dd.drop );
-				// reset drop data winner properties
-				$targets.each(function(){
-					var data = $.data( this, drop.datakey );
-					data.active = [];
-					data.anyactive = 0;
-					data.winner = 0;
-				});
-				// set available target elements
-				dd.droppable = $targets;
-				// activate drop targets for the initial element being dragged
-				$special.drag.hijack( event, "dropinit", dd ); 
-				break;
-			// drag, from $.event.special.drag
-			case 'mousemove': // TOLERATE >>
-			case 'touchmove': // TOLERATE >>
-				drop.event = event; // store the mousemove event
-				if ( !drop.timer )
-					// monitor drop targets
-					drop.tolerate( dd ); 
-				break;
-			// dragend, from $.event.special.drag
-			case 'mouseup': // DROP >> DROPEND >>
-			case 'touchend': // DROP >> DROPEND >>
-				drop.timer = clearTimeout( drop.timer ); // delete timer	
-				if ( dd.propagates ){
-					$special.drag.hijack( event, "drop", dd ); 
-					$special.drag.hijack( event, "dropend", dd ); 
-				}
-				break;
-				
-		}
-	},
-		
-	// returns the location positions of an element
-	locate: function( elem, index ){ 
-		var data = $.data( elem, drop.datakey ),
-		$elem = $( elem ), 
-		posi = $elem.offset() || {}, 
-		height = $elem.outerHeight(), 
-		width = $elem.outerWidth(),
-		location = { 
-			elem: elem, 
-			width: width, 
-			height: height,
-			top: posi.top, 
-			left: posi.left, 
-			right: posi.left + width, 
-			bottom: posi.top + height
-		};
-		// drag elements might not have dropdata
-		if ( data ){
-			data.location = location;
-			data.index = index;
-			data.elem = elem;
-		}
-		return location;
-	},
-	
-	// test the location positions of an element against another OR an X,Y coord
-	contains: function( target, test ){ // target { location } contains test [x,y] or { location }
-		return ( ( test[0] || test.left ) >= target.left && ( test[0] || test.right ) <= target.right
-			&& ( test[1] || test.top ) >= target.top && ( test[1] || test.bottom ) <= target.bottom ); 
-	},
-	
-	// stored tolerance modes
-	modes: { // fn scope: "$.event.special.drop" object 
-		// target with mouse wins, else target with most overlap wins
-		'intersect': function( event, proxy, target ){
-			return this.contains( target, [ event.pageX, event.pageY ] ) ? // check cursor
-				1e9 : this.modes.overlap.apply( this, arguments ); // check overlap
-		},
-		// target with most overlap wins	
-		'overlap': function( event, proxy, target ){
-			// calculate the area of overlap...
-			return Math.max( 0, Math.min( target.bottom, proxy.bottom ) - Math.max( target.top, proxy.top ) )
-				* Math.max( 0, Math.min( target.right, proxy.right ) - Math.max( target.left, proxy.left ) );
-		},
-		// proxy is completely contained within target bounds	
-		'fit': function( event, proxy, target ){
-			return this.contains( target, proxy ) ? 1 : 0;
-		},
-		// center of the proxy is contained within target bounds	
-		'middle': function( event, proxy, target ){
-			return this.contains( target, [ proxy.left + proxy.width * .5, proxy.top + proxy.height * .5 ] ) ? 1 : 0;
-		}
-	},	
-	
-	// sort drop target cache by by winner (dsc), then index (asc)
-	sort: function( a, b ){
-		return ( b.winner - a.winner ) || ( a.index - b.index );
-	},
-		
-	// async, recursive tolerance execution
-	tolerate: function( dd ){		
-		// declare local refs
-		var i, drp, drg, data, arr, len, elem,
-		// interaction iteration variables
-		x = 0, ia, end = dd.interactions.length,
-		// determine the mouse coords
-		xy = [ drop.event.pageX, drop.event.pageY ],
-		// custom or stored tolerance fn
-		tolerance = drop.tolerance || drop.modes[ drop.mode ];
-		// go through each passed interaction...
-		do if ( ia = dd.interactions[x] ){
-			// check valid interaction
-			if ( !ia )
-				return; 
-			// initialize or clear the drop data
-			ia.drop = [];
-			// holds the drop elements
-			arr = []; 
-			len = ia.droppable.length;
-			// determine the proxy location, if needed
-			if ( tolerance )
-				drg = drop.locate( ia.proxy ); 
-			// reset the loop
-			i = 0;
-			// loop each stored drop target
-			do if ( elem = ia.droppable[i] ){ 
-				data = $.data( elem, drop.datakey );
-				drp = data.location;
-				if ( !drp ) continue;
-				// find a winner: tolerance function is defined, call it
-				data.winner = tolerance ? tolerance.call( drop, drop.event, drg, drp ) 
-					// mouse position is always the fallback
-					: drop.contains( drp, xy ) ? 1 : 0; 
-				arr.push( data );	
-			} while ( ++i < len ); // loop 
-			// sort the drop targets
-			arr.sort( drop.sort );			
-			// reset the loop
-			i = 0;
-			// loop through all of the targets again
-			do if ( data = arr[ i ] ){
-				// winners...
-				if ( data.winner && ia.drop.length < drop.multi ){
-					// new winner... dropstart
-					if ( !data.active[x] && !data.anyactive ){
-						// check to make sure that this is not prevented
-						if ( $special.drag.hijack( drop.event, "dropstart", dd, x, data.elem )[0] !== false ){ 	
-							data.active[x] = 1;
-							data.anyactive += 1;
-						}
-						// if false, it is not a winner
-						else
-							data.winner = 0;
-					}
-					// if it is still a winner
-					if ( data.winner )
-						ia.drop.push( data.elem );
-				}
-				// losers... 
-				else if ( data.active[x] && data.anyactive == 1 ){
-					// former winner... dropend
-					$special.drag.hijack( drop.event, "dropend", dd, x, data.elem ); 
-					data.active[x] = 0;
-					data.anyactive -= 1;
-				}
-			} while ( ++i < len ); // loop 		
-		} while ( ++x < end ) // loop
-		// check if the mouse is still moving or is idle
-		if ( drop.last && xy[0] == drop.last.pageX && xy[1] == drop.last.pageY ) 
-			delete drop.timer; // idle, don't recurse
-		else  // recurse
-			drop.timer = setTimeout(function(){ 
-				drop.tolerate( dd ); 
-			}, drop.delay );
-		// remember event, to compare idleness
-		drop.last = drop.event; 
-	}
-	
-};
-
-// share the same special event configuration with related events...
-$special.dropinit = $special.dropstart = $special.dropend = drop;
-
-})(jQuery); // confine scope	
-
-/***/ }),
-
-/***/ "./lib/jquery.event.drop.live-2.2.js":
-/*!*******************************************!*\
-  !*** ./lib/jquery.event.drop.live-2.2.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*! 
- * jquery.event.drop.live - v 2.2
- * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
- * Open Source MIT License - http://threedubmedia.com/code/license
- */
-// Created: 2010-06-07
-// Updated: 2012-05-21
-// REQUIRES: jquery 1.7.x, event.drag 2.2, event.drop 2.2
-
-;(function($){ // secure $ jQuery alias
-
-// local refs (increase compression)
-var $event = $.event,
-// ref the drop special event config
-drop = $event.special.drop,
-// old drop event add method
-origadd = drop.add,
-// old drop event teradown method
-origteardown = drop.teardown;
-
-// allow events to bubble for delegation
-drop.noBubble = false;
-
-// the namespace for internal live events
-drop.livekey = "livedrop";
-
-// new drop event add method
-drop.add = function( obj ){ 
-	// call the old method
-	origadd.apply( this, arguments );
-	// read the data
-	var data = $.data( this, drop.datakey );
-	// bind the live "dropinit" delegator
-	if ( !data.live && obj.selector ){
-		data.live = true;
-		$event.add( this, "dropinit."+ drop.livekey, drop.delegate );
-	}
-};
-
-// new drop event teardown method
-drop.teardown = function(){ 
-	// call the old method
-	origteardown.apply( this, arguments );
-	// read the data
-	var data = $.data( this, drop.datakey ) || {};
-	// remove the live "dropinit" delegator
-	if ( data.live ){
-		// remove the "live" delegation
-		$event.remove( this, "dropinit", drop.delegate );
-		data.live = false;
-	}
-};
-
-// identify potential delegate elements
-drop.delegate = function( event, dd ){
-	// local refs
-	var elems = [], $targets, 
-	// element event structure
-	events = $.data( this, "events" ) || {};
-	// query live events
-	$.each( events || [], function( key, arr ){
-		// no event type matches
-		if ( key.indexOf("drop") !== 0 )
-			return;
-		$.each( arr, function( i, obj ){
-			// locate the elements to delegate
-			$targets = $( event.currentTarget ).find( obj.selector );
-			// no element found
-			if ( !$targets.length ) 
-				return;
-			// take each target...
-			$targets.each(function(){
-				// add an event handler
-				$event.add( this, obj.origType +'.'+ drop.livekey, obj.origHandler || obj.handler, obj.data );
-				// remember new elements
-				if ( $.inArray( this, elems ) < 0 )
-					elems.push( this );	
-			});	
-		});
-	});
-	// may not exist when artifically triggering dropinit event
-	if ( dd )
-		// clean-up after the interaction ends
-		$event.add( dd.drag, "dragend."+drop.livekey, function(){
-			$.each( elems.concat( this ), function(){
-				$event.remove( this, '.'+ drop.livekey );							
-			});
-		});
-	//drop.delegates.push( elems );
-	return elems.length ? $( elems ) : false;
-};
-
-})( jQuery ); // confine scope	
-
-/***/ }),
 
 /***/ "./node_modules/maishu-jueying-core/out/decorators.js":
 /*!************************************************************!*\
@@ -1891,394 +967,20 @@ ComponentPanel.componentIndexName = "data-component-index";
 
 /***/ }),
 
-/***/ "./out/component-wrapper.js":
-/*!**********************************!*\
-  !*** ./out/component-wrapper.js ***!
-  \**********************************/
-/*! exports provided: ComponentWrapper */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentWrapper", function() { return ComponentWrapper; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
-/* harmony import */ var _component_panel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style */ "./out/style.js");
-/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./component */ "./out/component.js");
-/* harmony import */ var _components_index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/index */ "./out/components/index.js");
-
-
-
-
-
-
-/**
- * 组件包装器，对组件进行包装，实现组件设计时的行为。
- * 1. 组件的移动
- * 2. 组件的拖放
- */
-class ComponentWrapper extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-    constructor(props) {
-        super(props);
-    }
-    componentDidCatch(error, info) {
-        // Display fallback UI
-        this.setState({ error });
-        // You can also log the error to an error reporting service
-        //   logErrorToMyService(error, info);
-        debugger;
-    }
-    designtimeBehavior(element, attr) {
-        if (!element)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('element');
-        if (!attr)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('args');
-        if (element.getAttribute('data-behavior')) {
-            return;
-        }
-        element.setAttribute('data-behavior', 'behavior');
-        let designer = this.props.handler;
-        console.assert(attr.container != null);
-        console.assert(attr.movable != null);
-        if (attr.container) {
-            ComponentWrapper.enableAppendDroppable(element, designer);
-        }
-        if (attr.movable) {
-            console.assert(element != null);
-            ComponentWrapper.draggable(designer, element);
-            if (this.handler != null)
-                ComponentWrapper.draggable(designer, element, this.handler);
-        }
-        else {
-            element.onclick = (ev) => ComponentWrapper.invokeOnClick(ev, designer, element);
-        }
-    }
-    /**
-     * 启用拖放操作，以便通过拖放图标添加控件
-     */
-    static enableAppendDroppable(element, designer) {
-        console.assert(element != null);
-        element.addEventListener('dragover', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            if (event.dataTransfer == null)
-                return;
-            let componentName = event.dataTransfer.getData(_components_index__WEBPACK_IMPORTED_MODULE_5__["constants"].componentData);
-            if (componentName)
-                event.dataTransfer.dropEffect = "copy";
-            else
-                event.dataTransfer.dropEffect = "move";
-            console.log(`dragover: left:${event['layerX']} top:${event['layerX']}`);
-        });
-        element.addEventListener("drop", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            let args1 = arguments[1];
-            if (!event.dataTransfer)
-                return;
-            let ctrl = _component_panel__WEBPACK_IMPORTED_MODULE_2__["ComponentPanel"].getComponentData(event.dataTransfer);
-            if (!ctrl)
-                return;
-            ctrl.props.style = ctrl.props.style || {};
-            designer.pageData.props.style = designer.pageData.props.style || {};
-            if (!ctrl.props.style.position) {
-                ctrl.props.style.position = designer.pageData.props.style.position;
-            }
-            let pos = _component_panel__WEBPACK_IMPORTED_MODULE_2__["ComponentPanel"].mouseInnerPosition(event.dataTransfer);
-            console.assert(pos != null);
-            if (ctrl.props.style.position == 'absolute') {
-                ctrl.props.style.left = event['layerX'] - pos.x;
-                ctrl.props.style.top = event['layerY'] - pos.y;
-            }
-            designer.appendComponent(element.id, ctrl);
-        });
-    }
-    static isResizeHandleClassName(className) {
-        let classNames = [
-            'resize_handle NE', 'resize_handle NN', 'resize_handle NW',
-            'resize_handle WW', 'resize_handle EE', 'resize_handle SW',
-            'resize_handle SS', 'resize_handle SE',
-        ];
-        return classNames.indexOf(className) >= 0;
-    }
-    static draggable(designer, element, handler) {
-        if (!designer)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('designer');
-        if (!element)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('element');
-        console.assert(element.id != "");
-        handler = handler || element;
-        let componentId = element.id;
-        console.assert(componentId != "");
-        let startPos;
-        let rect;
-        let dragStart;
-        $(handler)
-            .drag("init", function (ev) {
-            startPos = $(element).position();
-            if ($(this).is(`.${_style__WEBPACK_IMPORTED_MODULE_3__["classNames"].componentSelected}`))
-                return $(`.${_style__WEBPACK_IMPORTED_MODULE_3__["classNames"].componentSelected}`);
-        })
-            .drag('start', function (ev, dd) {
-            dd.attr = $(ev.target).prop("className");
-            dd.width = $(this).width() || 0;
-            dd.height = $(this).height() || 0;
-            dd.sourceElement = element;
-            dragStart = Date.now();
-        })
-            .drag(function (ev, dd) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            console.log(`drop:`);
-            console.log(dd.drop);
-            rect = {};
-            if (dd.attr.indexOf("E") > -1) {
-                rect.width = Math.max(32, dd.width + dd.deltaX);
-            }
-            if (dd.attr.indexOf("S") > -1) {
-                rect.height = Math.max(32, dd.height + dd.deltaY);
-            }
-            if (dd.attr.indexOf("W") > -1) {
-                rect.width = Math.max(32, dd.width - dd.deltaX);
-                setLeft(dd);
-            }
-            if (dd.attr.indexOf("N") > -1) {
-                rect.height = Math.max(32, dd.height - dd.deltaY);
-                setTop(dd);
-            }
-            if (dd.attr.indexOf("WW") >= 0)
-                setLeft(dd);
-            if (dd.attr.indexOf("NE") >= 0 || dd.attr.indexOf("NW") >= 0 || dd.attr.indexOf("SW") >= 0)
-                setPosition(dd);
-            if (dd.attr.indexOf("NN") >= 0)
-                setTop(dd);
-            if (dd.attr.indexOf("drag") > -1) {
-                rect.top = dd.offsetY;
-                rect.left = dd.offsetX;
-            }
-            if (!ComponentWrapper.isResizeHandleClassName(dd.attr)) {
-                setPosition(dd);
-            }
-            if (dd.attr)
-                $(this).css(rect);
-        }, { click: true })
-            .drag('end', function (ev, dd) {
-            let interval = Date.now() - dragStart;
-            ComponentWrapper.isDrag = interval >= 300;
-            if (!ComponentWrapper.isResizeHandleClassName(dd.attr)) {
-                let left = startPos.left + dd.deltaX;
-                let top = startPos.top + dd.deltaY;
-                designer.setComponentPosition(element.id, { left, top });
-                element.style.transform = '';
-            }
-            else {
-                let left = null;
-                let top = null;
-                if (dd.attr.indexOf("W") > -1)
-                    left = startPos.left + dd.deltaX;
-                if (dd.attr.indexOf("N") > -1)
-                    top = startPos.top + dd.deltaY;
-                element.style.transform = '';
-                if (left != null && top != null) {
-                    designer.setComponentPosition(element.id, { left, top: top });
-                    designer.setComponentSize(componentId, rect);
-                }
-            }
-        })
-            .click((ev) => {
-            ComponentWrapper.invokeOnClick(ev, designer, element);
-        });
-        let setPosition = (dd) => {
-            console.log(['dd.offsetX, dd.offsetY', dd.offsetX, dd.offsetY]);
-            console.log(dd);
-            element.style.transform = `translate(${dd.deltaX}px,${dd.deltaY}px)`;
-        };
-        let setTop = (dd) => {
-            element.style.transform = `translateY(${dd.deltaY}px)`;
-        };
-        let setLeft = (dd) => {
-            element.style.transform = `translateX(${dd.deltaX}px)`;
-        };
-    }
-    static invokeOnClick(ev, designer, element) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        if (ComponentWrapper.isDrag) {
-            ComponentWrapper.isDrag = false;
-            return;
-        }
-        let elementID = element.id;
-        if (!ev.ctrlKey) {
-            designer.selectComponent(element.id);
-            return;
-        }
-        let selectedControlIds = designer.selectedComponentIds;
-        console.assert(elementID != "");
-        if (selectedControlIds.indexOf(elementID) >= 0) {
-            selectedControlIds = selectedControlIds.filter(o => o != elementID);
-        }
-        else {
-            selectedControlIds.push(elementID);
-        }
-        designer.selectComponents(selectedControlIds);
-    }
-    componentDidMount() {
-        if (!this.element) {
-            return;
-        }
-        let attr = this.props.source.attr;
-        this.designtimeBehavior(this.element, attr);
-    }
-    render() {
-        let { error } = this.state || {};
-        if (error) {
-            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "error" },
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.message),
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.stack));
-        }
-        let attr = this.props.source.attr;
-        let shouldWrapper = attr.resize || (typeof this.props.source.type != 'string' && this.props.source.type != _components_index__WEBPACK_IMPORTED_MODULE_5__["MasterPage"]);
-        if (!shouldWrapper) {
-            return this.renderWidthoutWrapper();
-        }
-        let props = this.props.source.props;
-        let style = props.style = JSON.parse(JSON.stringify(props.style || {})); // 深复制 style
-        let { top, left, position, width, height, display, visibility } = style;
-        let className = Object(_style__WEBPACK_IMPORTED_MODULE_3__["appendClassName"])(props.className || '', _style__WEBPACK_IMPORTED_MODULE_3__["classNames"].componentWrapper);
-        className = props.selected ? Object(_style__WEBPACK_IMPORTED_MODULE_3__["appendClassName"])(className, _style__WEBPACK_IMPORTED_MODULE_3__["classNames"].componentSelected) : className;
-        let wrapperProps = {
-            id: props.id,
-            className,
-            style: { top, left, position, width, height, display, visibility },
-            ref: (e) => this.element = e || this.element
-        };
-        let move_handle = props.selected && attr.showHandler ? react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "move_handle", style: {}, ref: e => this.handler = e || this.handler }) : null;
-        let showResizeHandle = attr.resize && props.style.position == 'absolute' && props.selected;
-        let source = this.props.source;
-        if (props.style) {
-            delete props.style.left;
-            delete props.style.top;
-            delete props.style.position;
-            if (wrapperProps.style.width && wrapperProps.style.width != 'unset')
-                props.style.width = '100%';
-            if (wrapperProps.style.height && wrapperProps.style.height != 'unset')
-                props.style.height = '100%';
-        }
-        // source.props.ref = function (e) {
-        // };
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_component__WEBPACK_IMPORTED_MODULE_4__["ComponentWrapperContext"].Provider, { value: this },
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", Object.assign({}, wrapperProps),
-                move_handle,
-                showResizeHandle ?
-                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle NE" }),
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle NN" }),
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle NW" }),
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle WW" }),
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle EE" }),
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle SW" }),
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle SS" }),
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "resize_handle SE" })) : null,
-                this.createRawElement(source.type, source.props, source.children)));
-    }
-    renderWidthoutWrapper() {
-        let { type, props, children } = this.props.source;
-        let ref = props.ref;
-        props.ref = (e) => {
-            if (typeof ref == "function")
-                ref(e);
-            if (!e)
-                return;
-            if (e.tagName) {
-                let attr = this.props.source.attr;
-                this.designtimeBehavior(e, attr);
-                return;
-            }
-        };
-        if (props.selected) {
-            props.className = Object(_style__WEBPACK_IMPORTED_MODULE_3__["appendClassName"])(props.className || '', _style__WEBPACK_IMPORTED_MODULE_3__["classNames"].componentSelected);
-        }
-        let element = this.createRawElement(type, props, children);
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_component__WEBPACK_IMPORTED_MODULE_4__["ComponentWrapperContext"].Provider, { value: this }, element);
-    }
-    createRawElement(type, props, children) {
-        let isEmptyElement = (children || []).length == 0;
-        if (isEmptyElement) {
-            let emtpy = this.designTimeEmptyElement(type, props);
-            if (emtpy != null)
-                children = [emtpy];
-        }
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](type, props, ...children);
-    }
-    designTimeEmptyElement(type, props) {
-        if (type == 'input' || type == 'img' || type == 'meta' || type == 'link')
-            return null;
-        let typename = typeof type == 'string' ? type : type.name;
-        let text = this.designTimeText(typename, props);
-        return text;
-    }
-    designTimeText(type, props) {
-        let text = props.text;
-        if (text) {
-            return text;
-        }
-        text = text || props.name || type;
-        return text;
-    }
-}
-ComponentWrapper.isDrag = false;
-// export interface ComponentAttribute {
-//     /** 表示组件为容器，可以添加组件 */
-//     container?: boolean,
-//     /** 表示组件可移动 */
-//     movable?: boolean,
-//     showHandler?: boolean,
-//     resize?: boolean,
-// }
-//# sourceMappingURL=component-wrapper.js.map
-
-/***/ }),
-
 /***/ "./out/component.js":
 /*!**************************!*\
   !*** ./out/component.js ***!
   \**************************/
-/*! exports provided: ComponentWrapperContext, Component, defaultComponentFactory */
+/*! exports provided: Component */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentWrapperContext", function() { return ComponentWrapperContext; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return Component; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultComponentFactory", function() { return defaultComponentFactory; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
 
-
-// type DesignerContextValue = { designer: ComponentDataHandler | null };
-// export const DesignerContext = React.createContext<DesignerContextValue>({ designer: null });
-const ComponentWrapperContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"](null);
+// type CreateElementContext = { components: React.Component[], componentTypes: string[] };
 class Component {
-    /**
-     * 设置组件特性
-     * @param typename 组件类型名称
-     * @param attr 组件特性
-     */
-    static setAttribute(typename, attr) {
-        Component.componentAttributes[typename] = attr;
-    }
-    /**
-     * 获取组件特性
-     * @param typename 组件类型名称
-     */
-    static getAttribute(type) {
-        let typename = typeof type == 'string' ? type : type.name;
-        let attr = Component.componentAttributes[typename];
-        return Object.assign({ type }, Component.defaultComponentAttribute, attr || {});
-    }
     static getPropEditors(componentData) {
         let componentType = componentData.type;
         let result = [];
@@ -2291,9 +993,6 @@ class Component {
             result.push(propEditorInfo[i]);
         }
         return result;
-        // let classEditors = this.componentPropEditors[componentType] || []
-        // Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
-        // return classEditors
     }
     static getPropEditor(controlClassName, propName) {
         return this.getPropEditorByArray(controlClassName, propName);
@@ -2304,29 +1003,8 @@ class Component {
         let editor = classEditors.filter(o => o.propName == propNames)[0];
         return editor;
     }
-    // static setPropEditor(options: SetPropEditorOptions): void;
-    // static setPropEditor(componentType: React.ComponentClass | string, propName: string, editorType: PropEditorConstructor, group?: string): void;
-    // static setPropEditor(componentTypeOrOptions: React.ComponentClass | string | SetPropEditorOptions, propName?: string, editorType?: PropEditorConstructor, group?: string): void {
     static setPropEditor(options) {
-        // let componentType: React.ComponentClass | string;
-        // let editorDisplay: ComponentPropEditorDisplay | null = null;
-        // if (typeof componentTypeOrOptions == "object") {
-        //     let options = componentTypeOrOptions as SetPropEditorOptions;
-        //     componentType = options.componentType;
-        //     propName = options.propName;
-        //     editorType = options.editorType;
-        //     group = options.group;
-        //     editorDisplay = options.display;
-        //     if (options.displayName != null) {
-        //         proptDisplayNames[propName] = options.displayName;
-        //     }
-        // }
-        // else {
-        //     componentType = componentTypeOrOptions;
-        // }
         let { componentType, editorType, display: editorDisplay, group, propName } = options;
-        if (editorDisplay == null)
-            throw new Error("Editor display is null.");
         group = group || '';
         propName = propName || "";
         // 属性可能为导航属性,例如 style.width
@@ -2344,10 +1022,6 @@ class Component {
         }
         classProps.push({ propName, editorType: editorType, group });
     }
-    static createElement(componentData) {
-        // return Component._createElement(componentData, { components: [], componentTypes: [] }, h);
-        return defaultComponentFactory(componentData);
-    }
     static register(componentName, componentType, attr) {
         if (componentType == null && typeof componentName == 'function') {
             componentType = componentName;
@@ -2355,111 +1029,18 @@ class Component {
             componentType['componentName'] = componentName;
         }
         if (!componentName)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('componentName');
+            throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('componentName');
         if (!componentType)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('componentType');
-        Component.componentTypes[componentName] = componentType;
-        if (attr)
-            Component.setAttribute(componentName, attr);
+            throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('componentType');
     }
 }
 //==========================================
 // 用于创建 React 的 React.Fragment 
 Component.Fragment = "";
 //==========================================
-Component.defaultComponentAttribute = {
-    container: false, movable: false, showHandler: false, resize: false
-};
-Component.componentAttributes = {
-    'div': { container: true, movable: true, showHandler: true, resize: true },
-    'img': { container: false, movable: true, resize: true },
-    'label': { movable: true },
-    'ul': { container: false, movable: true, showHandler: true, resize: false },
-    'li': { container: true, movable: false, },
-    'table': { container: false, movable: true, showHandler: true, resize: true },
-    'thead': { container: false, movable: false },
-    'tbody': { container: false, movable: false },
-    'tfoot': { container: false, movable: false },
-    'tr': { container: false, movable: false },
-    'td': { container: true, movable: false },
-};
 Component.componentPropEditors = {};
 Component.componentPropEditorDisplay = {};
-// /**
-//  * 将持久化的元素数据转换为 ReactElement
-//  * @param componentData 元素数据
-//  */
-// private static _createElement(componentData: ComponentData, context: CreateElementContext, h?: ComponentFactory): React.ReactElement<any> | null {
-//     if (!componentData) throw Errors.argumentNull('componentData')
-//     h = h || defaultComponentFactory;
-//     try {
-//         let type: string | React.ComponentClass | React.ComponentType = componentData.type;
-//         let componentName = componentData.type;
-//         let controlType = Component.componentTypes[componentName];
-//         if (controlType) {
-//             type = controlType;
-//         }
-//         let children: (React.ReactElement<any> | string)[] = [];
-//         for (let i = 0; i < componentData.children.length; i++) {
-//             let child = componentData.children[i];
-//             if (typeof child == "string")
-//                 children.push(child);
-//             else
-//                 children.push(Component._createElement(child, context, h));
-//         }
-//         //componentData.children ? componentData.children.map(o => Component._createElement(o, context, h)) : [];
-//         let props: ComponentProps<any> = componentData.props == null ? {} : Object.assign({}, componentData.props);//JSON.parse(JSON.stringify(componentData.props));
-//         if (controlType != null && controlType["defaultProps"]) {
-//             props = Object.assign({}, controlType["defaultProps"], props);
-//         }
-//         let result: JSX.Element
-//         if (typeof type == 'string') {
-//             if (props.text) {
-//                 children.push(props.text)
-//             }
-//             //=========================================
-//             // props.text 非 DOM 的 prop，并且已经使用完
-//             // delete props.text
-//             // if (h == React.createElement) {
-//             //     delete props.attr
-//             // }
-//             //=========================================
-//         }
-//         let masterPage: MasterPage;
-//         type = type == Component.Fragment ? React.Fragment : type
-//         let ref = props.ref;
-//         props.ref = function (e: any) {
-//             if (typeof ref == "function")
-//                 ref(e);
-//             if (e instanceof MasterPage) {
-//                 masterPage = e;
-//                 for (let i = 0; i < context.componentTypes.length; i++) {
-//                     let typeName = context.componentTypes[i];
-//                     let childComponents = masterPage.childComponents[typeName] = masterPage.childComponents[typeName] || [];
-//                     childComponents.push(context.components[i]);
-//                 }
-//             }
-//             else if (e != null) {
-//                 context.components.push(e);
-//                 context.componentTypes.push(typeof type == "string" ? type : type.name);
-//                 // masterPage.componentCreated.fire({ component: e, type: typeof type == "string" ? type : type.name });
-//             }
-//         };
-//         result = h(componentData);
-//         return result
-//     }
-//     catch (e) {
-//         console.error(e);
-//         return null;
-//     }
-// }
 Component.componentTypes = {};
-let defaultComponentFactory = (c) => {
-    let children = (c.children || []).map(c => typeof c == "string" ? c : defaultComponentFactory(c));
-    let type = Component.componentTypes[c.type] || c.type;
-    let e = react__WEBPACK_IMPORTED_MODULE_0__["createElement"](type, c.props || {}, ...children);
-    return e;
-};
 //# sourceMappingURL=component.js.map
 
 /***/ }),
@@ -2634,9 +1215,8 @@ class EditorPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     render() {
         let { empty } = this.props;
         empty = empty || react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
-        let { designer } = this.props;
         return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: `${_style__WEBPACK_IMPORTED_MODULE_2__["classNames"].editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_property_editor__WEBPACK_IMPORTED_MODULE_1__["PropertyEditor"], { designer: designer, ref: e => this.editor = e || this.editor, empty: empty, customRender: this.props.customRender }));
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_property_editor__WEBPACK_IMPORTED_MODULE_1__["PropertyEditor"], { ref: e => this.editor = e || this.editor, empty: empty, customRender: this.props.customRender }));
     }
 }
 //# sourceMappingURL=editor-panel.js.map
@@ -2704,64 +1284,57 @@ class Errors {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./jquery */ "./out/jquery.js");
-/* harmony import */ var _lib_jquery_event_drag_2_2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/jquery.event.drag-2.2 */ "./lib/jquery.event.drag-2.2.js");
-/* harmony import */ var _lib_jquery_event_drag_2_2__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_lib_jquery_event_drag_2_2__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _lib_jquery_event_drag_live_2_2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/jquery.event.drag.live-2.2 */ "./lib/jquery.event.drag.live-2.2.js");
-/* harmony import */ var _lib_jquery_event_drag_live_2_2__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_lib_jquery_event_drag_live_2_2__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _lib_jquery_event_drop_2_2__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../lib/jquery.event.drop-2.2 */ "./lib/jquery.event.drop-2.2.js");
-/* harmony import */ var _lib_jquery_event_drop_2_2__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_lib_jquery_event_drop_2_2__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _lib_jquery_event_drop_live_2_2__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../lib/jquery.event.drop.live-2.2 */ "./lib/jquery.event.drop.live-2.2.js");
-/* harmony import */ var _lib_jquery_event_drop_live_2_2__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_lib_jquery_event_drop_live_2_2__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _propt_display_names__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./propt-display-names */ "./out/propt-display-names.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "strings", function() { return _propt_display_names__WEBPACK_IMPORTED_MODULE_5__["proptDisplayNames"]; });
+/* harmony import */ var _propt_display_names__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./propt-display-names */ "./out/propt-display-names.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "strings", function() { return _propt_display_names__WEBPACK_IMPORTED_MODULE_0__["proptDisplayNames"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "proptDisplayNames", function() { return _propt_display_names__WEBPACK_IMPORTED_MODULE_5__["proptDisplayNames"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "proptDisplayNames", function() { return _propt_display_names__WEBPACK_IMPORTED_MODULE_0__["proptDisplayNames"]; });
 
-/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./component */ "./out/component.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return _component__WEBPACK_IMPORTED_MODULE_6__["Component"]; });
+/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component */ "./out/component.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return _component__WEBPACK_IMPORTED_MODULE_1__["Component"]; });
 
-/* harmony import */ var _component_panel__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentPanel", function() { return _component_panel__WEBPACK_IMPORTED_MODULE_7__["ComponentPanel"]; });
+/* harmony import */ var _component_panel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentPanel", function() { return _component_panel__WEBPACK_IMPORTED_MODULE_2__["ComponentPanel"]; });
 
-/* harmony import */ var _editor_panel__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EditorPanel", function() { return _editor_panel__WEBPACK_IMPORTED_MODULE_8__["EditorPanel"]; });
+/* harmony import */ var _editor_panel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EditorPanel", function() { return _editor_panel__WEBPACK_IMPORTED_MODULE_3__["EditorPanel"]; });
 
-/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_9__["PageDesigner"]; });
+/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_4__["PageDesigner"]; });
 
-/* harmony import */ var _prop_editor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PropEditor", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_10__["PropEditor"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DesignerContext", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_4__["DesignerContext"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TextInput", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_10__["TextInput"]; });
+/* harmony import */ var _prop_editor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PropEditor", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_5__["PropEditor"]; });
 
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./style */ "./out/style.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return _style__WEBPACK_IMPORTED_MODULE_11__["classNames"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TextInput", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_5__["TextInput"]; });
 
-/* harmony import */ var _component_data_handler__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component-data-handler */ "./out/component-data-handler.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentDataHandler", function() { return _component_data_handler__WEBPACK_IMPORTED_MODULE_12__["ComponentDataHandler"]; });
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./style */ "./out/style.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return _style__WEBPACK_IMPORTED_MODULE_6__["classNames"]; });
 
-/* harmony import */ var _components_index__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./components/index */ "./out/components/index.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentTypes", function() { return _components_index__WEBPACK_IMPORTED_MODULE_13__["ComponentTypes"]; });
+/* harmony import */ var _component_data_handler__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component-data-handler */ "./out/component-data-handler.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentDataHandler", function() { return _component_data_handler__WEBPACK_IMPORTED_MODULE_7__["ComponentDataHandler"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return _components_index__WEBPACK_IMPORTED_MODULE_13__["constants"]; });
+/* harmony import */ var _components_index__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/index */ "./out/components/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentTypes", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["ComponentTypes"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageName", function() { return _components_index__WEBPACK_IMPORTED_MODULE_13__["MasterPageName"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["constants"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return _components_index__WEBPACK_IMPORTED_MODULE_13__["MasterPageContext"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageName", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["MasterPageName"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return _components_index__WEBPACK_IMPORTED_MODULE_13__["MasterPage"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["MasterPageContext"]; });
 
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_14__) if(["strings","proptDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","PropEditor","TextInput","classNames","ComponentDataHandler","component","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_14__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "component", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_14__["component"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["MasterPage"]; });
 
+/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
+/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__) if(["strings","proptDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","DesignerContext","PropEditor","TextInput","classNames","ComponentDataHandler","component","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "component", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__["component"]; });
 
-
-
-
-
+// import './jquery';
+// import '../lib/jquery.event.drag-2.2';
+// import '../lib/jquery.event.drag.live-2.2';
+// import '../lib/jquery.event.drop-2.2';
+// import '../lib/jquery.event.drop.live-2.2';
 
 
 
@@ -2777,76 +1350,44 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./out/jquery.js":
-/*!***********************!*\
-  !*** ./out/jquery.js ***!
-  \***********************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "jquery");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-// import * as j from '../lib/jquery-2.1.3'
-// let jquery = window['$'] || window['jQuery'];
-// if (jquery == null) {
-//     window['$'] = window['jQuery'] = j
-// }
-
-let jquery = window['$'] || window['jQuery'];
-if (jquery == null) {
-    window["$"] = window["jQuery"] = jquery__WEBPACK_IMPORTED_MODULE_0__;
-}
-//# sourceMappingURL=jquery.js.map
-
-/***/ }),
-
 /***/ "./out/page-designer.js":
 /*!******************************!*\
   !*** ./out/page-designer.js ***!
   \******************************/
-/*! exports provided: PageDesigner */
+/*! exports provided: DesignerContext, PageDesigner */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DesignerContext", function() { return DesignerContext; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return PageDesigner; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
-/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./component */ "./out/component.js");
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style */ "./out/style.js");
-/* harmony import */ var _component_wrapper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./component-wrapper */ "./out/component-wrapper.js");
+/* harmony import */ var _component_data_handler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component-data-handler */ "./out/component-data-handler.js");
 
 
-
-
-
+let DesignerContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"]({ designer: null });
 class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
+        // static defaultProps: Partial<PageDesignerProps> = { componentFactory: defaultComponentFactory };
         this.components = {};
-        let pageData = this.props.handler.pageData;
+        let pageData = this.props.pageData;
         this.initPageData(pageData);
         this.state = { pageData };
-        this.props.handler.componentSelected.add(args => {
-            // this.componentSelected.fire(args);
-            this.setState({ pageData: this.props.handler.pageData });
+        this.handler = new _component_data_handler__WEBPACK_IMPORTED_MODULE_1__["ComponentDataHandler"](pageData);
+        this.handler.componentSelected.add(() => {
+            this.setState({ pageData: this.handler.pageData });
         });
-        this.props.handler.componentRemoved.add(args => {
-            // this.componentRemoved.fire(args);
-            this.setState({ pageData: this.props.handler.pageData });
+        this.handler.componentRemoved.add(() => {
+            this.setState({ pageData: this.handler.pageData });
         });
-        this.props.handler.componentUpdated.add(args => {
-            // this.componentUpdated.fire(args);
-            this.setState({ pageData: this.props.handler.pageData });
+        this.handler.componentUpdated.add(() => {
+            this.setState({ pageData: this.handler.pageData });
         });
-        this.props.handler.pageDataChanged.add(args => {
+        this.handler.pageDataChanged.add(args => {
             this.setState({ pageData: args });
         });
-        // this.componentAppend = Callback.create();
-        // this.props.componentDataHandler.componentAppend.add(() => this.componentAppend.fire(this));
     }
     setComponetRefProp(pageData) {
         //=========================================================
@@ -2902,7 +1443,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }
     /** 获取已选择了的组件 */
     get selectedComponents() {
-        return this.props.handler.selectedComponents;
+        return this.handler.selectedComponents;
     }
     get element() {
         return this._element;
@@ -2911,36 +1452,8 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         return this.updateComponentProps({ componentId, propName, value });
     }
     updateComponentProps(...componentProps) {
-        this.props.handler.updateComponentProps(componentProps);
+        this.handler.updateComponentProps(componentProps);
     }
-    // /**
-    //  * 对组件及其子控件进行命名
-    //  * @param component 
-    //  */
-    // private static nameComponent(component: ComponentData) {
-    //     let namedComponents: { [key: string]: ComponentData } = {}
-    //     let props = component.props = component.props || {};
-    //     if (!props.name) {
-    //         let num = 0;
-    //         let name: string;
-    //         do {
-    //             num = num + 1;
-    //             name = `${component.type}${num}`;
-    //         } while (namedComponents[name]);
-    //         namedComponents[name] = component
-    //         props.name = name;
-    //     }
-    //     if (!props.id)
-    //         props.id = guid();
-    //     if (!component.children || component.children.length == 0) {
-    //         return;
-    //     }
-    //     component.children.forEach(child => {
-    //         if (typeof child == "string")
-    //             return true;
-    //         PageDesigner.nameComponent(child);
-    //     })
-    // }
     /**
      * 添加控件
      * @param parentId 父控件编号
@@ -2948,7 +1461,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
      * @param componentIndex 新添加组件在子组件中的次序
      */
     appendComponent(parentId, componentData, componentIndex) {
-        this.props.handler.appendComponent(parentId, componentData, componentIndex);
+        this.handler.appendComponent(parentId, componentData, componentIndex);
     }
     /**
      * 设置控件位置
@@ -2983,7 +1496,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         positions.forEach(o => {
             let { componentId } = o;
             let { left, top } = o.position;
-            let componentData = this.props.handler.findComponentData(componentId);
+            let componentData = this.handler.findComponentData(componentId);
             if (!componentData)
                 throw new Error(`Control ${componentId} is not exits.`);
             let style = componentData.props.style = (componentData.props.style || {});
@@ -2993,14 +1506,14 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                 style.top = top;
             toUpdateProps.push({ componentId, propName: "style", value: style });
         });
-        this.props.handler.updateComponentProps(toUpdateProps);
+        this.handler.updateComponentProps(toUpdateProps);
     }
     /**
      * 选择指定的控件
      * @param control 指定的控件
      */
     selectComponent(componentIds) {
-        this.props.handler.selectComponents(componentIds);
+        this.handler.selectComponents(componentIds);
         //====================================================
         // 设置焦点，以便获取键盘事件
         if (this._element)
@@ -3009,7 +1522,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }
     /** 移除控件 */
     removeComponent(...componentIds) {
-        this.props.handler.removeComponents(componentIds);
+        this.handler.removeComponents(componentIds);
     }
     /**
      * 移动控件到另外一个控件容器
@@ -3018,7 +1531,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
      * @param targetComponentIndex 组件位置
      */
     moveComponent(componentId, parentId, targetComponentIndex) {
-        return this.props.handler.moveComponent(componentId, parentId, targetComponentIndex);
+        return this.handler.moveComponent(componentId, parentId, targetComponentIndex);
     }
     removeComponentFrom(controlId, collection) {
         let controlIndex = null;
@@ -3080,61 +1593,24 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         return r;
     }
     findComponentData(componentId) {
-        return this.props.handler.findComponentData(componentId);
+        return this.handler.findComponentData(componentId);
     }
     onKeyDown(e) {
         const DELETE_KEY_CODE = 46;
         if (e.keyCode == DELETE_KEY_CODE) {
             if (this.selectedComponents.length == 0)
                 return;
-            this.props.handler.removeComponents(this.selectedComponentIds);
+            this.handler.removeComponents(this.selectedComponentIds);
         }
-    }
-    createDesignTimeElement(componentData) {
-        //type: string | React.ComponentClass<any>, props: ComponentProps<any>, ...children: any[]
-        let { type, props, children } = componentData;
-        if (type == null)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentFieldCanntNull("componentData", 'type');
-        if (props == null)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('props');
-        if (componentData.id == null)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentFieldCanntNull('id', 'componentData');
-        console.assert(componentData.id != null);
-        if (componentData.id != null)
-            props.key = componentData.id;
-        //===================================================
-        // 获取对象的 ComponentAttribute ，以从对象 props 中获取的为准
-        let attr1 = _component__WEBPACK_IMPORTED_MODULE_2__["Component"].getAttribute(type);
-        console.assert(attr1 != null);
-        let attr2 = componentData.attr || {};
-        let attr = Object.assign({}, attr1, attr2);
-        // delete props.attr
-        //===================================================
-        let className = componentData.selected ? Object(_style__WEBPACK_IMPORTED_MODULE_3__["appendClassName"])(props.className || '', _style__WEBPACK_IMPORTED_MODULE_3__["classNames"].componentSelected) : props.className;
-        let wrapperProps = Object.assign({}, props);
-        delete wrapperProps.ref;
-        wrapperProps.className = className;
-        // let context: Context = this.props.handler;
-        // console.assert(context.handler != null);
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_component_wrapper__WEBPACK_IMPORTED_MODULE_4__["ComponentWrapper"], Object.assign({}, wrapperProps, { handler: this.props.handler, source: { type: type, attr, props, children: typeof children == "string" ? [] : (children || []) } }));
-    }
-    static getDerivedStateFromProps(props, state) {
-        return { pageData: props.handler.pageData };
     }
     findComponetsByTypeName(typeName) {
         this.components[typeName];
     }
     render() {
-        let pageData = this.state.pageData;
-        if (pageData == null)
-            return null;
-        let componentFactory = this.props.componentFactory;
-        if (componentFactory == null)
-            return Object(_component__WEBPACK_IMPORTED_MODULE_2__["defaultComponentFactory"])(pageData);
-        return componentFactory(pageData);
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { ref: e => this._element = this._element || e, onKeyDown: e => this.onKeyDown(e), className: this.props.className, style: this.props.style },
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"](DesignerContext.Provider, { value: { designer: this } }, this.props.children));
     }
 }
-PageDesigner.defaultProps = { componentFactory: _component__WEBPACK_IMPORTED_MODULE_2__["defaultComponentFactory"] };
 //# sourceMappingURL=page-designer.js.map
 
 /***/ }),
@@ -3261,6 +1737,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component */ "./out/component.js");
 /* harmony import */ var _propt_display_names__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./propt-display-names */ "./out/propt-display-names.js");
 /* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+
 
 
 
@@ -3269,15 +1747,8 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
         this._element = null;
-        this.state = { groupedEditors: [] };
-        this.props.designer.componentSelected.add(() => {
-            let editors = this.getEditors(this.props.designer);
-            this.setState({ groupedEditors: editors });
-        });
+        this.state = {};
     }
-    // static getDerivedStateFromProps(props: EditorProps, state: EditorState): Partial<EditorState> {
-    //     return { designer: props.designer };
-    // }
     getEditors(designer) {
         if (designer == null) {
             return [];
@@ -3338,7 +1809,7 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                     let componentProps = selectedComponents.map(o => ({
                         componentId: o.id, propName: propEditorInfo.propName, value
                     }));
-                    designer.updateComponentProps(componentProps);
+                    designer.updateComponentProps(...componentProps);
                 }
             };
             let editor = react__WEBPACK_IMPORTED_MODULE_0__["createElement"](editorType, editorProps);
@@ -3361,40 +1832,45 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         return obj;
     }
     render() {
-        let { designer } = this.props;
-        let editors = this.state.groupedEditors; //this.getEditors(designer)
-        if (editors.length == 0) {
-            let empty = this.props.empty;
-            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "text-center" }, empty);
-        }
-        if (this.props.customRender) {
-            let items = editors.map(o => Object.assign({ displayName: _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][o.prop] || o.prop }, o));
-            let r = this.props.customRender(designer.selectedComponents, items);
-            if (r != null) {
-                return r;
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_page_designer__WEBPACK_IMPORTED_MODULE_4__["DesignerContext"].Consumer, null, args => {
+            let designer = args.designer;
+            if (designer == null)
+                return null;
+            let editors = this.getEditors(designer);
+            if (editors.length == 0) {
+                let empty = this.props.empty;
+                return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "text-center" }, empty);
             }
-        }
-        let groupEditorsArray = [];
-        for (let i = 0; i < editors.length; i++) {
-            let group = editors[i].group || '';
-            let groupEditors = groupEditorsArray.filter(o => o.group == group)[0];
-            if (groupEditors == null) {
-                groupEditors = { group: editors[i].group, editors: [] };
-                groupEditorsArray.push(groupEditors);
+            if (this.props.customRender) {
+                let items = editors.map(o => Object.assign({ displayName: _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][o.prop] || o.prop }, o));
+                let r = this.props.customRender(designer.selectedComponents, items);
+                if (r != null) {
+                    return r;
+                }
             }
-            groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor });
-        }
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, groupEditorsArray.map((g) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: g.group, className: "panel panel-default" },
-            g.group ? react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-heading" }, _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][g.group] || g.group) : null,
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-body" }, g.editors.map((o, i) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: o.prop, className: "form-group clearfix" },
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", null, _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][o.prop] || o.prop),
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "control" },
-                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"](ErrorBoundary, null, o.editor))))))));
+            let groupEditorsArray = [];
+            for (let i = 0; i < editors.length; i++) {
+                let group = editors[i].group || '';
+                let groupEditors = groupEditorsArray.filter(o => o.group == group)[0];
+                if (groupEditors == null) {
+                    groupEditors = { group: editors[i].group, editors: [] };
+                    groupEditorsArray.push(groupEditors);
+                }
+                groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor });
+            }
+            return groupEditorsArray.map((g) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: g.group, className: "panel panel-default" },
+                g.group ? react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-heading" }, _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][g.group] || g.group) : null,
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-body" }, g.editors.map((o, i) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: o.prop, className: "form-group clearfix" },
+                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", null, _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][o.prop] || o.prop),
+                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "control" },
+                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"](ErrorBoundary, null, o.editor)))))));
+        });
     }
     get element() {
         return this._element;
     }
 }
+PropertyEditor.contextType = _page_designer__WEBPACK_IMPORTED_MODULE_4__["DesignerContext"];
 class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
@@ -3409,7 +1885,6 @@ class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     render() {
         let { error } = this.state || {};
         if (error) {
-            // You can render any custom fallback UI
             return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "error" },
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.message),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.stack));
@@ -3680,20 +2155,9 @@ function removeClassName(element, targetClassName) {
 
 /***/ }),
 
-/***/ "jquery":
-/*!********************!*\
-  !*** external "$" ***!
-  \********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_jquery__;
-
-/***/ }),
-
 /***/ "react":
 /*!************************!*\
-  !*** external "React" ***!
+  !*** external "react" ***!
   \************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
