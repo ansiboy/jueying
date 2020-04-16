@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.3
+ *  maishu-jueying v3.0.8
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1223,6 +1223,8 @@ exports.Component = void 0;
 
 var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
+var _propertyEditor = __webpack_require__(/*! ./property-editor */ "./out-es5/property-editor.js");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1230,6 +1232,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
+// let defaultGroup: GroupedEditor["group"] = { prop: "", displayName: "" };
 var Component =
 /*#__PURE__*/
 function () {
@@ -1276,9 +1279,11 @@ function () {
           editorType = options.editorType,
           editorDisplay = options.display,
           group = options.group,
-          propName = options.propName;
-      group = group || '';
-      propName = propName || ""; // 属性可能为导航属性,例如 style.width
+          propName = options.propName,
+          displayName = options.displayName;
+      group = group || _propertyEditor.defaultGroupName;
+      propName = propName || "";
+      displayName = displayName || propName; // 属性可能为导航属性,例如 style.width
 
       var propNames = propName.split('.');
       var className = typeof componentType == 'string' ? componentType : componentType.prototype.typename || componentType.name;
@@ -1298,6 +1303,7 @@ function () {
 
       classProps.push({
         propName: propName,
+        displayName: displayName,
         editorType: editorType,
         group: group
       });
@@ -1743,8 +1749,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var _exportNames = {
-  strings: true,
-  proptDisplayNames: true,
+  groupDisplayNames: true,
   Component: true,
   ComponentPanel: true,
   EditorPanel: true,
@@ -1756,16 +1761,10 @@ var _exportNames = {
   ComponentDataHandler: true,
   component: true
 };
-Object.defineProperty(exports, "strings", {
+Object.defineProperty(exports, "groupDisplayNames", {
   enumerable: true,
   get: function get() {
-    return _proptDisplayNames.proptDisplayNames;
-  }
-});
-Object.defineProperty(exports, "proptDisplayNames", {
-  enumerable: true,
-  get: function get() {
-    return _proptDisplayNames.proptDisplayNames;
+    return _proptDisplayNames.groupDisplayNames;
   }
 });
 Object.defineProperty(exports, "Component", {
@@ -2593,17 +2592,17 @@ function _dropdown(items, valueType) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ErrorBoundary = exports.PropertyEditor = void 0;
+exports.ErrorBoundary = exports.PropertyEditor = exports.defaultGroupName = void 0;
 
 var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
 var _component = __webpack_require__(/*! ./component */ "./out-es5/component.js");
 
-var _proptDisplayNames = __webpack_require__(/*! ./propt-display-names */ "./out-es5/propt-display-names.js");
-
 var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
 var _pageDesigner = __webpack_require__(/*! ./page-designer */ "./out-es5/page-designer.js");
+
+var _proptDisplayNames = __webpack_require__(/*! ./propt-display-names */ "./out-es5/propt-display-names.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -2632,6 +2631,9 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var defaultGroupName = "";
+exports.defaultGroupName = defaultGroupName;
 
 var PropertyEditor =
 /*#__PURE__*/
@@ -2738,6 +2740,7 @@ function (_React$Component) {
         var editor = React.createElement(editorType, editorProps);
         editors.push({
           prop: propEditorInfo.propName,
+          displayName: propEditorInfo.displayName,
           editor: editor,
           group: propEditorInfo.group
         });
@@ -2785,7 +2788,7 @@ function (_React$Component) {
         if (_this3.props.customRender) {
           var items = editors.map(function (o) {
             return Object.assign({
-              displayName: _proptDisplayNames.proptDisplayNames[o.prop] || o.prop
+              displayName: o.displayName
             }, o);
           });
 
@@ -2799,7 +2802,7 @@ function (_React$Component) {
         var groupEditorsArray = [];
 
         var _loop3 = function _loop3(i) {
-          var group = editors[i].group || '';
+          var group = editors[i].group || defaultGroupName;
           var groupEditors = groupEditorsArray.filter(function (o) {
             return o.group == group;
           })[0];
@@ -2814,6 +2817,7 @@ function (_React$Component) {
 
           groupEditors.editors.push({
             prop: editors[i].prop,
+            displayName: editors[i].displayName,
             editor: editors[i].editor
           });
         };
@@ -2828,13 +2832,13 @@ function (_React$Component) {
             className: "panel panel-default"
           }, g.group ? React.createElement("div", {
             className: "panel-heading"
-          }, _proptDisplayNames.proptDisplayNames[g.group] || g.group) : null, React.createElement("div", {
+          }, _proptDisplayNames.groupDisplayNames[g.group] || g.group) : null, React.createElement("div", {
             className: "panel-body"
           }, g.editors.map(function (o, i) {
             return React.createElement("div", {
               key: o.prop,
               className: "form-group clearfix"
-            }, React.createElement("label", null, _proptDisplayNames.proptDisplayNames[o.prop] || o.prop), React.createElement("div", {
+            }, React.createElement("label", null, o.displayName), React.createElement("div", {
               className: "control"
             }, React.createElement(ErrorBoundary, null, o.editor)));
           })));
@@ -2916,9 +2920,9 @@ exports.ErrorBoundary = ErrorBoundary;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.proptDisplayNames = void 0;
-var proptDisplayNames = {};
-exports.proptDisplayNames = proptDisplayNames;
+exports.groupDisplayNames = void 0;
+var groupDisplayNames = {};
+exports.groupDisplayNames = groupDisplayNames;
 //# sourceMappingURL=propt-display-names.js.map
 
 

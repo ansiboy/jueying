@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.3
+ *  maishu-jueying v3.0.8
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1013,8 +1013,11 @@ ComponentPanel.componentIndexName = "data-component-index";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return Component; });
 /* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _property_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
+
 
 // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
+// let defaultGroup: GroupedEditor["group"] = { prop: "", displayName: "" };
 class Component {
     static getPropEditors(componentData) {
         let componentType = componentData.type;
@@ -1039,9 +1042,10 @@ class Component {
         return editor;
     }
     static setPropEditor(options) {
-        let { componentType, editorType, display: editorDisplay, group, propName } = options;
-        group = group || '';
+        let { componentType, editorType, display: editorDisplay, group, propName, displayName } = options;
+        group = group || _property_editor__WEBPACK_IMPORTED_MODULE_1__["defaultGroupName"];
         propName = propName || "";
+        displayName = displayName || propName;
         // 属性可能为导航属性,例如 style.width
         let propNames = propName.split('.');
         let className = typeof componentType == 'string' ? componentType : componentType.prototype.typename || componentType.name;
@@ -1055,7 +1059,7 @@ class Component {
                 return;
             }
         }
-        classProps.push({ propName, editorType: editorType, group });
+        classProps.push({ propName, displayName, editorType: editorType, group });
     }
     static register(componentName, componentType, attr) {
         if (componentType == null && typeof componentName == 'function') {
@@ -1299,9 +1303,7 @@ class Errors {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _propt_display_names__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./propt-display-names */ "./out/propt-display-names.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "strings", function() { return _propt_display_names__WEBPACK_IMPORTED_MODULE_0__["proptDisplayNames"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "proptDisplayNames", function() { return _propt_display_names__WEBPACK_IMPORTED_MODULE_0__["proptDisplayNames"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "groupDisplayNames", function() { return _propt_display_names__WEBPACK_IMPORTED_MODULE_0__["groupDisplayNames"]; });
 
 /* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component */ "./out/component.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return _component__WEBPACK_IMPORTED_MODULE_1__["Component"]; });
@@ -1341,7 +1343,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
 /* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__) if(["strings","proptDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","DesignerContext","PropEditor","TextInput","classNames","ComponentDataHandler","component","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__) if(["groupDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","DesignerContext","PropEditor","TextInput","classNames","ComponentDataHandler","component","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__[key]; }) }(__WEBPACK_IMPORT_KEY__));
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "component", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__["component"]; });
 
 // import './jquery';
@@ -1742,24 +1744,26 @@ function dropdown(items, valueType) {
 /*!********************************!*\
   !*** ./out/property-editor.js ***!
   \********************************/
-/*! exports provided: PropertyEditor, ErrorBoundary */
+/*! exports provided: defaultGroupName, PropertyEditor, ErrorBoundary */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGroupName", function() { return defaultGroupName; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PropertyEditor", function() { return PropertyEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ErrorBoundary", function() { return ErrorBoundary; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component */ "./out/component.js");
-/* harmony import */ var _propt_display_names__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./propt-display-names */ "./out/propt-display-names.js");
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
-/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+/* harmony import */ var _propt_display_names__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./propt-display-names */ "./out/propt-display-names.js");
 
 
 
 
 
+let defaultGroupName = "";
 class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
@@ -1830,15 +1834,15 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                 }
             };
             let editor = react__WEBPACK_IMPORTED_MODULE_0__["createElement"](editorType, editorProps);
-            editors.push({ prop: propEditorInfo.propName, editor, group: propEditorInfo.group });
+            editors.push({ prop: propEditorInfo.propName, displayName: propEditorInfo.displayName, editor, group: propEditorInfo.group });
         }
         return editors;
     }
     propValue(propName, props) {
         if (!propName)
-            throw _errors__WEBPACK_IMPORTED_MODULE_3__["Errors"].argumentNull("propName");
+            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull("propName");
         if (!props)
-            throw _errors__WEBPACK_IMPORTED_MODULE_3__["Errors"].argumentNull("props");
+            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull("props");
         let navPropsNames = propName.split(".");
         let obj = props;
         for (let i = 0; i < navPropsNames.length; i++) {
@@ -1849,7 +1853,7 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         return obj;
     }
     render() {
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_page_designer__WEBPACK_IMPORTED_MODULE_4__["DesignerContext"].Consumer, null, args => {
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_page_designer__WEBPACK_IMPORTED_MODULE_3__["DesignerContext"].Consumer, null, args => {
             let designer = args.designer;
             if (designer == null)
                 return null;
@@ -1859,7 +1863,7 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                 return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "text-center" }, empty);
             }
             if (this.props.customRender) {
-                let items = editors.map(o => Object.assign({ displayName: _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][o.prop] || o.prop }, o));
+                let items = editors.map(o => Object.assign({ displayName: o.displayName }, o));
                 let r = this.props.customRender(designer.selectedComponents, items);
                 if (r != null) {
                     return r;
@@ -1867,18 +1871,18 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             }
             let groupEditorsArray = [];
             for (let i = 0; i < editors.length; i++) {
-                let group = editors[i].group || '';
+                let group = editors[i].group || defaultGroupName;
                 let groupEditors = groupEditorsArray.filter(o => o.group == group)[0];
                 if (groupEditors == null) {
                     groupEditors = { group: editors[i].group, editors: [] };
                     groupEditorsArray.push(groupEditors);
                 }
-                groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor });
+                groupEditors.editors.push({ prop: editors[i].prop, displayName: editors[i].displayName, editor: editors[i].editor });
             }
             return groupEditorsArray.map((g) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: g.group, className: "panel panel-default" },
-                g.group ? react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-heading" }, _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][g.group] || g.group) : null,
+                g.group ? react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-heading" }, _propt_display_names__WEBPACK_IMPORTED_MODULE_4__["groupDisplayNames"][g.group] || g.group) : null,
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-body" }, g.editors.map((o, i) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: o.prop, className: "form-group clearfix" },
-                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", null, _propt_display_names__WEBPACK_IMPORTED_MODULE_2__["proptDisplayNames"][o.prop] || o.prop),
+                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", null, o.displayName),
                     react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "control" },
                         react__WEBPACK_IMPORTED_MODULE_0__["createElement"](ErrorBoundary, null, o.editor)))))));
         });
@@ -1887,7 +1891,7 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         return this._element;
     }
 }
-PropertyEditor.contextType = _page_designer__WEBPACK_IMPORTED_MODULE_4__["DesignerContext"];
+PropertyEditor.contextType = _page_designer__WEBPACK_IMPORTED_MODULE_3__["DesignerContext"];
 class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
@@ -1917,13 +1921,13 @@ class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 /*!************************************!*\
   !*** ./out/propt-display-names.js ***!
   \************************************/
-/*! exports provided: proptDisplayNames */
+/*! exports provided: groupDisplayNames */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "proptDisplayNames", function() { return proptDisplayNames; });
-let proptDisplayNames = {};
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "groupDisplayNames", function() { return groupDisplayNames; });
+let groupDisplayNames = {};
 //# sourceMappingURL=propt-display-names.js.map
 
 /***/ }),
