@@ -9,6 +9,8 @@ export let constants = {
 export let proptDisplayNames: { [prop: string]: string } = {
 }
 
+export let groupDisplayNames: { [prop: string]: string } = {
+}
 
 export function guid() {
     function s4() {

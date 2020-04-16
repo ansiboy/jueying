@@ -3,7 +3,7 @@ import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
 import { ComponentAttribute } from "maishu-jueying-core";
-import { GroupedEditor } from "./property-editor";
+import { GroupedEditor, defaultGroupName } from "./property-editor";
 
 export interface PropEditorInfo {
     propName: string,
@@ -25,7 +25,7 @@ interface SetPropEditorOptions {
 type ComponentPropEditorDisplay = (componentData: ComponentData) => boolean;
 // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
 
-let defaultGroup: GroupedEditor["group"] = { prop: "", displayName: "" };
+// let defaultGroup: GroupedEditor["group"] = { prop: "", displayName: "" };
 
 export class Component {
 
@@ -74,7 +74,7 @@ export class Component {
 
     static setPropEditor(options: SetPropEditorOptions): void {
         let { componentType, editorType, display: editorDisplay, group, propName, displayName } = options;
-        group = group || defaultGroup;
+        group = group || defaultGroupName;
         propName = propName || "";
         displayName = displayName || propName;
         // 属性可能为导航属性,例如 style.width

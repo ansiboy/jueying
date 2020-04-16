@@ -1,10 +1,10 @@
 import * as React from "react";
 import { PropEditorInfo, Component } from "./component";
-// import { proptDisplayNames } from "./propt-display-names";
 import { PropEditorProps } from "./prop-editor";
 import { Errors } from "./errors";
 import { ComponentData } from "./models";
 import { DesignerContext, PageDesigner } from "./page-designer";
+import { groupDisplayNames } from "./common";
 
 
 export interface EditorProps extends React.Props<PropertyEditor> {
@@ -22,7 +22,13 @@ export interface PropertyEditorInfo {
     editor: React.ReactElement<any>
 }
 
-export type GroupedEditor = { group: { prop: string, displayName: string }, prop: string, displayName: string, editor: React.ReactElement<any> };
+export type GroupedEditor = {
+    /** 用于对编辑器进行分组，方便查看各个属性 */
+    group: string,
+    prop: string, displayName: string, editor: React.ReactElement<any>
+};
+
+export let defaultGroupName = "";
 
 export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
@@ -150,8 +156,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
                 let groupEditorsArray: { group: GroupedEditor["group"], editors: { prop: string, displayName: string, editor: React.ReactElement<any> }[] }[] = []
                 for (let i = 0; i < editors.length; i++) {
-                    let group = editors[i].group || { prop: "", };
-                    let groupEditors = groupEditorsArray.filter(o => o.group.prop == group.prop)[0]
+                    let group = editors[i].group || defaultGroupName;
+                    let groupEditors = groupEditorsArray.filter(o => o.group == group)[0]
                     if (groupEditors == null) {
                         groupEditors = { group: editors[i].group, editors: [] }
                         groupEditorsArray.push(groupEditors)
@@ -162,8 +168,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
 
                 return groupEditorsArray.map((g) =>
-                    <div key={g.group.prop} className="panel panel-default">
-                        {g.group ? <div className="panel-heading">{g.group.displayName}</div> : null}
+                    <div key={g.group} className="panel panel-default">
+                        {g.group ? <div className="panel-heading">{groupDisplayNames[g.group] || g.group}</div> : null}
                         <div className="panel-body">
                             {g.editors.map((o, i) =>
                                 <div key={o.prop} className="form-group clearfix">
