@@ -212,6 +212,10 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.handler.removeComponents(componentIds);
     }
 
+    removeComponents(componentIds: string[]) {
+        this.handler.removeComponents(componentIds);
+    }
+
     /** 
      * 移动控件到另外一个控件容器 
      * @param componentId 要移动的组件编号
