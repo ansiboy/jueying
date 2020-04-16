@@ -5,7 +5,6 @@
 // import '../lib/jquery.event.drop.live-2.2';
 
 
-export { proptDisplayNames as strings, proptDisplayNames } from "./propt-display-names";
 export { Component } from "./component";
 export { ComponentPanel } from "./component-panel";
 export { EditorPanel, EditorPanelProps } from "./editor-panel";

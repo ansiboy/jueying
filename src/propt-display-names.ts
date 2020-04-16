@@ -1,4 +1,4 @@
-export let proptDisplayNames: { [prop: string]: string } = {
-}
+// export let proptDisplayNames: { [prop: string]: string } = {
+// }
 
 

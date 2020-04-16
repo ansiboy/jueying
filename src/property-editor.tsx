@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PropEditorInfo, Component } from "./component";
-import { proptDisplayNames } from "./propt-display-names";
+// import { proptDisplayNames } from "./propt-display-names";
 import { PropEditorProps } from "./prop-editor";
 import { Errors } from "./errors";
 import { ComponentData } from "./models";
@@ -16,13 +16,13 @@ interface EditorState {
 }
 
 export interface PropertyEditorInfo {
-    group: string
+    group: GroupedEditor["group"]
     prop: string
     displayName: string
     editor: React.ReactElement<any>
 }
 
-type GroupedEditor = { group: string, prop: string, editor: React.ReactElement<any> };
+export type GroupedEditor = { group: { prop: string, displayName: string }, prop: string, displayName: string, editor: React.ReactElement<any> };
 
 export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
@@ -101,7 +101,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                 }
             };
             let editor = React.createElement(editorType, editorProps);
-            editors.push({ prop: propEditorInfo.propName, editor, group: propEditorInfo.group })
+            editors.push({ prop: propEditorInfo.propName, displayName: propEditorInfo.displayName, editor, group: propEditorInfo.group })
         }
 
         return editors
@@ -141,33 +141,33 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                 }
 
                 if (this.props.customRender) {
-                    let items = editors.map(o => Object.assign({ displayName: proptDisplayNames[o.prop] || o.prop }, o));
+                    let items = editors.map(o => Object.assign({ displayName: o.displayName }, o));
                     let r = this.props.customRender(designer.selectedComponents, items);
                     if (r != null) {
                         return r;
                     }
                 }
 
-                let groupEditorsArray: { group: string, editors: { prop: string, editor: React.ReactElement<any> }[] }[] = []
+                let groupEditorsArray: { group: GroupedEditor["group"], editors: { prop: string, displayName: string, editor: React.ReactElement<any> }[] }[] = []
                 for (let i = 0; i < editors.length; i++) {
-                    let group = editors[i].group || ''
-                    let groupEditors = groupEditorsArray.filter(o => o.group == group)[0]
+                    let group = editors[i].group || { prop: "", };
+                    let groupEditors = groupEditorsArray.filter(o => o.group.prop == group.prop)[0]
                     if (groupEditors == null) {
                         groupEditors = { group: editors[i].group, editors: [] }
                         groupEditorsArray.push(groupEditors)
                     }
 
-                    groupEditors.editors.push({ prop: editors[i].prop, editor: editors[i].editor })
+                    groupEditors.editors.push({ prop: editors[i].prop, displayName: editors[i].displayName, editor: editors[i].editor })
                 }
 
 
                 return groupEditorsArray.map((g) =>
-                    <div key={g.group} className="panel panel-default">
-                        {g.group ? <div className="panel-heading">{proptDisplayNames[g.group] || g.group}</div> : null}
+                    <div key={g.group.prop} className="panel panel-default">
+                        {g.group ? <div className="panel-heading">{g.group.displayName}</div> : null}
                         <div className="panel-body">
                             {g.editors.map((o, i) =>
                                 <div key={o.prop} className="form-group clearfix">
-                                    <label>{proptDisplayNames[o.prop] || o.prop}</label>
+                                    <label>{o.displayName}</label>
                                     <div className="control">
                                         <ErrorBoundary>
                                             {o.editor}

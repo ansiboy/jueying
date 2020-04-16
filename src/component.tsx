@@ -3,17 +3,20 @@ import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
 import { Errors } from "./errors";
 import { ComponentAttribute } from "maishu-jueying-core";
+import { GroupedEditor } from "./property-editor";
 
 export interface PropEditorInfo {
     propName: string,
-    editorType: PropEditorConstructor, group: string,
+    displayName: string,
+    editorType: PropEditorConstructor, 
+    group: GroupedEditor["group"],
 }
 
 interface SetPropEditorOptions {
     componentType: React.ComponentClass | string,
     propName: string,
     editorType: PropEditorConstructor,
-    group?: string,
+    group?: GroupedEditor["group"],
     display?: ComponentPropEditorDisplay,
     displayName?: string,
 }
@@ -21,6 +24,8 @@ interface SetPropEditorOptions {
 /** 组件是否显示回调函数 */
 type ComponentPropEditorDisplay = (componentData: ComponentData) => boolean;
 // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
+
+let defaultGroup: GroupedEditor["group"] = { prop: "", displayName: "" };
 
 export class Component {
 
@@ -68,9 +73,10 @@ export class Component {
     }
 
     static setPropEditor(options: SetPropEditorOptions): void {
-        let { componentType, editorType, display: editorDisplay, group, propName } = options;
-        group = group || '';
+        let { componentType, editorType, display: editorDisplay, group, propName, displayName } = options;
+        group = group || defaultGroup;
         propName = propName || "";
+        displayName = displayName || propName;
         // 属性可能为导航属性,例如 style.width
         let propNames = (propName as string).split('.');
 
@@ -85,7 +91,7 @@ export class Component {
                 return
             }
         }
-        classProps.push({ propName, editorType: editorType as PropEditorConstructor, group })
+        classProps.push({ propName, displayName, editorType: editorType as PropEditorConstructor, group })
     }
 
     static componentTypes = {} as { [key: string]: React.ComponentClass<any> | string }
@@ -105,7 +111,6 @@ export class Component {
     }
 
 }
-
 
 
 
