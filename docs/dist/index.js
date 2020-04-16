@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.2
+ *  maishu-jueying v3.0.3
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -461,7 +461,7 @@ function guid() {
 /*!**************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/index.js ***!
   \**************************************************/
-/*! exports provided: guid, pathContact, Errors, errors, Callback, DataSource, DataSourceSelectArguments */
+/*! exports provided: guid, pathContact, Errors, errors, Callback, DataSource, DataSourceSelectArguments, parseUrl */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -484,6 +484,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataSource", function() { return _data__WEBPACK_IMPORTED_MODULE_4__["DataSource"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataSourceSelectArguments", function() { return _data__WEBPACK_IMPORTED_MODULE_4__["DataSourceSelectArguments"]; });
+
+/* harmony import */ var _url__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./url */ "./node_modules/maishu-toolkit/out/url.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "parseUrl", function() { return _url__WEBPACK_IMPORTED_MODULE_5__["parseUrl"]; });
+
 
 
 
@@ -516,6 +520,37 @@ function pathContact(...paths) {
     // 将一个或多个的 / 变为一个 /，例如：/shop/test// 转换为 /shop/test/
     str = str.replace(/\/+/g, '/');
     return str;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/url.js":
+/*!************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/url.js ***!
+  \************************************************/
+/*! exports provided: parseUrl */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseUrl", function() { return parseUrl; });
+function parseUrl(url) {
+    let i = url.indexOf("?");
+    if (i < 0)
+        return {};
+    let query = url.substr(i + 1);
+    return pareeUrlQuery(query);
+}
+function pareeUrlQuery(query) {
+    let match, pl = /\+/g, // Regex for replacing addition symbol with a space
+    search = /([^&=]+)=?([^&]*)/g, decode = function (s) {
+        return decodeURIComponent(s.replace(pl, " "));
+    };
+    let urlParams = {};
+    while (match = search.exec(query))
+        urlParams[decode(match[1])] = decode(match[2]);
+    return urlParams;
 }
 
 
@@ -1184,34 +1219,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class EditorPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-    // private designerComponentChanged: (args: any) => void
     constructor(props) {
         super(props);
         this.state = { componentDatas: [] };
-        // this.designerComponentChanged = () => {
-        //     console.assert(this.designer != null)
-        //     this.setState({ designer: this.designer })
-        // }
     }
     get designer() {
         return this._designer;
     }
-    // set designer(value) {
-    //     if (this._designer) {
-    //         this._designer.componentRemoved.remove(this.designerComponentChanged)
-    //         this._designer.componentAppend.remove(this.designerComponentChanged)
-    //         this._designer.componentUpdated.remove(this.designerComponentChanged)
-    //         this._designer.componentSelected.remove(this.designerComponentChanged)
-    //     }
-    //     if (value) {
-    //         value.componentRemoved.add(this.designerComponentChanged)
-    //         value.componentAppend.add(this.designerComponentChanged)
-    //         value.componentUpdated.add(this.designerComponentChanged)
-    //         value.componentSelected.add(this.designerComponentChanged)
-    //     }
-    //     this._designer = value;
-    //     this.setState({ designer: value });
-    // }
     render() {
         let { empty } = this.props;
         empty = empty || react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
@@ -1522,6 +1536,9 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }
     /** 移除控件 */
     removeComponent(...componentIds) {
+        this.handler.removeComponents(componentIds);
+    }
+    removeComponents(componentIds) {
         this.handler.removeComponents(componentIds);
     }
     /**
