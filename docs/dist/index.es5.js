@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.8
+ *  maishu-jueying v3.0.9
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -552,6 +552,93 @@ function pareeUrlQuery(query) {
         urlParams[decode(match[1])] = decode(match[2]);
     return urlParams;
 }
+
+
+/***/ }),
+
+/***/ "./out-es5/common.js":
+/*!***************************!*\
+  !*** ./out-es5/common.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.guid = guid;
+exports.Callback = exports.groupDisplayNames = exports.proptDisplayNames = exports.constants = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var constants = {
+  componentsDir: 'components',
+  connectorElementClassName: 'component-container',
+  componentTypeName: 'data-component-name',
+  componentData: 'component-data',
+  componentPosition: "component-position"
+};
+exports.constants = constants;
+var proptDisplayNames = {};
+exports.proptDisplayNames = proptDisplayNames;
+var groupDisplayNames = {};
+exports.groupDisplayNames = groupDisplayNames;
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+var Callback =
+/*#__PURE__*/
+function () {
+  function Callback() {
+    _classCallCheck(this, Callback);
+
+    this.funcs = new Array();
+  }
+
+  _createClass(Callback, [{
+    key: "add",
+    value: function add(func) {
+      this.funcs.push(func);
+    }
+  }, {
+    key: "remove",
+    value: function remove(func) {
+      this.funcs = this.funcs.filter(function (o) {
+        return o != func;
+      });
+    }
+  }, {
+    key: "fire",
+    value: function fire(args) {
+      this.funcs.forEach(function (o) {
+        return o(args);
+      });
+    }
+  }], [{
+    key: "create",
+    value: function create() {
+      return new Callback();
+    }
+  }]);
+
+  return Callback;
+}();
+
+exports.Callback = Callback;
+//# sourceMappingURL=common.js.map
 
 
 /***/ }),
@@ -1764,7 +1851,7 @@ var _exportNames = {
 Object.defineProperty(exports, "groupDisplayNames", {
   enumerable: true,
   get: function get() {
-    return _proptDisplayNames.groupDisplayNames;
+    return _common.groupDisplayNames;
   }
 });
 Object.defineProperty(exports, "Component", {
@@ -1828,7 +1915,7 @@ Object.defineProperty(exports, "component", {
   }
 });
 
-var _proptDisplayNames = __webpack_require__(/*! ./propt-display-names */ "./out-es5/propt-display-names.js");
+var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
 
 var _component = __webpack_require__(/*! ./component */ "./out-es5/component.js");
 
@@ -1891,7 +1978,9 @@ exports.PageDesigner = exports.DesignerContext = void 0;
 
 var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
-var _componentDataHandler = __webpack_require__(/*! ./component-data-handler */ "./out-es5/component-data-handler.js");
+var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
+
+var _maishuToolkit = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -1931,6 +2020,7 @@ var PageDesigner =
 function (_React$Component) {
   _inherits(PageDesigner, _React$Component);
 
+  // private handler: ComponentDataHandler;
   function PageDesigner(props) {
     var _this;
 
@@ -1945,32 +2035,19 @@ function (_React$Component) {
 
     _this.state = {
       pageData: pageData
-    };
-    _this.handler = new _componentDataHandler.ComponentDataHandler(pageData);
-
-    _this.handler.componentSelected.add(function () {
-      _this.setState({
-        pageData: _this.handler.pageData
-      });
-    });
-
-    _this.handler.componentRemoved.add(function () {
-      _this.setState({
-        pageData: _this.handler.pageData
-      });
-    });
-
-    _this.handler.componentUpdated.add(function () {
-      _this.setState({
-        pageData: _this.handler.pageData
-      });
-    });
-
-    _this.handler.pageDataChanged.add(function (args) {
-      _this.setState({
-        pageData: args
-      });
-    });
+    }; // this.handler = new ComponentDataHandler(pageData);
+    // this.handler.componentSelected.add(() => {
+    //     this.setState({ pageData: this.handler.pageData });
+    // })
+    // this.handler.componentRemoved.add(() => {
+    //     this.setState({ pageData: this.handler.pageData });
+    // })
+    // this.handler.componentUpdated.add(() => {
+    //     this.setState({ pageData: this.handler.pageData });
+    // })
+    // this.handler.pageDataChanged.add(args => {
+    //     this.setState({ pageData: args });
+    // })
 
     return _this;
   }
@@ -2026,7 +2103,68 @@ function (_React$Component) {
 
       pageData.children = pageData.children || []; // PageDesigner.nameComponent(pageData);
 
+      this.fillComponent(pageData);
       this.setComponetRefProp(pageData);
+    }
+    /**
+    * 对组件及其子控件进行命名
+    * @param component
+    */
+
+  }, {
+    key: "fillComponent",
+    value: function fillComponent(component) {
+      var _this3 = this;
+
+      var namedComponents = {}; // let props: any = component.props = component.props || {};
+      //==================================================
+      // 兼容旧版本代码
+      // if (props.id) {
+      //     component.id = props.id;
+      //     delete props.id;
+      // }
+      // if (props.parentId) {
+      //     component.parentId = props.parentId;
+      //     delete component.parentId;
+      // }
+      // if (props.selected) {
+      //     component.selected = props.selected;
+      // }
+      // if (props.name) {
+      //     component.name = props.name;
+      //     delete props.name;
+      // }
+      // if (props.attr) {
+      //     component.attr = props.attr;
+      //     delete props.attr;
+      // }
+      //==================================================
+
+      if (!component.name) {
+        var num = 0;
+        var name;
+
+        do {
+          num = num + 1;
+          name = "".concat(component.type).concat(num);
+        } while (namedComponents[name]);
+
+        namedComponents[name] = component;
+        component.name = name;
+      }
+
+      if (!component.id) component.id = (0, _maishuToolkit.guid)();
+      component.children = component.children || [];
+
+      if (!component.children || component.children.length == 0) {
+        return;
+      }
+
+      component.children.forEach(function (child) {
+        if (typeof child == "string") return true;
+
+        _this3.fillComponent(child);
+      });
     }
   }, {
     key: "allComponents",
@@ -2044,20 +2182,42 @@ function (_React$Component) {
   }, {
     key: "updateComponentProp",
     value: function updateComponentProp(componentId, propName, value) {
-      return this.updateComponentProps({
+      return this.updateComponentProps([{
         componentId: componentId,
         propName: propName,
         value: value
-      });
+      }]);
     }
   }, {
     key: "updateComponentProps",
-    value: function updateComponentProps() {
-      for (var _len = arguments.length, componentProps = new Array(_len), _key = 0; _key < _len; _key++) {
-        componentProps[_key] = arguments[_key];
-      }
+    value: function updateComponentProps(componentProps) {
+      var componentDatas = [];
 
-      this.handler.updateComponentProps(componentProps);
+      for (var i = 0; i < componentProps.length; i++) {
+        var _componentProps$i = componentProps[i],
+            componentId = _componentProps$i.componentId,
+            propName = _componentProps$i.propName,
+            value = _componentProps$i.value;
+        var componentData = this.findComponentData(componentId);
+        if (componentData == null) continue;
+        var navPropsNames = propName.split(".");
+        console.assert(componentData != null);
+        console.assert(navPropsNames != null, 'props is null');
+        componentData.props = componentData.props || {};
+        var obj = componentData.props;
+
+        for (var _i = 0; _i < navPropsNames.length - 1; _i++) {
+          obj = obj[navPropsNames[_i]] = obj[navPropsNames[_i]] || {};
+        }
+
+        obj[navPropsNames[navPropsNames.length - 1]] = value;
+        componentDatas.push(componentData);
+      } // this.componentUpdated.fire(componentDatas);
+
+
+      this.setState({
+        pageData: this.pageData
+      });
     }
     /**
      * 添加控件
@@ -2069,7 +2229,21 @@ function (_React$Component) {
   }, {
     key: "appendComponent",
     value: function appendComponent(parentId, componentData, componentIndex) {
-      this.handler.appendComponent(parentId, componentData, componentIndex);
+      if (!parentId) throw _errors.Errors.argumentNull('parentId');
+      if (!componentData) throw _errors.Errors.argumentNull('childComponent');
+      this.initPageData(componentData);
+      var parentControl = this.findComponentData(parentId);
+      if (parentControl == null) throw new Error('Parent is not exists');
+      console.assert(parentControl != null);
+      parentControl.children = parentControl.children || [];
+
+      if (componentIndex != null) {
+        parentControl.children.splice(componentIndex, 0, componentData);
+      } else {
+        parentControl.children.push(componentData);
+      }
+
+      this.selectComponents(componentData.id);
     }
     /**
      * 设置控件位置
@@ -2109,7 +2283,7 @@ function (_React$Component) {
   }, {
     key: "setComponentsPosition",
     value: function setComponentsPosition(positions) {
-      var _this3 = this;
+      var _this4 = this;
 
       var toUpdateProps = [];
       positions.forEach(function (o) {
@@ -2118,7 +2292,7 @@ function (_React$Component) {
             left = _o$position.left,
             top = _o$position.top;
 
-        var componentData = _this3.handler.findComponentData(componentId);
+        var componentData = _this4.findComponentData(componentId);
 
         if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
         var style = componentData.props.style = componentData.props.style || {};
@@ -2130,7 +2304,7 @@ function (_React$Component) {
           value: style
         });
       });
-      this.handler.updateComponentProps(toUpdateProps);
+      this.updateComponentProps(toUpdateProps);
     }
     /**
      * 选择指定的控件
@@ -2140,43 +2314,87 @@ function (_React$Component) {
   }, {
     key: "selectComponent",
     value: function selectComponent(componentIds) {
-      this.handler.selectComponents(componentIds); //====================================================
+      this.selectComponents(componentIds); //====================================================
       // 设置焦点，以便获取键盘事件
 
       if (this._element) this._element.focus(); //====================================================
+    }
+    /**
+     * 选择指定的控件，一个或多个
+     * @param control 指定的控件
+     */
+
+  }, {
+    key: "selectComponents",
+    value: function selectComponents(componentIds) {
+      if (typeof componentIds == 'string') componentIds = [componentIds];
+      var stack = [];
+      stack.push(this.pageData);
+
+      while (stack.length > 0) {
+        var item = stack.pop();
+        var isSelectedControl = componentIds.indexOf(item.id) >= 0;
+        item.selected = isSelectedControl;
+        (item.children || []).forEach(function (child) {
+          if (typeof child == "string") return true;
+          stack.push(child);
+        });
+      }
+
+      this.setState({
+        pageData: this.pageData
+      });
     }
     /** 移除控件 */
 
   }, {
     key: "removeComponent",
     value: function removeComponent() {
-      for (var _len2 = arguments.length, componentIds = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        componentIds[_key2] = arguments[_key2];
+      for (var _len = arguments.length, componentIds = new Array(_len), _key = 0; _key < _len; _key++) {
+        componentIds[_key] = arguments[_key];
       }
 
-      this.handler.removeComponents(componentIds);
+      this.removeComponents(componentIds);
     }
   }, {
     key: "removeComponents",
     value: function removeComponents(componentIds) {
-      this.handler.removeComponents(componentIds);
+      var _this5 = this;
+
+      var pageData = this.pageData;
+      if (!pageData || !pageData.children || pageData.children.length == 0) return;
+      var children = pageData.children;
+      componentIds.forEach(function (controlId) {
+        _this5.removeComponentFrom(controlId, children);
+      });
+      this.setState({
+        pageData: pageData
+      });
     }
     /**
      * 移动控件到另外一个控件容器
      * @param componentId 要移动的组件编号
      * @param parentId 目标组件编号
-     * @param targetComponentIndex 组件位置
+     * @param childComponentIndex 组件位置
      */
 
   }, {
     key: "moveComponent",
-    value: function moveComponent(componentId, parentId, targetComponentIndex) {
-      return this.handler.moveComponent(componentId, parentId, targetComponentIndex);
+    value: function moveComponent(componentId, parentId, childComponentIndex) {
+      var component = this.findComponentData(componentId);
+      if (component == null) throw new Error("Cannt find component by id ".concat(componentId));
+      console.assert(component != null, "Cannt find component by id ".concat(componentId));
+      var pageData = this.pageData;
+      console.assert(pageData.children != null);
+      var children = pageData.children; //translateComponentDataChildren(pageData.children);
+
+      this.removeComponentFrom(componentId, children);
+      this.appendComponent(parentId, component, childComponentIndex);
     }
   }, {
     key: "removeComponentFrom",
     value: function removeComponentFrom(controlId, collection) {
-      var _this4 = this;
+      var _this6 = this;
 
       var controlIndex = null;
       collection = collection || [];
@@ -2192,14 +2410,14 @@ function (_React$Component) {
       }
 
       if (controlIndex == null) {
-        var _loop2 = function _loop2(_i) {
-          var o = collection[_i];
+        var _loop2 = function _loop2(_i2) {
+          var o = collection[_i2];
           if (typeof o == "string") return "continue";
           var children = o.children || [];
           children.forEach(function (child) {
             if (typeof child == "string") return true;
 
-            var isRemoved = _this4.removeComponentFrom(controlId, children);
+            var isRemoved = _this6.removeComponentFrom(controlId, children);
 
             if (isRemoved) {
               return true;
@@ -2207,8 +2425,8 @@ function (_React$Component) {
           });
         };
 
-        for (var _i = 0; _i < collection.length; _i++) {
-          var _ret = _loop2(_i);
+        for (var _i2 = 0; _i2 < collection.length; _i2++) {
+          var _ret = _loop2(_i2);
 
           if (_ret === "continue") continue;
         }
@@ -2228,8 +2446,18 @@ function (_React$Component) {
     }
   }, {
     key: "findComponentData",
+
+    /**
+     * 通过组件编号获取组件的数据
+     * @param componentId 组件编号
+     */
     value: function findComponentData(componentId) {
-      return this.handler.findComponentData(componentId);
+      var pageData = this.state.pageData;
+      if (!pageData) throw _errors.Errors.pageDataIsNull();
+      var componentDatas = PageDesigner.travelComponentData(pageData, function (item) {
+        return item.id == componentId;
+      });
+      return componentDatas[0];
     }
   }, {
     key: "onKeyDown",
@@ -2238,9 +2466,14 @@ function (_React$Component) {
 
       if (e.keyCode == DELETE_KEY_CODE) {
         if (this.selectedComponents.length == 0) return;
-        this.handler.removeComponents(this.selectedComponentIds);
+        this.removeComponents(this.selectedComponentIds);
       }
     }
+    /**
+     * 通过组件名称获取组件实例
+     * @param typeName 组件名称
+     */
+
   }, {
     key: "findComponetsByTypeName",
     value: function findComponetsByTypeName(typeName) {
@@ -2249,14 +2482,14 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this5 = this;
+      var _this7 = this;
 
       return React.createElement("div", {
         ref: function ref(e) {
-          return _this5._element = _this5._element || e;
+          return _this7._element = _this7._element || e;
         },
         onKeyDown: function onKeyDown(e) {
-          return _this5.onKeyDown(e);
+          return _this7.onKeyDown(e);
         },
         className: this.props.className,
         style: this.props.style
@@ -2285,7 +2518,20 @@ function (_React$Component) {
   }, {
     key: "selectedComponents",
     get: function get() {
-      return this.handler.selectedComponents;
+      var arr = new Array();
+      var stack = new Array();
+      stack.push(this.pageData);
+
+      while (stack.length > 0) {
+        var item = stack.pop();
+        if (item.props != null && item.selected == true) arr.push(item);
+        (item.children || []).forEach(function (child) {
+          if (typeof child == "string") return true;
+          stack.push(child);
+        });
+      }
+
+      return arr;
     }
   }, {
     key: "element",
@@ -2602,19 +2848,11 @@ var _errors = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
 
 var _pageDesigner = __webpack_require__(/*! ./page-designer */ "./out-es5/page-designer.js");
 
-var _proptDisplayNames = __webpack_require__(/*! ./propt-display-names */ "./out-es5/propt-display-names.js");
+var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2734,7 +2972,7 @@ function (_React$Component) {
                 value: value
               };
             });
-            designer.updateComponentProps.apply(designer, _toConsumableArray(componentProps));
+            designer.updateComponentProps(componentProps);
           }
         };
         var editor = React.createElement(editorType, editorProps);
@@ -2832,7 +3070,7 @@ function (_React$Component) {
             className: "panel panel-default"
           }, g.group ? React.createElement("div", {
             className: "panel-heading"
-          }, _proptDisplayNames.groupDisplayNames[g.group] || g.group) : null, React.createElement("div", {
+          }, _common.groupDisplayNames[g.group] || g.group) : null, React.createElement("div", {
             className: "panel-body"
           }, g.editors.map(function (o, i) {
             return React.createElement("div", {
@@ -2903,27 +3141,6 @@ function (_React$Component2) {
 
 exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=property-editor.js.map
-
-
-/***/ }),
-
-/***/ "./out-es5/propt-display-names.js":
-/*!****************************************!*\
-  !*** ./out-es5/propt-display-names.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.groupDisplayNames = void 0;
-var groupDisplayNames = {};
-exports.groupDisplayNames = groupDisplayNames;
-//# sourceMappingURL=propt-display-names.js.map
 
 
 /***/ }),
