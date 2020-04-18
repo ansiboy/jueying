@@ -2,6 +2,8 @@ import * as React from "react";
 
 import { ComponentData } from "./models";
 import { ComponentDataHandler } from "./component-data-handler";
+import { Errors } from "./errors";
+import { guid } from "maishu-toolkit";
 
 export interface PageDesignerProps extends React.Props<PageDesigner> {
     pageData: ComponentData,
@@ -20,7 +22,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     // static defaultProps: Partial<PageDesignerProps> = { componentFactory: defaultComponentFactory };
     private components: { [typeName: string]: React.Component[] } = {};
-    private handler: ComponentDataHandler;
+    // private handler: ComponentDataHandler;
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -30,20 +32,20 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         this.state = { pageData };
 
-        this.handler = new ComponentDataHandler(pageData);
-        this.handler.componentSelected.add(() => {
-            this.setState({ pageData: this.handler.pageData });
-        })
-        this.handler.componentRemoved.add(() => {
-            this.setState({ pageData: this.handler.pageData });
-        })
-        this.handler.componentUpdated.add(() => {
-            this.setState({ pageData: this.handler.pageData });
-        })
+        // this.handler = new ComponentDataHandler(pageData);
+        // this.handler.componentSelected.add(() => {
+        //     this.setState({ pageData: this.handler.pageData });
+        // })
+        // this.handler.componentRemoved.add(() => {
+        //     this.setState({ pageData: this.handler.pageData });
+        // })
+        // this.handler.componentUpdated.add(() => {
+        //     this.setState({ pageData: this.handler.pageData });
+        // })
 
-        this.handler.pageDataChanged.add(args => {
-            this.setState({ pageData: args });
-        })
+        // this.handler.pageDataChanged.add(args => {
+        //     this.setState({ pageData: args });
+        // })
     }
 
     private setComponetRefProp(pageData: ComponentData) {
@@ -88,8 +90,74 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         pageData.children = pageData.children || [];
         // PageDesigner.nameComponent(pageData);
+        this.fillComponent(pageData);
         this.setComponetRefProp(pageData);
+    }
 
+    /**
+    * 对组件及其子控件进行命名
+    * @param component 
+    */
+    private fillComponent(component: ComponentData) {
+        let namedComponents: { [key: string]: ComponentData } = {}
+        // let props: any = component.props = component.props || {};
+
+        //==================================================
+        // 兼容旧版本代码
+        // if (props.id) {
+        //     component.id = props.id;
+        //     delete props.id;
+        // }
+
+        // if (props.parentId) {
+        //     component.parentId = props.parentId;
+        //     delete component.parentId;
+        // }
+
+        // if (props.selected) {
+        //     component.selected = props.selected;
+        // }
+
+        // if (props.name) {
+        //     component.name = props.name;
+        //     delete props.name;
+        // }
+
+        // if (props.attr) {
+        //     component.attr = props.attr;
+        //     delete props.attr;
+        // }
+        //==================================================
+
+        if (!component.name) {
+            let num = 0;
+            let name: string;
+            do {
+                num = num + 1;
+                name = `${component.type}${num}`;
+            } while (namedComponents[name]);
+
+            namedComponents[name] = component
+            component.name = name;
+        }
+
+        if (!component.id)
+            component.id = guid();
+
+        component.children = component.children || [];
+
+
+
+        if (!component.children || component.children.length == 0) {
+            return;
+        }
+
+        component.children.forEach(child => {
+            if (typeof child == "string")
+                return true;
+
+            this.fillComponent(child);
+        })
     }
 
     allComponents(): React.Component[] {
@@ -112,7 +180,23 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     /** 获取已选择了的组件 */
     get selectedComponents(): ComponentData[] {
-        return this.handler.selectedComponents;
+        let arr = new Array<ComponentData>()
+        let stack = new Array<ComponentData>()
+        stack.push(this.pageData)
+        while (stack.length > 0) {
+            let item = stack.pop() as ComponentData;
+            if (item.props != null && item.selected == true)
+                arr.push(item);
+
+            (item.children || []).forEach(child => {
+                if (typeof child == "string")
+                    return true;
+
+                stack.push(child);
+            })
+        }
+
+        return arr;
     }
 
     get element(): HTMLElement {
@@ -120,10 +204,34 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     updateComponentProp(componentId: string, propName: string, value: any): any {
-        return this.updateComponentProps({ componentId, propName, value });
+        return this.updateComponentProps([{ componentId, propName, value }]);
     }
-    updateComponentProps(...componentProps: { componentId: string, propName: string, value: any }[]): any {
-        this.handler.updateComponentProps(componentProps);
+    updateComponentProps(componentProps: { componentId: string, propName: string, value: any }[]): any {
+        let componentDatas: ComponentData[] = [];
+        for (let i = 0; i < componentProps.length; i++) {
+            let { componentId, propName, value } = componentProps[i];
+
+            let componentData = this.findComponentData(componentId);
+            if (componentData == null)
+                continue;
+
+            let navPropsNames: string[] = propName.split(".");
+            console.assert(componentData != null);
+            console.assert(navPropsNames != null, 'props is null');
+
+            componentData.props = componentData.props || {};
+
+            let obj = componentData.props
+            for (let i = 0; i < navPropsNames.length - 1; i++) {
+                obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
+            }
+
+            obj[navPropsNames[navPropsNames.length - 1]] = value;
+            componentDatas.push(componentData);
+        }
+
+        // this.componentUpdated.fire(componentDatas);
+        this.setState({ pageData: this.pageData })
     }
 
     /** 
@@ -133,7 +241,26 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * @param componentIndex 新添加组件在子组件中的次序 
      */
     appendComponent(parentId: string, componentData: ComponentData, componentIndex?: number) {
-        this.handler.appendComponent(parentId, componentData, componentIndex);
+        if (!parentId) throw Errors.argumentNull('parentId');
+        if (!componentData) throw Errors.argumentNull('childComponent');
+
+        this.initPageData(componentData)
+        let parentControl = this.findComponentData(parentId);
+        if (parentControl == null)
+            throw new Error('Parent is not exists')
+
+        console.assert(parentControl != null);
+        parentControl.children = parentControl.children || [];
+        if (componentIndex != null) {
+            parentControl.children.splice(componentIndex, 0, componentData);
+        }
+        else {
+            parentControl.children.push(componentData);
+        }
+
+
+
+        this.selectComponents(componentData.id);
     }
 
     /** 
@@ -176,7 +303,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         positions.forEach(o => {
             let { componentId } = o
             let { left, top } = o.position
-            let componentData = this.handler.findComponentData(componentId);
+            let componentData = this.findComponentData(componentId);
             if (!componentData)
                 throw new Error(`Control ${componentId} is not exits.`);
 
@@ -190,7 +317,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             toUpdateProps.push({ componentId, propName: "style", value: style })
         })
 
-        this.handler.updateComponentProps(toUpdateProps);
+        this.updateComponentProps(toUpdateProps);
     }
 
     /**
@@ -199,7 +326,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      */
     selectComponent(componentIds: string[] | string): void {
 
-        this.handler.selectComponents(componentIds);
+        this.selectComponents(componentIds);
         //====================================================
         // 设置焦点，以便获取键盘事件
         if (this._element)
@@ -207,23 +334,71 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         //====================================================
     }
 
+    /**
+     * 选择指定的控件，一个或多个
+     * @param control 指定的控件
+     */
+    selectComponents(componentIds: string[] | string): void {
+
+        if (typeof componentIds == 'string')
+            componentIds = [componentIds]
+
+        var stack: ComponentData[] = []
+        stack.push(this.pageData)
+        while (stack.length > 0) {
+            let item = stack.pop() as ComponentData;
+            let isSelectedControl = componentIds.indexOf(item.id) >= 0;
+            item.selected = isSelectedControl;
+
+            (item.children || []).forEach(child => {
+                if (typeof child == "string")
+                    return true;
+
+                stack.push(child);
+            })
+        }
+
+        this.setState({ pageData: this.pageData });
+
+    }
+
     /** 移除控件 */
     removeComponent(...componentIds: string[]) {
-        this.handler.removeComponents(componentIds);
+        this.removeComponents(componentIds);
     }
 
     removeComponents(componentIds: string[]) {
-        this.handler.removeComponents(componentIds);
+        let pageData = this.pageData;
+        if (!pageData || !pageData.children || pageData.children.length == 0)
+            return;
+
+        let children = pageData.children;
+        componentIds.forEach(controlId => {
+            this.removeComponentFrom(controlId, children);
+        })
+
+
+        this.setState({ pageData })
     }
 
     /** 
      * 移动控件到另外一个控件容器 
      * @param componentId 要移动的组件编号
      * @param parentId 目标组件编号
-     * @param targetComponentIndex 组件位置
+     * @param childComponentIndex 组件位置
      */
-    moveComponent(componentId: string, parentId: string, targetComponentIndex?: number) {
-        return this.handler.moveComponent(componentId, parentId, targetComponentIndex);
+    moveComponent(componentId: string, parentId: string, childComponentIndex?: number) {
+        let component = this.findComponentData(componentId);
+        if (component == null)
+            throw new Error(`Cannt find component by id ${componentId}`)
+
+        console.assert(component != null, `Cannt find component by id ${componentId}`);
+
+        let pageData = this.pageData;
+        console.assert(pageData.children != null);
+        let children = pageData.children; //translateComponentDataChildren(pageData.children);
+        this.removeComponentFrom(componentId, children);
+        this.appendComponent(parentId, component, childComponentIndex);
     }
 
     private removeComponentFrom(controlId: string, collection: ComponentData["children"]): boolean {
@@ -296,8 +471,17 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return r;
     }
 
+    /**
+     * 通过组件编号获取组件的数据
+     * @param componentId 组件编号
+     */
     findComponentData(componentId: string): ComponentData | null {
-        return this.handler.findComponentData(componentId);
+        let pageData = this.state.pageData;
+        if (!pageData)
+            throw Errors.pageDataIsNull();
+
+        let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.id == componentId)
+        return componentDatas[0];
     }
 
     private onKeyDown(e: React.KeyboardEvent<HTMLElement>) {
@@ -306,11 +490,14 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             if (this.selectedComponents.length == 0)
                 return
 
-            this.handler.removeComponents(this.selectedComponentIds)
+            this.removeComponents(this.selectedComponentIds)
         }
     }
 
-
+    /** 
+     * 通过组件名称获取组件实例
+     * @param typeName 组件名称
+     */
     findComponetsByTypeName(typeName: string) {
         this.components[typeName];
     }
