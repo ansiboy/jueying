@@ -503,7 +503,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     render() {
-        return <div ref={e => this._element = this._element || e} onKeyDown={e => this.onKeyDown(e)}
+        return <div tabIndex={0} ref={e => this._element = this._element || e} onKeyDown={e => this.onKeyDown(e)}
             className={this.props.className} style={this.props.style}>
             <DesignerContext.Provider value={{ designer: this }}>
                 {this.props.children}
