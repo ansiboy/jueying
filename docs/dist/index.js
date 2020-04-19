@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.9
+ *  maishu-jueying v3.0.12
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -609,377 +609,6 @@ class Callback {
 
 /***/ }),
 
-/***/ "./out/component-data-handler.js":
-/*!***************************************!*\
-  !*** ./out/component-data-handler.js ***!
-  \***************************************/
-/*! exports provided: ComponentDataHandler */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentDataHandler", function() { return ComponentDataHandler; });
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
-/* harmony import */ var maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
-
-
-class ComponentDataHandler {
-    constructor(componentData) {
-        this._components = {};
-        this.componentSelected = maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
-        this.componentRemoved = maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
-        this.componentAppend = maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
-        this.componentUpdated = maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
-        this.pageDataChanged = maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__["Callback"].create();
-        this._pageData = componentData;
-        this.initComponentData(this._pageData);
-    }
-    /** 对 pageData 字段补全 */
-    initComponentData(componentData) {
-        if (componentData == null) {
-            return;
-        }
-        componentData.children = componentData.children || [];
-        ComponentDataHandler.fillComponent(componentData);
-        ComponentDataHandler.setComponetRefProp(componentData, this._components);
-    }
-    /** 获取已选择了的组件 */
-    get selectedComponents() {
-        let arr = new Array();
-        let stack = new Array();
-        stack.push(this._pageData);
-        while (stack.length > 0) {
-            let item = stack.pop();
-            if (item.props != null && item.selected == true)
-                arr.push(item);
-            (item.children || []).forEach(child => {
-                if (typeof child == "string")
-                    return true;
-                stack.push(child);
-            });
-        }
-        return arr;
-    }
-    /** 获取已选择了的组件编号 */
-    get selectedComponentIds() {
-        return this.selectedComponents.map(o => o.id);
-    }
-    /**  */
-    get components() {
-        return this._components;
-    }
-    get pageData() {
-        return this._pageData;
-    }
-    set pageData(value) {
-        this._pageData = value;
-        this.initComponentData(value);
-        this.pageDataChanged.fire(value);
-    }
-    /**
-     * 移动控件到另外一个控件容器
-     * @param componentId 要移动的组件编号
-     * @param parentId 目标组件编号
-     * @param beforeChildId 组件的前一个子组件编号
-     */
-    moveComponent(componentId, parentId, childComponentIndex) {
-        let component = this.findComponentData(componentId);
-        if (component == null)
-            throw new Error(`Cannt find component by id ${componentId}`);
-        console.assert(component != null, `Cannt find component by id ${componentId}`);
-        let pageData = this.pageData;
-        console.assert(pageData.children != null);
-        let children = pageData.children; //translateComponentDataChildren(pageData.children);
-        this.removeComponentFrom(componentId, children);
-        this.appendComponent(parentId, component, childComponentIndex);
-    }
-    updateComponentProps(componentProps) {
-        let componentDatas = [];
-        for (let i = 0; i < componentProps.length; i++) {
-            let { componentId, propName, value } = componentProps[i];
-            let componentData = this.findComponentData(componentId);
-            if (componentData == null)
-                continue;
-            let navPropsNames = propName.split(".");
-            console.assert(componentData != null);
-            console.assert(navPropsNames != null, 'props is null');
-            componentData.props = componentData.props || {};
-            let obj = componentData.props;
-            for (let i = 0; i < navPropsNames.length - 1; i++) {
-                obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
-            }
-            obj[navPropsNames[navPropsNames.length - 1]] = value;
-            componentDatas.push(componentData);
-        }
-        this.componentUpdated.fire(componentDatas);
-    }
-    findComponentData(componentId) {
-        let pageData = this._pageData;
-        if (!pageData)
-            throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].pageDataIsNull();
-        // let stack = new Array<ComponentData>();
-        // stack.push(pageData);
-        // while (stack.length > 0) {
-        //     let item = stack.pop();
-        //     if (item == null)
-        //         continue
-        //     if (item.props.id == componentId)
-        //         return item;
-        //     let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
-        //     stack.push(...children);
-        // }
-        let componentDatas = ComponentDataHandler.travelComponentData(pageData, (item) => item.id == componentId);
-        return componentDatas[0];
-    }
-    removeComponentFrom(controlId, collection) {
-        let controlIndex = null;
-        collection = collection || [];
-        for (let i = 0; i < collection.length; i++) {
-            let child = collection[i];
-            if (typeof child == "string")
-                continue;
-            if (controlId == child.id) {
-                controlIndex = i;
-                break;
-            }
-        }
-        if (controlIndex == null) {
-            for (let i = 0; i < collection.length; i++) {
-                let o = collection[i];
-                if (typeof o == "string")
-                    continue;
-                let children = o.children;
-                if (children && children.length > 0) {
-                    let isRemoved = this.removeComponentFrom(controlId, children);
-                    if (isRemoved) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        if (controlIndex == 0) {
-            collection.shift();
-        }
-        else if (controlIndex == collection.length - 1) {
-            collection.pop();
-        }
-        else {
-            collection.splice(controlIndex, 1);
-        }
-        return true;
-    }
-    static travelComponentData(pageData, filter) {
-        let stack = new Array();
-        stack.push(pageData);
-        let r = [];
-        // return new Promise((resolve, reject) => {
-        filter = filter || (() => true);
-        while (stack.length > 0) {
-            let item = stack.shift();
-            if (filter(item)) {
-                r.push(item);
-            }
-            //===============================================
-            // 子元素有可能为字符串, 过滤出对象
-            let children = (item.children || []).filter(o => typeof o == 'object');
-            //===============================================
-            stack.push(...children);
-        }
-        return r;
-    }
-    /**
-     * 添加控件
-     * @param parentId 父控件编号
-     * @param componentData 控件数据
-     * @param componentIndex 新添加组件在子组件中的次序
-     */
-    appendComponent(parentId, componentData, componentIndex) {
-        if (!parentId)
-            throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('parentId');
-        if (!componentData)
-            throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('childComponent');
-        this.initComponentData(componentData);
-        let parentControl = this.findComponentData(parentId);
-        if (parentControl == null)
-            throw new Error('Parent is not exists');
-        console.assert(parentControl != null);
-        parentControl.children = parentControl.children || [];
-        if (componentIndex != null) {
-            parentControl.children.splice(componentIndex, 0, componentData);
-        }
-        else {
-            parentControl.children.push(componentData);
-        }
-        this.selectComponents(componentData.id);
-        this.componentAppend.fire(this);
-    }
-    /**
-     * 对组件及其子控件进行命名
-     * @param component
-     */
-    static fillComponent(component) {
-        let namedComponents = {};
-        // let props: any = component.props = component.props || {};
-        //==================================================
-        // 兼容旧版本代码
-        // if (props.id) {
-        //     component.id = props.id;
-        //     delete props.id;
-        // }
-        // if (props.parentId) {
-        //     component.parentId = props.parentId;
-        //     delete component.parentId;
-        // }
-        // if (props.selected) {
-        //     component.selected = props.selected;
-        // }
-        // if (props.name) {
-        //     component.name = props.name;
-        //     delete props.name;
-        // }
-        // if (props.attr) {
-        //     component.attr = props.attr;
-        //     delete props.attr;
-        // }
-        //==================================================
-        if (!component.name) {
-            let num = 0;
-            let name;
-            do {
-                num = num + 1;
-                name = `${component.type}${num}`;
-            } while (namedComponents[name]);
-            namedComponents[name] = component;
-            component.name = name;
-        }
-        if (!component.id)
-            component.id = Object(maishu_toolkit__WEBPACK_IMPORTED_MODULE_1__["guid"])();
-        component.children = component.children || [];
-        if (!component.children || component.children.length == 0) {
-            return;
-        }
-        component.children.forEach(child => {
-            if (typeof child == "string")
-                return true;
-            ComponentDataHandler.fillComponent(child);
-        });
-    }
-    static setComponetRefProp(pageData, components) {
-        //=========================================================
-        // 纪录当前 pageData 控件 ID
-        let componentIds = {};
-        //=========================================================
-        ComponentDataHandler.travelComponentData(pageData).forEach(item => {
-            console.assert(item.props != null && item.id != null);
-            componentIds[item.type] = componentIds[item.type] || [];
-            componentIds[item.type].push(item.props["id"]);
-            let itemRef = item.props.ref;
-            item.props.ref = (e) => {
-                if (e != null) {
-                    components[item.type] = components[item.type] || [];
-                    components[item.type].push(e);
-                }
-                if (typeof itemRef == "function")
-                    itemRef(e);
-            };
-        });
-        //=========================================================
-        // 仅保留 componentIds 中的控件 
-        let names = Object.getOwnPropertyNames(components);
-        for (let i = 0; i < names.length; i++) {
-            let typename = names[i];
-            let ids = componentIds[typename] || [];
-            components[typename] = (components[typename] || []).filter(o => ids.indexOf(o["id"] || o.props["id"]) >= 0);
-        }
-        //=========================================================
-    }
-    /**
-     * 选择指定的控件
-     * @param control 指定的控件
-     */
-    selectComponent(componentId) {
-        return this.selectComponents(componentId);
-    }
-    /**
-     * 选择指定的控件，一个或多个
-     * @param control 指定的控件
-     */
-    selectComponents(componentIds) {
-        if (typeof componentIds == 'string')
-            componentIds = [componentIds];
-        var stack = [];
-        stack.push(this._pageData);
-        while (stack.length > 0) {
-            let item = stack.pop();
-            let isSelectedControl = componentIds.indexOf(item.id) >= 0;
-            item.selected = isSelectedControl;
-            (item.children || []).forEach(child => {
-                if (typeof child == "string")
-                    return true;
-                stack.push(child);
-            });
-        }
-        this.componentSelected.fire(this.selectedComponentIds);
-    }
-    removeComponent(componentId) {
-        return this.removeComponents([componentId]);
-    }
-    /** 移除控件 */
-    removeComponents(componentIds) {
-        let pageData = this.pageData;
-        if (!pageData || !pageData.children || pageData.children.length == 0)
-            return;
-        let children = pageData.children;
-        componentIds.forEach(controlId => {
-            this.removeComponentFrom(controlId, children);
-        });
-        this.componentRemoved.fire(componentIds);
-    }
-    setComponentPosition(componentId, position) {
-        return this.setComponentsPosition([{ componentId, position }]);
-    }
-    setComponentsPosition(positions) {
-        let toUpdateProps = [];
-        positions.forEach(o => {
-            let { componentId } = o;
-            let { left, top } = o.position;
-            let componentData = this.findComponentData(componentId);
-            if (!componentData)
-                throw new Error(`Control ${componentId} is not exits.`);
-            let style = componentData.props.style = (componentData.props.style || {});
-            if (left)
-                style.left = left;
-            if (top)
-                style.top = top;
-            toUpdateProps.push({ componentId, propName: "style", value: style });
-        });
-        this.updateComponentProps(toUpdateProps);
-    }
-    /**
- * 设置控件大小
- * @param componentId 组件编号
- * @param size 组件大小
- */
-    setComponentSize(componentId, size) {
-        console.assert(componentId != null);
-        console.assert(size != null);
-        let componentData = this.findComponentData(componentId);
-        if (!componentData)
-            throw new Error(`Control ${componentId} is not exits.`);
-        let style = componentData.props.style = (componentData.props.style || {});
-        if (size.height)
-            style.height = size.height;
-        if (size.width)
-            style.width = size.width;
-        // this.componentUpdated.fire([componentData])
-        this.updateComponentProps([{ componentId, propName: "style", value: style }]);
-    }
-}
-//# sourceMappingURL=component-data-handler.js.map
-
-/***/ }),
-
 /***/ "./out/component-panel.js":
 /*!********************************!*\
   !*** ./out/component-panel.js ***!
@@ -1380,31 +1009,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./style */ "./out/style.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return _style__WEBPACK_IMPORTED_MODULE_6__["classNames"]; });
 
-/* harmony import */ var _component_data_handler__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component-data-handler */ "./out/component-data-handler.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentDataHandler", function() { return _component_data_handler__WEBPACK_IMPORTED_MODULE_7__["ComponentDataHandler"]; });
+/* harmony import */ var _components_index__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/index */ "./out/components/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentTypes", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["ComponentTypes"]; });
 
-/* harmony import */ var _components_index__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/index */ "./out/components/index.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentTypes", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["ComponentTypes"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["constants"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["constants"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageName", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["MasterPageName"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageName", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["MasterPageName"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["MasterPageContext"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["MasterPageContext"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["MasterPage"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return _components_index__WEBPACK_IMPORTED_MODULE_8__["MasterPage"]; });
-
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__) if(["groupDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","DesignerContext","PropEditor","TextInput","classNames","ComponentDataHandler","component","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "component", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_9__["component"]; });
+/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
+/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__) if(["groupDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","DesignerContext","PropEditor","TextInput","classNames","component","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "component", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__["component"]; });
 
 // import './jquery';
 // import '../lib/jquery.event.drag-2.2';
 // import '../lib/jquery.event.drag.live-2.2';
 // import '../lib/jquery.event.drop-2.2';
 // import '../lib/jquery.event.drop.live-2.2';
-
 
 
 
@@ -1829,7 +1454,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         this.components[typeName];
     }
     render() {
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { ref: e => this._element = this._element || e, onKeyDown: e => this.onKeyDown(e), className: this.props.className, style: this.props.style },
+        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { tabIndex: 0, ref: e => this._element = this._element || e, onKeyDown: e => this.onKeyDown(e), className: this.props.className, style: this.props.style },
             react__WEBPACK_IMPORTED_MODULE_0__["createElement"](DesignerContext.Provider, { value: { designer: this } }, this.props.children));
     }
 }
