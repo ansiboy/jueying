@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.12
+ *  maishu-jueying v3.0.13
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -122,13 +122,48 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
 /** 组件标记，用于将指定的组件标记为可被外部加载 */
 function component(options) {
     return function classDecorator(constructor) {
+        let type = (options === null || options === void 0 ? void 0 : options.type) || constructor.name;
+        register_1.registerComponent(type, constructor);
     };
 }
 exports.component = component;
 //# sourceMappingURL=decorators.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/errors.js":
+/*!********************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/errors.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errors = {
+    pathFieldRequired(name) {
+        let msg = `Path field of '${name}' component config can not be null or empty.`;
+        return new Error(msg);
+    },
+    canntFindModule(name, path) {
+        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
+        return new Error(msg);
+    },
+    componentTypeNotExists(name) {
+        let msg = `Component '${name}' not exists.`;
+        return new Error(msg);
+    },
+    argumentNull(name) {
+        let msg = `Argument '${name}' can not be null or empty.`;
+        return new Error(msg);
+    }
+};
+//# sourceMappingURL=errors.js.map
 
 /***/ }),
 
@@ -144,7 +179,69 @@ exports.component = component;
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = __webpack_require__(/*! ./decorators */ "./node_modules/maishu-jueying-core/out/decorators.js");
 exports.component = decorators_1.component;
+var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
+exports.parseComponentData = parse_component_data_1.parseComponentData;
+var register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
+exports.registerComponent = register_1.registerComponent;
+exports.componentTypes = register_1.componentTypes;
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/parse-component-data.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/parse-component-data.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
+const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
+exports.parseComponentData = (componentData) => {
+    let type = register_1.componentTypes[componentData.type];
+    if (type == null) {
+        throw errors_1.errors.componentTypeNotExists(componentData.type);
+    }
+    let children = [];
+    if (componentData.children != null) {
+        children = componentData.children.map(c => typeof c == "string" ? c : exports.parseComponentData(c));
+    }
+    return React.createElement(type, componentData.props, ...children);
+};
+//# sourceMappingURL=parse-component-data.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/register.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/register.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
+exports.componentTypes = {};
+function registerComponent(componentName, componentType) {
+    if (componentType == null && typeof componentName == 'function') {
+        componentType = componentName;
+        componentName = componentType.name;
+        componentType['componentName'] = componentName;
+    }
+    if (!componentName)
+        throw errors_1.errors.argumentNull('componentName');
+    if (!componentType)
+        throw errors_1.errors.argumentNull('componentType');
+    exports.componentTypes[componentName] = componentType;
+}
+exports.registerComponent = registerComponent;
+//# sourceMappingURL=register.js.map
 
 /***/ }),
 
@@ -694,8 +791,9 @@ ComponentPanel.componentIndexName = "data-component-index";
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return Component; });
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
-/* harmony import */ var _property_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
+/* harmony import */ var _property_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
+/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
+/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__);
 
 
 // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
@@ -725,7 +823,7 @@ class Component {
     }
     static setPropEditor(options) {
         let { componentType, editorType, display: editorDisplay, group, propName, displayName } = options;
-        group = group || _property_editor__WEBPACK_IMPORTED_MODULE_1__["defaultGroupName"];
+        group = group || _property_editor__WEBPACK_IMPORTED_MODULE_0__["defaultGroupName"];
         propName = propName || "";
         displayName = displayName || propName;
         // 属性可能为导航属性,例如 style.width
@@ -743,16 +841,18 @@ class Component {
         }
         classProps.push({ propName, displayName, editorType: editorType, group });
     }
-    static register(componentName, componentType, attr) {
-        if (componentType == null && typeof componentName == 'function') {
-            componentType = componentName;
-            componentName = componentType.name;
-            componentType['componentName'] = componentName;
-        }
-        if (!componentName)
-            throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('componentName');
-        if (!componentType)
-            throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('componentType');
+    // static componentTypes = {} as { [key: string]: React.ComponentClass<any> | string }
+    static register(typeName, componentType) {
+        // if (componentType == null && typeof componentName == 'function') {
+        //     componentType = componentName;
+        //     componentName = (componentType as React.ComponentClass<any>).name;
+        //     (componentType as any)['componentName'] = componentName;
+        // }
+        // if (!componentName)
+        //     throw Errors.argumentNull('componentName');
+        // if (!componentType)
+        //     throw Errors.argumentNull('componentType');
+        return Object(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__["registerComponent"])(typeName, componentType);
     }
 }
 //==========================================
@@ -761,7 +861,6 @@ Component.Fragment = "";
 //==========================================
 Component.componentPropEditors = {};
 Component.componentPropEditorDisplay = {};
-Component.componentTypes = {};
 //# sourceMappingURL=component.js.map
 
 /***/ }),
@@ -882,7 +981,7 @@ class MasterPage extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](MasterPageContext.Provider, { value: { master } }, children);
     }
 }
-_component__WEBPACK_IMPORTED_MODULE_1__["Component"].register(MasterPageName, MasterPage, { container: false });
+_component__WEBPACK_IMPORTED_MODULE_1__["Component"].register(MasterPageName, MasterPage);
 //# sourceMappingURL=master-page.js.map
 
 /***/ }),
@@ -1022,8 +1121,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
 /* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__) if(["groupDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","DesignerContext","PropEditor","TextInput","classNames","component","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__) if(["groupDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","DesignerContext","PropEditor","TextInput","classNames","component","componentTypes","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__[key]; }) }(__WEBPACK_IMPORT_KEY__));
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "component", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__["component"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "componentTypes", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__["componentTypes"]; });
 
 // import './jquery';
 // import '../lib/jquery.event.drag-2.2';

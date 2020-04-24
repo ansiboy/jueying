@@ -312,12 +312,13 @@ export class ComponentDataHandler {
         //=========================================================
         ComponentDataHandler.travelComponentData(pageData).forEach(item => {
 
+            let itemProps = item.props || {};
             console.assert(item.props != null && item.id != null);
             componentIds[item.type] = componentIds[item.type] || [];
-            componentIds[item.type].push(item.props["id"] as string);
+            componentIds[item.type].push(item.id as string);
 
-            let itemRef = item.props.ref;
-            item.props.ref = (e) => {
+            let itemRef = itemProps.ref;
+            itemProps.ref = (e) => {
                 if (e != null) {
                     components[item.type] = components[item.type] || [];
                     components[item.type].push(e);
@@ -359,7 +360,10 @@ export class ComponentDataHandler {
         var stack: ComponentData[] = []
         stack.push(this._pageData)
         while (stack.length > 0) {
-            let item = stack.pop() as ComponentData;
+            let item = stack.pop();
+            if (item == null || typeof item == "string")
+                continue;
+
             let isSelectedControl = componentIds.indexOf(item.id) >= 0;
             item.selected = isSelectedControl;
 

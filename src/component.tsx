@@ -1,14 +1,13 @@
 import * as React from "react";
 import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "./models";
-import { Errors } from "./errors";
-import { ComponentAttribute } from "maishu-jueying-core";
 import { GroupedEditor, defaultGroupName } from "./property-editor";
+import { registerComponent } from "maishu-jueying-core";
 
 export interface PropEditorInfo {
     propName: string,
     displayName: string,
-    editorType: PropEditorConstructor, 
+    editorType: PropEditorConstructor,
     group: GroupedEditor["group"],
 }
 
@@ -94,20 +93,20 @@ export class Component {
         classProps.push({ propName, displayName, editorType: editorType as PropEditorConstructor, group })
     }
 
-    static componentTypes = {} as { [key: string]: React.ComponentClass<any> | string }
-    static register(componentName: string, componentType: React.ComponentClass<any>, attr?: ComponentAttribute): void {
-        if (componentType == null && typeof componentName == 'function') {
-            componentType = componentName;
-            componentName = (componentType as React.ComponentClass<any>).name;
-            (componentType as any)['componentName'] = componentName;
-        }
+    // static componentTypes = {} as { [key: string]: React.ComponentClass<any> | string }
+    static register(typeName: string, componentType: React.ComponentClass<any>): void {
+        // if (componentType == null && typeof componentName == 'function') {
+        //     componentType = componentName;
+        //     componentName = (componentType as React.ComponentClass<any>).name;
+        //     (componentType as any)['componentName'] = componentName;
+        // }
 
-        if (!componentName)
-            throw Errors.argumentNull('componentName');
+        // if (!componentName)
+        //     throw Errors.argumentNull('componentName');
 
-        if (!componentType)
-            throw Errors.argumentNull('componentType');
-
+        // if (!componentType)
+        //     throw Errors.argumentNull('componentType');
+        return registerComponent(typeName, componentType);
     }
 
 }

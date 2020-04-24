@@ -59,4 +59,4 @@ export class MasterPage extends React.Component<ComponentProps> {
         </MasterPageContext.Provider>
     }
 }
-Component.register(MasterPageName, MasterPage, { container: false })
+Component.register(MasterPageName, MasterPage);

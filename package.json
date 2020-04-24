@@ -3,7 +3,7 @@
         "name": "mai.shu"
     },
     "dependencies": {
-        "maishu-jueying-core": "^1.1.14",
+        "maishu-jueying-core": "^1.1.15",
         "maishu-toolkit": "^1.3.2",
         "react": "^16.9.0",
         "react-dom": "^16.9.0"
@@ -44,5 +44,5 @@
         "build": "grunt build"
     },
     "typings": "out/index.d.ts",
-    "version": "3.0.12"
+    "version": "3.0.13"
 }
