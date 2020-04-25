@@ -2,27 +2,24 @@ import * as React from "react";
 import { ComponentDefine, ComponentData } from "./models";
 import { constants } from "./components/index";
 import { classNames } from "./style";
-import { ComponentDataHandler } from "./component-data-handler";
+import { PageDesigner } from "page-designer";
 
 interface ComponentProps extends React.Props<ComponentPanel> {
     // componets: ComponentDefine[],
     style?: React.CSSProperties,
     className?: string,
     empty?: string | JSX.Element,
-    designer: ComponentDataHandler,
 }
 interface ComponentToolbarState {
     componets: ComponentDefine[],
 }
 export class ComponentPanel extends React.Component<ComponentProps, ComponentToolbarState> {
-    designer: ComponentDataHandler;
     static componentIndexName = "data-component-index";
     private toolbarElement: HTMLElement;
 
     constructor(props: ComponentProps) {
         super(props)
         this.state = { componets: [] }
-        this.designer = this.props.designer;
     }
 
     get element() {

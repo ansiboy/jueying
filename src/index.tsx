@@ -18,8 +18,6 @@ export { PropertyEditorInfo } from "./property-editor";
 export { classNames } from "./style";
 export { ComponentFactory } from "./component-factory";
 export * from "./components/index";
-export * from "maishu-jueying-core";
-export { component, componentTypes } from "maishu-jueying-core";
 
 
 

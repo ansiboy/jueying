@@ -398,57 +398,57 @@ export class ComponentDataHandler {
         this.componentRemoved.fire(componentIds)
     }
 
-    setComponentPosition(componentId: string, position: { left: number | string, top: number | string }) {
-        return this.setComponentsPosition([{ componentId, position }]);
-    }
+    // setComponentPosition(componentId: string, position: { left: number | string, top: number | string }) {
+    //     return this.setComponentsPosition([{ componentId, position }]);
+    // }
 
-    setComponentsPosition(positions: { componentId: string, position: { left: number | string, top: number | string } }[]) {
-        let toUpdateProps: { componentId: string, propName: string, value: any }[] = [];
-        positions.forEach(o => {
-            let { componentId } = o
-            let { left, top } = o.position
-            let componentData = this.findComponentData(componentId);
-            if (!componentData)
-                throw new Error(`Control ${componentId} is not exits.`);
+    // setComponentsPosition(positions: { componentId: string, position: { left: number | string, top: number | string } }[]) {
+    //     let toUpdateProps: { componentId: string, propName: string, value: any }[] = [];
+    //     positions.forEach(o => {
+    //         let { componentId } = o
+    //         let { left, top } = o.position
+    //         let componentData = this.findComponentData(componentId);
+    //         if (!componentData)
+    //             throw new Error(`Control ${componentId} is not exits.`);
 
-            let style = componentData.props.style = (componentData.props.style || {});
-            if (left)
-                style.left = left;
+    //         let style = componentData.props.style = (componentData.props.style || {});
+    //         if (left)
+    //             style.left = left;
 
-            if (top)
-                style.top = top;
+    //         if (top)
+    //             style.top = top;
 
-            toUpdateProps.push({ componentId, propName: "style", value: style })
-        })
+    //         toUpdateProps.push({ componentId, propName: "style", value: style })
+    //     })
 
-        this.updateComponentProps(toUpdateProps);
-    }
+    //     this.updateComponentProps(toUpdateProps);
+    // }
 
-    /** 
- * 设置控件大小
- * @param componentId 组件编号
- * @param size 组件大小 
- */
-    setComponentSize(componentId: string, size: { width?: number | string, height?: number | string }) {
-        console.assert(componentId != null)
-        console.assert(size != null)
+    //     /** 
+    //  * 设置控件大小
+    //  * @param componentId 组件编号
+    //  * @param size 组件大小 
+    //  */
+    //     setComponentSize(componentId: string, size: { width?: number | string, height?: number | string }) {
+    //         console.assert(componentId != null)
+    //         console.assert(size != null)
 
-        let componentData = this.findComponentData(componentId);
-        if (!componentData)
-            throw new Error(`Control ${componentId} is not exits.`);
+    //         let componentData = this.findComponentData(componentId);
+    //         if (!componentData)
+    //             throw new Error(`Control ${componentId} is not exits.`);
 
-        let style = componentData.props.style = (componentData.props.style || {});
-        if (size.height)
-            style.height = size.height
+    //         let style = componentData.props.style = (componentData.props.style || {});
+    //         if (size.height)
+    //             style.height = size.height
 
-        if (size.width)
-            style.width = size.width
+    //         if (size.width)
+    //             style.width = size.width
 
 
 
-        // this.componentUpdated.fire([componentData])
-        this.updateComponentProps([{ componentId, propName: "style", value: style }])
-    }
+    //         // this.componentUpdated.fire([componentData])
+    //         this.updateComponentProps([{ componentId, propName: "style", value: style }])
+    //     }
 
 
 }

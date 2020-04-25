@@ -9,7 +9,7 @@ import { groupDisplayNames } from "./common";
 
 export interface EditorProps extends React.Props<PropertyEditor> {
     empty: string | JSX.Element,
-    customRender?: (editComponents: ComponentData[], items: PropertyEditorInfo[]) => JSX.Element
+    customRender?: (editComponents: ComponentData<any>[], items: PropertyEditorInfo[]) => JSX.Element
 }
 
 interface EditorState {

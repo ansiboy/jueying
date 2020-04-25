@@ -2,10 +2,9 @@ import { ComponentData } from "./models";
 import * as React from "react";
 import { PropertyEditor, EditorProps } from "./property-editor";
 import { classNames } from "./style";
-import { ComponentDataHandler } from "./component-data-handler";
 
 interface EditorPanelState {
-    componentDatas: ComponentData[];
+    componentDatas: ComponentData<any>[];
 }
 
 export interface EditorPanelProps {
@@ -18,17 +17,12 @@ export interface EditorPanelProps {
 export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
     element: HTMLElement;
     private editor: PropertyEditor;
-    private _designer: ComponentDataHandler;
 
     constructor(props: EditorPanelProps) {
         super(props);
         this.state = { componentDatas: [] };
     }
 
-    get designer() {
-        return this._designer;
-    }
-  
     render() {
         let { empty } = this.props;
         empty = empty || <div className="empty">暂无可用的属性</div>;
