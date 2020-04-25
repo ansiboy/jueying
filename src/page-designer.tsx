@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { ComponentData } from "./models";
-import { ComponentDataHandler } from "./component-data-handler";
 import { Errors } from "./errors";
 import { guid } from "maishu-toolkit";
 
@@ -19,10 +18,7 @@ export let DesignerContext = React.createContext<{ designer: PageDesigner | null
 
 export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private _element: HTMLElement;
-
-    // static defaultProps: Partial<PageDesignerProps> = { componentFactory: defaultComponentFactory };
-    private components: { [typeName: string]: React.Component[] } = {};
-    // private handler: ComponentDataHandler;
+    private components: { [typeName: string]: { [id: string]: React.Component } } = {};
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -31,56 +27,30 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.initPageData(pageData);
 
         this.state = { pageData };
-
-        // this.handler = new ComponentDataHandler(pageData);
-        // this.handler.componentSelected.add(() => {
-        //     this.setState({ pageData: this.handler.pageData });
-        // })
-        // this.handler.componentRemoved.add(() => {
-        //     this.setState({ pageData: this.handler.pageData });
-        // })
-        // this.handler.componentUpdated.add(() => {
-        //     this.setState({ pageData: this.handler.pageData });
-        // })
-
-        // this.handler.pageDataChanged.add(args => {
-        //     this.setState({ pageData: args });
-        // })
     }
 
     private setComponetRefProp(pageData: ComponentData) {
-
         //=========================================================
-        // 纪录当前 pageData 控件 ID
+        // 记录当前 pageData 控件 ID
         let componentIds: { [typeName: string]: string[] } = {};
         //=========================================================
         PageDesigner.travelComponentData(pageData).forEach(item => {
 
             console.assert(item.props != null && item.id != null);
             componentIds[item.type] = componentIds[item.type] || [];
-            componentIds[item.type].push(item.props["id"] as string);
+            componentIds[item.type].push(item.id);
 
             let itemRef = item.props.ref;
             item.props.ref = (e: any) => {
                 if (e != null) {
-                    this.components[item.type] = this.components[item.type] || [];
-                    this.components[item.type].push(e);
+                    this.components[item.type] = this.components[item.type] || {};
+                    this.components[item.type][item.id] = e;
                 }
 
                 if (typeof itemRef == "function")
                     itemRef(e);
             }
         })
-
-        //=========================================================
-        // 仅保留 componentIds 中的控件 
-        let names = Object.getOwnPropertyNames(this.components);
-        for (let i = 0; i < names.length; i++) {
-            let typename = names[i];
-            let ids = componentIds[typename] || [];
-            this.components[typename] = (this.components[typename] || []).filter(o => ids.indexOf(o["id"] || o.props["id"]) >= 0)
-        }
-        //=========================================================
     }
 
     private initPageData(pageData: ComponentData) {
@@ -100,35 +70,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     */
     private fillComponent(component: ComponentData) {
         let namedComponents: { [key: string]: ComponentData } = {}
-        // let props: any = component.props = component.props || {};
-
-        //==================================================
-        // 兼容旧版本代码
-        // if (props.id) {
-        //     component.id = props.id;
-        //     delete props.id;
-        // }
-
-        // if (props.parentId) {
-        //     component.parentId = props.parentId;
-        //     delete component.parentId;
-        // }
-
-        // if (props.selected) {
-        //     component.selected = props.selected;
-        // }
-
-        // if (props.name) {
-        //     component.name = props.name;
-        //     delete props.name;
-        // }
-
-        // if (props.attr) {
-        //     component.attr = props.attr;
-        //     delete props.attr;
-        // }
-        //==================================================
-
         if (!component.name) {
             let num = 0;
             let name: string;
@@ -163,7 +104,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     allComponents(): React.Component[] {
         let r: React.Component[] = [];
         for (let key in this.components) {
-            r.push(...this.components[key]);
+            let ids = Object.getOwnPropertyNames(this.components[key]);
+            r.push(...ids.map(id => this.components[key][id]));
         }
         return r;
     }
@@ -230,7 +172,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             componentDatas.push(componentData);
         }
 
-        // this.componentUpdated.fire(componentDatas);
         this.setState({ pageData: this.pageData })
     }
 
@@ -258,66 +199,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             parentControl.children.push(componentData);
         }
 
-
-
         this.selectComponents(componentData.id);
-    }
-
-    /** 
-     * 设置控件位置
-     * @param componentId 组件编号
-     * @param position 组件位置 
-     */
-    setComponentPosition(componentId: string, position: { left: number | string, top: number | string }) {
-        return this.setComponentsPosition([{ componentId, position }])
-    }
-
-    /** 
-     * 设置控件大小
-     * @param componentId 组件编号
-     * @param size 组件大小 
-     */
-    setComponentSize(componentId: string, size: { width?: number | string, height?: number | string }) {
-        console.assert(componentId != null)
-        console.assert(size != null)
-
-        let componentData = this.findComponentData(componentId);
-        if (!componentData)
-            throw new Error(`Control ${componentId} is not exits.`);
-
-        let style = componentData.props.style = (componentData.props.style || {});
-        if (size.height)
-            style.height = size.height
-
-        if (size.width)
-            style.width = size.width
-
-        let { pageData } = this.state;
-        this.setState({ pageData });
-
-        // this.componentUpdated.fire([componentData])
-    }
-
-    setComponentsPosition(positions: { componentId: string, position: { left: number | string, top: number | string } }[]) {
-        let toUpdateProps: { componentId: string, propName: string, value: any }[] = [];
-        positions.forEach(o => {
-            let { componentId } = o
-            let { left, top } = o.position
-            let componentData = this.findComponentData(componentId);
-            if (!componentData)
-                throw new Error(`Control ${componentId} is not exits.`);
-
-            let style = componentData.props.style = (componentData.props.style || {});
-            if (left)
-                style.left = left;
-
-            if (top)
-                style.top = top;
-
-            toUpdateProps.push({ componentId, propName: "style", value: style })
-        })
-
-        this.updateComponentProps(toUpdateProps);
     }
 
     /**
@@ -325,7 +207,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * @param control 指定的控件
      */
     selectComponent(componentIds: string[] | string): void {
-
         this.selectComponents(componentIds);
         //====================================================
         // 设置焦点，以便获取键盘事件
@@ -339,14 +220,13 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * @param control 指定的控件
      */
     selectComponents(componentIds: string[] | string): void {
-
         if (typeof componentIds == 'string')
             componentIds = [componentIds]
 
-        var stack: ComponentData[] = []
+        var stack: ComponentData<any>[] = [];
         stack.push(this.pageData)
         while (stack.length > 0) {
-            let item = stack.pop() as ComponentData;
+            let item = stack.pop() as ComponentData<any>;
             let isSelectedControl = componentIds.indexOf(item.id) >= 0;
             item.selected = isSelectedControl;
 
@@ -396,7 +276,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         let pageData = this.pageData;
         console.assert(pageData.children != null);
-        let children = pageData.children; //translateComponentDataChildren(pageData.children);
+        let children = pageData.children;
         this.removeComponentFrom(componentId, children);
         this.appendComponent(parentId, component, childComponentIndex);
     }
@@ -453,7 +333,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let stack = new Array<ComponentData>();
         stack.push(pageData);
         let r: ComponentData[] = [];
-        // return new Promise((resolve, reject) => {
         filter = filter || (() => true);
         while (stack.length > 0) {
             let item = stack.shift() as ComponentData;
