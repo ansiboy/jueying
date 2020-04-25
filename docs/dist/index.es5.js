@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.13
+ *  maishu-jueying v3.0.14
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1683,7 +1683,7 @@ function (_React$Component) {
         var typename = names[i];
         var ids = componentIds[typename] || [];
         _this2.components[typename] = (_this2.components[typename] || []).filter(function (o) {
-          return ids.indexOf(o["id"] || o.props["id"]) >= 0;
+          return o.props != null && ids.indexOf(o["id"] || o.props["id"]) >= 0;
         });
       };
 

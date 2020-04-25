@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.13
+ *  maishu-jueying v3.0.14
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -1212,7 +1212,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         for (let i = 0; i < names.length; i++) {
             let typename = names[i];
             let ids = componentIds[typename] || [];
-            this.components[typename] = (this.components[typename] || []).filter(o => ids.indexOf(o["id"] || o.props["id"]) >= 0);
+            this.components[typename] = (this.components[typename] || []).filter(o => o.props != null && ids.indexOf(o["id"] || o.props["id"]) >= 0);
         }
         //=========================================================
     }
