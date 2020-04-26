@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "target": "es6",
+        "module": "commonjs",
         "sourceMap": true,
         "declaration": true,
         // "outFile": "../out/jueying.js",
@@ -12,22 +13,5 @@
         "strictNullChecks": true,
         "experimentalDecorators": true,
         "baseUrl": "./",
-        "paths": {
-            "csstype": [
-                "../node_modules/csstype/index.d.ts"
-            ],
-            "maishu-toolkit": [
-                "../node_modules/maishu-toolkit/out/index.d.ts"
-            ],
-            "maishu-jueying-core": [
-                "../node_modules/maishu-jueying-core/out/index.d.ts"
-            ],
-            "maishu-jueying-core/decorators": [
-                "../node_modules/maishu-jueying-core/out/decorators.d.ts"
-            ],
-            "jquery": [
-                "../node_modules/@types/jquery/index.d.ts"
-            ]
-        }
     }
 }

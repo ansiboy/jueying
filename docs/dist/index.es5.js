@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.17
+ *  maishu-jueying v3.0.19
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -16,14 +16,14 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("react"));
+		module.exports = factory(require("maishu-jueying-core"), require("react"));
 	else if(typeof define === 'function' && define.amd)
-		define(["react"], factory);
+		define(["maishu-jueying-core", "react"], factory);
 	else if(typeof exports === 'object')
-		exports["jueying"] = factory(require("react"));
+		exports["jueying"] = factory(require("maishu-jueying-core"), require("react"));
 	else
-		root["jueying"] = factory(root["react"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE_react__) {
+		root["jueying"] = factory(root["maishu-jueying-core"], root["react"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__, __WEBPACK_EXTERNAL_MODULE_react__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -111,140 +111,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ })
 /************************************************************************/
 /******/ ({
-
-/***/ "./node_modules/maishu-jueying-core/out/decorators.js":
-/*!************************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/decorators.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-/** 组件标记，用于将指定的组件标记为可被外部加载 */
-function component(options) {
-    return function classDecorator(constructor) {
-        let type = (options === null || options === void 0 ? void 0 : options.type) || constructor.name;
-        register_1.registerComponent(type, constructor);
-    };
-}
-exports.component = component;
-//# sourceMappingURL=decorators.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/errors.js":
-/*!********************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/errors.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = {
-    pathFieldRequired(name) {
-        let msg = `Path field of '${name}' component config can not be null or empty.`;
-        return new Error(msg);
-    },
-    canntFindModule(name, path) {
-        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
-        return new Error(msg);
-    },
-    componentTypeNotExists(name) {
-        let msg = `Component '${name}' not exists.`;
-        return new Error(msg);
-    },
-    argumentNull(name) {
-        let msg = `Argument '${name}' can not be null or empty.`;
-        return new Error(msg);
-    }
-};
-//# sourceMappingURL=errors.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/index.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var decorators_1 = __webpack_require__(/*! ./decorators */ "./node_modules/maishu-jueying-core/out/decorators.js");
-exports.component = decorators_1.component;
-var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
-exports.parseComponentData = parse_component_data_1.parseComponentData;
-var register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-exports.registerComponent = register_1.registerComponent;
-exports.componentTypes = register_1.componentTypes;
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/parse-component-data.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/parse-component-data.js ***!
-  \**********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
-function parseComponentData(componentData) {
-    let type = register_1.componentTypes[componentData.type];
-    if (type == null) {
-        throw errors_1.errors.componentTypeNotExists(componentData.type);
-    }
-    let children = [];
-    if (componentData.children != null) {
-        children = componentData.children.map(c => typeof c == "string" ? c : parseComponentData(c));
-    }
-    return React.createElement(type, componentData.props, ...children);
-}
-exports.parseComponentData = parseComponentData;
-//# sourceMappingURL=parse-component-data.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/register.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/register.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
-exports.componentTypes = {};
-function registerComponent(componentName, componentType) {
-    if (componentType == null && typeof componentName == 'function') {
-        componentType = componentName;
-        componentName = componentType.name;
-        componentType['componentName'] = componentName;
-    }
-    if (!componentName)
-        throw errors_1.errors.argumentNull('componentName');
-    if (!componentType)
-        throw errors_1.errors.argumentNull('componentType');
-    exports.componentTypes[componentName] = componentType;
-}
-exports.registerComponent = registerComponent;
-//# sourceMappingURL=register.js.map
-
-/***/ }),
 
 /***/ "./node_modules/maishu-toolkit/out/callback.js":
 /*!*****************************************************!*\
@@ -741,158 +607,6 @@ exports.Callback = Callback;
 
 /***/ }),
 
-/***/ "./out-es5/component-panel.js":
-/*!************************************!*\
-  !*** ./out-es5/component-panel.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ComponentPanel = void 0;
-
-var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
-
-var _index = __webpack_require__(/*! ./components/index */ "./out-es5/components/index.js");
-
-var _style = __webpack_require__(/*! ./style */ "./out-es5/style.js");
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var ComponentPanel =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ComponentPanel, _React$Component);
-
-  function ComponentPanel(props) {
-    var _this;
-
-    _classCallCheck(this, ComponentPanel);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ComponentPanel).call(this, props));
-    _this.state = {
-      componets: []
-    };
-    return _this;
-  }
-
-  _createClass(ComponentPanel, [{
-    key: "componentDraggable",
-    value: function componentDraggable(toolItemElement, componentData) {
-      console.assert(toolItemElement != null);
-      toolItemElement.draggable = true;
-      toolItemElement.addEventListener('dragstart', function (ev) {
-        if (ev.dataTransfer == null) return;
-        componentData.props = componentData.props || {};
-        ev.dataTransfer.setData(_index.constants.componentData, JSON.stringify(componentData));
-        ev.dataTransfer.setData('mousePosition', JSON.stringify({
-          x: ev.offsetX,
-          y: ev.offsetY
-        }));
-      });
-    }
-  }, {
-    key: "setComponets",
-    value: function setComponets(componets) {
-      this.setState({
-        componets: componets
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var empty = this.props.empty || React.createElement("div", {
-        className: "empty"
-      }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
-      var props = Object.assign({}, this.props);
-      var componets = this.state.componets || [];
-      return React.createElement("ul", Object.assign({}, props, {
-        className: "".concat(_style.classNames.componentPanel, " ").concat(this.props.className || ""),
-        ref: function ref(e) {
-          return _this2.toolbarElement = _this2.toolbarElement || e;
-        }
-      }), componets.length == 0 ? empty : componets.map(function (c, i) {
-        var props = {
-          key: i
-        };
-        props[ComponentPanel.componentIndexName] = "".concat(i);
-        return React.createElement("li", Object.assign({}, props, {
-          className: _style.classNames.componentIcon
-        }), React.createElement("div", {
-          className: "btn-link"
-        }, React.createElement("i", {
-          className: c.icon,
-          style: {
-            fontSize: 44,
-            color: 'black'
-          },
-          ref: function ref(e) {
-            if (!e) return;
-            var ctrl = c.componentData;
-
-            _this2.componentDraggable(e, ctrl);
-          }
-        })), React.createElement("div", null, c.displayName));
-      }));
-    }
-  }, {
-    key: "element",
-    get: function get() {
-      return this.toolbarElement;
-    }
-  }], [{
-    key: "getComponentData",
-    value: function getComponentData(dataTransfer) {
-      var str = dataTransfer.getData(_index.constants.componentData);
-      console.assert(str != null);
-      return JSON.parse(str);
-    }
-    /** 获取光标在图标内的位置 */
-
-  }, {
-    key: "mouseInnerPosition",
-    value: function mouseInnerPosition(dataTransfer) {
-      var str = dataTransfer.getData('mousePosition');
-      console.assert(str != null);
-      return JSON.parse(str);
-    }
-  }]);
-
-  return ComponentPanel;
-}(React.Component);
-
-exports.ComponentPanel = ComponentPanel;
-ComponentPanel.componentIndexName = "data-component-index";
-//# sourceMappingURL=component-panel.js.map
-
-
-/***/ }),
-
 /***/ "./out-es5/component.js":
 /*!******************************!*\
   !*** ./out-es5/component.js ***!
@@ -910,7 +624,7 @@ exports.Component = void 0;
 
 var _propertyEditor = __webpack_require__(/*! ./property-editor */ "./out-es5/property-editor.js");
 
-var _maishuJueyingCore = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
+var _maishuJueyingCore = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1023,208 +737,6 @@ Component.Fragment = ""; //==========================================
 Component.componentPropEditors = {};
 Component.componentPropEditorDisplay = {};
 //# sourceMappingURL=component.js.map
-
-
-/***/ }),
-
-/***/ "./out-es5/components/common.js":
-/*!**************************************!*\
-  !*** ./out-es5/components/common.js ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "guid", {
-  enumerable: true,
-  get: function get() {
-    return _maishuToolkit.guid;
-  }
-});
-exports.constants = exports.ComponentTypes = void 0;
-
-var _maishuToolkit = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
-
-var ComponentTypes = {
-  Text: "Text",
-  PageView: "PageView",
-  PlaceHolder: "PlaceHolder"
-};
-exports.ComponentTypes = ComponentTypes;
-var constants = {
-  componentsDir: 'components',
-  connectorElementClassName: 'component-container',
-  componentTypeName: 'data-component-name',
-  componentData: 'component-data',
-  componentPosition: "component-position"
-};
-exports.constants = constants;
-//# sourceMappingURL=common.js.map
-
-
-/***/ }),
-
-/***/ "./out-es5/components/index.js":
-/*!*************************************!*\
-  !*** ./out-es5/components/index.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var _exportNames = {
-  ComponentTypes: true,
-  constants: true
-};
-Object.defineProperty(exports, "ComponentTypes", {
-  enumerable: true,
-  get: function get() {
-    return _common.ComponentTypes;
-  }
-});
-Object.defineProperty(exports, "constants", {
-  enumerable: true,
-  get: function get() {
-    return _common.constants;
-  }
-});
-
-var _masterPage = __webpack_require__(/*! ./master-page */ "./out-es5/components/master-page.js");
-
-Object.keys(_masterPage).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _masterPage[key];
-    }
-  });
-});
-
-var _common = __webpack_require__(/*! ./common */ "./out-es5/components/common.js");
-//# sourceMappingURL=index.js.map
-
-
-/***/ }),
-
-/***/ "./out-es5/components/master-page.js":
-/*!*******************************************!*\
-  !*** ./out-es5/components/master-page.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MasterPage = exports.MasterPageContext = exports.MasterPageName = void 0;
-
-var React = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
-
-var _component = __webpack_require__(/*! ../component */ "./out-es5/component.js");
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var MasterPageName = 'MasterPage';
-exports.MasterPageName = MasterPageName;
-var MasterPageContext = React.createContext({
-  master: null
-});
-exports.MasterPageContext = MasterPageContext;
-
-var MasterPage =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(MasterPage, _React$Component);
-
-  function MasterPage(props) {
-    var _this;
-
-    _classCallCheck(this, MasterPage);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(MasterPage).call(this, props));
-    _this.childComponents = {}; // let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-
-    _this.state = {};
-    return _this;
-  } // private static children(props: ComponentProps): React.ReactElement<ComponentProps<any>>[] {
-  //     let arr = props.children == null ? [] :
-  //         Array.isArray(props.children) ? props.children : [props.children];
-  //     let children: React.ReactElement<ComponentProps<any>>[] = []
-  //     arr.forEach(o => {
-  //         if (!React.isValidElement(o))
-  //             return
-  //         children.push(o as React.ReactElement<ComponentProps<any>>)
-  //     })
-  //     return children
-  // }
-  // static getDerivedStateFromProps(props: ComponentProps) {
-  //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-  //     return { children } as MasterPage["state"];
-  // }
-
-
-  _createClass(MasterPage, [{
-    key: "render",
-    value: function render() {
-      // let props = {} as any
-      // for (let key in this.props) {
-      //     if (key == 'ref' || key == 'id')
-      //         continue
-      //     props[key] = this.props[key]
-      // }
-      // props.style = Object.assign({ minHeight: 40 }, props.style)
-      // let children = this.state.children.filter(o => o.props.parentId == null);
-      var master = this;
-      console.assert(master != null);
-      var children = this.props.children;
-      return React.createElement(MasterPageContext.Provider, {
-        value: {
-          master: master
-        }
-      }, children);
-    }
-  }]);
-
-  return MasterPage;
-}(React.Component);
-
-exports.MasterPage = MasterPage;
-
-_component.Component.register(MasterPageName, MasterPage);
-//# sourceMappingURL=master-page.js.map
 
 
 /***/ }),
@@ -1430,17 +942,6 @@ exports.Errors = Errors;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var _exportNames = {
-  groupDisplayNames: true,
-  Component: true,
-  ComponentPanel: true,
-  EditorPanel: true,
-  PageDesigner: true,
-  DesignerContext: true,
-  PropEditor: true,
-  TextInput: true,
-  classNames: true
-};
 Object.defineProperty(exports, "groupDisplayNames", {
   enumerable: true,
   get: function get() {
@@ -1451,12 +952,6 @@ Object.defineProperty(exports, "Component", {
   enumerable: true,
   get: function get() {
     return _component.Component;
-  }
-});
-Object.defineProperty(exports, "ComponentPanel", {
-  enumerable: true,
-  get: function get() {
-    return _componentPanel.ComponentPanel;
   }
 });
 Object.defineProperty(exports, "EditorPanel", {
@@ -1500,8 +995,6 @@ var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
 
 var _component = __webpack_require__(/*! ./component */ "./out-es5/component.js");
 
-var _componentPanel = __webpack_require__(/*! ./component-panel */ "./out-es5/component-panel.js");
-
 var _editorPanel = __webpack_require__(/*! ./editor-panel */ "./out-es5/editor-panel.js");
 
 var _pageDesigner = __webpack_require__(/*! ./page-designer */ "./out-es5/page-designer.js");
@@ -1509,19 +1002,6 @@ var _pageDesigner = __webpack_require__(/*! ./page-designer */ "./out-es5/page-d
 var _propEditor = __webpack_require__(/*! ./prop-editor */ "./out-es5/prop-editor.js");
 
 var _style = __webpack_require__(/*! ./style */ "./out-es5/style.js");
-
-var _index = __webpack_require__(/*! ./components/index */ "./out-es5/components/index.js");
-
-Object.keys(_index).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _index[key];
-    }
-  });
-});
 //# sourceMappingURL=index.js.map
 
 
@@ -2678,6 +2158,17 @@ function removeClassName(element, targetClassName) {
 }
 //# sourceMappingURL=style.js.map
 
+
+/***/ }),
+
+/***/ "maishu-jueying-core":
+/*!**************************************!*\
+  !*** external "maishu-jueying-core" ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__;
 
 /***/ }),
 

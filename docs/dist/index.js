@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.17
+ *  maishu-jueying v3.0.19
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -16,14 +16,14 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("react"));
+		module.exports = factory(require("maishu-jueying-core"), require("react"));
 	else if(typeof define === 'function' && define.amd)
-		define(["react"], factory);
+		define(["maishu-jueying-core", "react"], factory);
 	else if(typeof exports === 'object')
-		exports["jueying"] = factory(require("react"));
+		exports["jueying"] = factory(require("maishu-jueying-core"), require("react"));
 	else
-		root["jueying"] = factory(root["react"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE_react__) {
+		root["jueying"] = factory(root["maishu-jueying-core"], root["react"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__, __WEBPACK_EXTERNAL_MODULE_react__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -111,140 +111,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ })
 /************************************************************************/
 /******/ ({
-
-/***/ "./node_modules/maishu-jueying-core/out/decorators.js":
-/*!************************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/decorators.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-/** 组件标记，用于将指定的组件标记为可被外部加载 */
-function component(options) {
-    return function classDecorator(constructor) {
-        let type = (options === null || options === void 0 ? void 0 : options.type) || constructor.name;
-        register_1.registerComponent(type, constructor);
-    };
-}
-exports.component = component;
-//# sourceMappingURL=decorators.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/errors.js":
-/*!********************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/errors.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = {
-    pathFieldRequired(name) {
-        let msg = `Path field of '${name}' component config can not be null or empty.`;
-        return new Error(msg);
-    },
-    canntFindModule(name, path) {
-        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
-        return new Error(msg);
-    },
-    componentTypeNotExists(name) {
-        let msg = `Component '${name}' not exists.`;
-        return new Error(msg);
-    },
-    argumentNull(name) {
-        let msg = `Argument '${name}' can not be null or empty.`;
-        return new Error(msg);
-    }
-};
-//# sourceMappingURL=errors.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/index.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var decorators_1 = __webpack_require__(/*! ./decorators */ "./node_modules/maishu-jueying-core/out/decorators.js");
-exports.component = decorators_1.component;
-var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
-exports.parseComponentData = parse_component_data_1.parseComponentData;
-var register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-exports.registerComponent = register_1.registerComponent;
-exports.componentTypes = register_1.componentTypes;
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/parse-component-data.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/parse-component-data.js ***!
-  \**********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
-function parseComponentData(componentData) {
-    let type = register_1.componentTypes[componentData.type];
-    if (type == null) {
-        throw errors_1.errors.componentTypeNotExists(componentData.type);
-    }
-    let children = [];
-    if (componentData.children != null) {
-        children = componentData.children.map(c => typeof c == "string" ? c : parseComponentData(c));
-    }
-    return React.createElement(type, componentData.props, ...children);
-}
-exports.parseComponentData = parseComponentData;
-//# sourceMappingURL=parse-component-data.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/register.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/register.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
-exports.componentTypes = {};
-function registerComponent(componentName, componentType) {
-    if (componentType == null && typeof componentName == 'function') {
-        componentType = componentName;
-        componentName = componentType.name;
-        componentType['componentName'] = componentName;
-    }
-    if (!componentName)
-        throw errors_1.errors.argumentNull('componentName');
-    if (!componentType)
-        throw errors_1.errors.argumentNull('componentType');
-    exports.componentTypes[componentName] = componentType;
-}
-exports.registerComponent = registerComponent;
-//# sourceMappingURL=register.js.map
-
-/***/ }),
 
 /***/ "./node_modules/maishu-toolkit/out/callback.js":
 /*!*****************************************************!*\
@@ -707,80 +573,6 @@ class Callback {
 
 /***/ }),
 
-/***/ "./out/component-panel.js":
-/*!********************************!*\
-  !*** ./out/component-panel.js ***!
-  \********************************/
-/*! exports provided: ComponentPanel */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentPanel", function() { return ComponentPanel; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/index */ "./out/components/index.js");
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style */ "./out/style.js");
-
-
-
-class ComponentPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-    constructor(props) {
-        super(props);
-        this.state = { componets: [] };
-    }
-    get element() {
-        return this.toolbarElement;
-    }
-    componentDraggable(toolItemElement, componentData) {
-        console.assert(toolItemElement != null);
-        toolItemElement.draggable = true;
-        toolItemElement.addEventListener('dragstart', function (ev) {
-            if (ev.dataTransfer == null)
-                return;
-            componentData.props = componentData.props || {};
-            ev.dataTransfer.setData(_components_index__WEBPACK_IMPORTED_MODULE_1__["constants"].componentData, JSON.stringify(componentData));
-            ev.dataTransfer.setData('mousePosition', JSON.stringify({ x: ev.offsetX, y: ev.offsetY }));
-        });
-    }
-    setComponets(componets) {
-        this.setState({ componets });
-    }
-    static getComponentData(dataTransfer) {
-        var str = dataTransfer.getData(_components_index__WEBPACK_IMPORTED_MODULE_1__["constants"].componentData);
-        console.assert(str != null);
-        return JSON.parse(str);
-    }
-    /** 获取光标在图标内的位置 */
-    static mouseInnerPosition(dataTransfer) {
-        let str = dataTransfer.getData('mousePosition');
-        console.assert(str != null);
-        return JSON.parse(str);
-    }
-    render() {
-        let empty = this.props.empty || react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7EC4\u4EF6");
-        let props = Object.assign({}, this.props);
-        let componets = this.state.componets || [];
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("ul", Object.assign({}, props, { className: `${_style__WEBPACK_IMPORTED_MODULE_2__["classNames"].componentPanel} ${this.props.className || ""}`, ref: (e) => this.toolbarElement = this.toolbarElement || e }), componets.length == 0 ? empty : componets.map((c, i) => {
-            let props = { key: i };
-            props[ComponentPanel.componentIndexName] = `${i}`;
-            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("li", Object.assign({}, props, { className: _style__WEBPACK_IMPORTED_MODULE_2__["classNames"].componentIcon }),
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "btn-link" },
-                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("i", { className: c.icon, style: { fontSize: 44, color: 'black' }, ref: e => {
-                            if (!e)
-                                return;
-                            let ctrl = c.componentData;
-                            this.componentDraggable(e, ctrl);
-                        } })),
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, c.displayName));
-        }));
-    }
-}
-ComponentPanel.componentIndexName = "data-component-index";
-//# sourceMappingURL=component-panel.js.map
-
-/***/ }),
-
 /***/ "./out/component.js":
 /*!**************************!*\
   !*** ./out/component.js ***!
@@ -792,7 +584,7 @@ ComponentPanel.componentIndexName = "data-component-index";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return Component; });
 /* harmony import */ var _property_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
+/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core");
 /* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__);
 
 
@@ -862,127 +654,6 @@ Component.Fragment = "";
 Component.componentPropEditors = {};
 Component.componentPropEditorDisplay = {};
 //# sourceMappingURL=component.js.map
-
-/***/ }),
-
-/***/ "./out/components/common.js":
-/*!**********************************!*\
-  !*** ./out/components/common.js ***!
-  \**********************************/
-/*! exports provided: ComponentTypes, constants, guid */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComponentTypes", function() { return ComponentTypes; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return constants; });
-/* harmony import */ var maishu_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return maishu_toolkit__WEBPACK_IMPORTED_MODULE_0__["guid"]; });
-
-const ComponentTypes = {
-    Text: "Text",
-    PageView: "PageView",
-    PlaceHolder: "PlaceHolder"
-};
-let constants = {
-    componentsDir: 'components',
-    connectorElementClassName: 'component-container',
-    componentTypeName: 'data-component-name',
-    componentData: 'component-data',
-    componentPosition: "component-position"
-};
-
-//# sourceMappingURL=common.js.map
-
-/***/ }),
-
-/***/ "./out/components/index.js":
-/*!*********************************!*\
-  !*** ./out/components/index.js ***!
-  \*********************************/
-/*! exports provided: ComponentTypes, constants, MasterPageName, MasterPageContext, MasterPage */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _master_page__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./master-page */ "./out/components/master-page.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageName", function() { return _master_page__WEBPACK_IMPORTED_MODULE_0__["MasterPageName"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return _master_page__WEBPACK_IMPORTED_MODULE_0__["MasterPageContext"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return _master_page__WEBPACK_IMPORTED_MODULE_0__["MasterPage"]; });
-
-/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./common */ "./out/components/common.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentTypes", function() { return _common__WEBPACK_IMPORTED_MODULE_1__["ComponentTypes"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return _common__WEBPACK_IMPORTED_MODULE_1__["constants"]; });
-
-
-// export * from "./place-holder";
-// export * from "./text";
-
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "./out/components/master-page.js":
-/*!***************************************!*\
-  !*** ./out/components/master-page.js ***!
-  \***************************************/
-/*! exports provided: MasterPageName, MasterPageContext, MasterPage */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MasterPageName", function() { return MasterPageName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return MasterPageContext; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return MasterPage; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../component */ "./out/component.js");
-
-
-const MasterPageName = 'MasterPage';
-const MasterPageContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"]({ master: null });
-class MasterPage extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-    constructor(props) {
-        super(props);
-        this.childComponents = {};
-        // let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-        this.state = {};
-    }
-    // private static children(props: ComponentProps): React.ReactElement<ComponentProps<any>>[] {
-    //     let arr = props.children == null ? [] :
-    //         Array.isArray(props.children) ? props.children : [props.children];
-    //     let children: React.ReactElement<ComponentProps<any>>[] = []
-    //     arr.forEach(o => {
-    //         if (!React.isValidElement(o))
-    //             return
-    //         children.push(o as React.ReactElement<ComponentProps<any>>)
-    //     })
-    //     return children
-    // }
-    // static getDerivedStateFromProps(props: ComponentProps) {
-    //     let children: React.ReactElement<ComponentProps<any>>[] = MasterPage.children(props)
-    //     return { children } as MasterPage["state"];
-    // }
-    render() {
-        // let props = {} as any
-        // for (let key in this.props) {
-        //     if (key == 'ref' || key == 'id')
-        //         continue
-        //     props[key] = this.props[key]
-        // }
-        // props.style = Object.assign({ minHeight: 40 }, props.style)
-        // let children = this.state.children.filter(o => o.props.parentId == null);
-        let master = this;
-        console.assert(master != null);
-        let children = this.props.children;
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](MasterPageContext.Provider, { value: { master } }, children);
-    }
-}
-_component__WEBPACK_IMPORTED_MODULE_1__["Component"].register(MasterPageName, MasterPage);
-//# sourceMappingURL=master-page.js.map
 
 /***/ }),
 
@@ -1075,7 +746,7 @@ class Errors {
 /*!**********************!*\
   !*** ./out/index.js ***!
   \**********************/
-/*! exports provided: groupDisplayNames, Component, ComponentPanel, EditorPanel, PageDesigner, DesignerContext, PropEditor, TextInput, classNames, ComponentTypes, constants, MasterPageName, MasterPageContext, MasterPage */
+/*! exports provided: groupDisplayNames, Component, EditorPanel, PageDesigner, DesignerContext, PropEditor, TextInput, classNames */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1086,35 +757,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component */ "./out/component.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return _component__WEBPACK_IMPORTED_MODULE_1__["Component"]; });
 
-/* harmony import */ var _component_panel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./component-panel */ "./out/component-panel.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentPanel", function() { return _component_panel__WEBPACK_IMPORTED_MODULE_2__["ComponentPanel"]; });
+/* harmony import */ var _editor_panel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EditorPanel", function() { return _editor_panel__WEBPACK_IMPORTED_MODULE_2__["EditorPanel"]; });
 
-/* harmony import */ var _editor_panel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EditorPanel", function() { return _editor_panel__WEBPACK_IMPORTED_MODULE_3__["EditorPanel"]; });
+/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_3__["PageDesigner"]; });
 
-/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_4__["PageDesigner"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DesignerContext", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_3__["DesignerContext"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DesignerContext", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_4__["DesignerContext"]; });
+/* harmony import */ var _prop_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PropEditor", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_4__["PropEditor"]; });
 
-/* harmony import */ var _prop_editor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PropEditor", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_5__["PropEditor"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TextInput", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_4__["TextInput"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TextInput", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_5__["TextInput"]; });
-
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./style */ "./out/style.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return _style__WEBPACK_IMPORTED_MODULE_6__["classNames"]; });
-
-/* harmony import */ var _components_index__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/index */ "./out/components/index.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ComponentTypes", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["ComponentTypes"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["constants"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageName", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["MasterPageName"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPageContext", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["MasterPageContext"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["MasterPage"]; });
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style */ "./out/style.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return _style__WEBPACK_IMPORTED_MODULE_5__["classNames"]; });
 
 // import './jquery';
 // import '../lib/jquery.event.drag-2.2';
@@ -1123,9 +780,7 @@ __webpack_require__.r(__webpack_exports__);
 // import '../lib/jquery.event.drop.live-2.2';
 
 
-
-
-// export { ComponentDefine, ComponentData } from "./models";
+// export { ComponentPanel } from "./component-panel";
 
 
 
@@ -1983,6 +1638,17 @@ function removeClassName(element, targetClassName) {
     return sourceClassName;
 }
 //# sourceMappingURL=style.js.map
+
+/***/ }),
+
+/***/ "maishu-jueying-core":
+/*!**************************************!*\
+  !*** external "maishu-jueying-core" ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__;
 
 /***/ }),
 
