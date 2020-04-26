@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.14
+ *  maishu-jueying v3.0.17
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -201,17 +201,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
 const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
-exports.parseComponentData = (componentData) => {
+function parseComponentData(componentData) {
     let type = register_1.componentTypes[componentData.type];
     if (type == null) {
         throw errors_1.errors.componentTypeNotExists(componentData.type);
     }
     let children = [];
     if (componentData.children != null) {
-        children = componentData.children.map(c => typeof c == "string" ? c : exports.parseComponentData(c));
+        children = componentData.children.map(c => typeof c == "string" ? c : parseComponentData(c));
     }
     return React.createElement(type, componentData.props, ...children);
-};
+}
+exports.parseComponentData = parseComponentData;
 //# sourceMappingURL=parse-component-data.js.map
 
 /***/ }),
@@ -795,7 +796,6 @@ function (_React$Component) {
     _this.state = {
       componets: []
     };
-    _this.designer = _this.props.designer;
     return _this;
   }
 
@@ -1309,11 +1309,6 @@ function (_React$Component) {
         customRender: this.props.customRender
       }));
     }
-  }, {
-    key: "designer",
-    get: function get() {
-      return this._designer;
-    }
   }]);
 
   return EditorPanel;
@@ -1444,9 +1439,7 @@ var _exportNames = {
   DesignerContext: true,
   PropEditor: true,
   TextInput: true,
-  classNames: true,
-  component: true,
-  componentTypes: true
+  classNames: true
 };
 Object.defineProperty(exports, "groupDisplayNames", {
   enumerable: true,
@@ -1502,18 +1495,6 @@ Object.defineProperty(exports, "classNames", {
     return _style.classNames;
   }
 });
-Object.defineProperty(exports, "component", {
-  enumerable: true,
-  get: function get() {
-    return _maishuJueyingCore.component;
-  }
-});
-Object.defineProperty(exports, "componentTypes", {
-  enumerable: true,
-  get: function get() {
-    return _maishuJueyingCore.componentTypes;
-  }
-});
 
 var _common = __webpack_require__(/*! ./common */ "./out-es5/common.js");
 
@@ -1538,19 +1519,6 @@ Object.keys(_index).forEach(function (key) {
     enumerable: true,
     get: function get() {
       return _index[key];
-    }
-  });
-});
-
-var _maishuJueyingCore = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
-
-Object.keys(_maishuJueyingCore).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _maishuJueyingCore[key];
     }
   });
 });
@@ -1618,14 +1586,12 @@ var PageDesigner =
 function (_React$Component) {
   _inherits(PageDesigner, _React$Component);
 
-  // private handler: ComponentDataHandler;
   function PageDesigner(props) {
     var _this;
 
     _classCallCheck(this, PageDesigner);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(PageDesigner).call(this, props)); // static defaultProps: Partial<PageDesignerProps> = { componentFactory: defaultComponentFactory };
-
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PageDesigner).call(this, props));
     _this.components = {};
     var pageData = _this.props.pageData;
 
@@ -1633,20 +1599,7 @@ function (_React$Component) {
 
     _this.state = {
       pageData: pageData
-    }; // this.handler = new ComponentDataHandler(pageData);
-    // this.handler.componentSelected.add(() => {
-    //     this.setState({ pageData: this.handler.pageData });
-    // })
-    // this.handler.componentRemoved.add(() => {
-    //     this.setState({ pageData: this.handler.pageData });
-    // })
-    // this.handler.componentUpdated.add(() => {
-    //     this.setState({ pageData: this.handler.pageData });
-    // })
-    // this.handler.pageDataChanged.add(args => {
-    //     this.setState({ pageData: args });
-    // })
-
+    };
     return _this;
   }
 
@@ -1656,41 +1609,24 @@ function (_React$Component) {
       var _this2 = this;
 
       //=========================================================
-      // 纪录当前 pageData 控件 ID
+      // 记录当前 pageData 控件 ID
       var componentIds = {}; //=========================================================
 
       PageDesigner.travelComponentData(pageData).forEach(function (item) {
         console.assert(item.props != null && item.id != null);
         componentIds[item.type] = componentIds[item.type] || [];
-        componentIds[item.type].push(item.props["id"]);
+        componentIds[item.type].push(item.id);
         var itemRef = item.props.ref;
 
         item.props.ref = function (e) {
           if (e != null) {
-            _this2.components[item.type] = _this2.components[item.type] || [];
-
-            _this2.components[item.type].push(e);
+            _this2.components[item.type] = _this2.components[item.type] || {};
+            _this2.components[item.type][item.id] = e;
           }
 
           if (typeof itemRef == "function") itemRef(e);
         };
-      }); //=========================================================
-      // 仅保留 componentIds 中的控件 
-
-      var names = Object.getOwnPropertyNames(this.components);
-
-      var _loop = function _loop(i) {
-        var typename = names[i];
-        var ids = componentIds[typename] || [];
-        _this2.components[typename] = (_this2.components[typename] || []).filter(function (o) {
-          return o.props != null && ids.indexOf(o["id"] || o.props["id"]) >= 0;
-        });
-      };
-
-      for (var i = 0; i < names.length; i++) {
-        _loop(i);
-      } //=========================================================
-
+      });
     }
   }, {
     key: "initPageData",
@@ -1714,29 +1650,7 @@ function (_React$Component) {
     value: function fillComponent(component) {
       var _this3 = this;
 
-      var namedComponents = {}; // let props: any = component.props = component.props || {};
-      //==================================================
-      // 兼容旧版本代码
-      // if (props.id) {
-      //     component.id = props.id;
-      //     delete props.id;
-      // }
-      // if (props.parentId) {
-      //     component.parentId = props.parentId;
-      //     delete component.parentId;
-      // }
-      // if (props.selected) {
-      //     component.selected = props.selected;
-      // }
-      // if (props.name) {
-      //     component.name = props.name;
-      //     delete props.name;
-      // }
-      // if (props.attr) {
-      //     component.attr = props.attr;
-      //     delete props.attr;
-      // }
-      //==================================================
+      var namedComponents = {};
 
       if (!component.name) {
         var num = 0;
@@ -1767,10 +1681,19 @@ function (_React$Component) {
   }, {
     key: "allComponents",
     value: function allComponents() {
+      var _this4 = this;
+
       var r = [];
 
+      var _loop = function _loop(key) {
+        var ids = Object.getOwnPropertyNames(_this4.components[key]);
+        r.push.apply(r, _toConsumableArray(ids.map(function (id) {
+          return _this4.components[key][id];
+        })));
+      };
+
       for (var key in this.components) {
-        r.push.apply(r, _toConsumableArray(this.components[key]));
+        _loop(key);
       }
 
       return r;
@@ -1810,8 +1733,7 @@ function (_React$Component) {
 
         obj[navPropsNames[navPropsNames.length - 1]] = value;
         componentDatas.push(componentData);
-      } // this.componentUpdated.fire(componentDatas);
-
+      }
 
       this.setState({
         pageData: this.pageData
@@ -1842,67 +1764,6 @@ function (_React$Component) {
       }
 
       this.selectComponents(componentData.id);
-    }
-    /**
-     * 设置控件位置
-     * @param componentId 组件编号
-     * @param position 组件位置
-     */
-
-  }, {
-    key: "setComponentPosition",
-    value: function setComponentPosition(componentId, position) {
-      return this.setComponentsPosition([{
-        componentId: componentId,
-        position: position
-      }]);
-    }
-    /**
-     * 设置控件大小
-     * @param componentId 组件编号
-     * @param size 组件大小
-     */
-
-  }, {
-    key: "setComponentSize",
-    value: function setComponentSize(componentId, size) {
-      console.assert(componentId != null);
-      console.assert(size != null);
-      var componentData = this.findComponentData(componentId);
-      if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
-      var style = componentData.props.style = componentData.props.style || {};
-      if (size.height) style.height = size.height;
-      if (size.width) style.width = size.width;
-      var pageData = this.state.pageData;
-      this.setState({
-        pageData: pageData
-      }); // this.componentUpdated.fire([componentData])
-    }
-  }, {
-    key: "setComponentsPosition",
-    value: function setComponentsPosition(positions) {
-      var _this4 = this;
-
-      var toUpdateProps = [];
-      positions.forEach(function (o) {
-        var componentId = o.componentId;
-        var _o$position = o.position,
-            left = _o$position.left,
-            top = _o$position.top;
-
-        var componentData = _this4.findComponentData(componentId);
-
-        if (!componentData) throw new Error("Control ".concat(componentId, " is not exits."));
-        var style = componentData.props.style = componentData.props.style || {};
-        if (left) style.left = left;
-        if (top) style.top = top;
-        toUpdateProps.push({
-          componentId: componentId,
-          propName: "style",
-          value: style
-        });
-      });
-      this.updateComponentProps(toUpdateProps);
     }
     /**
      * 选择指定的控件
@@ -1984,8 +1845,7 @@ function (_React$Component) {
       console.assert(component != null, "Cannt find component by id ".concat(componentId));
       var pageData = this.pageData;
       console.assert(pageData.children != null);
-      var children = pageData.children; //translateComponentDataChildren(pageData.children);
-
+      var children = pageData.children;
       this.removeComponentFrom(componentId, children);
       this.appendComponent(parentId, component, childComponentIndex);
     }
@@ -2142,7 +2002,7 @@ function (_React$Component) {
     value: function travelComponentData(pageData, filter) {
       var stack = new Array();
       stack.push(pageData);
-      var r = []; // return new Promise((resolve, reject) => {
+      var r = [];
 
       filter = filter || function () {
         return true;

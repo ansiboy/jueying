@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PropEditorConstructor } from "./prop-editor";
-import { ComponentData } from "./models";
+import { ComponentData } from "maishu-jueying-core";
 import { GroupedEditor, defaultGroupName } from "./property-editor";
 import { registerComponent } from "maishu-jueying-core";
 

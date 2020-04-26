@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ComponentData } from "./models";
+import { ComponentData } from "maishu-jueying-core";
 
 export interface PropEditorConstructor {
     new(props: PropEditorProps<any>): any;

@@ -1,11 +1,10 @@
 import * as React from "react";
-import { ComponentDefine, ComponentData } from "./models";
+import { ComponentData } from "maishu-jueying-core";
 import { constants } from "./components/index";
 import { classNames } from "./style";
-import { PageDesigner } from "page-designer";
+import { ComponentDefine } from "models";
 
 interface ComponentProps extends React.Props<ComponentPanel> {
-    // componets: ComponentDefine[],
     style?: React.CSSProperties,
     className?: string,
     empty?: string | JSX.Element,

@@ -1,4 +1,4 @@
-import { DragDropData } from "models";
+// import { DragDropData } from "models";
 
 interface JQuery<TElement = HTMLElement> extends Iterable<TElement> {
     // drag(handler?: JQuery.EventHandler<TElement> | JQuery.EventHandlerBase<any, JQuery.Event<TElement>> | false): this

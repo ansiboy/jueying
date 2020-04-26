@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.14
+ *  maishu-jueying v3.0.17
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -201,17 +201,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
 const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
-exports.parseComponentData = (componentData) => {
+function parseComponentData(componentData) {
     let type = register_1.componentTypes[componentData.type];
     if (type == null) {
         throw errors_1.errors.componentTypeNotExists(componentData.type);
     }
     let children = [];
     if (componentData.children != null) {
-        children = componentData.children.map(c => typeof c == "string" ? c : exports.parseComponentData(c));
+        children = componentData.children.map(c => typeof c == "string" ? c : parseComponentData(c));
     }
     return React.createElement(type, componentData.props, ...children);
-};
+}
+exports.parseComponentData = parseComponentData;
 //# sourceMappingURL=parse-component-data.js.map
 
 /***/ }),
@@ -727,7 +728,6 @@ class ComponentPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
         this.state = { componets: [] };
-        this.designer = this.props.designer;
     }
     get element() {
         return this.toolbarElement;
@@ -1008,9 +1008,6 @@ class EditorPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         super(props);
         this.state = { componentDatas: [] };
     }
-    get designer() {
-        return this._designer;
-    }
     render() {
         let { empty } = this.props;
         empty = empty || react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
@@ -1078,7 +1075,7 @@ class Errors {
 /*!**********************!*\
   !*** ./out/index.js ***!
   \**********************/
-/*! no static exports found */
+/*! exports provided: groupDisplayNames, Component, ComponentPanel, EditorPanel, PageDesigner, DesignerContext, PropEditor, TextInput, classNames, ComponentTypes, constants, MasterPageName, MasterPageContext, MasterPage */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1119,13 +1116,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MasterPage", function() { return _components_index__WEBPACK_IMPORTED_MODULE_7__["MasterPage"]; });
 
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__) if(["groupDisplayNames","Component","ComponentPanel","EditorPanel","PageDesigner","DesignerContext","PropEditor","TextInput","classNames","component","componentTypes","ComponentTypes","constants","MasterPageName","MasterPageContext","MasterPage","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "component", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__["component"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "componentTypes", function() { return maishu_jueying_core__WEBPACK_IMPORTED_MODULE_8__["componentTypes"]; });
-
 // import './jquery';
 // import '../lib/jquery.event.drag-2.2';
 // import '../lib/jquery.event.drag.live-2.2';
@@ -1135,8 +1125,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
+// export { ComponentDefine, ComponentData } from "./models";
 
 
 
@@ -1165,56 +1154,32 @@ __webpack_require__.r(__webpack_exports__);
 
 let DesignerContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"]({ designer: null });
 class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-    // private handler: ComponentDataHandler;
     constructor(props) {
         super(props);
-        // static defaultProps: Partial<PageDesignerProps> = { componentFactory: defaultComponentFactory };
         this.components = {};
         let pageData = this.props.pageData;
         this.initPageData(pageData);
         this.state = { pageData };
-        // this.handler = new ComponentDataHandler(pageData);
-        // this.handler.componentSelected.add(() => {
-        //     this.setState({ pageData: this.handler.pageData });
-        // })
-        // this.handler.componentRemoved.add(() => {
-        //     this.setState({ pageData: this.handler.pageData });
-        // })
-        // this.handler.componentUpdated.add(() => {
-        //     this.setState({ pageData: this.handler.pageData });
-        // })
-        // this.handler.pageDataChanged.add(args => {
-        //     this.setState({ pageData: args });
-        // })
     }
     setComponetRefProp(pageData) {
         //=========================================================
-        // 纪录当前 pageData 控件 ID
+        // 记录当前 pageData 控件 ID
         let componentIds = {};
         //=========================================================
         PageDesigner.travelComponentData(pageData).forEach(item => {
             console.assert(item.props != null && item.id != null);
             componentIds[item.type] = componentIds[item.type] || [];
-            componentIds[item.type].push(item.props["id"]);
+            componentIds[item.type].push(item.id);
             let itemRef = item.props.ref;
             item.props.ref = (e) => {
                 if (e != null) {
-                    this.components[item.type] = this.components[item.type] || [];
-                    this.components[item.type].push(e);
+                    this.components[item.type] = this.components[item.type] || {};
+                    this.components[item.type][item.id] = e;
                 }
                 if (typeof itemRef == "function")
                     itemRef(e);
             };
         });
-        //=========================================================
-        // 仅保留 componentIds 中的控件 
-        let names = Object.getOwnPropertyNames(this.components);
-        for (let i = 0; i < names.length; i++) {
-            let typename = names[i];
-            let ids = componentIds[typename] || [];
-            this.components[typename] = (this.components[typename] || []).filter(o => o.props != null && ids.indexOf(o["id"] || o.props["id"]) >= 0);
-        }
-        //=========================================================
     }
     initPageData(pageData) {
         if (pageData == null) {
@@ -1231,29 +1196,6 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     */
     fillComponent(component) {
         let namedComponents = {};
-        // let props: any = component.props = component.props || {};
-        //==================================================
-        // 兼容旧版本代码
-        // if (props.id) {
-        //     component.id = props.id;
-        //     delete props.id;
-        // }
-        // if (props.parentId) {
-        //     component.parentId = props.parentId;
-        //     delete component.parentId;
-        // }
-        // if (props.selected) {
-        //     component.selected = props.selected;
-        // }
-        // if (props.name) {
-        //     component.name = props.name;
-        //     delete props.name;
-        // }
-        // if (props.attr) {
-        //     component.attr = props.attr;
-        //     delete props.attr;
-        // }
-        //==================================================
         if (!component.name) {
             let num = 0;
             let name;
@@ -1279,7 +1221,8 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     allComponents() {
         let r = [];
         for (let key in this.components) {
-            r.push(...this.components[key]);
+            let ids = Object.getOwnPropertyNames(this.components[key]);
+            r.push(...ids.map(id => this.components[key][id]));
         }
         return r;
     }
@@ -1332,7 +1275,6 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             obj[navPropsNames[navPropsNames.length - 1]] = value;
             componentDatas.push(componentData);
         }
-        // this.componentUpdated.fire(componentDatas);
         this.setState({ pageData: this.pageData });
     }
     /**
@@ -1359,51 +1301,6 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             parentControl.children.push(componentData);
         }
         this.selectComponents(componentData.id);
-    }
-    /**
-     * 设置控件位置
-     * @param componentId 组件编号
-     * @param position 组件位置
-     */
-    setComponentPosition(componentId, position) {
-        return this.setComponentsPosition([{ componentId, position }]);
-    }
-    /**
-     * 设置控件大小
-     * @param componentId 组件编号
-     * @param size 组件大小
-     */
-    setComponentSize(componentId, size) {
-        console.assert(componentId != null);
-        console.assert(size != null);
-        let componentData = this.findComponentData(componentId);
-        if (!componentData)
-            throw new Error(`Control ${componentId} is not exits.`);
-        let style = componentData.props.style = (componentData.props.style || {});
-        if (size.height)
-            style.height = size.height;
-        if (size.width)
-            style.width = size.width;
-        let { pageData } = this.state;
-        this.setState({ pageData });
-        // this.componentUpdated.fire([componentData])
-    }
-    setComponentsPosition(positions) {
-        let toUpdateProps = [];
-        positions.forEach(o => {
-            let { componentId } = o;
-            let { left, top } = o.position;
-            let componentData = this.findComponentData(componentId);
-            if (!componentData)
-                throw new Error(`Control ${componentId} is not exits.`);
-            let style = componentData.props.style = (componentData.props.style || {});
-            if (left)
-                style.left = left;
-            if (top)
-                style.top = top;
-            toUpdateProps.push({ componentId, propName: "style", value: style });
-        });
-        this.updateComponentProps(toUpdateProps);
     }
     /**
      * 选择指定的控件
@@ -1465,7 +1362,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         console.assert(component != null, `Cannt find component by id ${componentId}`);
         let pageData = this.pageData;
         console.assert(pageData.children != null);
-        let children = pageData.children; //translateComponentDataChildren(pageData.children);
+        let children = pageData.children;
         this.removeComponentFrom(componentId, children);
         this.appendComponent(parentId, component, childComponentIndex);
     }
@@ -1513,7 +1410,6 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         let stack = new Array();
         stack.push(pageData);
         let r = [];
-        // return new Promise((resolve, reject) => {
         filter = filter || (() => true);
         while (stack.length > 0) {
             let item = stack.shift();

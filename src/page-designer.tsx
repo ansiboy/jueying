@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ComponentData } from "./models";
+import { ComponentData } from "maishu-jueying-core";
 import { Errors } from "./errors";
 import { guid } from "maishu-toolkit";
 

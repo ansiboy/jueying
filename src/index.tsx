@@ -9,7 +9,7 @@ export { groupDisplayNames } from "./common";
 export { Component } from "./component";
 export { ComponentPanel } from "./component-panel";
 export { EditorPanel, EditorPanelProps } from "./editor-panel";
-export { ComponentDefine, ComponentData } from "./models";
+// export { ComponentDefine, ComponentData } from "./models";
 export {
     PageDesigner, PageDesignerProps, PageDesignerState, DesignerContext,
 } from "./page-designer";
