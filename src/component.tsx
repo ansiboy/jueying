@@ -9,6 +9,7 @@ export interface PropEditorInfo {
     displayName: string,
     editorType: PropEditorConstructor,
     group: GroupedEditor["group"],
+    defaultValue: any
 }
 
 interface SetPropEditorOptions {
@@ -18,6 +19,7 @@ interface SetPropEditorOptions {
     group?: GroupedEditor["group"],
     display?: ComponentPropEditorDisplay,
     displayName?: string,
+    defaultValue?: any,
 }
 
 /** 组件是否显示回调函数 */
@@ -72,7 +74,7 @@ export class Component {
     }
 
     static setPropEditor(options: SetPropEditorOptions): void {
-        let { componentType, editorType, display: editorDisplay, group, propName, displayName } = options;
+        let { componentType, editorType, display: editorDisplay, group, propName, displayName, defaultValue } = options;
         group = group || defaultGroupName;
         propName = propName || "";
         displayName = displayName || propName;
@@ -83,29 +85,17 @@ export class Component {
         Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
         let classProps = Component.componentPropEditors[className] = Component.componentPropEditors[className] || []
         for (let i = 0; i < classProps.length; i++) {
-            let propName1 = classProps[i].propName; //classProps[i].propNames.join('.')
+            let propName1 = classProps[i].propName;
             let propName2 = propNames.join('.')
             if (propName1 == propName2) {
                 classProps[i].editorType = editorType as PropEditorConstructor;
                 return
             }
         }
-        classProps.push({ propName, displayName, editorType: editorType as PropEditorConstructor, group })
+        classProps.push({ propName, displayName, editorType: editorType as PropEditorConstructor, group, defaultValue })
     }
 
-    // static componentTypes = {} as { [key: string]: React.ComponentClass<any> | string }
     static register(typeName: string, componentType: React.ComponentClass<any>): void {
-        // if (componentType == null && typeof componentName == 'function') {
-        //     componentType = componentName;
-        //     componentName = (componentType as React.ComponentClass<any>).name;
-        //     (componentType as any)['componentName'] = componentName;
-        // }
-
-        // if (!componentName)
-        //     throw Errors.argumentNull('componentName');
-
-        // if (!componentType)
-        //     throw Errors.argumentNull('componentType');
         return registerComponent(typeName, componentType);
     }
 

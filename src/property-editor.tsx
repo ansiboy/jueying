@@ -9,7 +9,7 @@ import { groupDisplayNames } from "./common";
 
 export interface EditorProps extends React.Props<PropertyEditor> {
     empty: string | JSX.Element,
-    customRender?: (editComponents: ComponentData<any>[], items: PropertyEditorInfo[]) => JSX.Element
+    customRender?: (editComponents: ComponentData[], items: PropertyEditorInfo[]) => JSX.Element
 }
 
 interface EditorState {
@@ -72,10 +72,9 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         // 各个控件相同的属性值
         let commonFlatProps: { [navName: string]: any } = {};
         for (let i = 0; i < selectedComponents.length; i++) {
-            let control = selectedComponents[i]
+            let control = selectedComponents[i];
             let controlProps: { [key: string]: any } = Object.assign({}, control.props);
             delete (controlProps as any).children;
-            // controlProps = this.flatProps(controlProps)
             if (i == 0) {
                 commonFlatProps = controlProps
             }
@@ -95,6 +94,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
             let propName = propEditorInfo.propName;;
             let editorType = propEditorInfo.editorType;
             let value = this.propValue(propName, commonFlatProps);
+            if (value == null)
+                value = propEditorInfo.defaultValue;
 
             let editorProps: PropEditorProps<any> = {
                 value: value,

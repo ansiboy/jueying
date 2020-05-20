@@ -59,7 +59,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         }
 
         pageData.children = pageData.children || [];
-        // PageDesigner.nameComponent(pageData);
         this.fillComponent(pageData);
         this.setComponetRefProp(pageData);
     }
@@ -216,17 +215,21 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     /**
-     * 选择指定的控件，一个或多个
+     * 选择指定的控件，一个或多个。已经选择的控件取消选择。
      * @param control 指定的控件
      */
     selectComponents(componentIds: string[] | string): void {
         if (typeof componentIds == 'string')
             componentIds = [componentIds]
 
-        var stack: ComponentData<any>[] = [];
+        let selectedComponentIds = this.selectedComponentIds;
+        if (this.isSame(componentIds, selectedComponentIds))
+            return;
+
+        var stack: ComponentData[] = [];
         stack.push(this.pageData)
         while (stack.length > 0) {
-            let item = stack.pop() as ComponentData<any>;
+            let item = stack.pop() as ComponentData;
             let isSelectedControl = componentIds.indexOf(item.id) >= 0;
             item.selected = isSelectedControl;
 
@@ -239,7 +242,18 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         }
 
         this.setState({ pageData: this.pageData });
+    }
 
+    /** 判断两个字符串数组是否相等 */
+    private isSame(arr1: string[], arr2: string[]) {
+        if (arr1.length != arr2.length)
+            return false;
+
+        for (let i = 0; i < arr1.length; i++) {
+            if (arr2.indexOf(arr1[i]) < 0)
+                return false;
+        }
+        return true;
     }
 
     /** 移除控件 */

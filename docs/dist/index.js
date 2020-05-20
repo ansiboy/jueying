@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.0.19
+ *  maishu-jueying v3.1.2
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -524,25 +524,21 @@ function pareeUrlQuery(query) {
 /*!***********************!*\
   !*** ./out/common.js ***!
   \***********************/
-/*! exports provided: constants, proptDisplayNames, groupDisplayNames, guid, Callback */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "constants", function() { return constants; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "proptDisplayNames", function() { return proptDisplayNames; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "groupDisplayNames", function() { return groupDisplayNames; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return guid; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Callback", function() { return Callback; });
-let constants = {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.constants = {
     componentsDir: 'components',
     connectorElementClassName: 'component-container',
     componentTypeName: 'data-component-name',
     componentData: 'component-data',
     componentPosition: "component-position"
 };
-let proptDisplayNames = {};
-let groupDisplayNames = {};
+exports.proptDisplayNames = {};
+exports.groupDisplayNames = {};
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -552,6 +548,7 @@ function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
         s4() + '-' + s4() + s4() + s4();
 }
+exports.guid = guid;
 class Callback {
     constructor() {
         this.funcs = new Array();
@@ -569,6 +566,7 @@ class Callback {
         return new Callback();
     }
 }
+exports.Callback = Callback;
 //# sourceMappingURL=common.js.map
 
 /***/ }),
@@ -577,17 +575,14 @@ class Callback {
 /*!**************************!*\
   !*** ./out/component.js ***!
   \**************************/
-/*! exports provided: Component */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return Component; });
-/* harmony import */ var _property_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core");
-/* harmony import */ var maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__);
 
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const property_editor_1 = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
+const maishu_jueying_core_1 = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core");
 // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
 // let defaultGroup: GroupedEditor["group"] = { prop: "", displayName: "" };
 class Component {
@@ -614,8 +609,8 @@ class Component {
         return editor;
     }
     static setPropEditor(options) {
-        let { componentType, editorType, display: editorDisplay, group, propName, displayName } = options;
-        group = group || _property_editor__WEBPACK_IMPORTED_MODULE_0__["defaultGroupName"];
+        let { componentType, editorType, display: editorDisplay, group, propName, displayName, defaultValue } = options;
+        group = group || property_editor_1.defaultGroupName;
         propName = propName || "";
         displayName = displayName || propName;
         // 属性可能为导航属性,例如 style.width
@@ -624,27 +619,17 @@ class Component {
         Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
         let classProps = Component.componentPropEditors[className] = Component.componentPropEditors[className] || [];
         for (let i = 0; i < classProps.length; i++) {
-            let propName1 = classProps[i].propName; //classProps[i].propNames.join('.')
+            let propName1 = classProps[i].propName;
             let propName2 = propNames.join('.');
             if (propName1 == propName2) {
                 classProps[i].editorType = editorType;
                 return;
             }
         }
-        classProps.push({ propName, displayName, editorType: editorType, group });
+        classProps.push({ propName, displayName, editorType: editorType, group, defaultValue });
     }
-    // static componentTypes = {} as { [key: string]: React.ComponentClass<any> | string }
     static register(typeName, componentType) {
-        // if (componentType == null && typeof componentName == 'function') {
-        //     componentType = componentName;
-        //     componentName = (componentType as React.ComponentClass<any>).name;
-        //     (componentType as any)['componentName'] = componentName;
-        // }
-        // if (!componentName)
-        //     throw Errors.argumentNull('componentName');
-        // if (!componentType)
-        //     throw Errors.argumentNull('componentType');
-        return Object(maishu_jueying_core__WEBPACK_IMPORTED_MODULE_1__["registerComponent"])(typeName, componentType);
+        return maishu_jueying_core_1.registerComponent(typeName, componentType);
     }
 }
 //==========================================
@@ -653,6 +638,7 @@ Component.Fragment = "";
 //==========================================
 Component.componentPropEditors = {};
 Component.componentPropEditorDisplay = {};
+exports.Component = Component;
 //# sourceMappingURL=component.js.map
 
 /***/ }),
@@ -661,31 +647,28 @@ Component.componentPropEditorDisplay = {};
 /*!*****************************!*\
   !*** ./out/editor-panel.js ***!
   \*****************************/
-/*! exports provided: EditorPanel */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorPanel", function() { return EditorPanel; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _property_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style */ "./out/style.js");
 
-
-
-class EditorPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const property_editor_1 = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
+const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
+class EditorPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = { componentDatas: [] };
     }
     render() {
         let { empty } = this.props;
-        empty = empty || react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: `${_style__WEBPACK_IMPORTED_MODULE_2__["classNames"].editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_property_editor__WEBPACK_IMPORTED_MODULE_1__["PropertyEditor"], { ref: e => this.editor = e || this.editor, empty: empty, customRender: this.props.customRender }));
+        empty = empty || React.createElement("div", { className: "empty" }, "\u6682\u65E0\u53EF\u7528\u7684\u5C5E\u6027");
+        return React.createElement("div", { className: `${style_1.classNames.editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element },
+            React.createElement(property_editor_1.PropertyEditor, { ref: e => this.editor = e || this.editor, empty: empty, customRender: this.props.customRender }));
     }
 }
+exports.EditorPanel = EditorPanel;
 //# sourceMappingURL=editor-panel.js.map
 
 /***/ }),
@@ -694,12 +677,12 @@ class EditorPanel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 /*!***********************!*\
   !*** ./out/errors.js ***!
   \***********************/
-/*! exports provided: Errors */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Errors", function() { return Errors; });
+
+Object.defineProperty(exports, "__esModule", { value: true });
 class Errors {
     static placeHolderIdNull() {
         let msg = `Place holder property id cannt be null or empty.`;
@@ -738,6 +721,7 @@ class Errors {
         return new Error(msg);
     }
 }
+exports.Errors = Errors;
 //# sourceMappingURL=errors.js.map
 
 /***/ }),
@@ -746,45 +730,26 @@ class Errors {
 /*!**********************!*\
   !*** ./out/index.js ***!
   \**********************/
-/*! exports provided: groupDisplayNames, Component, EditorPanel, PageDesigner, DesignerContext, PropEditor, TextInput, classNames */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./common */ "./out/common.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "groupDisplayNames", function() { return _common__WEBPACK_IMPORTED_MODULE_0__["groupDisplayNames"]; });
 
-/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component */ "./out/component.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return _component__WEBPACK_IMPORTED_MODULE_1__["Component"]; });
-
-/* harmony import */ var _editor_panel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EditorPanel", function() { return _editor_panel__WEBPACK_IMPORTED_MODULE_2__["EditorPanel"]; });
-
-/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_3__["PageDesigner"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DesignerContext", function() { return _page_designer__WEBPACK_IMPORTED_MODULE_3__["DesignerContext"]; });
-
-/* harmony import */ var _prop_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PropEditor", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_4__["PropEditor"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TextInput", function() { return _prop_editor__WEBPACK_IMPORTED_MODULE_4__["TextInput"]; });
-
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style */ "./out/style.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return _style__WEBPACK_IMPORTED_MODULE_5__["classNames"]; });
-
-// import './jquery';
-// import '../lib/jquery.event.drag-2.2';
-// import '../lib/jquery.event.drag.live-2.2';
-// import '../lib/jquery.event.drop-2.2';
-// import '../lib/jquery.event.drop.live-2.2';
-
-
-// export { ComponentPanel } from "./component-panel";
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
+exports.groupDisplayNames = common_1.groupDisplayNames;
+var component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
+exports.Component = component_1.Component;
+var editor_panel_1 = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
+exports.EditorPanel = editor_panel_1.EditorPanel;
+var page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+exports.PageDesigner = page_designer_1.PageDesigner;
+exports.DesignerContext = page_designer_1.DesignerContext;
+var prop_editor_1 = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
+exports.PropEditor = prop_editor_1.PropEditor;
+exports.TextInput = prop_editor_1.TextInput;
+var style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
+exports.classNames = style_1.classNames;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -793,22 +758,17 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************!*\
   !*** ./out/page-designer.js ***!
   \******************************/
-/*! exports provided: DesignerContext, PageDesigner */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DesignerContext", function() { return DesignerContext; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageDesigner", function() { return PageDesigner; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
-/* harmony import */ var maishu_toolkit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
 
-
-
-let DesignerContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"]({ designer: null });
-class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
+const maishu_toolkit_1 = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/out/index.js");
+exports.DesignerContext = React.createContext({ designer: null });
+class PageDesigner extends React.Component {
     constructor(props) {
         super(props);
         this.components = {};
@@ -841,7 +801,6 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             return;
         }
         pageData.children = pageData.children || [];
-        // PageDesigner.nameComponent(pageData);
         this.fillComponent(pageData);
         this.setComponetRefProp(pageData);
     }
@@ -862,7 +821,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             component.name = name;
         }
         if (!component.id)
-            component.id = Object(maishu_toolkit__WEBPACK_IMPORTED_MODULE_2__["guid"])();
+            component.id = maishu_toolkit_1.guid();
         component.children = component.children || [];
         if (!component.children || component.children.length == 0) {
             return;
@@ -940,9 +899,9 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
      */
     appendComponent(parentId, componentData, componentIndex) {
         if (!parentId)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('parentId');
+            throw errors_1.Errors.argumentNull('parentId');
         if (!componentData)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].argumentNull('childComponent');
+            throw errors_1.Errors.argumentNull('childComponent');
         this.initPageData(componentData);
         let parentControl = this.findComponentData(parentId);
         if (parentControl == null)
@@ -970,12 +929,15 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         //====================================================
     }
     /**
-     * 选择指定的控件，一个或多个
+     * 选择指定的控件，一个或多个。已经选择的控件取消选择。
      * @param control 指定的控件
      */
     selectComponents(componentIds) {
         if (typeof componentIds == 'string')
             componentIds = [componentIds];
+        let selectedComponentIds = this.selectedComponentIds;
+        if (this.isSame(componentIds, selectedComponentIds))
+            return;
         var stack = [];
         stack.push(this.pageData);
         while (stack.length > 0) {
@@ -989,6 +951,16 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             });
         }
         this.setState({ pageData: this.pageData });
+    }
+    /** 判断两个字符串数组是否相等 */
+    isSame(arr1, arr2) {
+        if (arr1.length != arr2.length)
+            return false;
+        for (let i = 0; i < arr1.length; i++) {
+            if (arr2.indexOf(arr1[i]) < 0)
+                return false;
+        }
+        return true;
     }
     /** 移除控件 */
     removeComponent(...componentIds) {
@@ -1086,7 +1058,7 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     findComponentData(componentId) {
         let pageData = this.state.pageData;
         if (!pageData)
-            throw _errors__WEBPACK_IMPORTED_MODULE_1__["Errors"].pageDataIsNull();
+            throw errors_1.Errors.pageDataIsNull();
         let componentDatas = PageDesigner.travelComponentData(pageData, (item) => item.id == componentId);
         return componentDatas[0];
     }
@@ -1106,10 +1078,11 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         this.components[typeName];
     }
     render() {
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { tabIndex: 0, ref: e => this._element = this._element || e, onKeyDown: e => this.onKeyDown(e), className: this.props.className, style: this.props.style },
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"](DesignerContext.Provider, { value: { designer: this } }, this.props.children));
+        return React.createElement("div", { tabIndex: 0, ref: e => this._element = this._element || e, onKeyDown: e => this.onKeyDown(e), className: this.props.className, style: this.props.style },
+            React.createElement(exports.DesignerContext.Provider, { value: { designer: this } }, this.props.children));
     }
 }
+exports.PageDesigner = PageDesigner;
 //# sourceMappingURL=page-designer.js.map
 
 /***/ }),
@@ -1118,16 +1091,12 @@ class PageDesigner extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 /*!****************************!*\
   !*** ./out/prop-editor.js ***!
   \****************************/
-/*! exports provided: PropEditor, TextInput */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PropEditor", function() { return PropEditor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TextInput", function() { return TextInput; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
@@ -1135,8 +1104,9 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-
-class PropEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+class PropEditor extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -1147,15 +1117,17 @@ class PropEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         return TextInput;
     }
 }
+exports.PropEditor = PropEditor;
 class TextInput extends PropEditor {
     render() {
         let { value } = this.props;
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { className: 'form-control', value: value || '', onChange: e => {
+        return React.createElement("input", { className: 'form-control', value: value || '', onChange: e => {
                 // this.setState({ value: e.target.value })
                 this.props.updateComponentProp(e.target.value);
             } });
     }
 }
+exports.TextInput = TextInput;
 function dropdown(items, valueType) {
     let itemsPromise;
     let textValues = [];
@@ -1195,7 +1167,7 @@ function dropdown(items, valueType) {
             let { items } = this.state;
             let { value } = this.props;
             items = items || textValues;
-            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("select", { className: 'form-control', value: value == null ? "" : value, onChange: e => {
+            return React.createElement("select", { className: 'form-control', value: value == null ? "" : value, onChange: e => {
                     let textValue = e.target.value;
                     if (valueType == "number") {
                         let integerRegex = /^\d+$/;
@@ -1211,7 +1183,7 @@ function dropdown(items, valueType) {
                         value = textValue;
                     }
                     this.props.updateComponentProp(value);
-                } }, items.map(o => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("option", { key: o.value, value: o.value }, o.text)));
+                } }, items.map(o => React.createElement("option", { key: o.value, value: o.value }, o.text)));
         }
     }
     return Dropdown;
@@ -1224,27 +1196,19 @@ function dropdown(items, valueType) {
 /*!********************************!*\
   !*** ./out/property-editor.js ***!
   \********************************/
-/*! exports provided: defaultGroupName, PropertyEditor, ErrorBoundary */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGroupName", function() { return defaultGroupName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PropertyEditor", function() { return PropertyEditor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ErrorBoundary", function() { return ErrorBoundary; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component */ "./out/component.js");
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
-/* harmony import */ var _page_designer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
-/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./common */ "./out/common.js");
 
-
-
-
-
-let defaultGroupName = "";
-class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
+const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
+const page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
+const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
+exports.defaultGroupName = "";
+class PropertyEditor extends React.Component {
     constructor(props) {
         super(props);
         this._element = null;
@@ -1259,7 +1223,7 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         let selectedComponents = designer.selectedComponents;
         for (let i = 0; i < selectedComponents.length; i++) {
             let componentData = selectedComponents[i];
-            let propEditorInfos = _component__WEBPACK_IMPORTED_MODULE_1__["Component"].getPropEditors(componentData);
+            let propEditorInfos = component_1.Component.getPropEditors(componentData);
             if (i == 0) {
                 commonPropEditorInfos = propEditorInfos || [];
             }
@@ -1283,7 +1247,6 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             let control = selectedComponents[i];
             let controlProps = Object.assign({}, control.props);
             delete controlProps.children;
-            // controlProps = this.flatProps(controlProps)
             if (i == 0) {
                 commonFlatProps = controlProps;
             }
@@ -1303,6 +1266,8 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             ;
             let editorType = propEditorInfo.editorType;
             let value = this.propValue(propName, commonFlatProps);
+            if (value == null)
+                value = propEditorInfo.defaultValue;
             let editorProps = {
                 value: value,
                 editComponents: selectedComponents,
@@ -1313,16 +1278,16 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                     designer.updateComponentProps(componentProps);
                 }
             };
-            let editor = react__WEBPACK_IMPORTED_MODULE_0__["createElement"](editorType, editorProps);
+            let editor = React.createElement(editorType, editorProps);
             editors.push({ prop: propEditorInfo.propName, displayName: propEditorInfo.displayName, editor, group: propEditorInfo.group });
         }
         return editors;
     }
     propValue(propName, props) {
         if (!propName)
-            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull("propName");
+            throw errors_1.Errors.argumentNull("propName");
         if (!props)
-            throw _errors__WEBPACK_IMPORTED_MODULE_2__["Errors"].argumentNull("props");
+            throw errors_1.Errors.argumentNull("props");
         let navPropsNames = propName.split(".");
         let obj = props;
         for (let i = 0; i < navPropsNames.length; i++) {
@@ -1333,14 +1298,14 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         return obj;
     }
     render() {
-        return react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_page_designer__WEBPACK_IMPORTED_MODULE_3__["DesignerContext"].Consumer, null, args => {
+        return React.createElement(page_designer_1.DesignerContext.Consumer, null, args => {
             let designer = args.designer;
             if (designer == null)
                 return null;
             let editors = this.getEditors(designer);
             if (editors.length == 0) {
                 let empty = this.props.empty;
-                return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "text-center" }, empty);
+                return React.createElement("div", { className: "text-center" }, empty);
             }
             if (this.props.customRender) {
                 let items = editors.map(o => Object.assign({ displayName: o.displayName }, o));
@@ -1351,7 +1316,7 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             }
             let groupEditorsArray = [];
             for (let i = 0; i < editors.length; i++) {
-                let group = editors[i].group || defaultGroupName;
+                let group = editors[i].group || exports.defaultGroupName;
                 let groupEditors = groupEditorsArray.filter(o => o.group == group)[0];
                 if (groupEditors == null) {
                     groupEditors = { group: editors[i].group, editors: [] };
@@ -1359,20 +1324,21 @@ class PropertyEditor extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                 }
                 groupEditors.editors.push({ prop: editors[i].prop, displayName: editors[i].displayName, editor: editors[i].editor });
             }
-            return groupEditorsArray.map((g) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: g.group, className: "panel panel-default" },
-                g.group ? react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-heading" }, _common__WEBPACK_IMPORTED_MODULE_4__["groupDisplayNames"][g.group] || g.group) : null,
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "panel-body" }, g.editors.map((o, i) => react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { key: o.prop, className: "form-group clearfix" },
-                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", null, o.displayName),
-                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "control" },
-                        react__WEBPACK_IMPORTED_MODULE_0__["createElement"](ErrorBoundary, null, o.editor)))))));
+            return groupEditorsArray.map((g) => React.createElement("div", { key: g.group, className: "panel panel-default" },
+                g.group ? React.createElement("div", { className: "panel-heading" }, common_1.groupDisplayNames[g.group] || g.group) : null,
+                React.createElement("div", { className: "panel-body" }, g.editors.map((o, i) => React.createElement("div", { key: o.prop, className: "form-group clearfix" },
+                    React.createElement("label", null, o.displayName),
+                    React.createElement("div", { className: "control" },
+                        React.createElement(ErrorBoundary, null, o.editor)))))));
         });
     }
     get element() {
         return this._element;
     }
 }
-PropertyEditor.contextType = _page_designer__WEBPACK_IMPORTED_MODULE_3__["DesignerContext"];
-class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+exports.PropertyEditor = PropertyEditor;
+PropertyEditor.contextType = page_designer_1.DesignerContext;
+class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -1386,13 +1352,14 @@ class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     render() {
         let { error } = this.state || {};
         if (error) {
-            return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "error" },
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.message),
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", null, error.stack));
+            return React.createElement("div", { className: "error" },
+                React.createElement("div", null, error.message),
+                React.createElement("div", null, error.stack));
         }
         return this.props.children;
     }
 }
+exports.ErrorBoundary = ErrorBoundary;
 //# sourceMappingURL=property-editor.js.map
 
 /***/ }),
@@ -1401,17 +1368,14 @@ class ErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 /*!**********************!*\
   !*** ./out/style.js ***!
   \**********************/
-/*! exports provided: classNames, appendClassName, removeClassName */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "classNames", function() { return classNames; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "appendClassName", function() { return appendClassName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeClassName", function() { return removeClassName; });
-/* harmony import */ var _errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors */ "./out/errors.js");
 
-let classNames = {
+Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
+exports.classNames = {
     componentSelected: `component-selected`,
     emptyTemplates: `empty-templates`,
     loadingTemplates: `loading-templates`,
@@ -1435,20 +1399,20 @@ let element = document.createElement('style');
 element.type = 'text/css';
 element.setAttribute("data-name", "jueying");
 element.innerHTML = `
-            .${classNames.componentSelected} {
+            .${exports.classNames.componentSelected} {
                 border: solid 1px #337ab7!important;
             }
-            .${classNames.componentSelected} > :first-child {
+            .${exports.classNames.componentSelected} > :first-child {
                 border-color: blue;
               }
-              .${classNames.componentSelected} .resize_handle {
+              .${exports.classNames.componentSelected} .resize_handle {
                 position: absolute;
                 height: 6px;
                 width: 6px;
                 border: 1px solid #89B;
                 background: #9AC;
               }
-              .${classNames.componentSelected} .move_handle {
+              .${exports.classNames.componentSelected} .move_handle {
                 height: 12px;
                 width: 12px;
                 top: 6px;
@@ -1457,58 +1421,58 @@ element.innerHTML = `
                 position: relative;
                 margin-top: -12px;
               }
-              .${classNames.componentSelected} .NW,
-              .${classNames.componentSelected} .NN,
-              .${classNames.componentSelected} .NE {
+              .${exports.classNames.componentSelected} .NW,
+              .${exports.classNames.componentSelected} .NN,
+              .${exports.classNames.componentSelected} .NE {
                 top: -4px;
               }
-              .${classNames.componentSelected} .NE,
-              .${classNames.componentSelected} .EE,
-              .${classNames.componentSelected} .SE {
+              .${exports.classNames.componentSelected} .NE,
+              .${exports.classNames.componentSelected} .EE,
+              .${exports.classNames.componentSelected} .SE {
                 right: -4px;
               }
-              .${classNames.componentSelected} .SW,
-              .${classNames.componentSelected}.SS,
-              .${classNames.componentSelected} .SE {
+              .${exports.classNames.componentSelected} .SW,
+              .${exports.classNames.componentSelected}.SS,
+              .${exports.classNames.componentSelected} .SE {
                 bottom: -4px;
               }
-              .${classNames.componentSelected} .NW,
-              .${classNames.componentSelected} .WW,
-              .${classNames.componentSelected} .SW {
+              .${exports.classNames.componentSelected} .NW,
+              .${exports.classNames.componentSelected} .WW,
+              .${exports.classNames.componentSelected} .SW {
                 left: -4px;
               }
-              .${classNames.componentSelected} .SE,
-              .${classNames.componentSelected} .NW {
+              .${exports.classNames.componentSelected} .SE,
+              .${exports.classNames.componentSelected} .NW {
                 cursor: nw-resize;
               }
-              .${classNames.componentSelected} .SW,
-              .${classNames.componentSelected} .NE {
+              .${exports.classNames.componentSelected} .SW,
+              .${exports.classNames.componentSelected} .NE {
                 cursor: ne-resize;
               }
-              .${classNames.componentSelected} .NN,
-              .${classNames.componentSelected} .SS {
+              .${exports.classNames.componentSelected} .NN,
+              .${exports.classNames.componentSelected} .SS {
                 cursor: n-resize;
                 left: 50%;
                 margin-left: -4px;
               }
-              .${classNames.componentSelected} .EE,
-              .${classNames.componentSelected} .WW {
+              .${exports.classNames.componentSelected} .EE,
+              .${exports.classNames.componentSelected} .WW {
                 cursor: e-resize;
                 top: 50%;
                 margin-top: -4px;
               }
-            .${classNames.emptyTemplates} {
+            .${exports.classNames.emptyTemplates} {
                 padding:50px 0;
                 text-align: center;
             }
-            .${classNames.loadingTemplates} {
+            .${exports.classNames.loadingTemplates} {
                 padding:50px 0;
                 text-align: center;
             }
-            .${classNames.templateSelected} .page-view {
+            .${exports.classNames.templateSelected} .page-view {
                 border: solid 1px #337ab7!important;
             }
-            .${classNames.templateDialog} .name {
+            .${exports.classNames.templateDialog} .name {
                 margin-top: -${templateDialog.nameHeight}px;
                 height: ${templateDialog.nameHeight}px;
                 font-size: ${templateDialog.fontSize}px;
@@ -1517,43 +1481,43 @@ element.innerHTML = `
                 background-color: black;
                 opacity: 0.5;
             }
-            .${classNames.templateDialog} .name span {
+            .${exports.classNames.templateDialog} .name span {
                 color: white;
             }
-            .${classNames.emptyDocument} {
+            .${exports.classNames.emptyDocument} {
                 text-align: center;
                 padding: 100px 0;
             }
-            .${classNames.component} > .NW,
-            .${classNames.component} > .NN,
-            .${classNames.component} > .NE,
-            .${classNames.component} > .EE,
-            .${classNames.component} > .SE,
-            .${classNames.component} > .SW,
-            .${classNames.component} > .SS,
-            .${classNames.component} > .WW {
+            .${exports.classNames.component} > .NW,
+            .${exports.classNames.component} > .NN,
+            .${exports.classNames.component} > .NE,
+            .${exports.classNames.component} > .EE,
+            .${exports.classNames.component} > .SE,
+            .${exports.classNames.component} > .SW,
+            .${exports.classNames.component} > .SS,
+            .${exports.classNames.component} > .WW {
                 display: none;
             }
-            .${classNames.componentSelected}.component > .NW,
-            .${classNames.componentSelected}.component > .NN,
-            .${classNames.componentSelected}.component > .NE,
-            .${classNames.componentSelected}.component > .EE,
-            .${classNames.componentSelected}.component > .SE,
-            .${classNames.componentSelected}.component > .SW,
-            .${classNames.componentSelected}.component > .SS,
-            .${classNames.componentSelected}.component > .WW {
+            .${exports.classNames.componentSelected}.component > .NW,
+            .${exports.classNames.componentSelected}.component > .NN,
+            .${exports.classNames.componentSelected}.component > .NE,
+            .${exports.classNames.componentSelected}.component > .EE,
+            .${exports.classNames.componentSelected}.component > .SE,
+            .${exports.classNames.componentSelected}.component > .SW,
+            .${exports.classNames.componentSelected}.component > .SS,
+            .${exports.classNames.componentSelected}.component > .WW {
                 display: block;
             }
-            .${classNames.placeholder} {
+            .${exports.classNames.placeholder} {
                 min-height: 40px;
                 width: 100%;
             }
-            .${classNames.placeholder}.active,
-            .${classNames.componentWrapper}.active,
-            .${classNames.componentWrapper}.${classNames.componentSelected}.active {
+            .${exports.classNames.placeholder}.active,
+            .${exports.classNames.componentWrapper}.active,
+            .${exports.classNames.componentWrapper}.${exports.classNames.componentSelected}.active {
                 border: 1px solid green;
             }
-            .${classNames.editorPanel} {
+            .${exports.classNames.editorPanel} {
                 width: 300px;
                 background: white;
                 color: black;
@@ -1562,25 +1526,25 @@ element.innerHTML = `
                 z-index: 100;
                 overflow: auto;
             }
-            .${classNames.editorPanel} label {
+            .${exports.classNames.editorPanel} label {
                 width: 80px;
                 float: left;
                 padding: 4px;
                 text-overflow: ellipsis;
                 overflow: hidden;
             }
-            .${classNames.editorPanel} .control {
+            .${exports.classNames.editorPanel} .control {
                 padding-left: 90px;
             }
-            .${classNames.editorPanel} .empty {
+            .${exports.classNames.editorPanel} .empty {
                 padding-top: 200px;
                 text-align: center;
             }
-            .${classNames.designer} .error,
-            .${classNames.editorPanel} .error {
+            .${exports.classNames.designer} .error,
+            .${exports.classNames.editorPanel} .error {
                 color: red;
             }
-            .${classNames.componentPanel} {
+            .${exports.classNames.componentPanel} {
                 background: white;
                 color: black;
                 font-size: 14px;
@@ -1589,14 +1553,14 @@ element.innerHTML = `
                 padding: 0;
                 text-align: center
             }
-            .${classNames.componentPanel} .panel-heading {
+            .${exports.classNames.componentPanel} .panel-heading {
                 text-align: center;
             }
-            .${classNames.componentPanel} li {
+            .${exports.classNames.componentPanel} li {
                 text-align: center;
                 padding: 8px;
             }
-            .${classNames.componentWrapper}.${classNames.moveDown} {
+            .${exports.classNames.componentWrapper}.${exports.classNames.moveDown} {
          
             }
         `;
@@ -1605,9 +1569,9 @@ if (document.head != null) {
 }
 function appendClassName(element, addonClassName) {
     if (element == null)
-        throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('element');
+        throw errors_1.Errors.argumentNull('element');
     if (!addonClassName)
-        throw _errors__WEBPACK_IMPORTED_MODULE_0__["Errors"].argumentNull('addonClassName');
+        throw errors_1.Errors.argumentNull('addonClassName');
     let sourceClassName;
     if (typeof element == 'string')
         sourceClassName = element;
@@ -1622,6 +1586,7 @@ function appendClassName(element, addonClassName) {
         element.className = className;
     return className;
 }
+exports.appendClassName = appendClassName;
 function removeClassName(element, targetClassName) {
     let sourceClassName;
     if (typeof element == 'string')
@@ -1637,6 +1602,7 @@ function removeClassName(element, targetClassName) {
         element.className = sourceClassName;
     return sourceClassName;
 }
+exports.removeClassName = removeClassName;
 //# sourceMappingURL=style.js.map
 
 /***/ }),

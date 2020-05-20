@@ -4,7 +4,7 @@ import { PropertyEditor, EditorProps } from "./property-editor";
 import { classNames } from "./style";
 
 interface EditorPanelState {
-    componentDatas: ComponentData<any>[];
+    componentDatas: ComponentData[];
 }
 
 export interface EditorPanelProps {
