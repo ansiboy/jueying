@@ -21,6 +21,6 @@ https://ansiboy.github.io/jueying/demo/
 
 **应用案例**
 
-![](https://ansiboy.github.io/jueying/1.png)
-![](https://ansiboy.github.io/jueying/2.png)
-![](https://ansiboy.github.io/jueying/fullsizeoutput_32f.jpeg)
+![](https://ansiboy.github.io/jueying/images/app1.png)
+![](https://ansiboy.github.io/jueying/images/app2.png)
+![](https://ansiboy.github.io/jueying/images/app3.jpg)
