@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.1.2
+ *  maishu-jueying v3.1.4
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -111,6 +111,696 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ })
 /************************************************************************/
 /******/ ({
+
+/***/ "./node_modules/maishu-dilu/dist/index.js":
+/*!************************************************!*\
+  !*** ./node_modules/maishu-dilu/dist/index.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!
+ * 
+ *  maishu-dilu v1.7.1
+ *  https://github.com/ansiboy/dilu
+ *  
+ *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
+ *  Licensed under the MIT License.
+ * 
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory();
+	else {}
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./out/index.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./out/errors.js":
+/*!***********************!*\
+  !*** ./out/errors.js ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// namespace dilu {
+exports.errors = {
+    argumentNull(parameterName) {
+        let msg = `Parameter ${parameterName} can not be null or empty.`;
+        return new Error(msg);
+    },
+    elementValidateRuleNotSet(element) {
+        let msg = `元素'${element.name}'没有设置验证规则`;
+        return new Error(msg);
+    },
+    fieldElementCanntNull(fieldIndex) {
+        // if (fieldIndex != null)
+        let msg = fieldIndex != null ?
+            `The element value in the field cannt be null, field index is ${fieldIndex}.` :
+            `The element in the field is null`;
+        return new Error(msg);
+    },
+    elementNotExists(name) {
+        let msg = `Element ${name} is not exits in the form.`;
+        return new Error(msg);
+    },
+    fieldResultExpectBooleanType(name) {
+        let msg = `Result of ${name} field is expected boolean.`;
+        return new Error(msg);
+    }
+};
+// }
+
+
+/***/ }),
+
+/***/ "./out/formValidator.js":
+/*!******************************!*\
+  !*** ./out/formValidator.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/**
+ * 表单验证器，用于对表单中的字段进行验证
+ */
+class FormValidator {
+    constructor(form, ...fields) {
+        /** 输入框的值发生改变，是否重新校验该输入框的值，默认为 true */
+        this.validateOnChanged = true;
+        if (!form)
+            throw errors_1.errors.argumentNull('form');
+        this.fields = fields || [];
+        this.form = form;
+        this.elementEvents = {};
+    }
+    appendField(field) {
+        this.fields.push(field);
+    }
+    /**
+     * 清除表单的错误信息
+     */
+    clearErrors() {
+        this.fields.map(o => o.errorElement)
+            .filter(o => o != null)
+            .forEach(o => o.style.display = 'none');
+    }
+    /**
+     * 清除表单的指定元素错误信息
+     * @param name 指定的元素名称
+     */
+    clearElementError(name) {
+        if (!name)
+            throw errors_1.errors.argumentNull('name');
+        let fields = this.fields.filter(o => o.name == name);
+        for (let field of fields) {
+            let errorElement = this.fieldErrorElement(field);
+            errorElement.style.display = 'none';
+        }
+    }
+    /**
+     * 设置表单的指定元素错误信息
+     * @param name 指定的元素名称
+     * @param error 错误信息
+     */
+    setElementError(name, error) {
+        if (!name)
+            throw errors_1.errors.argumentNull('name');
+        if (!error)
+            throw errors_1.errors.argumentNull('error');
+        let fields = this.fields.filter(o => o.name == name);
+        for (let field of fields) {
+            let errorElement = this.fieldErrorElement(field);
+            errorElement.style.removeProperty('display');
+            errorElement.innerHTML = error;
+        }
+    }
+    fieldElement(field) {
+        let name = field.name;
+        let element = this.form.querySelectorAll(`[name='${name}']`)[0];
+        if (element == null)
+            throw errors_1.errors.elementNotExists(name);
+        return element;
+    }
+    fieldErrorElement(field) {
+        if (!field.errorElement) {
+            let errorElement = this.form.getElementsByClassName(`${FormValidator.errorClassName} ${field.name}`)[0];
+            if (!errorElement) {
+                let element = this.fieldElement(field);
+                errorElement = document.createElement("span");
+                errorElement.className = FormValidator.errorClassName;
+                errorElement.style.display = 'none';
+                if (element.nextSibling)
+                    element.parentElement.insertBefore(errorElement, element.nextSibling);
+                else
+                    element.parentElement.appendChild(errorElement);
+            }
+            field.errorElement = errorElement;
+        }
+        return field.errorElement;
+        // return errorElement;
+    }
+    /**
+     * 验证字段
+     */
+    check() {
+        let ps = new Array();
+        for (let i = 0; i < this.fields.length; i++) {
+            let field = this.fields[i];
+            let element = this.fieldElement(field);
+            if (field.condition && field.condition(element) == false)
+                continue;
+            let p = this.checkField(field);
+            ps.push(p);
+        }
+        let result = ps.filter(o => o == false).length == 0;
+        return result;
+    }
+    /**
+     * 异步验证字段
+     */
+    checkAsync() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ps = new Array();
+            for (let i = 0; i < this.fields.length; i++) {
+                let field = this.fields[i];
+                let element = this.fieldElement(field);
+                if (field.condition && field.condition(element) == false)
+                    continue;
+                let p = this.checkFieldAsync(field);
+                ps.push(p);
+            }
+            let checkResults = yield Promise.all(ps);
+            let result = checkResults.filter(o => o == false).length == 0;
+            return result;
+        });
+    }
+    bindElementEvent(field, isAsync) {
+        if (this.elementEvents[field.name]) {
+            return;
+        }
+        let element = this.fieldElement(field);
+        let validateFunc = (() => {
+            let checking = false;
+            return () => {
+                if (checking)
+                    return;
+                checking = true;
+                // isAsync ? this.checkFieldAsync(field) : this.checkField(field);
+                if (isAsync) {
+                    this.checkFieldAsync(field)
+                        .then(() => checking = false)
+                        .catch(() => checking = false);
+                }
+                else {
+                    this.checkField(field);
+                    checking = false;
+                }
+            };
+        })();
+        if (this.validateOnChanged) {
+            element.addEventListener('change', validateFunc);
+            let elementType = element.type || "text";
+            if (elementType == "text" || elementType == "password") {
+                element.addEventListener('keyup', validateFunc);
+            }
+            else if (elementType == "radio") {
+                let name = element.name;
+                let elements = this.form.querySelectorAll(`[name='${name}']`);
+                for (let i = 0; i < elements.length; i++) {
+                    if (elements[i] == element) {
+                        continue;
+                    }
+                    elements[i].addEventListener("change", validateFunc);
+                }
+            }
+        }
+        this.elementEvents[field.name] = true;
+    }
+    checkField(field) {
+        this.bindElementEvent(field, false);
+        let element = this.fieldElement(field);
+        let depends = field.depends || [];
+        for (let j = 0; j < depends.length; j++) {
+            let dependResult = depends[j](element);
+            if (typeof dependResult == 'object') {
+                throw new Error('Please use checkAsync method.');
+            }
+            let dependIsOK = dependResult;
+            if (!dependIsOK)
+                return false;
+        }
+        for (let j = 0; j < field.rules.length; j++) {
+            let rule = field.rules[j];
+            let element = this.fieldElement(field);
+            if (element == null)
+                throw errors_1.errors.fieldElementCanntNull();
+            let value = this.elementValue(element);
+            let isPass = rule.validate(value);
+            if (typeof isPass == 'object') {
+                throw new Error('Please use checkAsync method.');
+            }
+            this.showElement(!isPass, field, rule, element);
+            if (!isPass)
+                return false;
+        }
+        return true;
+    }
+    checkFieldAsync(field) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.bindElementEvent(field, true);
+            let element = this.fieldElement(field);
+            let depends = field.depends || [];
+            for (let j = 0; j < depends.length; j++) {
+                let dependResult = depends[j](element);
+                if (typeof dependResult == 'boolean') {
+                    dependResult = Promise.resolve(dependResult);
+                }
+                let dependIsOK = yield dependResult;
+                if (!dependIsOK)
+                    return false;
+            }
+            for (let j = 0; j < field.rules.length; j++) {
+                let rule = field.rules[j];
+                let element = this.fieldElement(field);
+                if (element == null)
+                    throw errors_1.errors.fieldElementCanntNull();
+                let value = this.elementValue(element);
+                let p = rule.validate(value);
+                if (typeof p == 'boolean') {
+                    p = Promise.resolve(p);
+                }
+                let isPass = yield p;
+                this.showElement(!isPass, field, rule, element);
+                if (!isPass)
+                    return false;
+            }
+            return true;
+        });
+    }
+    showElement(display, field, rule, element) {
+        let errorElement = this.fieldErrorElement(field);
+        console.assert(errorElement != null, 'errorElement cannt be null.');
+        if (rule.error != null) {
+            errorElement = field.errorElement;
+            let name = this.elementName(element);
+            let errorText = typeof rule.error == 'string' ? rule.error : rule.error() || '';
+            errorElement.innerHTML = errorText.replace('%s', name);
+        }
+        if (display) {
+            errorElement.style.removeProperty('display');
+        }
+        else {
+            errorElement.style.display = 'none';
+        }
+    }
+    /**
+     * 异步验证 HTML 元素
+     * @param name HTML 元素名称
+     */
+    checkElementAsync(name) {
+        let field = this.fields.filter(o => o.name == name)[0];
+        if (!field)
+            throw errors_1.errors.elementNotExists(name);
+        return this.checkFieldAsync(field);
+    }
+    /**
+     * 同步验证 HTML 元素
+     * @param name HTML 元素名称
+     */
+    checkElement(name) {
+        let field = this.fields.filter(o => o.name == name)[0];
+        if (!field)
+            throw errors_1.errors.elementNotExists(name);
+        return this.checkField(field);
+    }
+    elementValue(element) {
+        if (element.tagName == "TEXTAREA") {
+            return element.value;
+        }
+        let inputElement = element;
+        if (inputElement.type == "radio") {
+            let elements = this.form.querySelectorAll(`[name='${inputElement.name}']`);
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].checked) {
+                    return elements[i].value;
+                }
+            }
+            return "";
+        }
+        return element.value;
+    }
+    elementName(element) {
+        if (element.tagName == "TEXTAREA") {
+            return element.name;
+        }
+        return element.name;
+    }
+}
+exports.FormValidator = FormValidator;
+FormValidator.errorClassName = 'validationMessage';
+// }
+
+
+/***/ }),
+
+/***/ "./out/index.js":
+/*!**********************!*\
+  !*** ./out/index.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var formValidator_1 = __webpack_require__(/*! ./formValidator */ "./out/formValidator.js");
+exports.FormValidator = formValidator_1.FormValidator;
+var rules_1 = __webpack_require__(/*! ./rules */ "./out/rules.js");
+exports.rules = rules_1.rules;
+
+
+/***/ }),
+
+/***/ "./out/rules.js":
+/*!**********************!*\
+  !*** ./out/rules.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// namespace dilu {
+var ruleRegex = /^(.+?)\[(.+)\]$/, numericRegex = /^[0-9]+$/, integerRegex = /^\-?[0-9]+$/, decimalRegex = /^\-?[0-9]*\.?[0-9]+$/, emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, alphaRegex = /^[a-z]+$/i, alphaNumericRegex = /^[a-z0-9]+$/i, alphaDashRegex = /^[a-z0-9_\-]+$/i, naturalRegex = /^[0-9]+$/i, naturalNoZeroRegex = /^[1-9][0-9]*$/i, ipRegex = /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/i, base64Regex = /[^a-zA-Z0-9\/\+=]/i, numericDashRegex = /^[\d\-\s]+$/, urlRegex = /^((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/, mobileRegex = /^1[34578]\d{9}$/, dateRegex = /\d{4}-\d{1,2}-\d{1,2}/;
+let msgs = {
+    required: '%s不能为空',
+    matches: '%s与%s不匹配',
+    "default": 'The %s field is still set to default, please change.',
+    equal: '%s和%s必须相同',
+    email: '不是有效的邮箱地址',
+    valid_emails: 'The %s field must contain all valid email addresses.',
+    minLength: '%s至少包含%s个字符',
+    maxLength: '%s不能超过%s字符',
+    exact_length: 'The %s field must be exactly %s characters in length.',
+    greater_than: 'The %s field must contain a number greater than %s.',
+    less_than: 'The %s field must contain a number less than %s.',
+    alpha: 'The %s field must only contain alphabetical characters.',
+    alpha_numeric: 'The %s field must only contain alpha-numeric characters.',
+    alpha_dash: 'The %s field must only contain alpha-numeric characters, underscores, and dashes.',
+    numeric: '请数入数字',
+    integer: 'The %s field must contain an integer.',
+    decimal: 'The %s field must contain a decimal number.',
+    is_natural: 'The %s field must contain only positive numbers.',
+    is_natural_no_zero: 'The %s field must contain a number greater than zero.',
+    ip: 'The %s field must contain a valid IP.',
+    valid_base64: 'The %s field must contain a base64 string.',
+    valid_credit_card: 'The %s field must contain a valid credit card number.',
+    is_file_type: 'The %s field must contain only %s files.',
+    valid_url: 'The %s field must contain a valid URL.',
+    greater_than_date: 'The %s field must contain a more recent date than %s.',
+    less_than_date: 'The %s field must contain an older date than %s.',
+    greater_than_or_equal_date: 'The %s field must contain a date that\'s at least as recent as %s.',
+    less_than_or_equal_date: 'The %s field must contain a date that\'s %s or older.',
+    mobile: '请输入正确的手机号码',
+    custom: '请输入正确制',
+};
+function createValidation(validate, error) {
+    return {
+        validate: validate,
+        error: error
+    };
+}
+function calc(value) {
+    if (typeof value == 'function') {
+        return value();
+    }
+    return value;
+}
+/**
+ * 表单验证规则
+ */
+exports.rules = {
+    /**
+     * 验证必填字段
+     * @param error 错误提示文字
+     */
+    required(error) {
+        let validate = (value) => value != '';
+        return createValidation(validate, error || msgs.required);
+    },
+    /**
+     * 验证两个字段值是否相等
+     * @param otherElement 另外一个字段
+     * @param error 错误提示文字
+     */
+    matches(otherElement, error) {
+        var validate = (value) => value == otherElement.value;
+        return createValidation(validate, error || msgs.required);
+    },
+    /**
+     * 验证邮箱
+     * @param error 错误提示文字
+     */
+    email(error) {
+        var validate = (value) => emailRegex.test(value);
+        return createValidation(validate, error || msgs.required);
+    },
+    /**
+     * 验证字段最小长度
+     * @param length 最小长度
+     * @param error 错误提示文字
+     */
+    minLength(length, error) {
+        var validate = (value) => (value || '').length >= calc(length);
+        return createValidation(validate, error || msgs.minLength);
+    },
+    /**
+     * 验证字段的最大长度
+     * @param length 最大长度
+     * @param error 错误提示文字
+     */
+    maxLength(length, error) {
+        var validate = (value) => (value || '').length <= calc(length);
+        return createValidation(validate, error || msgs.matches);
+    },
+    /**
+     * 验证字段大于指定的值
+     * @param value 指定的值
+     * @param error 错误提示文字
+     */
+    greaterThan(value, error) {
+        var validate = (o) => elementValueCompare(o, calc(value)) == 'greaterThan';
+        return createValidation(validate, error || msgs.greater_than);
+    },
+    /**
+     * 验证字段小于指定的值
+     * @param value 指定的值
+     * @param error 错误提示文字
+     */
+    lessThan(value, error) {
+        var validate = (o) => elementValueCompare(o, calc(value)) == 'lessThan';
+        return createValidation(validate, error || msgs.less_than);
+    },
+    /**
+     * 验证字段等于指定的值
+     * @param value 指定的值
+     * @param error 错误提示文字
+     */
+    equal(value, error) {
+        var validate = (o) => elementValueCompare(o, calc(value)) == 'equal';
+        return createValidation(validate, error || msgs.equal);
+    },
+    /**
+     * 验证字段为 IP
+     * @param error 错误提示文字
+     */
+    ip(error) {
+        var validate = (value) => ipRegex.test(value);
+        return createValidation(validate, error || msgs.ip);
+    },
+    /**
+     * 验证字段为 URL
+     * @param error 错误提示文字
+     */
+    url(error) {
+        var validate = (value) => urlRegex.test(value);
+        return createValidation(validate, error || msgs.valid_url);
+    },
+    /**
+     * 验证字段为手机号码
+     * @param error 错误提示文字
+     */
+    mobile(error) {
+        var validate = (value) => mobileRegex.test(value);
+        return createValidation(validate, error || msgs.mobile);
+    },
+    /**
+     * 验证字段为数字
+     * @param error 错误提示文字
+     */
+    numeric(error) {
+        var validate = (value) => numericRegex.test(value);
+        return createValidation(validate, error || msgs.numeric);
+    },
+    /**
+     * 自定义验证
+     * @param validate 自定义验证的方法
+     * @param error 错误提示文字
+     */
+    custom(validate, error) {
+        return createValidation(validate, error || msgs.custom);
+    }
+};
+function elementValueCompare(value, otherValue) {
+    let elementValue;
+    if (typeof otherValue == 'number') {
+        elementValue = decimalRegex.test(value) ? parseFloat(value) : null;
+    }
+    else if (typeof otherValue == 'string') {
+        elementValue = value;
+    }
+    else {
+        elementValue = getValidDate(value);
+    }
+    if (elementValue < otherValue)
+        return 'lessThan';
+    else if (elementValue > otherValue)
+        return 'greaterThan';
+    else
+        return 'equal';
+}
+/**
+ * private function _getValidDate: helper function to convert a string date to a Date object
+ * @param date (String) must be in format yyyy-mm-dd or use keyword: today
+ * @returns {Date} returns false if invalid
+ */
+function getValidDate(date) {
+    if (!date.match('today') && !date.match(dateRegex)) {
+        return null;
+    }
+    var validDate = new Date(), validDateArray;
+    if (!date.match('today')) {
+        validDateArray = date.split('-');
+        validDate.setFullYear(validDateArray[0]);
+        validDate.setMonth(validDateArray[1] - 1);
+        validDate.setDate(validDateArray[2]);
+    }
+    return validDate;
+}
+;
+// }
+
+
+/***/ })
+
+/******/ });
+});
+//# sourceMappingURL=index.js.map
+
+/***/ }),
 
 /***/ "./node_modules/maishu-toolkit/out/callback.js":
 /*!*****************************************************!*\
@@ -677,7 +1367,8 @@ function () {
           group = options.group,
           propName = options.propName,
           displayName = options.displayName,
-          defaultValue = options.defaultValue;
+          defaultValue = options.defaultValue,
+          validation = options.validation;
       group = group || property_editor_1.defaultGroupName;
       propName = propName || "";
       displayName = displayName || propName; // 属性可能为导航属性,例如 style.width
@@ -702,7 +1393,8 @@ function () {
         displayName: displayName,
         editorType: editorType,
         group: group,
-        defaultValue: defaultValue
+        defaultValue: defaultValue,
+        validation: validation
       });
     }
   }, {
@@ -713,15 +1405,15 @@ function () {
   }]);
 
   return Component;
-}(); //==========================================
-// 用于创建 React 的 React.Fragment 
+}();
 
+exports.Component = Component; //==========================================
+// 用于创建 React 的 React.Fragment 
 
 Component.Fragment = ""; //==========================================
 
 Component.componentPropEditors = {};
 Component.componentPropEditorDisplay = {};
-exports.Component = Component;
 //# sourceMappingURL=component.js.map
 
 
@@ -781,8 +1473,15 @@ function (_React$Component) {
     };
     return _this;
   }
+  /** 对输入进行验证 */
+
 
   _createClass(EditorPanel, [{
+    key: "validateInputs",
+    value: function validateInputs() {
+      return this.editor.validator.checkAsync();
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this2 = this;
@@ -1504,6 +2203,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
   return new (P || (P = Promise))(function (resolve, reject) {
     function fulfilled(value) {
       try {
@@ -1522,9 +2227,7 @@ var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P
     }
 
     function step(result) {
-      result.done ? resolve(result.value) : new P(function (resolve) {
-        resolve(result.value);
-      }).then(fulfilled, rejected);
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
 
     step((generator = generator.apply(thisArg, _arguments || [])).next());
@@ -1731,6 +2434,18 @@ function _dropdown(items, valueType) {
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1761,6 +2476,8 @@ var page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out-es5/page
 
 var common_1 = __webpack_require__(/*! ./common */ "./out-es5/common.js");
 
+var maishu_dilu_1 = __webpack_require__(/*! maishu-dilu */ "./node_modules/maishu-dilu/dist/index.js");
+
 exports.defaultGroupName = "";
 
 var PropertyEditor =
@@ -1774,7 +2491,6 @@ function (_React$Component) {
     _classCallCheck(this, PropertyEditor);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PropertyEditor).call(this, props));
-    _this._element = null;
     _this.state = {};
     return _this;
   }
@@ -1840,6 +2556,12 @@ function (_React$Component) {
         }
       }
 
+      var validateFields = commonPropEditorInfos.map(function (o) {
+        return Object.assign(o.validation, {
+          name: o.propName
+        });
+      });
+      this._validator = _construct(maishu_dilu_1.FormValidator, [this.element].concat(_toConsumableArray(validateFields)));
       var editors = [];
 
       var _loop2 = function _loop2(_i) {
@@ -1862,6 +2584,9 @@ function (_React$Component) {
                 value: value
               };
             });
+
+            _this2._validator.checkElement(propEditorInfo.propName);
+
             designer.updateComponentProps(componentProps);
           }
         };
@@ -1977,6 +2702,11 @@ function (_React$Component) {
     key: "element",
     get: function get() {
       return this._element;
+    }
+  }, {
+    key: "validator",
+    get: function get() {
+      return this._validator;
     }
   }]);
 

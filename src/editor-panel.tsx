@@ -23,6 +23,11 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
         this.state = { componentDatas: [] };
     }
 
+    /** 对输入进行验证 */
+    validateInputs() {
+        return this.editor.validator.checkAsync();
+    }
+
     render() {
         let { empty } = this.props;
         empty = empty || <div className="empty">暂无可用的属性</div>;

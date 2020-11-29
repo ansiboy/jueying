@@ -5,6 +5,7 @@ import { Errors } from "./errors";
 import { ComponentData } from "maishu-jueying-core";
 import { DesignerContext, PageDesigner } from "./page-designer";
 import { groupDisplayNames } from "./common";
+import { FormValidator, ValidateField } from "maishu-dilu";
 
 
 export interface EditorProps extends React.Props<PropertyEditor> {
@@ -25,14 +26,17 @@ export interface PropertyEditorInfo {
 export type GroupedEditor = {
     /** 用于对编辑器进行分组，方便查看各个属性 */
     group: string,
-    prop: string, displayName: string, editor: React.ReactElement<any>
+    prop: string,
+    displayName: string,
+    editor: React.ReactElement<any>,
 };
-
 export let defaultGroupName = "";
+
 
 export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
-    private _element: HTMLElement | null = null;
+    private _element: HTMLElement;
+    private _validator: FormValidator;
 
     constructor(props: EditorProps) {
         super(props);
@@ -88,6 +92,9 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
             }
         }
 
+        let validateFields: ValidateField[] = commonPropEditorInfos.map(o => Object.assign(o.validation, { name: o.propName }));
+        this._validator = new FormValidator(this.element, ...validateFields);
+
         let editors: GroupedEditor[] = []
         for (let i = 0; i < commonPropEditorInfos.length; i++) {
             let propEditorInfo = commonPropEditorInfos[i];
@@ -104,6 +111,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     let componentProps = selectedComponents.map(o => ({
                         componentId: o.id, propName: propEditorInfo.propName, value
                     }));
+
+                    this._validator.checkElement(propEditorInfo.propName);
                     designer.updateComponentProps(componentProps);
                 }
             };
@@ -141,10 +150,10 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                 if (designer == null)
                     return null;
 
-                let editors = this.getEditors(designer)
+                let editors = this.getEditors(designer);
                 if (editors.length == 0) {
-                    let empty = this.props.empty
-                    return <div className="text-center">{empty}</div>
+                    let empty = this.props.empty;
+                    return <div className="text-center">{empty}</div>;
                 }
 
                 if (this.props.customRender) {
@@ -158,13 +167,13 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                 let groupEditorsArray: { group: GroupedEditor["group"], editors: { prop: string, displayName: string, editor: React.ReactElement<any> }[] }[] = []
                 for (let i = 0; i < editors.length; i++) {
                     let group = editors[i].group || defaultGroupName;
-                    let groupEditors = groupEditorsArray.filter(o => o.group == group)[0]
+                    let groupEditors = groupEditorsArray.filter(o => o.group == group)[0];
                     if (groupEditors == null) {
-                        groupEditors = { group: editors[i].group, editors: [] }
-                        groupEditorsArray.push(groupEditors)
+                        groupEditors = { group: editors[i].group, editors: [] };
+                        groupEditorsArray.push(groupEditors);
                     }
 
-                    groupEditors.editors.push({ prop: editors[i].prop, displayName: editors[i].displayName, editor: editors[i].editor })
+                    groupEditors.editors.push({ prop: editors[i].prop, displayName: editors[i].displayName, editor: editors[i].editor });
                 }
 
 
@@ -192,6 +201,10 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
     get element() {
         return this._element;
+    }
+
+    get validator() {
+        return this._validator;
     }
 
 }

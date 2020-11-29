@@ -1,5 +1,4 @@
 const assert = require("assert");
-const puppeteer = require("puppeteer");
 
 describe("test", function() {
     describe("test1", function() {

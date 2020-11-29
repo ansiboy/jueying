@@ -3,13 +3,15 @@ import { PropEditorConstructor } from "./prop-editor";
 import { ComponentData } from "maishu-jueying-core";
 import { GroupedEditor, defaultGroupName } from "./property-editor";
 import { registerComponent } from "maishu-jueying-core";
+import { ValidateField } from "maishu-dilu";
 
 export interface PropEditorInfo {
     propName: string,
     displayName: string,
     editorType: PropEditorConstructor,
     group: GroupedEditor["group"],
-    defaultValue: any
+    defaultValue: any,
+    validation?: Omit<ValidateField, "name">,
 }
 
 interface SetPropEditorOptions {
@@ -20,6 +22,7 @@ interface SetPropEditorOptions {
     display?: ComponentPropEditorDisplay,
     displayName?: string,
     defaultValue?: any,
+    validation?: PropEditorInfo["validation"],
 }
 
 /** 组件是否显示回调函数 */
@@ -74,7 +77,9 @@ export class Component {
     }
 
     static setPropEditor(options: SetPropEditorOptions): void {
-        let { componentType, editorType, display: editorDisplay, group, propName, displayName, defaultValue } = options;
+        let { componentType, editorType, display: editorDisplay, group,
+            propName, displayName, defaultValue, validation,
+        } = options;
         group = group || defaultGroupName;
         propName = propName || "";
         displayName = displayName || propName;
@@ -92,7 +97,10 @@ export class Component {
                 return
             }
         }
-        classProps.push({ propName, displayName, editorType: editorType as PropEditorConstructor, group, defaultValue })
+        classProps.push({
+            propName, displayName, editorType: editorType as PropEditorConstructor,
+            group, defaultValue, validation
+        })
     }
 
     static register(typeName: string, componentType: React.ComponentClass<any>): void {
