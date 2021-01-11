@@ -13,5 +13,7 @@ export {
     parseComponentData, registerComponent, componentTypes
 } from "maishu-jueying-core";
 
+export { ComponentDataHandler } from "./component-data-handler";
+
 
 
