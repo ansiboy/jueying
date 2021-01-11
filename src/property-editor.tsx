@@ -92,8 +92,6 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
             }
         }
 
-        let validateFields: ValidateField[] = commonPropEditorInfos.map(o => Object.assign(o.validation, { name: o.propName }));
-        this._validator = new FormValidator(this.element, ...validateFields);
 
         let editors: GroupedEditor[] = []
         for (let i = 0; i < commonPropEditorInfos.length; i++) {
@@ -111,6 +109,14 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     let componentProps = selectedComponents.map(o => ({
                         componentId: o.id, propName: propEditorInfo.propName, value
                     }));
+
+                    if (this._validator == null) {
+                        let validateFields: ValidateField[] = commonPropEditorInfos.map(o => Object.assign(o.validation, { name: o.propName }));
+                        this._validator = new FormValidator(this.element, ...validateFields);
+                    }
+
+
+
 
                     this._validator.checkElement(propEditorInfo.propName);
                     designer.updateComponentProps(componentProps);
@@ -178,7 +184,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
 
                 return groupEditorsArray.map((g) =>
-                    <div key={g.group} className="panel panel-default">
+                    <div key={g.group} className="panel panel-default" ref={e => this._element = e || this._element}>
                         {g.group ? <div className="panel-heading">{groupDisplayNames[g.group] || g.group}</div> : null}
                         <div className="panel-body">
                             {g.editors.map((o, i) =>
