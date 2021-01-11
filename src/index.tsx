@@ -8,7 +8,10 @@ export {
 export { PropEditor, PropEditorState, TextInput, DropDownItem, } from "./prop-editor";
 export { PropertyEditorInfo } from "./property-editor";
 export { classNames } from "./style";
-export { ComponentFactory } from "./component-factory";
+export {
+    ComponentData, ComponentProps, ComponentFactory, ComponentInfo, component,
+    parseComponentData, registerComponent, componentTypes
+} from "maishu-jueying-core";
 
 
 

@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.1.5
+ *  maishu-jueying v3.1.6
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -16,14 +16,14 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("maishu-jueying-core"), require("react"));
+		module.exports = factory(require("react"));
 	else if(typeof define === 'function' && define.amd)
-		define(["maishu-jueying-core", "react"], factory);
+		define(["react"], factory);
 	else if(typeof exports === 'object')
-		exports["jueying"] = factory(require("maishu-jueying-core"), require("react"));
+		exports["jueying"] = factory(require("react"));
 	else
-		root["jueying"] = factory(root["maishu-jueying-core"], root["react"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__, __WEBPACK_EXTERNAL_MODULE_react__) {
+		root["jueying"] = factory(root["react"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE_react__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -802,6 +802,140 @@ function getValidDate(date) {
 
 /***/ }),
 
+/***/ "./node_modules/maishu-jueying-core/out/decorators.js":
+/*!************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/decorators.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
+/** 组件标记，用于将指定的组件标记为可被外部加载 */
+function component(options) {
+    return function classDecorator(constructor) {
+        let type = (options === null || options === void 0 ? void 0 : options.type) || constructor.name;
+        register_1.registerComponent(type, constructor);
+    };
+}
+exports.component = component;
+//# sourceMappingURL=decorators.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/errors.js":
+/*!********************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/errors.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errors = {
+    pathFieldRequired(name) {
+        let msg = `Path field of '${name}' component config can not be null or empty.`;
+        return new Error(msg);
+    },
+    canntFindModule(name, path) {
+        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
+        return new Error(msg);
+    },
+    componentTypeNotExists(name) {
+        let msg = `Component '${name}' not exists.`;
+        return new Error(msg);
+    },
+    argumentNull(name) {
+        let msg = `Argument '${name}' can not be null or empty.`;
+        return new Error(msg);
+    }
+};
+//# sourceMappingURL=errors.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/index.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/index.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var decorators_1 = __webpack_require__(/*! ./decorators */ "./node_modules/maishu-jueying-core/out/decorators.js");
+exports.component = decorators_1.component;
+var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
+exports.parseComponentData = parse_component_data_1.parseComponentData;
+var register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
+exports.registerComponent = register_1.registerComponent;
+exports.componentTypes = register_1.componentTypes;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/parse-component-data.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/parse-component-data.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
+const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
+function parseComponentData(componentData) {
+    let type = register_1.componentTypes[componentData.type];
+    if (type == null) {
+        throw errors_1.errors.componentTypeNotExists(componentData.type);
+    }
+    let children = [];
+    if (componentData.children != null) {
+        children = componentData.children.map(c => typeof c == "string" ? c : parseComponentData(c));
+    }
+    return React.createElement(type, componentData.props, ...children);
+}
+exports.parseComponentData = parseComponentData;
+//# sourceMappingURL=parse-component-data.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/register.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/register.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
+exports.componentTypes = {};
+function registerComponent(componentName, componentType) {
+    if (componentType == null && typeof componentName == 'function') {
+        componentType = componentName;
+        componentName = componentType.name;
+        componentType['componentName'] = componentName;
+    }
+    if (!componentName)
+        throw errors_1.errors.argumentNull('componentName');
+    if (!componentType)
+        throw errors_1.errors.argumentNull('componentType');
+    exports.componentTypes[componentName] = componentType;
+}
+exports.registerComponent = registerComponent;
+//# sourceMappingURL=register.js.map
+
+/***/ }),
+
 /***/ "./node_modules/maishu-toolkit/out/callback.js":
 /*!*****************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/callback.js ***!
@@ -1315,7 +1449,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var property_editor_1 = __webpack_require__(/*! ./property-editor */ "./out-es5/property-editor.js");
 
-var maishu_jueying_core_1 = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core"); // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
+var maishu_jueying_core_1 = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js"); // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
 // let defaultGroup: GroupedEditor["group"] = { prop: "", displayName: "" };
 
 
@@ -1649,6 +1783,13 @@ exports.TextInput = prop_editor_1.TextInput;
 var style_1 = __webpack_require__(/*! ./style */ "./out-es5/style.js");
 
 exports.classNames = style_1.classNames;
+
+var maishu_jueying_core_1 = __webpack_require__(/*! maishu-jueying-core */ "./node_modules/maishu-jueying-core/out/index.js");
+
+exports.component = maishu_jueying_core_1.component;
+exports.parseComponentData = maishu_jueying_core_1.parseComponentData;
+exports.registerComponent = maishu_jueying_core_1.registerComponent;
+exports.componentTypes = maishu_jueying_core_1.componentTypes;
 //# sourceMappingURL=index.js.map
 
 
@@ -2839,17 +2980,6 @@ function removeClassName(element, targetClassName) {
 exports.removeClassName = removeClassName;
 //# sourceMappingURL=style.js.map
 
-
-/***/ }),
-
-/***/ "maishu-jueying-core":
-/*!**************************************!*\
-  !*** external "maishu-jueying-core" ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__;
 
 /***/ }),
 
