@@ -14,7 +14,7 @@ export interface PropEditorProps<T> {
 export interface PropEditorState<T> {
     // value: T
 }
-export abstract class PropEditor<S, T> extends React.Component<PropEditorProps<T>, S> {
+export abstract class PropEditor<T, S = PropEditorState<T>> extends React.Component<PropEditorProps<T>, S> {
     constructor(props: PropEditorProps<T>) {
         super(props)
 
@@ -32,7 +32,7 @@ export abstract class PropEditor<S, T> extends React.Component<PropEditorProps<T
     }
 }
 
-export class TextInput extends PropEditor<PropEditorState<string>, string> {
+export class TextInput extends PropEditor<string, PropEditorState<string>> {
     render() {
         let { value } = this.props
         return <input className='form-control' value={value as any || ''}
@@ -72,7 +72,7 @@ function dropdown(items: any, valueType?: "string" | "number"): React.ComponentC
         itemsPromise = items;
     }
 
-    class Dropdown extends PropEditor<{ items?: DropDownItem[] }, DropDownValue>{
+    class Dropdown extends PropEditor<DropDownValue, { items?: DropDownItem[] }>{
         constructor(props: Dropdown["props"]) {
             super(props);
 

@@ -15,7 +15,7 @@ export interface PropEditorInfo {
 }
 
 interface SetPropEditorOptions {
-    componentType: React.ComponentClass | string,
+    componentType: React.ComponentClass<any> | string,
     propName: string,
     editorType: PropEditorConstructor,
     group?: GroupedEditor["group"],
