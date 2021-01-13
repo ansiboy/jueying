@@ -37,6 +37,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
     private _element: HTMLElement;
     private _validator: FormValidator;
+    private _validateFields: ValidateField[];
 
     constructor(props: EditorProps) {
         super(props);
@@ -102,6 +103,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
             if (value == null)
                 value = propEditorInfo.defaultValue;
 
+
             let editorProps: PropEditorProps<any> = {
                 value: value,
                 editComponents: selectedComponents,
@@ -111,14 +113,15 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     }));
 
                     if (this._validator == null) {
-                        let validateFields: ValidateField[] = commonPropEditorInfos.map(o => Object.assign(o.validation, { name: o.propName }));
-                        this._validator = new FormValidator(this.element, ...validateFields);
+                        this._validateFields = commonPropEditorInfos.filter(o => o.validation != null)
+                            .map(o => Object.assign(o.validation, { name: o.propName }));
+                        this._validator = new FormValidator(this.element, ...this._validateFields);
+
                     }
 
+                    if (this._validateFields.filter(o => o.name == propEditorInfo.propName).length > 0)
+                        this._validator.checkElement(propEditorInfo.propName);
 
-
-
-                    this._validator.checkElement(propEditorInfo.propName);
                     designer.updateComponentProps(componentProps);
                 }
             };
@@ -166,7 +169,9 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                     let items = editors.map(o => Object.assign({ displayName: o.displayName }, o));
                     let r = this.props.customRender(designer.selectedComponents, items);
                     if (r != null) {
-                        return r;
+                        return <div ref={e => this._element = e || this._element}>
+                            {r}
+                        </div>;
                     }
                 }
 
