@@ -273,7 +273,7 @@ export class ComponentDataHandler {
         // }
         //==================================================
 
-        if (!component.name) {
+        if (!component["name"]) {
             let num = 0;
             let name: string;
             do {
@@ -282,7 +282,7 @@ export class ComponentDataHandler {
             } while (namedComponents[name]);
 
             namedComponents[name] = component
-            component.name = name;
+            component["name"] = name;
         }
 
         if (!component.id)

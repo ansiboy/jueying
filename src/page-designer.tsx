@@ -64,12 +64,12 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     /**
-    * 对组件及其子控件进行命名
-    * @param component 
-    */
+     * 对组件及其子控件进行命名
+     * @param component 
+     */
     private fillComponent(component: ComponentData) {
         let namedComponents: { [key: string]: ComponentData } = {}
-        if (!component.name) {
+        if (!component["name"]) {
             let num = 0;
             let name: string;
             do {
@@ -78,7 +78,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             } while (namedComponents[name]);
 
             namedComponents[name] = component
-            component.name = name;
+            component["name"] = name;
         }
 
         if (!component.id)
