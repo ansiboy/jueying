@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.1.13
+ *  maishu-jueying v3.1.14
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -845,14 +845,15 @@ class Callback {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComponentContainer = void 0;
 const React = __webpack_require__(/*! react */ "react");
-const page_1 = __webpack_require__(/*! ./page */ "./node_modules/maishu-jueying-core/out/page.js");
+const components_1 = __webpack_require__(/*! ./components */ "./node_modules/maishu-jueying-core/out/components/index.js");
 const parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
+/** 组件容器，实现组件的渲染 */
 class ComponentContainer extends React.Component {
     renderChild(componentData) {
         return React.createElement(React.Fragment, { key: componentData.id }, parse_component_data_1.parseComponentData(componentData));
     }
     render() {
-        return React.createElement(page_1.PageContext.Consumer, null, args => {
+        return React.createElement(components_1.PageContext.Consumer, null, args => {
             var _a;
             let children = ((_a = args.pageData) === null || _a === void 0 ? void 0 : _a.children.filter(o => o.parentId == this.props.id)) || [];
             return React.createElement("div", { className: this.props.className, style: this.props.style }, children.map(o => this.renderChild(o)));
@@ -860,8 +861,216 @@ class ComponentContainer extends React.Component {
     }
 }
 exports.ComponentContainer = ComponentContainer;
-ComponentContainer.contextType = page_1.PageContext;
+ComponentContainer.contextType = components_1.PageContext;
 //# sourceMappingURL=component-container.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/components/index.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/components/index.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageBody = exports.PageFooter = exports.PageHeader = exports.PageContext = exports.Page = void 0;
+var page_1 = __webpack_require__(/*! ./page */ "./node_modules/maishu-jueying-core/out/components/page.js");
+Object.defineProperty(exports, "Page", { enumerable: true, get: function () { return page_1.Page; } });
+Object.defineProperty(exports, "PageContext", { enumerable: true, get: function () { return page_1.PageContext; } });
+var page_header_1 = __webpack_require__(/*! ./page-header */ "./node_modules/maishu-jueying-core/out/components/page-header.js");
+Object.defineProperty(exports, "PageHeader", { enumerable: true, get: function () { return page_header_1.PageHeader; } });
+var page_footer_1 = __webpack_require__(/*! ./page-footer */ "./node_modules/maishu-jueying-core/out/components/page-footer.js");
+Object.defineProperty(exports, "PageFooter", { enumerable: true, get: function () { return page_footer_1.PageFooter; } });
+var page_body_1 = __webpack_require__(/*! ./page-body */ "./node_modules/maishu-jueying-core/out/components/page-body.js");
+Object.defineProperty(exports, "PageBody", { enumerable: true, get: function () { return page_body_1.PageBody; } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/components/page-body.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/components/page-body.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageBody = void 0;
+// import { component } from "./decorators";
+const React = __webpack_require__(/*! react */ "react");
+const component_container_1 = __webpack_require__(/*! ../component-container */ "./node_modules/maishu-jueying-core/out/component-container.js");
+const page_1 = __webpack_require__(/*! ./page */ "./node_modules/maishu-jueying-core/out/components/page.js");
+const page_header_1 = __webpack_require__(/*! ./page-header */ "./node_modules/maishu-jueying-core/out/components/page-header.js");
+const page_footer_1 = __webpack_require__(/*! ./page-footer */ "./node_modules/maishu-jueying-core/out/components/page-footer.js");
+const register_1 = __webpack_require__(/*! ../register */ "./node_modules/maishu-jueying-core/out/register.js");
+// @component({ type: PageBody.typeName })
+class PageBody extends React.Component {
+    render() {
+        return React.createElement(page_1.PageContext.Consumer, null, args => {
+            let style = { marginTop: 0 };
+            if (args.pageData != null) {
+                let header = args.pageData.children.filter(o => o.type == page_header_1.PageHeader.typeName)[0];
+                let footer = args.pageData.children.filter(o => o.type == page_footer_1.PageFooter.typeName)[0];
+                if (header != null && header.props.visible) {
+                    let p = header.props;
+                    style.marginTop = p.height;
+                    style.height = `calc(100% - ${p.height}px)`;
+                }
+                if (footer != null && footer.props.visible) {
+                    let p = footer.props;
+                    style.marginBottom = p.height;
+                    style.height = `calc(100% - ${style.marginTop + p.height}px)`;
+                }
+            }
+            style.display = this.props.visible ? "" : "none";
+            return React.createElement(component_container_1.ComponentContainer, Object.assign({ className: PageBody.className }, this.props, { style: style }));
+        });
+    }
+}
+exports.PageBody = PageBody;
+PageBody.typeName = "section";
+PageBody.className = "body";
+PageBody.id = "page-body";
+PageBody.defaultProps = { id: PageBody.id, visible: true };
+PageBody.contextType = page_1.PageContext;
+register_1.registerComponent(PageBody.typeName, PageBody);
+//# sourceMappingURL=page-body.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/components/page-footer.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/components/page-footer.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageFooter = void 0;
+// import { component } from "./decorators";
+const React = __webpack_require__(/*! react */ "react");
+const component_container_1 = __webpack_require__(/*! ../component-container */ "./node_modules/maishu-jueying-core/out/component-container.js");
+const register_1 = __webpack_require__(/*! ../register */ "./node_modules/maishu-jueying-core/out/register.js");
+// @component({ type: PageFooter.typeName })
+class PageFooter extends React.Component {
+    render() {
+        let style = this.props.style || {};
+        Object.assign({}, style, { height: this.props.height, display: this.props.visible ? "" : "none" });
+        return React.createElement(component_container_1.ComponentContainer, { id: this.props.id, className: PageFooter.className, style: style });
+    }
+}
+exports.PageFooter = PageFooter;
+PageFooter.typeName = "footer";
+PageFooter.className = "footer";
+PageFooter.id = "page-footer";
+PageFooter.defaultProps = { id: PageFooter.id, height: 50, visible: true };
+register_1.registerComponent(PageFooter.typeName, PageFooter);
+//# sourceMappingURL=page-footer.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/components/page-header.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/components/page-header.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageHeader = void 0;
+// import { component } from "./decorators";
+const React = __webpack_require__(/*! react */ "react");
+const component_container_1 = __webpack_require__(/*! ../component-container */ "./node_modules/maishu-jueying-core/out/component-container.js");
+const register_1 = __webpack_require__(/*! ../register */ "./node_modules/maishu-jueying-core/out/register.js");
+// @component({ type: PageHeader.typeName })
+class PageHeader extends React.Component {
+    render() {
+        let style = this.props.style || {};
+        Object.assign({}, style, { height: this.props.height, display: this.props.visible ? "" : "none" });
+        return React.createElement(component_container_1.ComponentContainer, { id: this.props.id, className: PageHeader.className, style: style });
+    }
+}
+exports.PageHeader = PageHeader;
+PageHeader.typeName = "header";
+PageHeader.className = "header";
+PageHeader.id = "page-header";
+PageHeader.defaultProps = { height: 50, visible: true, id: PageHeader.id };
+register_1.registerComponent(PageHeader.typeName, PageHeader);
+//# sourceMappingURL=page-header.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/components/page.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/components/page.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, privateMap) {
+    if (!privateMap.has(receiver)) {
+        throw new TypeError("attempted to get private field on non-instance");
+    }
+    return privateMap.get(receiver);
+};
+var _components;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Page = exports.PageContext = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const register_1 = __webpack_require__(/*! ../register */ "./node_modules/maishu-jueying-core/out/register.js");
+// import { component } from "./decorators";
+const parse_component_data_1 = __webpack_require__(/*! ../parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
+const callback_1 = __webpack_require__(/*! maishu-toolkit/out/callback */ "./node_modules/maishu-jueying-core/node_modules/maishu-toolkit/out/callback.js");
+exports.PageContext = React.createContext({});
+// @component({ type: Page.typeName })
+class Page extends React.Component {
+    constructor(props) {
+        super(props);
+        this.childComponentCreated = new callback_1.Callback();
+        _components.set(this, {});
+    }
+    get components() {
+        return __classPrivateFieldGet(this, _components);
+    }
+    render() {
+        let pageStyle = {};
+        let pageData = this.props.pageData;
+        pageData.children.forEach(c => {
+            c.props.ref = (e) => {
+                if (e == null)
+                    return;
+                if (__classPrivateFieldGet(this, _components)[c.id] == null)
+                    this.childComponentCreated.fire({ component: e, id: c.id });
+                __classPrivateFieldGet(this, _components)[c.id] = e || __classPrivateFieldGet(this, _components)[c.id];
+            };
+        });
+        let children = pageData.children.filter(o => o.parentId == pageData.id);
+        let childComponents = children.map(o => React.createElement(React.Fragment, { key: o.id }, parse_component_data_1.parseComponentData(o)));
+        return React.createElement("div", { className: `${Page.className}`, style: pageStyle },
+            React.createElement(exports.PageContext.Provider, { value: { page: this, pageData } }, childComponents));
+    }
+}
+exports.Page = Page;
+_components = new WeakMap();
+Page.typeName = "article";
+Page.className = "page-view";
+//========================================================
+// 兼容旧代码
+register_1.registerComponent("PageView", Page);
+//========================================================
+register_1.registerComponent(Page.typeName, Page);
+//# sourceMappingURL=page.js.map
 
 /***/ }),
 
@@ -908,211 +1117,21 @@ exports.errors = {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ComponentContainer = exports.PageBody = exports.PageFooter = exports.PageHeader = exports.PageContext = exports.Page = exports.componentTypes = exports.registerComponent = exports.parseComponentData = void 0;
-// export { ComponentInfo } from "./component-info";
-// export { component } from "./decorators";
+exports.ComponentContainer = exports.PageBody = exports.PageFooter = exports.PageHeader = exports.Page = exports.componentTypes = exports.registerComponent = exports.parseComponentData = void 0;
 var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
 Object.defineProperty(exports, "parseComponentData", { enumerable: true, get: function () { return parse_component_data_1.parseComponentData; } });
 var register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
 Object.defineProperty(exports, "registerComponent", { enumerable: true, get: function () { return register_1.registerComponent; } });
 Object.defineProperty(exports, "componentTypes", { enumerable: true, get: function () { return register_1.componentTypes; } });
-var page_1 = __webpack_require__(/*! ./page */ "./node_modules/maishu-jueying-core/out/page.js");
-Object.defineProperty(exports, "Page", { enumerable: true, get: function () { return page_1.Page; } });
-Object.defineProperty(exports, "PageContext", { enumerable: true, get: function () { return page_1.PageContext; } });
-var page_header_1 = __webpack_require__(/*! ./page-header */ "./node_modules/maishu-jueying-core/out/page-header.js");
-Object.defineProperty(exports, "PageHeader", { enumerable: true, get: function () { return page_header_1.PageHeader; } });
-var page_footer_1 = __webpack_require__(/*! ./page-footer */ "./node_modules/maishu-jueying-core/out/page-footer.js");
-Object.defineProperty(exports, "PageFooter", { enumerable: true, get: function () { return page_footer_1.PageFooter; } });
-var page_body_1 = __webpack_require__(/*! ./page-body */ "./node_modules/maishu-jueying-core/out/page-body.js");
-Object.defineProperty(exports, "PageBody", { enumerable: true, get: function () { return page_body_1.PageBody; } });
+var index_1 = __webpack_require__(/*! ./components/index */ "./node_modules/maishu-jueying-core/out/components/index.js");
+Object.defineProperty(exports, "Page", { enumerable: true, get: function () { return index_1.Page; } });
+Object.defineProperty(exports, "PageHeader", { enumerable: true, get: function () { return index_1.PageHeader; } });
+Object.defineProperty(exports, "PageFooter", { enumerable: true, get: function () { return index_1.PageFooter; } });
+Object.defineProperty(exports, "PageBody", { enumerable: true, get: function () { return index_1.PageBody; } });
 var component_container_1 = __webpack_require__(/*! ./component-container */ "./node_modules/maishu-jueying-core/out/component-container.js");
 Object.defineProperty(exports, "ComponentContainer", { enumerable: true, get: function () { return component_container_1.ComponentContainer; } });
 __webpack_require__(/*! ./style */ "./node_modules/maishu-jueying-core/out/style.js");
 //# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/page-body.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/page-body.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PageBody = void 0;
-// import { component } from "./decorators";
-const React = __webpack_require__(/*! react */ "react");
-const component_container_1 = __webpack_require__(/*! ./component-container */ "./node_modules/maishu-jueying-core/out/component-container.js");
-const page_1 = __webpack_require__(/*! ./page */ "./node_modules/maishu-jueying-core/out/page.js");
-const page_header_1 = __webpack_require__(/*! ./page-header */ "./node_modules/maishu-jueying-core/out/page-header.js");
-const page_footer_1 = __webpack_require__(/*! ./page-footer */ "./node_modules/maishu-jueying-core/out/page-footer.js");
-const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-// @component({ type: PageBody.typeName })
-class PageBody extends React.Component {
-    render() {
-        return React.createElement(page_1.PageContext.Consumer, null, args => {
-            let style = { marginTop: 0 };
-            if (args.pageData != null) {
-                let header = args.pageData.children.filter(o => o.type == page_header_1.PageHeader.typeName)[0];
-                let footer = args.pageData.children.filter(o => o.type == page_footer_1.PageFooter.typeName)[0];
-                if (header != null && header.props.visible) {
-                    let p = header.props;
-                    style.marginTop = p.height;
-                    style.height = `calc(100% - ${p.height}px)`;
-                }
-                if (footer != null && footer.props.visible) {
-                    let p = footer.props;
-                    style.marginBottom = p.height;
-                    style.height = `calc(100% - ${style.marginTop + p.height}px)`;
-                }
-            }
-            style.display = this.props.visible ? "" : "none";
-            return React.createElement(component_container_1.ComponentContainer, Object.assign({ className: PageBody.className }, this.props, { style: style }));
-        });
-    }
-}
-exports.PageBody = PageBody;
-PageBody.typeName = "section";
-PageBody.className = "body";
-PageBody.id = "page-body";
-PageBody.defaultProps = { id: PageBody.id, visible: true };
-PageBody.contextType = page_1.PageContext;
-register_1.registerComponent(PageBody.typeName, PageBody);
-//# sourceMappingURL=page-body.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/page-footer.js":
-/*!*************************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/page-footer.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PageFooter = void 0;
-// import { component } from "./decorators";
-const React = __webpack_require__(/*! react */ "react");
-const component_container_1 = __webpack_require__(/*! ./component-container */ "./node_modules/maishu-jueying-core/out/component-container.js");
-const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-// @component({ type: PageFooter.typeName })
-class PageFooter extends React.Component {
-    render() {
-        let style = this.props.style || {};
-        Object.assign(style, { height: this.props.height, display: this.props.visible ? "" : "none" });
-        return React.createElement(component_container_1.ComponentContainer, { id: this.props.id, className: PageFooter.className, style: style });
-    }
-}
-exports.PageFooter = PageFooter;
-PageFooter.typeName = "footer";
-PageFooter.className = "footer";
-PageFooter.id = "page-footer";
-PageFooter.defaultProps = { id: PageFooter.id, height: 50, visible: true };
-register_1.registerComponent(PageFooter.typeName, PageFooter);
-//# sourceMappingURL=page-footer.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/page-header.js":
-/*!*************************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/page-header.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PageHeader = void 0;
-// import { component } from "./decorators";
-const React = __webpack_require__(/*! react */ "react");
-const component_container_1 = __webpack_require__(/*! ./component-container */ "./node_modules/maishu-jueying-core/out/component-container.js");
-const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-// @component({ type: PageHeader.typeName })
-class PageHeader extends React.Component {
-    render() {
-        let style = this.props.style || {};
-        Object.assign(style, { height: this.props.height, display: this.props.visible ? "" : "none" });
-        return React.createElement(component_container_1.ComponentContainer, { id: this.props.id, className: PageHeader.className, style: style });
-    }
-}
-exports.PageHeader = PageHeader;
-PageHeader.typeName = "header";
-PageHeader.className = "header";
-PageHeader.id = "page-header";
-PageHeader.defaultProps = { height: 50, visible: true, id: PageHeader.id };
-register_1.registerComponent(PageHeader.typeName, PageHeader);
-//# sourceMappingURL=page-header.js.map
-
-/***/ }),
-
-/***/ "./node_modules/maishu-jueying-core/out/page.js":
-/*!******************************************************!*\
-  !*** ./node_modules/maishu-jueying-core/out/page.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, privateMap) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to get private field on non-instance");
-    }
-    return privateMap.get(receiver);
-};
-var _components;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Page = exports.PageContext = void 0;
-const React = __webpack_require__(/*! react */ "react");
-const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
-// import { component } from "./decorators";
-const parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
-const callback_1 = __webpack_require__(/*! maishu-toolkit/out/callback */ "./node_modules/maishu-jueying-core/node_modules/maishu-toolkit/out/callback.js");
-exports.PageContext = React.createContext({});
-// @component({ type: Page.typeName })
-class Page extends React.Component {
-    constructor(props) {
-        super(props);
-        this.childComponentCreated = new callback_1.Callback();
-        _components.set(this, {});
-    }
-    get components() {
-        return __classPrivateFieldGet(this, _components);
-    }
-    render() {
-        let pageStyle = {};
-        let pageData = this.props.pageData;
-        pageData.children.forEach(c => {
-            c.props.ref = (e) => {
-                if (e == null)
-                    return;
-                if (__classPrivateFieldGet(this, _components)[c.id] == null)
-                    this.childComponentCreated.fire({ component: e, id: c.id });
-                __classPrivateFieldGet(this, _components)[c.id] = e || __classPrivateFieldGet(this, _components)[c.id];
-            };
-        });
-        let children = pageData.children.filter(o => o.parentId == pageData.id);
-        let childComponents = children.map(o => React.createElement(React.Fragment, { key: o.id }, parse_component_data_1.parseComponentData(o)));
-        return React.createElement("div", { className: `${Page.className}`, style: pageStyle },
-            React.createElement(exports.PageContext.Provider, { value: { page: this, pageData } }, childComponents));
-    }
-}
-exports.Page = Page;
-_components = new WeakMap();
-Page.typeName = "article";
-Page.className = "page-view";
-//========================================================
-// 兼容旧代码
-register_1.registerComponent("PageView", Page);
-register_1.registerComponent(Page.typeName, Page);
-//========================================================
-//# sourceMappingURL=page.js.map
 
 /***/ }),
 
@@ -1187,48 +1206,45 @@ exports.registerComponent = registerComponent;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isFixed = exports.isVisible = void 0;
-const page_1 = __webpack_require__(/*! ./page */ "./node_modules/maishu-jueying-core/out/page.js");
-const page_body_1 = __webpack_require__(/*! ./page-body */ "./node_modules/maishu-jueying-core/out/page-body.js");
-const page_header_1 = __webpack_require__(/*! ./page-header */ "./node_modules/maishu-jueying-core/out/page-header.js");
-const page_footer_1 = __webpack_require__(/*! ./page-footer */ "./node_modules/maishu-jueying-core/out/page-footer.js");
+const components_1 = __webpack_require__(/*! ./components */ "./node_modules/maishu-jueying-core/out/components/index.js");
 let elementId = "maishu-jueying-core-style";
 if (!document.getElementById(elementId) && document.head != null) {
     let element = document.createElement('style');
     element.type = 'text/css';
-    element.id = "taro-builder-core-style";
+    element.id = elementId;
     document.head.appendChild(element);
     element.innerHTML = `
-    .${page_1.Page.className} {
+    .${components_1.Page.className} {
         width   : 100%;
         height  : 100%;
         position: absolute;
     }
     
-    .${page_1.Page.className} .${page_body_1.PageBody.className} {
+    .${components_1.Page.className} .${components_1.PageBody.className} {
         overflow-y: auto;
         overflow-x: hidden;
         height  : 100%;
     }
     
-    .${page_1.Page.className} .${page_body_1.PageBody.className}::-webkit-scrollbar-track-piece {
+    .${components_1.Page.className} .${components_1.PageBody.className}::-webkit-scrollbar-track-piece {
         background-color: #fff;
     }
     
-    .${page_1.Page.className} .${page_body_1.PageBody.className}::-webkit-scrollbar {
+    .${components_1.Page.className} .${components_1.PageBody.className}::-webkit-scrollbar {
         width: 4px;
     }
     
-    .${page_1.Page.className} .${page_body_1.PageBody.className}::-webkit-scrollbar-thumb {
+    .${components_1.Page.className} .${components_1.PageBody.className}::-webkit-scrollbar-thumb {
         background: #999;
     }
     
-    .${page_1.Page.className} .${page_header_1.PageHeader.className} {
+    .${components_1.Page.className} .${components_1.PageHeader.className} {
         position: absolute;
         top     : 0px;
         width   : 100%;
     }
     
-    .${page_1.Page.className} .${page_footer_1.PageFooter.className} {
+    .${components_1.Page.className} .${components_1.PageFooter.className} {
         position: absolute;
         bottom  : 0px;
         width   : 100%;
@@ -2294,9 +2310,9 @@ class PageDesigner extends React.Component {
         this.setComponetRefProp(pageData);
     }
     /**
-    * 对组件及其子控件进行命名
-    * @param component
-    */
+     * 对组件及其子控件进行命名
+     * @param component
+     */
     fillComponent(component) {
         let namedComponents = {};
         if (!component["name"]) {
