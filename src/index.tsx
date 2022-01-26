@@ -8,7 +8,8 @@ export {
 export { PropEditor, PropEditorState, TextInput, DropDownItem, } from "./prop-editor";
 export { PropertyEditorInfo } from "./property-editor";
 export { classNames } from "./style";
-export { ComponentDataHandler } from "./component-data-handler";
+export { ComponentDataMaintain, ComponentDataMaintainProps, ComponentDataMaintainState, ComponentDataContext } from "./component-data-maintain";
+// export { ComponentDataHandler } from "./component-data-handler";
 
 
 
