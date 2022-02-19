@@ -1,120 +1,81 @@
 import * as React from "react";
 
-import { ComponentData } from "maishu-jueying-core";
+import { ComponentData, PageData } from "maishu-jueying-core";
 import { Errors } from "./errors";
 import { guid } from "maishu-toolkit";
 
-export interface ComponentDataMaintainProps extends React.ClassAttributes<ComponentDataMaintain> {
-    componentData: ComponentData,
+export interface PageDataMaintainProps extends React.ClassAttributes<PageDataMaintain> {
+    pageData: PageData,
     className?: string,
     style?: React.CSSProperties,
 }
 
-export interface ComponentDataMaintainState {
-    componentData: ComponentData,
+export interface PageDataMaintainState {
+    pageData: PageData,
 }
 
-export let ComponentDataContext = React.createContext<{ designer: ComponentDataMaintain | null }>({ designer: null })
+export let ComponentDataContext = React.createContext<{ maintain: PageDataMaintain | null }>({ maintain: null })
 
 /**
  * 组件数据处理，负责对对组件数据进行处理维护。
  */
-export class ComponentDataMaintain extends React.Component<ComponentDataMaintainProps, ComponentDataMaintainState> {
+export class PageDataMaintain extends React.Component<PageDataMaintainProps, PageDataMaintainState> {
     private _element: HTMLElement;
-    private components: { [typeName: string]: { [id: string]: React.Component } } = {};
+    // private components: { [typeName: string]: { [id: string]: React.Component } } = {};
 
-    constructor(props: ComponentDataMaintainProps) {
+    constructor(props: PageDataMaintainProps) {
         super(props);
 
-        let pageData = this.props.componentData;
+        let pageData = this.props.pageData;
         this.initPageData(pageData);
 
-        this.state = { componentData: pageData };
+        this.state = { pageData: pageData };
     }
 
-    private setComponetRefProp(pageData: ComponentData) {
-        //=========================================================
-        // 记录当前 pageData 控件 ID
-        let componentIds: { [typeName: string]: string[] } = {};
-        //=========================================================
-        ComponentDataMaintain.travelComponentData(pageData).forEach(item => {
-
-            console.assert(item.props != null && item.id != null);
-            componentIds[item.type] = componentIds[item.type] || [];
-            componentIds[item.type].push(item.id);
-
-            let itemRef = item.props.ref;
-            item.props.ref = (e: any) => {
-                if (e != null) {
-                    this.components[item.type] = this.components[item.type] || {};
-                    this.components[item.type][item.id] = e;
-                }
-
-                if (typeof itemRef == "function")
-                    itemRef(e);
-            }
-        })
-    }
-
-    private initPageData(pageData: ComponentData) {
+    private initPageData(pageData: PageData) {
         if (pageData == null) {
             return
         }
 
-        pageData.children = pageData.children || [];
-        this.fillComponent(pageData);
-        this.setComponetRefProp(pageData);
+        // pageData.children = pageData.children || [];
+        console.assert(pageData.children != null, "PageData children is null.")
+        pageData.children.forEach(c => {
+            this.initComponent(c, pageData);
+
+        })
     }
 
     /**
      * 对组件及其子控件进行命名
-     * @param component 
+     * @param componentData 
      */
-    private fillComponent(component: ComponentData) {
-        let namedComponents: { [key: string]: ComponentData } = {}
-        if (!component["name"]) {
+    private initComponent(componentData: ComponentData, pageData: PageData) {
+        let namedComponents: { [key: string]: PageData | ComponentData } = {};
+        pageData.children.forEach(c => {
+            if (c.name) {
+                namedComponents[c.name] = c;
+            }
+        })
+
+        if (!componentData.name) {
             let num = 0;
             let name: string;
             do {
                 num = num + 1;
-                name = `${component.type}${num}`;
+                name = `${componentData.type}${num}`;
             } while (namedComponents[name]);
 
-            namedComponents[name] = component
-            component["name"] = name;
+            namedComponents[name] = componentData
+            componentData.name = name;
         }
 
-        if (!component.id)
-            component.id = guid();
-
-        component.children = component.children || [];
-
-
-
-        if (!component.children || component.children.length == 0) {
-            return;
-        }
-
-        component.children.forEach(child => {
-            if (typeof child == "string")
-                return true;
-
-            this.fillComponent(child);
-        })
-    }
-
-    allComponents(): React.Component[] {
-        let r: React.Component[] = [];
-        for (let key in this.components) {
-            let ids = Object.getOwnPropertyNames(this.components[key]);
-            r.push(...ids.map(id => this.components[key][id]));
-        }
-        return r;
+        if (!componentData.id)
+            componentData.id = guid();
     }
 
     /** 页面数据 */
     get pageData() {
-        return this.state.componentData;
+        return this.state.pageData;
     }
 
     /** 获取已选择了的组件编号 */
@@ -124,22 +85,7 @@ export class ComponentDataMaintain extends React.Component<ComponentDataMaintain
 
     /** 获取已选择了的组件 */
     get selectedComponents(): ComponentData[] {
-        let arr = new Array<ComponentData>()
-        let stack = new Array<ComponentData>()
-        stack.push(this.pageData)
-        while (stack.length > 0) {
-            let item = stack.pop() as ComponentData;
-            if (item.props != null && item.selected == true)
-                arr.push(item);
-
-            (item.children || []).forEach(child => {
-                if (typeof child == "string")
-                    return true;
-
-                stack.push(child);
-            })
-        }
-
+        let arr = this.pageData.children.filter(o => o.selected);
         return arr;
     }
 
@@ -147,9 +93,10 @@ export class ComponentDataMaintain extends React.Component<ComponentDataMaintain
         return this._element;
     }
 
-    updateComponentProp(componentId: string, propName: string, value: any): any {
+    updateComponentProp(componentId: string, propName: string, value: any) {
         return this.updateComponentProps([{ componentId, propName, value }]);
     }
+
     updateComponentProps(componentProps: { componentId: string, propName: string, value: any }[]): any {
         let componentDatas: ComponentData[] = [];
         for (let i = 0; i < componentProps.length; i++) {
@@ -174,32 +121,29 @@ export class ComponentDataMaintain extends React.Component<ComponentDataMaintain
             componentDatas.push(componentData);
         }
 
-        this.setState({ componentData: this.pageData })
+        this.setState({ pageData: this.pageData });
     }
 
     /** 
      * 添加控件 
-     * @param parentId 父控件编号
      * @param componentData 控件数据
      * @param componentIndex 新添加组件在子组件中的次序 
      */
-    appendComponent(parentId: string, componentData: ComponentData, componentIndex?: number) {
-        if (!parentId) throw Errors.argumentNull('parentId');
+    appendComponent(componentData: ComponentData, componentIndex?: number) {
+        let parentId = componentData.parentId;
+        if (!parentId) throw new Error('ParentId field of component data is null.');
         if (!componentData) throw Errors.argumentNull('childComponent');
 
-        this.initPageData(componentData)
-        let parentControl = this.findComponentData(parentId);
-        if (parentControl == null)
-            throw new Error('Parent is not exists')
+        let pageData: PageData = this.pageData;
+        this.initComponent(componentData, pageData)
 
-        console.assert(parentControl != null);
-        parentControl.children = parentControl.children || [];
-        if (componentIndex != null) {
-            parentControl.children.splice(componentIndex, 0, componentData);
+        if (componentIndex == null) {
+            pageData.children.push(componentData);
         }
         else {
-            parentControl.children.push(componentData);
+            pageData.children.splice(componentIndex, 0, componentData);
         }
+
 
         this.selectComponents(componentData.id);
     }
@@ -225,38 +169,14 @@ export class ComponentDataMaintain extends React.Component<ComponentDataMaintain
         if (typeof componentIds == 'string')
             componentIds = [componentIds]
 
-        let selectedComponentIds = this.selectedComponentIds;
-        if (this.isSame(componentIds, selectedComponentIds))
-            return;
+        this.pageData.children.forEach(c => {
+            c.selected = false;
+        })
+        this.pageData.children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
+            c.selected = true;
+        });
 
-        var stack: ComponentData[] = [];
-        stack.push(this.pageData)
-        while (stack.length > 0) {
-            let item = stack.pop() as ComponentData;
-            let isSelectedControl = componentIds.indexOf(item.id) >= 0;
-            item.selected = isSelectedControl;
-
-            (item.children || []).forEach(child => {
-                if (typeof child == "string")
-                    return true;
-
-                stack.push(child);
-            })
-        }
-
-        this.setState({ componentData: this.pageData });
-    }
-
-    /** 判断两个字符串数组是否相等 */
-    private isSame(arr1: string[], arr2: string[]) {
-        if (arr1.length != arr2.length)
-            return false;
-
-        for (let i = 0; i < arr1.length; i++) {
-            if (arr2.indexOf(arr1[i]) < 0)
-                return false;
-        }
-        return true;
+        this.setState({ pageData: this.pageData });
     }
 
     /** 移除控件 */
@@ -269,13 +189,11 @@ export class ComponentDataMaintain extends React.Component<ComponentDataMaintain
         if (!pageData || !pageData.children || pageData.children.length == 0)
             return;
 
-        let children = pageData.children;
-        componentIds.forEach(controlId => {
-            this.removeComponentFrom(controlId, children);
-        })
+        for (let i = 0; i < componentIds.length; i++) {
+            this.removeComponentFrom(componentIds[i], pageData);
+        }
 
-
-        this.setState({ componentData: pageData })
+        this.setState({ pageData: pageData })
     }
 
     /** 
@@ -290,81 +208,33 @@ export class ComponentDataMaintain extends React.Component<ComponentDataMaintain
             throw new Error(`Cannt find component by id ${componentId}`)
 
         console.assert(component != null, `Cannt find component by id ${componentId}`);
+        component.parentId = parentId;
 
         let pageData = this.pageData;
         console.assert(pageData.children != null);
-        let children = pageData.children;
-        this.removeComponentFrom(componentId, children);
-        this.appendComponent(parentId, component, childComponentIndex);
+        this.removeComponentFrom(componentId, pageData);
+        this.appendComponent(component, childComponentIndex);
     }
 
-    private removeComponentFrom(controlId: string, collection: ComponentData["children"]): boolean {
-        let controlIndex: number | null = null;
-        collection = collection || [];
-        for (let i = 0; i < collection.length; i++) {
-            let child = collection[i];
-            if (typeof child == "string")
-                continue;
 
-            if (controlId == child.id) {
-                controlIndex = i;
-                break;
-            }
-        }
 
-        if (controlIndex == null) {
-            for (let i = 0; i < collection.length; i++) {
-                let o = collection[i];
-                if (typeof o == "string")
-                    continue;
+    private removeComponentFrom(componentId: string, pageData: PageData,) {
+        let child = pageData.children.filter(o => o.id == componentId)[0];
+        if (child == null)
+            throw new Error(`Component '${componentId}' is not exists.`);
 
-                let children = o.children || [];
-                children.forEach(child => {
-                    if (typeof child == "string")
-                        return true;
-
-                    let isRemoved = this.removeComponentFrom(controlId, children);
-                    if (isRemoved) {
-                        return true;
-                    }
-                })
-            }
-
-            return false;
-        }
-
-        if (controlIndex == 0) {
-            collection.shift();
-        }
-        else if (controlIndex == collection.length - 1) {
-            collection.pop();
-        }
-        else {
-            collection.splice(controlIndex, 1);
-        }
-
-        return true;
-    }
-
-    private static travelComponentData(pageData: ComponentData, filter?: (item: ComponentData) => boolean): ComponentData[] {
-        let stack = new Array<ComponentData>();
-        stack.push(pageData);
-        let r: ComponentData[] = [];
-        filter = filter || (() => true);
+        let stack: PageData["children"] = [child];
+        let componentsToRemove: string[] = [componentId];
         while (stack.length > 0) {
-            let item = stack.shift() as ComponentData;
-            if (filter(item)) {
-                r.push(item);
+            let item = stack.pop() as ComponentData;
+            let children = pageData.children.filter(o => o.parentId == item.id);
+            if (children.length > 0) {
+                stack.push(...children);
+                componentsToRemove.push(...children.map(o => o.id));
             }
-
-            //===============================================
-            // 子元素有可能为字符串, 过滤出对象
-            let children = (item.children || []).filter(o => typeof o == 'object') as ComponentData[]
-            //===============================================
-            stack.push(...children);
         }
 
-        return r;
+        pageData.children = pageData.children.filter(o => componentsToRemove.indexOf(o.id) < 0);
     }
 
     /**
@@ -372,12 +242,12 @@ export class ComponentDataMaintain extends React.Component<ComponentDataMaintain
      * @param componentId 组件编号
      */
     findComponentData(componentId: string): ComponentData | null {
-        let pageData = this.state.componentData;
+        let pageData = this.state.pageData;
         if (!pageData)
             throw Errors.pageDataIsNull();
 
-        let componentDatas = ComponentDataMaintain.travelComponentData(pageData, (item) => item.id == componentId)
-        return componentDatas[0];
+        let componentData = pageData.children.filter(o => o.id == componentId)[0];
+        return componentData;
     }
 
     private onKeyDown(e: React.KeyboardEvent<HTMLElement>) {
@@ -390,18 +260,10 @@ export class ComponentDataMaintain extends React.Component<ComponentDataMaintain
         }
     }
 
-    /** 
-     * 通过组件名称获取组件实例
-     * @param typeName 组件名称
-     */
-    findComponetsByTypeName(typeName: string) {
-        this.components[typeName];
-    }
-
     render() {
         return <div tabIndex={0} ref={e => this._element = this._element || e} onKeyDown={e => this.onKeyDown(e)}
             className={this.props.className} style={this.props.style}>
-            <ComponentDataContext.Provider value={{ designer: this }}>
+            <ComponentDataContext.Provider value={{ maintain: this }}>
                 {this.props.children}
             </ComponentDataContext.Provider>
         </div>

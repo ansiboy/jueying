@@ -123,6 +123,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                         this._validator.checkElement(propEditorInfo.propName);
 
                     designer.updateComponentProps(componentProps);
+
                 }
             };
             let editor = React.createElement(editorType, editorProps);
@@ -155,7 +156,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         return <DesignerContext.Consumer>
             {args => {
 
-                let designer = args.designer;
+                let designer = args.maintain;
                 if (designer == null)
                     return null;
 
