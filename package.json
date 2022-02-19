@@ -44,5 +44,5 @@
         "build": "grunt build"
     },
     "typings": "out/index.d.ts",
-    "version": "3.2.22"
+    "version": "3.3.30"
 }

@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.2.22
+ *  maishu-jueying v3.3.28
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -235,7 +235,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ComponentDataMaintain = exports.ComponentDataContext = void 0;
+exports.PageDataMaintain = exports.ComponentDataContext = void 0;
 
 var React = __webpack_require__(/*! react */ "react");
 
@@ -250,122 +250,81 @@ exports.ComponentDataContext = React.createContext({
  * 组件数据处理，负责对对组件数据进行处理维护。
  */
 
-var ComponentDataMaintain =
+var PageDataMaintain =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(ComponentDataMaintain, _React$Component);
+  _inherits(PageDataMaintain, _React$Component);
 
-  function ComponentDataMaintain(props) {
+  // private components: { [typeName: string]: { [id: string]: React.Component } } = {};
+  function PageDataMaintain(props) {
     var _this;
 
-    _classCallCheck(this, ComponentDataMaintain);
+    _classCallCheck(this, PageDataMaintain);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ComponentDataMaintain).call(this, props));
-    _this.components = {};
-    var pageData = _this.props.componentData;
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PageDataMaintain).call(this, props));
+    var pageData = _this.props.pageData;
 
     _this.initPageData(pageData);
 
     _this.state = {
-      componentData: pageData
+      pageData: pageData
     };
     return _this;
   }
 
-  _createClass(ComponentDataMaintain, [{
-    key: "setComponetRefProp",
-    value: function setComponetRefProp(pageData) {
-      var _this2 = this;
-
-      //=========================================================
-      // 记录当前 pageData 控件 ID
-      var componentIds = {}; //=========================================================
-
-      ComponentDataMaintain.travelComponentData(pageData).forEach(function (item) {
-        console.assert(item.props != null && item.id != null);
-        componentIds[item.type] = componentIds[item.type] || [];
-        componentIds[item.type].push(item.id);
-        var itemRef = item.props.ref;
-
-        item.props.ref = function (e) {
-          if (e != null) {
-            _this2.components[item.type] = _this2.components[item.type] || {};
-            _this2.components[item.type][item.id] = e;
-          }
-
-          if (typeof itemRef == "function") itemRef(e);
-        };
-      });
-    }
-  }, {
+  _createClass(PageDataMaintain, [{
     key: "initPageData",
     value: function initPageData(pageData) {
+      var _this2 = this;
+
       if (pageData == null) {
         return;
-      }
+      } // pageData.children = pageData.children || [];
 
-      pageData.children = pageData.children || [];
-      this.fillComponent(pageData);
-      this.setComponetRefProp(pageData);
+
+      console.assert(pageData.children != null, "PageData children is null.");
+      pageData.children.forEach(function (c) {
+        _this2.initComponent(c, pageData);
+      }); // this.setComponetRefProp(pageData);
     }
     /**
      * 对组件及其子控件进行命名
-     * @param component
+     * @param componentData
      */
 
   }, {
-    key: "fillComponent",
-    value: function fillComponent(component) {
-      var _this3 = this;
-
+    key: "initComponent",
+    value: function initComponent(componentData, pageData) {
       var namedComponents = {};
+      pageData.children.forEach(function (c) {
+        if (c.name) {
+          namedComponents[c.name] = c;
+        }
+      });
 
-      if (!component["name"]) {
+      if (!componentData.name) {
         var num = 0;
         var name;
 
         do {
           num = num + 1;
-          name = "".concat(component.type).concat(num);
+          name = "".concat(componentData.type).concat(num);
         } while (namedComponents[name]);
 
-        namedComponents[name] = component;
-        component["name"] = name;
+        namedComponents[name] = componentData;
+        componentData.name = name;
       }
 
-      if (!component.id) component.id = maishu_toolkit_1.guid();
-      component.children = component.children || [];
+      if (!componentData.id) componentData.id = maishu_toolkit_1.guid();
+    } // allComponents(): React.Component[] {
+    //     let r: React.Component[] = [];
+    //     for (let key in this.components) {
+    //         let ids = Object.getOwnPropertyNames(this.components[key]);
+    //         r.push(...ids.map(id => this.components[key][id]));
+    //     }
+    //     return r;
+    // }
 
-      if (!component.children || component.children.length == 0) {
-        return;
-      }
-
-      component.children.forEach(function (child) {
-        if (typeof child == "string") return true;
-
-        _this3.fillComponent(child);
-      });
-    }
-  }, {
-    key: "allComponents",
-    value: function allComponents() {
-      var _this4 = this;
-
-      var r = [];
-
-      var _loop = function _loop(key) {
-        var ids = Object.getOwnPropertyNames(_this4.components[key]);
-        r.push.apply(r, _toConsumableArray(ids.map(function (id) {
-          return _this4.components[key][id];
-        })));
-      };
-
-      for (var key in this.components) {
-        _loop(key);
-      }
-
-      return r;
-    }
     /** 页面数据 */
 
   }, {
@@ -404,31 +363,30 @@ function (_React$Component) {
       }
 
       this.setState({
-        componentData: this.pageData
+        pageData: this.pageData
       });
     }
     /**
      * 添加控件
-     * @param parentId 父控件编号
      * @param componentData 控件数据
      * @param componentIndex 新添加组件在子组件中的次序
      */
 
   }, {
     key: "appendComponent",
-    value: function appendComponent(parentId, componentData, componentIndex) {
-      if (!parentId) throw errors_1.Errors.argumentNull('parentId');
+    value: function appendComponent(componentData, componentIndex) {
+      var parentId = componentData.parentId;
+      if (!parentId) throw new Error('ParentId field of component data is null.');
       if (!componentData) throw errors_1.Errors.argumentNull('childComponent');
-      this.initPageData(componentData);
-      var parentControl = this.findComponentData(parentId);
-      if (parentControl == null) throw new Error('Parent is not exists');
-      console.assert(parentControl != null);
-      parentControl.children = parentControl.children || [];
+      var pageData = this.pageData;
+      this.initComponent(componentData, pageData); // let parentControl = this.findComponentData(parentId) as ComponentData;
+      // if (parentControl == null && componentData.parentId != pageData.id)
+      //     throw new Error('Parent is not exists')
 
-      if (componentIndex != null) {
-        parentControl.children.splice(componentIndex, 0, componentData);
+      if (componentIndex == null) {
+        pageData.children.push(componentData);
       } else {
-        parentControl.children.push(componentData);
+        pageData.children.splice(componentIndex, 0, componentData);
       }
 
       this.selectComponents(componentData.id);
@@ -455,37 +413,17 @@ function (_React$Component) {
     key: "selectComponents",
     value: function selectComponents(componentIds) {
       if (typeof componentIds == 'string') componentIds = [componentIds];
-      var selectedComponentIds = this.selectedComponentIds;
-      if (this.isSame(componentIds, selectedComponentIds)) return;
-      var stack = [];
-      stack.push(this.pageData);
-
-      while (stack.length > 0) {
-        var item = stack.pop();
-        var isSelectedControl = componentIds.indexOf(item.id) >= 0;
-        item.selected = isSelectedControl;
-        (item.children || []).forEach(function (child) {
-          if (typeof child == "string") return true;
-          stack.push(child);
-        });
-      }
-
-      this.setState({
-        componentData: this.pageData
+      this.pageData.children.forEach(function (c) {
+        c.selected = false;
       });
-    }
-    /** 判断两个字符串数组是否相等 */
-
-  }, {
-    key: "isSame",
-    value: function isSame(arr1, arr2) {
-      if (arr1.length != arr2.length) return false;
-
-      for (var i = 0; i < arr1.length; i++) {
-        if (arr2.indexOf(arr1[i]) < 0) return false;
-      }
-
-      return true;
+      this.pageData.children.filter(function (o) {
+        return componentIds.indexOf(o.id) >= 0;
+      }).forEach(function (c) {
+        c.selected = true;
+      });
+      this.setState({
+        pageData: this.pageData
+      });
     }
     /** 移除控件 */
 
@@ -501,16 +439,15 @@ function (_React$Component) {
   }, {
     key: "removeComponents",
     value: function removeComponents(componentIds) {
-      var _this5 = this;
-
       var pageData = this.pageData;
       if (!pageData || !pageData.children || pageData.children.length == 0) return;
-      var children = pageData.children;
-      componentIds.forEach(function (controlId) {
-        _this5.removeComponentFrom(controlId, children);
-      });
+
+      for (var i = 0; i < componentIds.length; i++) {
+        this.removeComponentFrom(componentIds[i], pageData);
+      }
+
       this.setState({
-        componentData: pageData
+        pageData: pageData
       });
     }
     /**
@@ -526,64 +463,43 @@ function (_React$Component) {
       var component = this.findComponentData(componentId);
       if (component == null) throw new Error("Cannt find component by id ".concat(componentId));
       console.assert(component != null, "Cannt find component by id ".concat(componentId));
+      component.parentId = parentId;
       var pageData = this.pageData;
       console.assert(pageData.children != null);
-      var children = pageData.children;
-      this.removeComponentFrom(componentId, children);
-      this.appendComponent(parentId, component, childComponentIndex);
+      this.removeComponentFrom(componentId, pageData);
+      this.appendComponent(component, childComponentIndex);
     }
   }, {
     key: "removeComponentFrom",
-    value: function removeComponentFrom(controlId, collection) {
-      var _this6 = this;
+    value: function removeComponentFrom(componentId, pageData) {
+      var child = pageData.children.filter(function (o) {
+        return o.id == componentId;
+      })[0];
+      if (child == null) throw new Error("Component '".concat(componentId, "' is not exists."));
+      var stack = [child];
+      var componentsToRemove = [componentId];
 
-      var controlIndex = null;
-      collection = collection || [];
+      var _loop = function _loop() {
+        var item = stack.pop();
+        var children = pageData.children.filter(function (o) {
+          return o.parentId == item.id;
+        });
 
-      for (var i = 0; i < collection.length; i++) {
-        var child = collection[i];
-        if (typeof child == "string") continue;
-
-        if (controlId == child.id) {
-          controlIndex = i;
-          break;
+        if (children.length > 0) {
+          stack.push.apply(stack, _toConsumableArray(children));
+          componentsToRemove.push.apply(componentsToRemove, _toConsumableArray(children.map(function (o) {
+            return o.id;
+          })));
         }
+      };
+
+      while (stack.length > 0) {
+        _loop();
       }
 
-      if (controlIndex == null) {
-        var _loop2 = function _loop2(_i2) {
-          var o = collection[_i2];
-          if (typeof o == "string") return "continue";
-          var children = o.children || [];
-          children.forEach(function (child) {
-            if (typeof child == "string") return true;
-
-            var isRemoved = _this6.removeComponentFrom(controlId, children);
-
-            if (isRemoved) {
-              return true;
-            }
-          });
-        };
-
-        for (var _i2 = 0; _i2 < collection.length; _i2++) {
-          var _ret = _loop2(_i2);
-
-          if (_ret === "continue") continue;
-        }
-
-        return false;
-      }
-
-      if (controlIndex == 0) {
-        collection.shift();
-      } else if (controlIndex == collection.length - 1) {
-        collection.pop();
-      } else {
-        collection.splice(controlIndex, 1);
-      }
-
-      return true;
+      pageData.children = pageData.children.filter(function (o) {
+        return componentsToRemove.indexOf(o.id) < 0;
+      });
     }
   }, {
     key: "findComponentData",
@@ -593,12 +509,12 @@ function (_React$Component) {
      * @param componentId 组件编号
      */
     value: function findComponentData(componentId) {
-      var pageData = this.state.componentData;
+      var pageData = this.state.pageData;
       if (!pageData) throw errors_1.Errors.pageDataIsNull();
-      var componentDatas = ComponentDataMaintain.travelComponentData(pageData, function (item) {
-        return item.id == componentId;
-      });
-      return componentDatas[0];
+      var componentData = pageData.children.filter(function (o) {
+        return o.id == componentId;
+      })[0];
+      return componentData;
     }
   }, {
     key: "onKeyDown",
@@ -610,28 +526,18 @@ function (_React$Component) {
         this.removeComponents(this.selectedComponentIds);
       }
     }
-    /**
-     * 通过组件名称获取组件实例
-     * @param typeName 组件名称
-     */
-
-  }, {
-    key: "findComponetsByTypeName",
-    value: function findComponetsByTypeName(typeName) {
-      this.components[typeName];
-    }
   }, {
     key: "render",
     value: function render() {
-      var _this7 = this;
+      var _this3 = this;
 
       return React.createElement("div", {
         tabIndex: 0,
         ref: function ref(e) {
-          return _this7._element = _this7._element || e;
+          return _this3._element = _this3._element || e;
         },
         onKeyDown: function onKeyDown(e) {
-          return _this7.onKeyDown(e);
+          return _this3.onKeyDown(e);
         },
         className: this.props.className,
         style: this.props.style
@@ -644,7 +550,7 @@ function (_React$Component) {
   }, {
     key: "pageData",
     get: function get() {
-      return this.state.componentData;
+      return this.state.pageData;
     }
     /** 获取已选择了的组件编号 */
 
@@ -660,19 +566,9 @@ function (_React$Component) {
   }, {
     key: "selectedComponents",
     get: function get() {
-      var arr = new Array();
-      var stack = new Array();
-      stack.push(this.pageData);
-
-      while (stack.length > 0) {
-        var item = stack.pop();
-        if (item.props != null && item.selected == true) arr.push(item);
-        (item.children || []).forEach(function (child) {
-          if (typeof child == "string") return true;
-          stack.push(child);
-        });
-      }
-
+      var arr = this.pageData.children.filter(function (o) {
+        return o.selected;
+      });
       return arr;
     }
   }, {
@@ -711,10 +607,10 @@ function (_React$Component) {
     }
   }]);
 
-  return ComponentDataMaintain;
+  return PageDataMaintain;
 }(React.Component);
 
-exports.ComponentDataMaintain = ComponentDataMaintain;
+exports.PageDataMaintain = PageDataMaintain;
 //# sourceMappingURL=component-data-maintain.js.map
 
 
@@ -1053,7 +949,7 @@ exports.Errors = Errors;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ComponentDataContext = exports.ComponentDataMaintain = exports.classNames = exports.TextInput = exports.PropEditor = exports.DesignerContext = exports.EditorPanel = exports.Component = exports.groupDisplayNames = void 0;
+exports.ComponentDataContext = exports.PageDataMaintain = exports.classNames = exports.TextInput = exports.PropEditor = exports.DesignerContext = exports.PageDesigner = exports.EditorPanel = exports.Component = exports.groupDisplayNames = void 0;
 
 var common_1 = __webpack_require__(/*! ./common */ "./out-es5/common.js");
 
@@ -1084,6 +980,12 @@ Object.defineProperty(exports, "EditorPanel", {
 
 var page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out-es5/page-designer.js");
 
+Object.defineProperty(exports, "PageDesigner", {
+  enumerable: true,
+  get: function get() {
+    return page_designer_1.PageDesigner;
+  }
+});
 Object.defineProperty(exports, "DesignerContext", {
   enumerable: true,
   get: function get() {
@@ -1117,10 +1019,10 @@ Object.defineProperty(exports, "classNames", {
 
 var component_data_maintain_1 = __webpack_require__(/*! ./component-data-maintain */ "./out-es5/component-data-maintain.js");
 
-Object.defineProperty(exports, "ComponentDataMaintain", {
+Object.defineProperty(exports, "PageDataMaintain", {
   enumerable: true,
   get: function get() {
-    return component_data_maintain_1.ComponentDataMaintain;
+    return component_data_maintain_1.PageDataMaintain;
   }
 });
 Object.defineProperty(exports, "ComponentDataContext", {
@@ -1144,13 +1046,42 @@ Object.defineProperty(exports, "ComponentDataContext", {
 "use strict";
  // import * as React from "react";
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DesignerContext = void 0;
+exports.DesignerContext = exports.PageDesigner = void 0;
 
 var component_data_maintain_1 = __webpack_require__(/*! ./component-data-maintain */ "./out-es5/component-data-maintain.js");
 
+var PageDesigner =
+/*#__PURE__*/
+function (_component_data_maint) {
+  _inherits(PageDesigner, _component_data_maint);
+
+  function PageDesigner() {
+    _classCallCheck(this, PageDesigner);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(PageDesigner).apply(this, arguments));
+  }
+
+  return PageDesigner;
+}(component_data_maintain_1.PageDataMaintain);
+
+exports.PageDesigner = PageDesigner;
 exports.DesignerContext = component_data_maintain_1.ComponentDataContext;
 //# sourceMappingURL=page-designer.js.map
 
@@ -1185,38 +1116,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -1236,11 +1135,6 @@ function (_React$Component) {
   }
 
   _createClass(PropEditor, null, [{
-    key: "dropdown",
-    value: function dropdown(items, valueType) {
-      return _dropdown(items, valueType);
-    }
-  }, {
     key: "textInput",
     value: function textInput() {
       return TextInput;
@@ -1284,123 +1178,6 @@ function (_PropEditor) {
 }(PropEditor);
 
 exports.TextInput = TextInput;
-
-function _dropdown(items, valueType) {
-  var itemsPromise;
-  var textValues = [];
-
-  if (valueType == null && Array.isArray(items)) {
-    valueType = items.length > 0 && typeof items[0] == "number" ? "number" : "string";
-
-    for (var i = 0; i < items.length; i++) {
-      textValues[i] = {
-        text: items[i],
-        value: items[i]
-      };
-    }
-  } else if (valueType == null) {
-    valueType = "string";
-    var propNames = Object.getOwnPropertyNames(items);
-
-    for (var _i = 0; _i < propNames.length; _i++) {
-      textValues[_i] = {
-        text: items[propNames[_i]],
-        value: propNames[_i]
-      };
-    }
-  } else if (Array.isArray(items)) {
-    textValues = items;
-  } else {
-    itemsPromise = items;
-  }
-
-  var Dropdown =
-  /*#__PURE__*/
-  function (_PropEditor2) {
-    _inherits(Dropdown, _PropEditor2);
-
-    function Dropdown(props) {
-      var _this2;
-
-      _classCallCheck(this, Dropdown);
-
-      _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Dropdown).call(this, props));
-      _this2.state = {};
-      return _this2;
-    }
-
-    _createClass(Dropdown, [{
-      key: "componentDidMount",
-      value: function componentDidMount() {
-        return __awaiter(this, void 0, void 0,
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _items;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  if (!itemsPromise) {
-                    _context.next = 5;
-                    break;
-                  }
-
-                  _context.next = 3;
-                  return itemsPromise;
-
-                case 3:
-                  _items = _context.sent;
-                  this.setState({
-                    items: _items
-                  });
-
-                case 5:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-      }
-    }, {
-      key: "render",
-      value: function render() {
-        var _this3 = this;
-
-        var items = this.state.items;
-        var value = this.props.value;
-        items = items || textValues;
-        return React.createElement("select", {
-          className: 'form-control',
-          value: value == null ? "" : value,
-          onChange: function onChange(e) {
-            var textValue = e.target.value;
-
-            if (valueType == "number") {
-              var integerRegex = /^\d+$/;
-              var floatRegex = /^[+-]?\d+(\.\d+)?$/;
-              if (integerRegex.test(textValue)) value = parseInt(textValue);else if (floatRegex.test(textValue)) value = parseFloat(textValue);else value = null;
-            } else {
-              value = textValue;
-            }
-
-            _this3.props.updateComponentProp(value);
-          }
-        }, items.map(function (o) {
-          return React.createElement("option", {
-            key: o.value,
-            value: o.value
-          }, o.text);
-        }));
-      }
-    }]);
-
-    return Dropdown;
-  }(PropEditor);
-
-  return Dropdown;
-}
 //# sourceMappingURL=prop-editor.js.map
 
 
