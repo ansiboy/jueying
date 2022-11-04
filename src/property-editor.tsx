@@ -114,7 +114,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
                     if (this._validator == null) {
                         this._validateFields = commonPropEditorInfos.filter(o => o.validation != null)
-                            .map(o => Object.assign(o.validation, { name: o.propName }));
+                            .map(o => Object.assign(o.validation as any, { name: o.propName, rules: [] }));
                         this._validator = new FormValidator(this.element, ...this._validateFields);
 
                     }
@@ -156,7 +156,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         return <DesignerContext.Consumer>
             {args => {
 
-                let designer = args.maintain;
+                let designer = args.designer;
                 if (designer == null)
                     return null;
 
