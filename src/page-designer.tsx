@@ -4,10 +4,11 @@ import { ComponentData, PageData, ComponentStatus } from "maishu-jueying-core";
 import { Errors } from "./errors";
 import { guid } from "maishu-toolkit";
 
-export interface PageDesignerProps extends React.ClassAttributes<PageDesigner> {
+export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
     className?: string,
     style?: React.CSSProperties,
+    children: React.ReactNode
 }
 
 export interface PageDesignerState {

@@ -8,7 +8,7 @@ import { groupDisplayNames } from "./common";
 import { FormValidator, ValidateField } from "maishu-dilu";
 
 
-export interface EditorProps extends React.Props<PropertyEditor> {
+export interface EditorProps extends React.ComponentProps<any> {
     empty: string | JSX.Element,
     customRender?: (editComponents: ComponentData[], items: PropertyEditorInfo[]) => JSX.Element
 }
@@ -223,9 +223,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
 PropertyEditor.contextType = DesignerContext;
 
-
-export class ErrorBoundary extends React.Component<{}, { error?: Error }> {
-    constructor(props: {}) {
+export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { error?: Error }> {
+    constructor(props: ErrorBoundary["props"]) {
         super(props);
         this.state = {};
     }
