@@ -4,18 +4,18 @@
     },
     "dependencies": {
         "maishu-dilu": "^1.9.1",
-        "maishu-jueying-core": "^1.5.5",
+        "maishu-jueying-core": "^1.8.1",
         "maishu-toolkit": "^1.3.2",
-        "react": "^16.9.0",
-        "react-dom": "^16.9.0"
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
     },
     "description": "HTML 页面设计器组件，可以帮助你开发出一个能够集成到系统的设计器。",
     "devDependencies": {
         "@babel/core": "^7.4.4",
         "@babel/preset-env": "^7.4.4",
         "@types/jquery": "^3.3.22",
-        "@types/react": "^16.9.20",
-        "@types/react-dom": "^16.8.4",
+        "@types/react": "^18.0.25",
+        "@types/react-dom": "^18.0.8",
         "grunt": "^1.0.4",
         "grunt-babel": "^8.0.0",
         "grunt-contrib-concat": "^1.0.1",
@@ -44,5 +44,5 @@
         "build": "grunt build"
     },
     "typings": "out/index.d.ts",
-    "version": "3.3.30"
+    "version": "3.4.1"
 }
