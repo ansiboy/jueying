@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PropEditorInfo, Component } from "./component";
 import { PropEditorProps } from "./prop-editor";
-import { Errors } from "./errors";
+import { errors as Errors } from "./errors";
 import { ComponentData } from "maishu-jueying-core";
 import { DesignerContext, PageDesigner } from "./page-designer";
 import { groupDisplayNames } from "./common";

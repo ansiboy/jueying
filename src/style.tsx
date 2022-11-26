@@ -1,4 +1,4 @@
-import { Errors } from "./errors";
+import { errors as Errors } from "./errors";
 
 export let classNames = {
     componentSelected: `component-selected`,

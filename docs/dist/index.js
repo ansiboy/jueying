@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.4.1
+ *  maishu-jueying v3.5.11
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -16,14 +16,14 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("maishu-dilu"), require("maishu-jueying-core"), require("maishu-toolkit"), require("react"));
+		module.exports = factory(require("maishu-dilu"), require("maishu-jueying-core"), require("react"));
 	else if(typeof define === 'function' && define.amd)
-		define(["maishu-dilu", "maishu-jueying-core", "maishu-toolkit", "react"], factory);
+		define(["maishu-dilu", "maishu-jueying-core", "react"], factory);
 	else if(typeof exports === 'object')
-		exports["jueying"] = factory(require("maishu-dilu"), require("maishu-jueying-core"), require("maishu-toolkit"), require("react"));
+		exports["jueying"] = factory(require("maishu-dilu"), require("maishu-jueying-core"), require("react"));
 	else
-		root["jueying"] = factory(root["maishu-dilu"], root["maishu-jueying-core"], root["maishu-toolkit"], root["react"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE_maishu_dilu__, __WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__, __WEBPACK_EXTERNAL_MODULE_maishu_toolkit__, __WEBPACK_EXTERNAL_MODULE_react__) {
+		root["jueying"] = factory(root["maishu-dilu"], root["maishu-jueying-core"], root["react"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE_maishu_dilu__, __WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__, __WEBPACK_EXTERNAL_MODULE_react__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -112,6 +112,78 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/maishu-toolkit/out/errors.js":
+/*!***************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/errors.js ***!
+  \***************************************************/
+/*! exports provided: Errors, errors */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Errors", function() { return Errors; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "errors", function() { return errors; });
+class Errors {
+    argumentNull(argumentName) {
+        let error = new Error(`Argument ${argumentName} cannt be null or emtpy.`);
+        let name = "argumentNull";
+        error.name = name;
+        return error;
+    }
+    routeDataFieldNull(fieldName) {
+        let msg = `The ${fieldName} field of route data cannt be null.`;
+        let error = new Error(msg);
+        let name = "routeDataFieldNull";
+        error.name = name;
+        return error;
+    }
+    argumentFieldNull(fieldName, argumentName) {
+        let msg = `The ${fieldName} field of ${argumentName} cannt be null.`;
+        let error = new Error(msg);
+        let name = "argumentFieldNull";
+        error.name = name;
+        return error;
+    }
+    argumentTypeIncorrect(argumentName, expectedType) {
+        let msg = `Argument ${argumentName} type error, expected type is ${expectedType}.`;
+        let error = new Error(msg);
+        let name = "argumentTypeIncorrect";
+        error.name = name;
+        return error;
+    }
+    queryResultTypeError() {
+        let msg = 'Type of the query result is expected as Array or DataSourceSelectResult.';
+        return new Error(msg);
+    }
+}
+let errors = new Errors();
+
+
+/***/ }),
+
+/***/ "./node_modules/maishu-toolkit/out/guid.js":
+/*!*************************************************!*\
+  !*** ./node_modules/maishu-toolkit/out/guid.js ***!
+  \*************************************************/
+/*! exports provided: guid */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return guid; });
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+
+
+/***/ }),
+
 /***/ "./out/common.js":
 /*!***********************!*\
   !*** ./out/common.js ***!
@@ -122,7 +194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Callback = exports.guid = exports.groupDisplayNames = exports.proptDisplayNames = exports.constants = void 0;
+exports.groupDisplayNames = exports.proptDisplayNames = exports.constants = void 0;
 exports.constants = {
     componentsDir: 'components',
     connectorElementClassName: 'component-container',
@@ -132,34 +204,6 @@ exports.constants = {
 };
 exports.proptDisplayNames = {};
 exports.groupDisplayNames = {};
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-exports.guid = guid;
-class Callback {
-    constructor() {
-        this.funcs = new Array();
-    }
-    add(func) {
-        this.funcs.push(func);
-    }
-    remove(func) {
-        this.funcs = this.funcs.filter(o => o != func);
-    }
-    fire(args) {
-        this.funcs.forEach(o => o(args));
-    }
-    static create() {
-        return new Callback();
-    }
-}
-exports.Callback = Callback;
 //# sourceMappingURL=common.js.map
 
 /***/ }),
@@ -285,46 +329,47 @@ exports.EditorPanel = EditorPanel;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Errors = void 0;
-class Errors {
-    static placeHolderIdNull() {
+exports.errors = void 0;
+const errors_1 = __webpack_require__(/*! maishu-toolkit/out/errors */ "./node_modules/maishu-toolkit/out/errors.js");
+class Errors extends errors_1.Errors {
+    placeHolderIdNull() {
         let msg = `Place holder property id cannt be null or empty.`;
         return new Error(msg);
     }
-    static fileNotExists(fileName) {
+    fileNotExists(fileName) {
         return new Error(`File '${fileName}' is not exists.`);
     }
-    static argumentNull(argumentName) {
+    argumentNull(argumentName) {
         return new Error(`Argument ${argumentName} is null or empty.`);
     }
-    static argumentRangeError(argumentName) {
+    argumentRangeError(argumentName) {
         return new Error(`Argument ${argumentName} range error.`);
     }
-    static pageDataIsNull() {
+    pageDataIsNull() {
         return new Error(`Page data is null.`);
     }
-    static toolbarRequiredKey() {
+    toolbarRequiredKey() {
         return new Error(`Toolbar has not a key prop.`);
     }
-    static loadPluginFail(pluginId) {
+    loadPluginFail(pluginId) {
         return new Error(`Load plugin '${pluginId}' fail.`);
     }
-    static idRequired() {
+    idRequired() {
         return new Error(`Property id is required.`);
     }
-    static canntFindMasterPage(componentId) {
+    canntFindMasterPage(componentId) {
         return new Error(`Can not find master page for component container ${componentId}.`);
     }
-    static propCanntNull(componentName, property) {
+    propCanntNull(componentName, property) {
         let msg = `${componentName} property ${property} cannt be null or empty.`;
         return new Error(msg);
     }
-    static argumentFieldCanntNull(fieldName, argumentName) {
+    argumentFieldCanntNull(fieldName, argumentName) {
         let msg = `${fieldName} of argument ${argumentName} cannt be null or empty.`;
         return new Error(msg);
     }
 }
-exports.Errors = Errors;
+exports.errors = new Errors();
 //# sourceMappingURL=errors.js.map
 
 /***/ }),
@@ -373,7 +418,7 @@ exports.PageDesigner = exports.DesignerContext = void 0;
 const React = __webpack_require__(/*! react */ "react");
 const maishu_jueying_core_1 = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core");
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-const maishu_toolkit_1 = __webpack_require__(/*! maishu-toolkit */ "maishu-toolkit");
+const guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
 exports.DesignerContext = React.createContext({ designer: null });
 /**
  * 组件数据处理，负责对对组件数据进行处理维护。
@@ -417,7 +462,7 @@ class PageDesigner extends React.Component {
             componentData.name = name;
         }
         if (!componentData.id)
-            componentData.id = (0, maishu_toolkit_1.guid)();
+            componentData.id = (0, guid_1.guid)();
     }
     /** 页面数据 */
     get pageData() {
@@ -468,7 +513,7 @@ class PageDesigner extends React.Component {
         if (!parentId)
             throw new Error('ParentId field of component data is null.');
         if (!componentData)
-            throw errors_1.Errors.argumentNull('childComponent');
+            throw errors_1.errors.argumentNull('childComponent');
         let pageData = this.pageData;
         this.initComponent(componentData, pageData);
         if (componentIndex == null) {
@@ -564,7 +609,7 @@ class PageDesigner extends React.Component {
     findComponentData(componentId) {
         let pageData = this.state.pageData;
         if (!pageData)
-            throw errors_1.Errors.pageDataIsNull();
+            throw errors_1.errors.pageDataIsNull();
         let componentData = pageData.children.filter(o => o.id == componentId)[0];
         return componentData;
     }
@@ -722,9 +767,9 @@ class PropertyEditor extends React.Component {
     }
     propValue(propName, props) {
         if (!propName)
-            throw errors_1.Errors.argumentNull("propName");
+            throw errors_1.errors.argumentNull("propName");
         if (!props)
-            throw errors_1.Errors.argumentNull("props");
+            throw errors_1.errors.argumentNull("props");
         let navPropsNames = propName.split(".");
         let obj = props;
         for (let i = 0; i < navPropsNames.length; i++) {
@@ -1010,9 +1055,9 @@ if (document.head != null) {
 }
 function appendClassName(element, addonClassName) {
     if (element == null)
-        throw errors_1.Errors.argumentNull('element');
+        throw errors_1.errors.argumentNull('element');
     if (!addonClassName)
-        throw errors_1.Errors.argumentNull('addonClassName');
+        throw errors_1.errors.argumentNull('addonClassName');
     let sourceClassName;
     if (typeof element == 'string')
         sourceClassName = element;
@@ -1067,17 +1112,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_maishu_dilu__;
 /***/ (function(module, exports) {
 
 module.exports = __WEBPACK_EXTERNAL_MODULE_maishu_jueying_core__;
-
-/***/ }),
-
-/***/ "maishu-toolkit":
-/*!*********************************!*\
-  !*** external "maishu-toolkit" ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_maishu_toolkit__;
 
 /***/ }),
 

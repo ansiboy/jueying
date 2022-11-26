@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { ComponentData, PageData, ComponentStatus } from "maishu-jueying-core";
-import { Errors } from "./errors";
-import { guid } from "maishu-toolkit";
+import { errors as Errors } from "./errors";
+import { guid } from "maishu-toolkit/out/guid";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
