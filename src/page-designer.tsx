@@ -9,6 +9,7 @@ import { createInfoComponent } from "./error-components";
 import { ComponentEditors } from "types";
 import { PageDataTravel } from "./page-data-travel";
 import { Component } from "./component";
+import { deepEqual } from "maishu-toolkit/out/deep-equal"
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
@@ -36,6 +37,7 @@ export let DesignerContext = React.createContext<DesignerContextValue | null>(nu
 export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private _element: HTMLElement
     private _elementFactory: ElementFactory = React.createElement
+    private prePageData: PageData | null = null
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -47,8 +49,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         let pageData = this.props.pageData;
         this.initPageData(pageData);
-
-        this.state = { pageData: pageData, componentTypes: {}, componentEditors: {} };
+        this.state = { pageData, componentTypes: {}, componentEditors: {} };
     }
 
     /** 检查组件配置 */
@@ -286,7 +287,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return componentData;
     }
 
-    private loading: boolean = false
+    // private loading: boolean = false
 
     private isCustomComponent(componentData: ComponentData) {
         // 全小写为 HTML 元素，不需要加载
@@ -296,9 +297,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return true
     }
 
-    private async loadEditorTypes() {
+    private async loadEditorTypes(pageData: PageData) {
         let componentsToLoad: string[] = []
-        let travel = new PageDataTravel(this.props.pageData)
+        let travel = new PageDataTravel(pageData)
         travel.each((c) => {
             if (typeof c == "string" || !this.isCustomComponent(c))
                 return
@@ -310,12 +311,12 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let promises = componentsToLoad.map(typeName => componentsConfig[typeName]).filter(o => o).map(o => o.editor)
         await Promise.all(promises)
 
-        let componentDatas = this.props.pageData.children.filter(o => typeof o != "string").map(c => c)
+        let componentDatas = pageData.children.filter(o => typeof o != "string").map(c => c)
         let editors = this.state.componentEditors
         for (let c of componentDatas) {
             editors[c.type] = editors[c.type] || {}
             let propEditors = Component.getPropEditors(c)
-            for(let e of propEditors){
+            for (let e of propEditors) {
                 editors[c.type][e.propName] = e.editorType
             }
 
@@ -325,12 +326,12 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.setState({ componentEditors: editors })
     }
 
-    private loadComponentTypes() {
-        if (this.loading)
-            return
+    private loadComponentTypes(pageData: PageData) {
+        // if (this.loading)
+        //     return
 
-        this.loading = true
-        let pageData = this.props.pageData
+        // this.loading = true
+        // let pageData = this.props.pageData
         let componentTypes: ComponentTypes = {}
         let componentsConfig = this.props.componentsConfig
         let componentsToLoad: string[] = []
@@ -413,13 +414,23 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         }
     }
 
-    componentDidMount(): void {
-        this.loadComponentTypes()
-        this.loadEditorTypes()
+    private onPageDataChanged(pageData: PageData) {
+        this.loadComponentTypes(pageData)
+        this.loadEditorTypes(pageData)
     }
 
+    static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState> {
+        return { pageData: props.pageData }
+    }
 
     render() {
+
+        let pageData = this.state.pageData
+        if (!deepEqual(this.prePageData, pageData)) {
+            this.prePageData = JSON.parse(JSON.stringify(pageData))
+            this.onPageDataChanged(pageData)
+        }
+
         return <div tabIndex={0} ref={e => this._element = this._element || e} onKeyDown={e => this.onKeyDown(e)}
             className={this.props.className} style={this.props.style}>
             <DesignerContext.Provider value={{ designer: this }}>
