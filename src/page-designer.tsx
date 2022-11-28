@@ -1,11 +1,14 @@
 import * as React from "react";
 
 import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes } from "maishu-jueying-core";
-import { errors as Errors } from "./errors";
+import { errors, errors as Errors } from "./errors";
 import { guid } from "maishu-toolkit/out/guid";
 import { ComponentTypes, ElementFactory } from "maishu-jueying-core/out/types";
 import type { ComponentsConfig } from "./components-config";
 import { createInfoComponent } from "./error-components";
+import { ComponentEditors } from "types";
+import { PageDataTravel } from "./page-data-travel";
+import { Component } from "./component";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
@@ -17,7 +20,8 @@ export interface PageDesignerProps extends React.ComponentProps<any> {
 
 export interface PageDesignerState {
     pageData: PageData,
-    componentTypes: ComponentTypes
+    componentTypes: ComponentTypes,
+    componentEditors: ComponentEditors,
 }
 
 export type DesignerContextValue = {
@@ -36,10 +40,20 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     constructor(props: PageDesignerProps) {
         super(props);
 
+        if (!props) throw errors.argumentNull("props")
+        if (!props.componentsConfig) throw errors.argumentFieldCanntNull("componentsConfig", "props")
+
+        this.checkComponentsConfig(props.componentsConfig)
+
         let pageData = this.props.pageData;
         this.initPageData(pageData);
 
-        this.state = { pageData: pageData, componentTypes: {} };
+        this.state = { pageData: pageData, componentTypes: {}, componentEditors: {} };
+    }
+
+    /** 检查组件配置 */
+    private checkComponentsConfig(componentsConfig: ComponentsConfig) {
+        // TODO: 检查组件配置
     }
 
     private initPageData(pageData: PageData) {
@@ -47,7 +61,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             return
         }
 
-        // pageData.children = pageData.children || [];
         console.assert(pageData.children != null, "PageData children is null.")
         pageData.children.forEach(c => {
             this.initComponent(c, pageData);
@@ -168,7 +181,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     /**
      * 选择指定的控件
-     * @param control 指定的控件
+     * @param componentIds 指定的控件编号
      */
     selectComponent(componentIds: string[] | string): void {
         this.selectComponents(componentIds);
@@ -275,6 +288,43 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     private loading: boolean = false
 
+    private isCustomComponent(componentData: ComponentData) {
+        // 全小写为 HTML 元素，不需要加载
+        if (componentData.type.toLocaleLowerCase() == componentData.type)
+            return false
+
+        return true
+    }
+
+    private async loadEditorTypes() {
+        let componentsToLoad: string[] = []
+        let travel = new PageDataTravel(this.props.pageData)
+        travel.each((c) => {
+            if (typeof c == "string" || !this.isCustomComponent(c))
+                return
+
+            componentsToLoad.push(c.type)
+        })
+
+        let componentsConfig = this.props.componentsConfig
+        let promises = componentsToLoad.map(typeName => componentsConfig[typeName]).filter(o => o).map(o => o.editor)
+        await Promise.all(promises)
+
+        let componentDatas = this.props.pageData.children.filter(o => typeof o != "string").map(c => c)
+        let editors = this.state.componentEditors
+        for (let c of componentDatas) {
+            editors[c.type] = editors[c.type] || {}
+            let propEditors = Component.getPropEditors(c)
+            for(let e of propEditors){
+                editors[c.type][e.propName] = e.editorType
+            }
+
+        }
+
+
+        this.setState({ componentEditors: editors })
+    }
+
     private loadComponentTypes() {
         if (this.loading)
             return
@@ -284,23 +334,13 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let componentTypes: ComponentTypes = {}
         let componentsConfig = this.props.componentsConfig
         let componentsToLoad: string[] = []
-        let stack: ComponentData[] = [...(pageData.children || [])]
-        let componentData = stack.pop()
-        while (componentData != null) {
-            let typeName = componentData.type;
-            componentsToLoad.push(typeName)
+        let travel = new PageDataTravel(pageData)
+        travel.each((c) => {
+            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !this.isCustomComponent(c))
+                return
 
-            if (componentData.children) {
-                componentData.children.forEach(c => {
-                    if (typeof c == "string") {
-                        componentTypes[typeName] = c
-                        return
-                    }
-
-                })
-            }
-            componentData = stack.pop()
-        }
+            componentsToLoad.push(c.type)
+        })
 
         PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
             Object.assign(componentTypes, loadedComponentTypes)
@@ -375,6 +415,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     componentDidMount(): void {
         this.loadComponentTypes()
+        this.loadEditorTypes()
     }
 
 

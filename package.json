@@ -52,7 +52,8 @@
     "name": "maishu-jueying",
     "scripts": {
         "build": "grunt build",
-        "test": "jest"
+        "test": "jest",
+        "temp": "jest page-designer.test"
     },
     "typings": "out/index.d.ts",
     "version": "4.0.0"

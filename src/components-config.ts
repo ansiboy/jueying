@@ -1,5 +1,4 @@
 import { ComponentTypes } from "maishu-jueying-core/out/types"
-type LoadModule = () => Promise<{ default: ComponentTypes[0] }>
 export type ComponentsConfig = {
     [componentName: string]: {
         type: Promise<{ default: ComponentTypes[0] }>

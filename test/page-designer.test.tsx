@@ -3,6 +3,7 @@ import renderer from "react-test-renderer"
 import { componentsConfig } from "./demo"
 import * as pageDatas from "./demo/page-datas"
 import React from "react"
+import { componentUpdateFinish } from "./common"
 
 test("page-designer 测试 loadComponentTypes 方法", async function () {
 
@@ -19,7 +20,6 @@ test("page-designer 测试 loadComponentTypes 方法", async function () {
         }
         componentData = stack.pop()
     }
-
 
     let componentTypes = await PageDesigner.loadComponentTypes(componentTypesToLoad, componentsConfig)
     expect(componentTypes || null).not.toBeNull()
@@ -40,22 +40,28 @@ test("page-designer 测试组件类型加载", async function () {
     let typeNames = Object.keys(componentTypes)
     expect(typeNames.length).toEqual(0)
 
-    await new Promise(function (resolve, reject) {
-
-        let componentDidUpdate = pageDesigner.componentDidUpdate
-        pageDesigner.componentDidUpdate = function (prevProps: PageDesigner["props"], prevState: PageDesigner["state"], snapshot?: any) {
-            if (componentDidUpdate) {
-                componentDidUpdate.apply(pageDesigner, [prevProps, prevState, snapshot])
-            }
-
-            resolve({})
-        }
-    })
+    await componentUpdateFinish(pageDesigner)
 
     componentTypes = pageDesigner.componentTypes
     typeNames = Object.keys(componentTypes)
     expect(typeNames.length).toBeGreaterThan(0)
 
+})
 
+test("page-designer 测试组件类型加载", async function () {
+
+    let component = renderer.create(<PageDesigner pageData={pageDatas.simple} componentsConfig={componentsConfig} />)
+    let pageDesigner = component.getInstance() as any as PageDesigner
+    expect(pageDesigner).not.toBeNull()
+
+
+    await componentUpdateFinish(pageDesigner)
+
+    let componentTypes = pageDesigner.componentTypes
+    let typeNames = Object.keys(componentTypes)
+    expect(typeNames.length).toBeGreaterThan(0)
+
+    let componentEditors = pageDesigner.state.componentEditors[typeNames[0]]
+    expect(componentEditors).not.toBeUndefined()
 
 })
