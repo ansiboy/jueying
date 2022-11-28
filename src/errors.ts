@@ -37,6 +37,12 @@ class Errors extends BaseErrors {
         let msg = `${fieldName} of argument ${argumentName} cannt be null or empty.`
         return new Error(msg)
     }
+    designerContextArgumentNull() {
+        let msg = `Designer cottext argument null.`
+        let error = new Error(msg)
+        error.name = errors.designerContextArgumentNull.name
+        return error
+    }
 }
 
 export let errors = new Errors();

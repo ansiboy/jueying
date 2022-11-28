@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PropEditorInfo, Component } from "./component";
-import { PropEditorProps } from "./prop-editor";
-import { errors as Errors } from "./errors";
+// import { PropEditorProps } from "./prop-editor";
+import { errors, errors as Errors } from "./errors";
 import { ComponentData } from "maishu-jueying-core";
 import { DesignerContext, PageDesigner } from "./page-designer";
 import { groupDisplayNames } from "./common";
@@ -11,6 +11,20 @@ import { FormValidator, ValidateField } from "maishu-dilu";
 export interface EditorProps extends React.ComponentProps<any> {
     empty: string | JSX.Element,
     customRender?: (editComponents: ComponentData[], items: PropertyEditorInfo[]) => JSX.Element
+}
+
+export interface PropEditorConstructor {
+    new(props: PropEditorProps<any>): any;
+}
+export interface PropEditorProps<T> {
+    value: T,
+    updateComponentProp: (value: T) => void,
+
+    /** 该编辑器所编辑的控件 */
+    editComponents: ComponentData[],
+}
+export interface PropEditorState<T> {
+    // value: T
 }
 
 interface EditorState {
@@ -26,8 +40,11 @@ export interface PropertyEditorInfo {
 export type GroupedEditor = {
     /** 用于对编辑器进行分组，方便查看各个属性 */
     group: string,
+    /** 属性名称 */
     prop: string,
+    /** 属性显示名称 */
     displayName: string,
+    /** 属性编辑器 */
     editor: React.ReactElement<any>,
 };
 export let defaultGroupName = "";
@@ -63,8 +80,8 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
                 let items: PropEditorInfo[] = []
                 commonPropEditorInfos.forEach(propInfo1 => {
                     propEditorInfos.forEach(propInfo2 => {
-                        let propName1 = propInfo1.propName; //propInfo1.propNames.join('.')
-                        let propName2 = propInfo2.propName;//propInfo2.propNames.join('.')
+                        let propName1 = propInfo1.propName;
+                        let propName2 = propInfo2.propName;
                         if (propInfo1.editorType == propInfo2.editorType && propName1 == propName2) {
                             items.push(propInfo1)
                         }
@@ -156,10 +173,9 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         return <DesignerContext.Consumer>
             {args => {
 
-                let designer = args.designer;
-                if (designer == null)
-                    return null;
+                if (!args) throw errors.designerContextArgumentNull()
 
+                let designer = args.designer;
                 let editors = this.getEditors(designer);
                 if (editors.length == 0) {
                     let empty = this.props.empty;

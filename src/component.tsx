@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PropEditorConstructor } from "./prop-editor";
+import { PropEditorConstructor, PropEditorProps } from "./prop-editor";
 import { ComponentData } from "maishu-jueying-core";
 import { GroupedEditor, defaultGroupName } from "./property-editor";
 import { registerComponent } from "maishu-jueying-core";
@@ -17,7 +17,7 @@ export interface PropEditorInfo {
 interface SetPropEditorOptions {
     componentType: React.ComponentClass<any> | string,
     propName: string,
-    editorType: PropEditorConstructor,
+    editorType: React.ComponentClass<PropEditorProps<any>> | React.FC<PropEditorProps<any>>,
     group?: GroupedEditor["group"],
     display?: ComponentPropEditorDisplay,
     displayName?: string,
@@ -65,6 +65,11 @@ export class Component {
 
     static getPropEditor<T, K extends keyof T, K1 extends keyof T[K]>(controlClassName: string, propName: K, propName1: K1): PropEditorInfo
     static getPropEditor<T, K extends keyof T>(controlClassName: string, propName: string): PropEditorInfo
+    /** 
+     * 获取指定组件的属性编辑器
+     * @param controlClassName 指定组件的类名
+     * @param propName 组件的属性名称 
+     * */
     static getPropEditor(controlClassName: string, propName: string): PropEditorInfo {
         return this.getPropEditorByArray(controlClassName, propName)
     }

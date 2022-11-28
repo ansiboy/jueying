@@ -1,29 +1,37 @@
 import * as React from "react";
 
-import { ComponentData, PageData, ComponentStatus } from "maishu-jueying-core";
+import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes } from "maishu-jueying-core";
 import { errors as Errors } from "./errors";
 import { guid } from "maishu-toolkit/out/guid";
+import { ComponentTypes, ElementFactory } from "maishu-jueying-core/out/types";
+import type { ComponentsConfig } from "./components-config";
+import { createInfoComponent } from "./error-components";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
     className?: string,
     style?: React.CSSProperties,
-    children: React.ReactNode
+    children?: React.ReactNode
+    componentsConfig: ComponentsConfig
 }
 
 export interface PageDesignerState {
     pageData: PageData,
+    componentTypes: ComponentTypes
 }
 
-export type DesignerContextValue = { designer: PageDesigner | null };
+export type DesignerContextValue = {
+    designer: PageDesigner
+};
 
-export let DesignerContext = React.createContext<DesignerContextValue>({ designer: null })
+export let DesignerContext = React.createContext<DesignerContextValue | null>(null)
 
 /**
  * 组件数据处理，负责对对组件数据进行处理维护。
  */
 export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
-    private _element: HTMLElement;
+    private _element: HTMLElement
+    private _elementFactory: ElementFactory = React.createElement
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -31,7 +39,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let pageData = this.props.pageData;
         this.initPageData(pageData);
 
-        this.state = { pageData: pageData };
+        this.state = { pageData: pageData, componentTypes: {} };
     }
 
     private initPageData(pageData: PageData) {
@@ -78,6 +86,14 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     /** 页面数据 */
     get pageData() {
         return this.state.pageData;
+    }
+
+    get elementFactory(): ElementFactory {
+        return this._elementFactory
+    }
+
+    get componentTypes(): ComponentTypes {
+        return this.state.componentTypes
     }
 
     /** 获取已选择了的组件编号 */
@@ -165,7 +181,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     /**
      * 选择指定的控件，一个或多个。已经选择的控件取消选择。
-     * @param control 指定的控件
+     * @param componentIds 指定的控件 ID
      */
     selectComponents(componentIds: string[] | string): void {
         if (typeof componentIds == 'string')
@@ -223,7 +239,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
 
-
     private removeComponentFrom(componentId: string, pageData: PageData,) {
         let child = pageData.children.filter(o => o.id == componentId)[0];
         if (child == null)
@@ -258,6 +273,96 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return componentData;
     }
 
+    private loading: boolean = false
+
+    private loadComponentTypes() {
+        if (this.loading)
+            return
+
+        this.loading = true
+        let pageData = this.props.pageData
+        let componentTypes: ComponentTypes = {}
+        let componentsConfig = this.props.componentsConfig
+        let componentsToLoad: string[] = []
+        let stack: ComponentData[] = [...(pageData.children || [])]
+        let componentData = stack.pop()
+        while (componentData != null) {
+            let typeName = componentData.type;
+            componentsToLoad.push(typeName)
+
+            if (componentData.children) {
+                componentData.children.forEach(c => {
+                    if (typeof c == "string") {
+                        componentTypes[typeName] = c
+                        return
+                    }
+
+                })
+            }
+            componentData = stack.pop()
+        }
+
+        PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
+            Object.assign(componentTypes, loadedComponentTypes)
+            this.setState({ componentTypes })
+        })
+    }
+
+    static async loadComponentTypes(componentsToLoad: string[], componentsConfig: ComponentsConfig): Promise<ComponentTypes> {
+        let promises: Promise<any>[] = []
+        let componentTypes = {}
+        for (let i = 0; i < componentsToLoad.length; i++) {
+            let typeName = componentsToLoad[i]
+            if (!typeName) {
+                let errorText = `Component '${typeName}' has not a config.`
+                componentTypes[typeName] = createInfoComponent(errorText)
+                continue
+            }
+
+            if (defaultComponentTypes[typeName]) {
+                promises.push(Promise.resolve(defaultComponentTypes[typeName]))
+                continue
+            }
+
+
+            let p = new Promise(function (resolve, reject) {
+
+                if (!componentsConfig[typeName]) {
+                    let errorText = `Component '${typeName}' is not exists.`
+                    componentTypes[typeName] = createInfoComponent(errorText)
+                    resolve({})
+                    return
+                }
+
+                if (!(componentsConfig[typeName].type instanceof Promise)) {
+                    let errorText = `Component '${typeName}' type is invalid.`
+                    componentTypes[typeName] = createInfoComponent(errorText)
+                    resolve({})
+                    return
+                }
+
+                componentsConfig[typeName].type.then(p => {
+                    if (!p.default) {
+                        let errorText = `Component '${typeName}' module has not export default member.`
+                        componentTypes[typeName] = createInfoComponent(errorText)
+                    }
+                    else {
+                        componentTypes[typeName] = p.default
+                    }
+
+                    resolve({})
+                }).catch(err => {
+                    reject(err)
+                })
+            })
+
+            promises.push(p)
+        }
+
+        await Promise.all(promises)
+        return componentTypes
+    }
+
     private onKeyDown(e: React.KeyboardEvent<HTMLElement>) {
         const DELETE_KEY_CODE = 46;
         if (e.keyCode == DELETE_KEY_CODE) {
@@ -267,6 +372,11 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             this.removeComponents(this.selectedComponentIds)
         }
     }
+
+    componentDidMount(): void {
+        this.loadComponentTypes()
+    }
+
 
     render() {
         return <div tabIndex={0} ref={e => this._element = this._element || e} onKeyDown={e => this.onKeyDown(e)}
