@@ -61,6 +61,7 @@ test("page-designer 测试组件类型加载", async function () {
     let typeNames = Object.keys(componentTypes)
     expect(typeNames.length).toBeGreaterThan(0)
 
+
     let componentEditors = pageDesigner.state.componentEditors[typeNames[0]]
     expect(componentEditors).not.toBeUndefined()
 

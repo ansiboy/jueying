@@ -9,6 +9,7 @@ export { PropEditorState, PropEditorProps } from "./property-editor";
 export { PropertyEditorInfo } from "./property-editor";
 export { classNames } from "./style";
 export { ComponentsConfig } from "./components-config"
+export { ComponentDiagram } from "./component-diagram"
 // export { ComponentDataHandler } from "./component-data-handler";
 
 

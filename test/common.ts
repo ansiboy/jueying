@@ -1,14 +1,12 @@
 import { Component } from "react";
+import { TextDecoder, TextEncoder } from "util"
 
 export function componentUpdateFinish<P, S>(component: Component<P, S>) {
-
     return new Promise(function (resolve, reject) {
-        let componentDidUpdate = component.componentDidUpdate
+        let render = component.render
         let timeoutId: number | null = null
-        component.componentDidUpdate = function (prevProps: P, prevState: S, snapshot?: any) {
-            if (componentDidUpdate) {
-                componentDidUpdate.apply(component, [prevProps, prevState, snapshot])
-            }
+        component.render = function () {
+            let r = render.apply(component, [])
 
             if (timeoutId != null)
                 window.clearTimeout(timeoutId)
@@ -17,7 +15,14 @@ export function componentUpdateFinish<P, S>(component: Component<P, S>) {
                 resolve({})
             }, 1000)
 
-            // resolve({})
+            return r
         }
     })
 }
+
+global["TextEncoder"] = TextEncoder as any
+global["TextDecoder"] = TextDecoder as any
+
+// export { JSDOM } from "jsdom"
+let jsdom = require("jsdom")
+export let JSDOM = jsdom.JSDOM as import("jsdom").JSDOM;

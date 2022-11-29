@@ -13,11 +13,10 @@ export class PageDataTravel {
         while (componentData != null) {
 
             callback(componentData)
-            if (typeof componentData == "string")
-                continue
-
-            let children = componentData.children || []
-            stack.push(...children)
+            if (typeof componentData != "string") {
+                let children = componentData.children || []
+                stack.push(...children)
+            }
 
             componentData = stack.pop()
         }

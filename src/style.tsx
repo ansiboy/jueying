@@ -7,7 +7,8 @@ export let classNames = {
     templateSelected: `template-selected`,
     templateDialog: `template-dialog`,
     emptyDocument: `empty-document`,
-
+    empty: "empty",
+    selected: "selected",
     component: 'component',
     componentWrapper: 'component-wrapper',
     componentPanel: 'component-panel',

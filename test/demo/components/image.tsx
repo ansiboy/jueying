@@ -1,6 +1,7 @@
 import React, { ImgHTMLAttributes } from "react";
 
 interface Props {
+    id: string
     url: string
 }
 
@@ -18,6 +19,6 @@ export default class Image extends React.Component<Props, State> {
 
     render(): React.ReactNode {
         let { url } = this.state
-        return <img src={url} />
+        return <img id={this.props.id} src={url} />
     }
 }
