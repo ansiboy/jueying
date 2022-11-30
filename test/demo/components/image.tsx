@@ -1,7 +1,7 @@
 import React, { ImgHTMLAttributes } from "react";
 
 interface Props {
-    id: string
+    id?: string
     url: string
 }
 

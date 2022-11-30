@@ -11,6 +11,7 @@ import { PageDataTravel } from "./page-data-travel";
 import { Component } from "./component";
 import { deepEqual } from "./deep-equal"
 import { isCustomComponent } from "./common";
+import { createDesignElement } from "./create-design-element";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
@@ -37,7 +38,7 @@ export let DesignerContext = React.createContext<DesignerContextValue | null>(nu
  */
 export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private _element: HTMLElement
-    private _elementFactory: ElementFactory = React.createElement
+    private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
     private _prePageData: PageData | null = null
 
     constructor(props: PageDesignerProps) {
@@ -51,7 +52,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let pageData = this.props.pageData;
         let componentTypes: ComponentTypes = {}
         this.initPageData(pageData, componentTypes);
- 
+
         this.state = { pageData, componentTypes, componentEditors: {} };
     }
 
@@ -341,7 +342,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             componentsToLoad.push(c.type)
         })
 
-        PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
+        return PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
             Object.assign(componentTypes, loadedComponentTypes)
             this.setState({ componentTypes })
         })
@@ -412,8 +413,15 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         }
     }
 
-    private onPageDataChanged(pageData: PageData) {
-        this.loadComponentTypes(pageData)
+    private async onPageDataChanged(pageData: PageData) {
+        if (typeof window === "undefined")
+            global["h"] = createDesignElement
+        else
+            window["h"] = createDesignElement
+
+        await this.loadComponentTypes(pageData)
+
+        window["h"] = React.createElement
         this.loadEditorTypes(pageData)
     }
 

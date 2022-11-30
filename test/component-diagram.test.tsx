@@ -5,6 +5,9 @@ import { PageDesigner, ComponentDiagram } from "../out"
 import { componentsConfig, typeNames } from "./demo"
 import { componentUpdateFinish } from "./common"
 import { JSDOM } from "jsdom"
+import type Image from "./demo/components/image"
+import type Button from "./demo/components/button"
+import renderer from "react-test-renderer"
 
 test("ComponentDiagram HTML 元素测试", async function () {
 
@@ -49,10 +52,11 @@ test("ComponentDiagram 自定义组件测试", async function () {
     }
 
     let url = "imageUrl"
+    let imageProps: Image["props"] = { url }
     let pageData1: PageData = {
         id: "page-data1",
         children: [
-            { id: ids.image1, type: typeNames.image, props: { url } }
+            { id: ids.image1, type: typeNames.image, props: imageProps }
         ]
     }
 
@@ -77,3 +81,30 @@ test("ComponentDiagram 自定义组件测试", async function () {
     expect(imageElement.src).toEqual(url)
 })
 
+test("ComponentDiagram 按钮点击", async function () {
+
+    let ids = {
+        button1: "button1",
+    }
+
+    let clickedText = "clicked"
+    let buttonProps: Button["props"] = { clickedText }
+    let pageData1: PageData = {
+        id: "page-data1",
+        children: [
+            { id: ids.button1, type: typeNames.button, props: buttonProps }
+        ]
+    }
+
+    const component = renderer.create(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}>
+        <ComponentDiagram />
+    </PageDesigner>)
+
+    let pageDesigner = component.getInstance() as any as PageDesigner
+    expect(pageDesigner || null).not.toBeNull()
+    await componentUpdateFinish(pageDesigner)
+
+    let button = component.root.findAllByType("button")[0]
+    expect(button || null).not.toBeNull()
+    expect(button.props.onClick || null).toBeNull()
+})

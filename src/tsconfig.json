@@ -6,7 +6,6 @@
         "declaration": true,
         // "outFile": "../out/jueying.js",
         "outDir": "../out",
-        "rootDir": ".",
         "jsx": "react",
         "strict": false,
         "strictPropertyInitialization": false,
