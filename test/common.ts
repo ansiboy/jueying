@@ -25,4 +25,4 @@ global["TextDecoder"] = TextDecoder as any
 
 // export { JSDOM } from "jsdom"
 let jsdom = require("jsdom")
-export let JSDOM = jsdom.JSDOM as import("jsdom").JSDOM;
+export let JSDOM = jsdom.JSDOM as typeof import("jsdom").JSDOM;

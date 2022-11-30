@@ -1,9 +1,10 @@
-import { PageDesigner } from "../out"
+import { ComponentDiagram, PageDesigner } from "../out"
 import renderer from "react-test-renderer"
 import { componentsConfig } from "./demo"
 import * as pageDatas from "./demo/page-datas"
 import React from "react"
-import { componentUpdateFinish } from "./common"
+import { componentUpdateFinish, JSDOM } from "./common"
+import ReactDOM from "react-dom/client"
 
 test("page-designer 测试 loadComponentTypes 方法", async function () {
 
@@ -46,16 +47,26 @@ test("page-designer 测试组件类型加载", async function () {
     // typeNames = Object.keys(componentTypes)
     // expect(typeNames.length).toBeGreaterThan(0)
 
-    //TODO 设计测试用例
+    //TODO
 
 })
 
 test("page-designer 测试组件类型加载", async function () {
 
-    let component = renderer.create(<PageDesigner pageData={pageDatas.simple} componentsConfig={componentsConfig} />)
-    let pageDesigner = component.getInstance() as any as PageDesigner
-    expect(pageDesigner).not.toBeNull()
+    let jsdom = new JSDOM()
+    let container = jsdom.window.document.createElement("div")
+    let root = ReactDOM.createRoot(container)
+    let pageDesigner = await new Promise<PageDesigner>((resolve, reject) => {
+        root.render(<PageDesigner pageData={pageDatas.simple} componentsConfig={componentsConfig}
+            ref={e => {
+                if (!e) return
+                resolve(e)
+            }}>
+            <ComponentDiagram />
+        </PageDesigner>)
+    })
 
+    expect(pageDesigner).not.toBeNull()
 
     await componentUpdateFinish(pageDesigner)
 

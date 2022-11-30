@@ -47,8 +47,6 @@ export class ComponentDiagram extends React.Component<Props, State> {
             if (!componentConfig)
                 return React.createElement(type, props, children)
 
-            // throw new Error(`Can not find component '${componentData.type}' component config.`)
-            debugger
             let value: DesignComponentContextValue = {
                 componentData, componentConfig
             }
