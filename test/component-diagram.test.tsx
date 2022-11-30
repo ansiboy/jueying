@@ -62,7 +62,6 @@ test("ComponentDiagram 自定义组件测试", async function () {
 
     let jsdom = new JSDOM()
     let container = jsdom.window.document.createElement("div")
-
     let root = ReactDOM.createRoot(container)
     let pageDesigner = await new Promise<PageDesigner>((resolve, reject) => {
         root.render(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}
@@ -100,7 +99,19 @@ test("ComponentDiagram 按钮点击", async function () {
         <ComponentDiagram />
     </PageDesigner>)
 
-    let pageDesigner = component.getInstance() as any as PageDesigner
+    let jsdom = new JSDOM()
+    let container = jsdom.window.document.createElement("div")
+    let root = ReactDOM.createRoot(container)
+    let pageDesigner = await new Promise<PageDesigner>((resolve, reject) => {
+        root.render(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}
+            ref={e => {
+                if (!e) return
+                resolve(e)
+            }}>
+            <ComponentDiagram />
+        </PageDesigner>)
+    })
+
     expect(pageDesigner || null).not.toBeNull()
     await componentUpdateFinish(pageDesigner)
 

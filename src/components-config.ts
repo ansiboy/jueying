@@ -1,12 +1,13 @@
 import { ComponentTypes } from "maishu-jueying-core/out/types"
-type LoadModule = () => Promise<{ default: ComponentTypes[0] }>
+type ComponentModule = { default: ComponentTypes[0] }
 export type ComponentsConfig = {
     [componentName: string]: {
-        type: Promise<{ default: ComponentTypes[0] }>
+        type: Promise<ComponentModule>
         displayName?: string
         renderSize?: "server" | "client" | "both"
         icon?: string
         group?: string,
         editor: Promise<any>,
+        design?: number | Promise<ComponentModule>
     }
 }

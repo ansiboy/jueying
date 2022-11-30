@@ -1,5 +1,5 @@
 import React = require("react")
-import { strings } from "./strings"
+import { strings } from "../strings"
 
 export function createInfoComponent(text: string) {
     return class InfoComponent extends React.Component {

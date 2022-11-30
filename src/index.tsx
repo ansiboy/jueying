@@ -1,16 +1,16 @@
 export { groupDisplayNames } from "./common";
-export { Component } from "./component";
-export { EditorPanel, EditorPanelProps } from "./editor-panel";
-export { ComponentDefine } from "./models";
+export { Component } from "./component/component";
+export { EditorPanel, EditorPanelProps } from "./design/editor-panel";
 export {
     PageDesigner, PageDesignerProps, PageDesignerState, DesignerContext, DesignerContextValue
-} from "./page-designer";
-export { PropEditorState, PropEditorProps } from "./property-editor";
-export { PropertyEditorInfo } from "./property-editor";
+} from "./design/page-designer";
+export { PropEditorState, PropEditorProps } from "./design/property-editor";
+export { PropertyEditorInfo } from "./design/property-editor";
 export { classNames } from "./style";
 export { ComponentsConfig } from "./components-config"
-export { ComponentDiagram } from "./component-diagram"
-// export { ComponentDataHandler } from "./component-data-handler";
+export { ComponentDiagram } from "./design/component-diagram"
+import "./component/create-element"
+
 
 
 

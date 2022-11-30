@@ -3,3 +3,4 @@ package-lock.json
 dist
 out
 out-es5
+temp

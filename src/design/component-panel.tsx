@@ -1,8 +1,8 @@
-import { errors } from "./errors"
+import { errors } from "../errors"
 import * as React from "react"
 import { DesignerContext } from "./page-designer"
-import { classNames } from "./style"
-import { strings } from "./strings"
+import { classNames } from "../style"
+import { strings } from "../strings"
 import { ComponentsConfig } from "components-config"
 
 interface ComponentPanelProps {

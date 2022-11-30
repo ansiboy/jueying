@@ -1,7 +1,7 @@
 import { ComponentData } from "maishu-jueying-core";
 import * as React from "react";
 import { PropertyEditor, EditorProps } from "./property-editor";
-import { classNames } from "./style";
+import { classNames } from "../style";
 
 interface EditorPanelState {
     componentDatas: ComponentData[];

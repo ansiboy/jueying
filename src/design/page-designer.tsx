@@ -1,17 +1,16 @@
 import * as React from "react";
 
 import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes } from "maishu-jueying-core";
-import { errors, errors as Errors } from "./errors";
+import { errors, errors as Errors } from "../errors";
 import { guid } from "maishu-toolkit/out/guid";
-import { ComponentTypes, ElementFactory } from "maishu-jueying-core/out/types";
-import type { ComponentsConfig } from "./components-config";
-import { createInfoComponent, createLoadingComponent } from "./components";
+import { ComponentTypes } from "maishu-jueying-core/out/types";
+import type { ComponentsConfig } from "../components-config";
+import { createInfoComponent, createLoadingComponent } from "../component/components";
 import { ComponentEditors } from "types";
-import { PageDataTravel } from "./page-data-travel";
-import { Component } from "./component";
-import { deepEqual } from "./deep-equal"
-import { isCustomComponent } from "./common";
-import { createDesignElement } from "./create-design-element";
+import { PageDataTravel } from "../page-data-travel";
+import { Component } from "../component/component";
+import { deepEqual } from "../deep-equal"
+import { isCustomComponent } from "../common";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
@@ -38,7 +37,7 @@ export let DesignerContext = React.createContext<DesignerContextValue | null>(nu
  */
 export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private _element: HTMLElement
-    private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
+    // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
     private _prePageData: PageData | null = null
 
     constructor(props: PageDesignerProps) {
@@ -109,9 +108,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         return this.state.pageData;
     }
 
-    get elementFactory(): ElementFactory {
-        return this._elementFactory
-    }
+    // get elementFactory(): ElementFactory {
+    //     return this._elementFactory
+    // }
 
     get componentTypes(): ComponentTypes {
         return this.state.componentTypes
@@ -414,16 +413,12 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     private async onPageDataChanged(pageData: PageData) {
-        if (typeof window === "undefined")
-            global["h"] = createDesignElement
-        else
-            window["h"] = createDesignElement
-
-        await this.loadComponentTypes(pageData)
-
-        window["h"] = React.createElement
+        this.loadComponentTypes(pageData)
         this.loadEditorTypes(pageData)
     }
+
+
+
 
     static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState> {
         return { pageData: props.pageData }

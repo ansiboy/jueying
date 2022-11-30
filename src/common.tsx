@@ -25,3 +25,5 @@ export function isCustomComponent(componentData: ComponentData) {
 
     return true
 }
+
+export const elementFactoryName = "h"
