@@ -10,6 +10,7 @@ export { classNames } from "./style";
 export { ComponentsConfig } from "./components-config"
 export { ComponentDiagram } from "./design/component-diagram"
 import "./component/create-element"
+export { ComponentPanel } from "./design/component-panel"
 
 
 

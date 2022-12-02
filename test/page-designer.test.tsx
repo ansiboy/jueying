@@ -1,6 +1,5 @@
 import { ComponentDiagram, PageDesigner } from "../out"
-import renderer from "react-test-renderer"
-import { componentsConfig } from "./demo"
+import { componentsConfig } from "./demo/src/components-config"
 import * as pageDatas from "./demo/page-datas"
 import React from "react"
 import { componentUpdateFinish, JSDOM } from "./common"

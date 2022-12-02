@@ -1,5 +1,6 @@
 import { ComponentData } from "maishu-jueying-core"
 import { componentTypes as defaultComponentTypes } from "maishu-jueying-core"
+import React from "react"
 
 export let constants = {
     componentsDir: 'components',
@@ -24,6 +25,16 @@ export function isCustomComponent(componentData: ComponentData) {
         return false
 
     return true
+}
+
+export function childrenNodeToArray(children: React.ReactNode | undefined): React.ReactElement<any, any>[] {
+    if (!children)
+        return []
+
+    if (Array.isArray(children))
+        return children
+
+    return [children as React.ReactElement]
 }
 
 export const elementFactoryName = "h"

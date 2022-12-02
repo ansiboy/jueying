@@ -12,5 +12,6 @@
         "strictNullChecks": true,
         "experimentalDecorators": true,
         "baseUrl": "./",
+        "esModuleInterop": true
     }
 }

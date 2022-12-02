@@ -11,6 +11,7 @@ import { PageDataTravel } from "../page-data-travel";
 import { Component } from "../component/component";
 import { deepEqual } from "../deep-equal"
 import { isCustomComponent } from "../common";
+import { DataList } from "../core/data-list";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
@@ -27,7 +28,9 @@ export interface PageDesignerState {
 }
 
 export type DesignerContextValue = {
-    designer: PageDesigner
+    designer: PageDesigner,
+    // addComponentPanelElement: (element: HTMLElement) => void,
+    // addComponentDiagramElement: (element: HTMLElement) => void,
 };
 
 export let DesignerContext = React.createContext<DesignerContextValue | null>(null)
@@ -39,6 +42,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     private _element: HTMLElement
     // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
     private _prePageData: PageData | null = null
+    readonly componentDiagramElements = new DataList<HTMLElement>()
+    readonly componentPanelElements = new DataList<HTMLElement>()
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -417,11 +422,27 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.loadEditorTypes(pageData)
     }
 
-
-
-
     static getDerivedStateFromProps(props: PageDesignerProps, state: PageDesignerState): Partial<PageDesignerState> {
         return { pageData: props.pageData }
+    }
+
+    componentDidMount(): void {
+
+        // let groupBaseName = 'diagram'
+        // for (let i = 0; i < this.componentPanelElements.count; i++) {
+        //     let groupName = groupBaseName + i
+        //     new Sortable(this.componentPanelElements[i], {
+        //         group: groupName,
+        //         animation: 150
+        //     })
+
+        //     for (let j = 0; j < this.componentDiagramElements.length; j++) {
+        //         new Sortable(this.componentDiagramElements[j], {
+        //             group: groupName,
+        //             animation: 150
+        //         })
+        //     }
+        // }
     }
 
     render() {
@@ -435,9 +456,26 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         return <div tabIndex={0} ref={e => this._element = this._element || e} onKeyDown={e => this.onKeyDown(e)}
             className={this.props.className} style={this.props.style}>
-            <DesignerContext.Provider value={{ designer: this }}>
+            <DesignerContext.Provider value={{
+                designer: this,
+            }}>
                 {this.props.children}
             </DesignerContext.Provider>
         </div>
     }
+
+    addComponentDiagramElement(element: HTMLElement) {
+        if (element == null || this.componentDiagramElements.contains(element))
+            return
+
+        this.componentDiagramElements.add(element)
+    }
+
+    addComponentPanelElement(element: HTMLElement) {
+        if (element == null || this.componentPanelElements.contains(element))
+            return
+
+        this.componentPanelElements.add(element)
+    }
+
 }

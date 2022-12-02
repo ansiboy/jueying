@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PropEditorProps, Component } from "../../../out"
+import { PropEditorProps, Component } from "maishu-jueying/out"
 import type Image from "../components/image"
 
 export function TextEditor(props: PropEditorProps<string>) {

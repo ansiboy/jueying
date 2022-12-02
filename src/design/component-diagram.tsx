@@ -7,6 +7,8 @@ import { strings } from "../strings";
 import { classNames } from "../style";
 import { PageDataTravel } from "../page-data-travel";
 import { DesignComponentContext, DesignComponentContextValue } from "../component/design-component-context";
+import Sortable from "sortablejs";
+import { guid } from "maishu-toolkit/out/guid";
 
 interface Props {
     children?: React.ReactNode
@@ -16,6 +18,9 @@ interface State {
 }
 
 export class ComponentDiagram extends React.Component<Props, State> {
+
+    private _element: HTMLElement
+    private designer: PageDesigner
 
     constructor(props: Props) {
         super(props);
@@ -54,36 +59,70 @@ export class ComponentDiagram extends React.Component<Props, State> {
         }) as any)
     }
 
+    private ref(e: HTMLElement | null, args: DesignerContextValue) {
+        if (!e) return
+
+        this._element = e
+        if (!args.designer.componentDiagramElements.contains(e)) {
+            args.designer.componentDiagramElements.add(e)
+        }
+    }
+
+    get element() {
+        return this._element
+    }
+
+    componentDidMount(): void {
+
+        let connect = (panelElement: HTMLElement) => {
+            let groupName = guid()
+            new Sortable(panelElement, {
+                group: { name: groupName, pull: "clone" },
+                animation: 150,
+                sort: false,
+            });
+
+            new Sortable(this.element, {
+                group: groupName,
+                animation: 150
+            })
+        }
+
+        this.designer.componentPanelElements.each(e => connect(e))
+        this.designer.componentPanelElements.added.add(args => connect(args.element))
+    }
 
     render(): React.ReactNode {
-        return <ul>
-            <DesignerContext.Consumer>
-                {args => {
-                    if (!args) throw errors.designerContextArgumentNull()
-                    let designer = args.designer
+        return <DesignerContext.Consumer>
+            {args => {
+                if (!args) throw errors.designerContextArgumentNull()
+                let designer = args.designer
+                this.designer = designer
 
-                    let componentDatas = designer.pageData.children || []
-                    if (componentDatas.length == 0)
-                        return <li>
+                let componentDatas = designer.pageData.children || []
+                if (componentDatas.length == 0)
+                    return <ul ref={e => this.ref(e, args)}>
+                        <li>
                             {strings.emptyCompoenntPanel}
                         </li>
-                    let componentTypes = args.designer.componentTypes
-                    return <>{componentDatas.map(c => {
+                    </ul>
 
-                        let status = c.status || ComponentStatus.default;
-                        let selected = (status & ComponentStatus.selected) == ComponentStatus.selected
-                        return <li key={c.id} className={selected ? classNames.selected : ""}
-                            onClick={e => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                this.selectComponent(args.designer, c.id);
-                            }}>
-                            {parseComponentData(c, componentTypes, ComponentDiagram.createComponent)}
-                        </li>
+                let componentTypes = args.designer.componentTypes
+                return <ul ref={e => this.ref(e, args)}>{componentDatas.map(c => {
+                    let status = c.status || ComponentStatus.default;
+                    let selected = (status & ComponentStatus.selected) == ComponentStatus.selected
+                    return <li key={c.id} className={selected ? classNames.selected : ""}
+                        onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            this.selectComponent(args.designer, c.id);
+                        }}>
+                        {parseComponentData(c, componentTypes, ComponentDiagram.createComponent)}
+                    </li>
 
-                    })}</>
-                }}
-            </DesignerContext.Consumer>
-        </ul>
+                })}</ul>
+            }}
+        </DesignerContext.Consumer>
+
     }
 }

@@ -1,5 +1,4 @@
-import { ComponentsConfig } from "../../out"
-
+import { ComponentsConfig } from "../../../out"
 export let typeNames = { image: "Image", button: "Button" }
 
 export let componentsConfig: ComponentsConfig = {}

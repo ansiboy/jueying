@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v3.5.11
+ *  maishu-jueying v4.0.3
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -112,17 +112,250 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/maishu-jueying-core/out/components/component-placeholder.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/components/component-placeholder.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComponentPlaceHolder = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const page_data_parser_1 = __webpack_require__(/*! ./page-data-parser */ "./node_modules/maishu-jueying-core/out/components/page-data-parser.js");
+const errors_1 = __webpack_require__(/*! ../errors */ "./node_modules/maishu-jueying-core/out/errors.js");
+const parse_component_data_1 = __webpack_require__(/*! ../parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
+class ComponentPlaceHolder extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return React.createElement(page_data_parser_1.PageDataParserContext.Consumer, null, args => {
+            if (!args)
+                throw errors_1.errors.nullPageDataParserArguments();
+            let children = args.pageData.children.filter(o => o.parentId && o.parentId == this.props.id);
+            let childComponents = children.map(c => (0, parse_component_data_1.parseComponentData)(c, args.componentTypes, args.elementFactory));
+            return childComponents;
+        });
+    }
+}
+exports.ComponentPlaceHolder = ComponentPlaceHolder;
+ComponentPlaceHolder.typeName = "PlaceHolder";
+//# sourceMappingURL=component-placeholder.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/components/page-data-parser.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/components/page-data-parser.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageDataParser = exports.PageDataParserContext = void 0;
+const errors_1 = __webpack_require__(/*! ../errors */ "./node_modules/maishu-jueying-core/out/errors.js");
+const React = __webpack_require__(/*! react */ "react");
+const parse_component_data_1 = __webpack_require__(/*! ../parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
+exports.PageDataParserContext = React.createContext(null);
+class PageDataParser extends React.Component {
+    constructor(props) {
+        super(props);
+        if (!props)
+            throw errors_1.errors.argumentNull("props");
+        if (!props.pageData)
+            throw errors_1.errors.argumentFieldNull("pageData", "props");
+        if (!props.elementFactory)
+            throw errors_1.errors.argumentFieldNull("elementFactory", "props");
+        this.state = { pageData: props.pageData, componentTypes: props.componentTypes };
+    }
+    static getDerivedStateFromProps(props, state) {
+        return { pageData: props.pageData, componentTypes: props.componentTypes };
+    }
+    render() {
+        let { pageData } = this.state;
+        let { elementFactory, componentTypes } = this.props;
+        let children = pageData.children.filter(o => !o.parentId);
+        let childComponents = children.map(o => {
+            return (0, parse_component_data_1.parseComponentData)(o, componentTypes, elementFactory);
+        });
+        return React.createElement(exports.PageDataParserContext.Provider, { value: { pageData, elementFactory, componentTypes } }, childComponents);
+    }
+}
+exports.PageDataParser = PageDataParser;
+//# sourceMappingURL=page-data-parser.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/errors.js":
+/*!********************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/errors.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errors = void 0;
+const errors_1 = __webpack_require__(/*! maishu-toolkit/out/errors */ "./node_modules/maishu-toolkit/out/errors.js");
+const page_data_parser_1 = __webpack_require__(/*! ./components/page-data-parser */ "./node_modules/maishu-jueying-core/out/components/page-data-parser.js");
+class MyErrors extends errors_1.Errors {
+    pathFieldRequired(name) {
+        let msg = `Path field of '${name}' component config can not be null or empty.`;
+        return new Error(msg);
+    }
+    canntFindModule(name, path) {
+        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
+        return new Error(msg);
+    }
+    componentTypeNotExists(name) {
+        let msg = `Component '${name}' not exists.`;
+        return new Error(msg);
+    }
+    argumentNull(name) {
+        let msg = `Argument '${name}' can not be null or empty.`;
+        return new Error(msg);
+    }
+    propsFileNull(fieldName) {
+        let msg = `Field '${fieldName}' of props is null.`;
+        let error = new Error(msg);
+        let name = "propsFileNull";
+        error.name = name;
+        return error;
+    }
+    nullPageDataParserArguments() {
+        let obj = { PageDataParser: page_data_parser_1.PageDataParser };
+        let typeName = "PageDataParser";
+        let msg = `PageDataParser arguments is null. Is this component child of ${typeName}?`;
+        let error = new Error(msg);
+        let name = "nullPageDataParserArguments";
+        error.name = name;
+        return error;
+    }
+}
+exports.errors = new MyErrors();
+//# sourceMappingURL=errors.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/parse-component-data.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/parse-component-data.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseComponentData = void 0;
+const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
+const register_1 = __webpack_require__(/*! ./register */ "./node_modules/maishu-jueying-core/out/register.js");
+function parseComponentData(componentData, componentTypes, createElement) {
+    if (!componentData)
+        throw errors_1.errors.argumentNull("componentData");
+    if (!componentTypes)
+        throw errors_1.errors.argumentNull("componentTypes");
+    if (!componentData.type)
+        throw errors_1.errors.argumentFieldNull("type", "componentData");
+    let isHtmlComponent = componentData.type.toLowerCase() == componentData.type;
+    let type = isHtmlComponent ? componentData.type : (componentTypes[componentData.type] || register_1.componentTypes[componentData.type]);
+    if (type == null) {
+        throw errors_1.errors.componentTypeNotExists(componentData.type);
+    }
+    let children = [];
+    let childComponentInfos = componentData.children || [];
+    if (childComponentInfos.length > 0) {
+        children = childComponentInfos.map(c => {
+            if (typeof c == "string")
+                return c;
+            return parseComponentData(c, componentTypes, createElement);
+        });
+    }
+    let props = Object.assign({}, componentData.props);
+    props.key = props.key || componentData.id;
+    props.id = componentData.id;
+    return createElement(type, props, children);
+}
+exports.parseComponentData = parseComponentData;
+//# sourceMappingURL=parse-component-data.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/register.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/register.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerComponent = exports.componentTypes = void 0;
+const component_placeholder_1 = __webpack_require__(/*! ./components/component-placeholder */ "./node_modules/maishu-jueying-core/out/components/component-placeholder.js");
+const errors_1 = __webpack_require__(/*! ./errors */ "./node_modules/maishu-jueying-core/out/errors.js");
+exports.componentTypes = {};
+function registerComponent(componentName, componentType) {
+    if (componentType == null && typeof componentName == 'function') {
+        componentType = componentName;
+        componentName = componentType.name;
+        componentType['componentName'] = componentName;
+    }
+    if (!componentName)
+        throw errors_1.errors.argumentNull('componentName');
+    if (!componentType)
+        throw errors_1.errors.argumentNull('componentType');
+    exports.componentTypes[componentName] = componentType;
+}
+exports.registerComponent = registerComponent;
+exports.componentTypes[component_placeholder_1.ComponentPlaceHolder.typeName] = component_placeholder_1.ComponentPlaceHolder;
+//# sourceMappingURL=register.js.map
+
+/***/ }),
+
+/***/ "./node_modules/maishu-jueying-core/out/types.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/maishu-jueying-core/out/types.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComponentStatus = void 0;
+var ComponentStatus;
+(function (ComponentStatus) {
+    ComponentStatus[ComponentStatus["default"] = 0] = "default";
+    /** 已选中 */
+    ComponentStatus[ComponentStatus["selected"] = 1] = "selected";
+    /** 禁用 */
+    ComponentStatus[ComponentStatus["disabled"] = 2] = "disabled";
+    /** 不允许删除 */
+    ComponentStatus[ComponentStatus["asset"] = 4] = "asset";
+})(ComponentStatus = exports.ComponentStatus || (exports.ComponentStatus = {}));
+// export type ChildComponentProps = { parentId: string };
+//# sourceMappingURL=types.js.map
+
+/***/ }),
+
 /***/ "./node_modules/maishu-toolkit/out/errors.js":
 /*!***************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/errors.js ***!
   \***************************************************/
-/*! exports provided: Errors, errors */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Errors", function() { return Errors; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "errors", function() { return errors; });
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errors = exports.Errors = void 0;
 class Errors {
     argumentNull(argumentName) {
         let error = new Error(`Argument ${argumentName} cannt be null or emtpy.`);
@@ -151,12 +384,16 @@ class Errors {
         error.name = name;
         return error;
     }
-    queryResultTypeError() {
-        let msg = 'Type of the query result is expected as Array or DataSourceSelectResult.';
-        return new Error(msg);
+    pathStartsHttp(path) {
+        let msg = `Path ${path} start with http or https.`;
+        let error = new Error(msg);
+        let name = "pathStartsHttp";
+        error.name = name;
+        return error;
     }
 }
-let errors = new Errors();
+exports.Errors = Errors;
+exports.errors = new Errors();
 
 
 /***/ }),
@@ -165,12 +402,13 @@ let errors = new Errors();
 /*!*************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/guid.js ***!
   \*************************************************/
-/*! exports provided: guid */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return guid; });
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.guid = void 0;
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -180,6 +418,38 @@ function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
         s4() + '-' + s4() + s4() + s4();
 }
+exports.guid = guid;
+
+
+/***/ }),
+
+/***/ "./node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
@@ -194,7 +464,8 @@ function guid() {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.groupDisplayNames = exports.proptDisplayNames = exports.constants = void 0;
+exports.elementFactoryName = exports.isCustomComponent = exports.groupDisplayNames = exports.proptDisplayNames = exports.constants = void 0;
+const maishu_jueying_core_1 = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core");
 exports.constants = {
     componentsDir: 'components',
     connectorElementClassName: 'component-container',
@@ -204,14 +475,24 @@ exports.constants = {
 };
 exports.proptDisplayNames = {};
 exports.groupDisplayNames = {};
+function isCustomComponent(componentData) {
+    // 全小写为 HTML 元素，不需要加载
+    if (componentData.type.toLocaleLowerCase() == componentData.type)
+        return false;
+    if (maishu_jueying_core_1.componentTypes[componentData.type])
+        return false;
+    return true;
+}
+exports.isCustomComponent = isCustomComponent;
+exports.elementFactoryName = "h";
 //# sourceMappingURL=common.js.map
 
 /***/ }),
 
-/***/ "./out/component.js":
-/*!**************************!*\
-  !*** ./out/component.js ***!
-  \**************************/
+/***/ "./out/component/component.js":
+/*!************************************!*\
+  !*** ./out/component/component.js ***!
+  \************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -219,7 +500,7 @@ exports.groupDisplayNames = {};
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Component = void 0;
-const property_editor_1 = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
+const property_editor_1 = __webpack_require__(/*! ../design/property-editor */ "./out/design/property-editor.js");
 const maishu_jueying_core_1 = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core");
 // type CreateElementContext = { components: React.Component[], componentTypes: string[] };
 // let defaultGroup: GroupedEditor["group"] = { prop: "", displayName: "" };
@@ -237,6 +518,11 @@ class Component {
         }
         return result;
     }
+    /**
+     * 获取指定组件的属性编辑器
+     * @param controlClassName 指定组件的类名
+     * @param propName 组件的属性名称
+     * */
     static getPropEditor(controlClassName, propName) {
         return this.getPropEditorByArray(controlClassName, propName);
     }
@@ -284,10 +570,240 @@ Component.componentPropEditorDisplay = {};
 
 /***/ }),
 
-/***/ "./out/editor-panel.js":
-/*!*****************************!*\
-  !*** ./out/editor-panel.js ***!
-  \*****************************/
+/***/ "./out/component/components.js":
+/*!*************************************!*\
+  !*** ./out/component/components.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createLoadingComponent = exports.createInfoComponent = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const strings_1 = __webpack_require__(/*! ../strings */ "./out/strings.js");
+function createInfoComponent(text) {
+    return class InfoComponent extends React.Component {
+        render() {
+            return React.createElement("div", { className: "text-center", style: { paddingTop: 20, paddingBottom: 20 } }, text);
+        }
+    };
+}
+exports.createInfoComponent = createInfoComponent;
+function createLoadingComponent() {
+    return class FakeComponent extends React.Component {
+        render() {
+            return React.createElement("div", { key: this.props.id, style: { padding: "50px 0 50px 0", textAlign: "center" } }, strings_1.strings.componentLoading);
+        }
+    };
+}
+exports.createLoadingComponent = createLoadingComponent;
+//# sourceMappingURL=components.js.map
+
+/***/ }),
+
+/***/ "./out/component/create-element.js":
+/*!*****************************************!*\
+  !*** ./out/component/create-element.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const design_component_context_1 = __webpack_require__(/*! ./design-component-context */ "./out/component/design-component-context.js");
+const design_behavior_1 = __webpack_require__(/*! ../design/design-behavior */ "./out/design/design-behavior.js");
+const common_1 = __webpack_require__(/*! ../common */ "./out/common.js");
+const createElement = (type, props, ...children) => {
+    let props1 = {};
+    if (props)
+        props1 = { key: props.id || props.key };
+    return React.createElement(design_component_context_1.DesignComponentContext.Consumer, props1, ((args) => {
+        let isDesigntime = args != null;
+        if (!isDesigntime) {
+            return React.createElement(type, props, ...children);
+        }
+        let designBehavior = typeof args.componentConfig.design == "number" ? args.componentConfig.design : design_behavior_1.DesignBehavior.default;
+        let disableClick = (designBehavior & design_behavior_1.DesignBehavior.disableClick) == design_behavior_1.DesignBehavior.disableClick;
+        if (disableClick) {
+            delete props.onClick;
+        }
+        return React.createElement(type, props, ...children);
+    }));
+};
+if (typeof window === "undefined") {
+    global[common_1.elementFactoryName] = createElement;
+}
+else {
+    window[common_1.elementFactoryName] = createElement;
+}
+//# sourceMappingURL=create-element.js.map
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./out/component/design-component-context.js":
+/*!***************************************************!*\
+  !*** ./out/component/design-component-context.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DesignComponentContext = void 0;
+const React = __webpack_require__(/*! react */ "react");
+exports.DesignComponentContext = React.createContext(null);
+//# sourceMappingURL=design-component-context.js.map
+
+/***/ }),
+
+/***/ "./out/deep-equal.js":
+/*!***************************!*\
+  !*** ./out/deep-equal.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deepEqual = void 0;
+function deepEqual(x, y) {
+    if (x === y) {
+        return true;
+    }
+    if ((typeof x == "object" && x != null) && (typeof y == "object" && y != null)) {
+        if (Object.keys(x).length != Object.keys(y).length) {
+            return false;
+        }
+        for (var prop in x) {
+            if (y.hasOwnProperty(prop)) {
+                if (!deepEqual(x[prop], y[prop])) {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+exports.deepEqual = deepEqual;
+//# sourceMappingURL=deep-equal.js.map
+
+/***/ }),
+
+/***/ "./out/design/component-diagram.js":
+/*!*****************************************!*\
+  !*** ./out/design/component-diagram.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComponentDiagram = void 0;
+const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
+const types_1 = __webpack_require__(/*! maishu-jueying-core/out/types */ "./node_modules/maishu-jueying-core/out/types.js");
+const parse_component_data_1 = __webpack_require__(/*! maishu-jueying-core/out/parse-component-data */ "./node_modules/maishu-jueying-core/out/parse-component-data.js");
+const React = __webpack_require__(/*! react */ "react");
+const page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/design/page-designer.js");
+const strings_1 = __webpack_require__(/*! ../strings */ "./out/strings.js");
+const style_1 = __webpack_require__(/*! ../style */ "./out/style.js");
+const page_data_travel_1 = __webpack_require__(/*! ../page-data-travel */ "./out/page-data-travel.js");
+const design_component_context_1 = __webpack_require__(/*! ../component/design-component-context */ "./out/component/design-component-context.js");
+class ComponentDiagram extends React.Component {
+    constructor(props) {
+        super(props);
+        if (!props)
+            throw errors_1.errors.argumentNull("props");
+        this.state = {};
+    }
+    selectComponent(designer, componentId) {
+        if (!componentId) {
+            designer.selectComponent([]);
+            return;
+        }
+        designer.selectComponent(componentId);
+    }
+    static createComponent(type, props, children) {
+        let p = props;
+        if (!p.id)
+            throw errors_1.errors.argumentFieldNull("id", "props");
+        return React.createElement(page_designer_1.DesignerContext.Consumer, null, ((args) => {
+            if (!args)
+                throw errors_1.errors.designerContextArgumentNull();
+            let componentData = page_data_travel_1.PageDataTravel.findComponent(args.designer.pageData, p.id); //args.designer.pageData.children.filter(o => o.id == p.id)[0]
+            if (!componentData)
+                throw new Error(`Can not find component data by '${p.id}' in the page data.`);
+            let componentConfig = args.designer.props.componentsConfig[componentData.type];
+            if (!componentConfig)
+                return React.createElement(type, props, children);
+            let value = {
+                componentData, componentConfig
+            };
+            return React.createElement(design_component_context_1.DesignComponentContext.Provider, { value }, React.createElement(type, props, children));
+        }));
+    }
+    render() {
+        return React.createElement("ul", null,
+            React.createElement(page_designer_1.DesignerContext.Consumer, null, args => {
+                if (!args)
+                    throw errors_1.errors.designerContextArgumentNull();
+                let designer = args.designer;
+                let componentDatas = designer.pageData.children || [];
+                if (componentDatas.length == 0)
+                    return React.createElement("li", null, strings_1.strings.emptyCompoenntPanel);
+                let componentTypes = args.designer.componentTypes;
+                return React.createElement(React.Fragment, null, componentDatas.map(c => {
+                    let status = c.status || types_1.ComponentStatus.default;
+                    let selected = (status & types_1.ComponentStatus.selected) == types_1.ComponentStatus.selected;
+                    return React.createElement("li", { key: c.id, className: selected ? style_1.classNames.selected : "", onClick: e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            this.selectComponent(args.designer, c.id);
+                        } }, (0, parse_component_data_1.parseComponentData)(c, componentTypes, ComponentDiagram.createComponent));
+                }));
+            }));
+    }
+}
+exports.ComponentDiagram = ComponentDiagram;
+//# sourceMappingURL=component-diagram.js.map
+
+/***/ }),
+
+/***/ "./out/design/design-behavior.js":
+/*!***************************************!*\
+  !*** ./out/design/design-behavior.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DesignBehavior = void 0;
+var DesignBehavior;
+(function (DesignBehavior) {
+    DesignBehavior[DesignBehavior["default"] = 1] = "default";
+    DesignBehavior[DesignBehavior["disableClick"] = 1] = "disableClick";
+})(DesignBehavior = exports.DesignBehavior || (exports.DesignBehavior = {}));
+//# sourceMappingURL=design-behavior.js.map
+
+/***/ }),
+
+/***/ "./out/design/editor-panel.js":
+/*!************************************!*\
+  !*** ./out/design/editor-panel.js ***!
+  \************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -296,8 +812,8 @@ Component.componentPropEditorDisplay = {};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EditorPanel = void 0;
 const React = __webpack_require__(/*! react */ "react");
-const property_editor_1 = __webpack_require__(/*! ./property-editor */ "./out/property-editor.js");
-const style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
+const property_editor_1 = __webpack_require__(/*! ./property-editor */ "./out/design/property-editor.js");
+const style_1 = __webpack_require__(/*! ../style */ "./out/style.js");
 class EditorPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -319,95 +835,10 @@ exports.EditorPanel = EditorPanel;
 
 /***/ }),
 
-/***/ "./out/errors.js":
-/*!***********************!*\
-  !*** ./out/errors.js ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = void 0;
-const errors_1 = __webpack_require__(/*! maishu-toolkit/out/errors */ "./node_modules/maishu-toolkit/out/errors.js");
-class Errors extends errors_1.Errors {
-    placeHolderIdNull() {
-        let msg = `Place holder property id cannt be null or empty.`;
-        return new Error(msg);
-    }
-    fileNotExists(fileName) {
-        return new Error(`File '${fileName}' is not exists.`);
-    }
-    argumentNull(argumentName) {
-        return new Error(`Argument ${argumentName} is null or empty.`);
-    }
-    argumentRangeError(argumentName) {
-        return new Error(`Argument ${argumentName} range error.`);
-    }
-    pageDataIsNull() {
-        return new Error(`Page data is null.`);
-    }
-    toolbarRequiredKey() {
-        return new Error(`Toolbar has not a key prop.`);
-    }
-    loadPluginFail(pluginId) {
-        return new Error(`Load plugin '${pluginId}' fail.`);
-    }
-    idRequired() {
-        return new Error(`Property id is required.`);
-    }
-    canntFindMasterPage(componentId) {
-        return new Error(`Can not find master page for component container ${componentId}.`);
-    }
-    propCanntNull(componentName, property) {
-        let msg = `${componentName} property ${property} cannt be null or empty.`;
-        return new Error(msg);
-    }
-    argumentFieldCanntNull(fieldName, argumentName) {
-        let msg = `${fieldName} of argument ${argumentName} cannt be null or empty.`;
-        return new Error(msg);
-    }
-}
-exports.errors = new Errors();
-//# sourceMappingURL=errors.js.map
-
-/***/ }),
-
-/***/ "./out/index.js":
-/*!**********************!*\
-  !*** ./out/index.js ***!
-  \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.classNames = exports.TextInput = exports.PropEditor = exports.DesignerContext = exports.PageDesigner = exports.EditorPanel = exports.Component = exports.groupDisplayNames = void 0;
-var common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
-Object.defineProperty(exports, "groupDisplayNames", { enumerable: true, get: function () { return common_1.groupDisplayNames; } });
-var component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
-Object.defineProperty(exports, "Component", { enumerable: true, get: function () { return component_1.Component; } });
-var editor_panel_1 = __webpack_require__(/*! ./editor-panel */ "./out/editor-panel.js");
-Object.defineProperty(exports, "EditorPanel", { enumerable: true, get: function () { return editor_panel_1.EditorPanel; } });
-var page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
-Object.defineProperty(exports, "PageDesigner", { enumerable: true, get: function () { return page_designer_1.PageDesigner; } });
-Object.defineProperty(exports, "DesignerContext", { enumerable: true, get: function () { return page_designer_1.DesignerContext; } });
-var prop_editor_1 = __webpack_require__(/*! ./prop-editor */ "./out/prop-editor.js");
-Object.defineProperty(exports, "PropEditor", { enumerable: true, get: function () { return prop_editor_1.PropEditor; } });
-Object.defineProperty(exports, "TextInput", { enumerable: true, get: function () { return prop_editor_1.TextInput; } });
-var style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
-Object.defineProperty(exports, "classNames", { enumerable: true, get: function () { return style_1.classNames; } });
-// export { ComponentDataHandler } from "./component-data-handler";
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "./out/page-designer.js":
-/*!******************************!*\
-  !*** ./out/page-designer.js ***!
-  \******************************/
+/***/ "./out/design/page-designer.js":
+/*!*************************************!*\
+  !*** ./out/design/page-designer.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -417,27 +848,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PageDesigner = exports.DesignerContext = void 0;
 const React = __webpack_require__(/*! react */ "react");
 const maishu_jueying_core_1 = __webpack_require__(/*! maishu-jueying-core */ "maishu-jueying-core");
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
+const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
 const guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
-exports.DesignerContext = React.createContext({ designer: null });
+const components_1 = __webpack_require__(/*! ../component/components */ "./out/component/components.js");
+const page_data_travel_1 = __webpack_require__(/*! ../page-data-travel */ "./out/page-data-travel.js");
+const component_1 = __webpack_require__(/*! ../component/component */ "./out/component/component.js");
+const deep_equal_1 = __webpack_require__(/*! ../deep-equal */ "./out/deep-equal.js");
+const common_1 = __webpack_require__(/*! ../common */ "./out/common.js");
+exports.DesignerContext = React.createContext(null);
 /**
  * 组件数据处理，负责对对组件数据进行处理维护。
  */
 class PageDesigner extends React.Component {
     constructor(props) {
         super(props);
+        // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
+        this._prePageData = null;
+        if (!props)
+            throw errors_1.errors.argumentNull("props");
+        if (!props.componentsConfig)
+            throw errors_1.errors.argumentFieldCanntNull("componentsConfig", "props");
+        this.checkComponentsConfig(props.componentsConfig);
         let pageData = this.props.pageData;
-        this.initPageData(pageData);
-        this.state = { pageData: pageData };
+        let componentTypes = {};
+        this.initPageData(pageData, componentTypes);
+        this.state = { pageData, componentTypes, componentEditors: {} };
     }
-    initPageData(pageData) {
-        if (pageData == null) {
-            return;
-        }
-        // pageData.children = pageData.children || [];
+    /** 检查组件配置 */
+    checkComponentsConfig(componentsConfig) {
+        // TODO: 检查组件配置
+    }
+    initPageData(pageData, componentTypes) {
+        if (pageData == null)
+            throw errors_1.errors.argumentNull("pageData");
         console.assert(pageData.children != null, "PageData children is null.");
-        pageData.children.forEach(c => {
-            this.initComponent(c, pageData);
+        let travel = new page_data_travel_1.PageDataTravel(pageData);
+        travel.each((c) => {
+            if (typeof c == "string" || !(0, common_1.isCustomComponent)(c) || componentTypes[c.type])
+                return;
+            componentTypes[c.type] = (0, components_1.createLoadingComponent)();
         });
     }
     /**
@@ -467,6 +916,18 @@ class PageDesigner extends React.Component {
     /** 页面数据 */
     get pageData() {
         return this.state.pageData;
+    }
+    // get elementFactory(): ElementFactory {
+    //     return this._elementFactory
+    // }
+    get componentTypes() {
+        return this.state.componentTypes;
+    }
+    get prePageData() {
+        return this._prePageData;
+    }
+    set prePageData(value) {
+        this._prePageData = value;
     }
     /** 获取已选择了的组件编号 */
     get selectedComponentIds() {
@@ -526,7 +987,7 @@ class PageDesigner extends React.Component {
     }
     /**
      * 选择指定的控件
-     * @param control 指定的控件
+     * @param componentIds 指定的控件编号
      */
     selectComponent(componentIds) {
         this.selectComponents(componentIds);
@@ -538,7 +999,7 @@ class PageDesigner extends React.Component {
     }
     /**
      * 选择指定的控件，一个或多个。已经选择的控件取消选择。
-     * @param control 指定的控件
+     * @param componentIds 指定的控件 ID
      */
     selectComponents(componentIds) {
         if (typeof componentIds == 'string')
@@ -613,6 +1074,88 @@ class PageDesigner extends React.Component {
         let componentData = pageData.children.filter(o => o.id == componentId)[0];
         return componentData;
     }
+    async loadEditorTypes(pageData) {
+        let componentsToLoad = [];
+        let travel = new page_data_travel_1.PageDataTravel(pageData);
+        travel.each((c) => {
+            if (typeof c == "string" || !(0, common_1.isCustomComponent)(c))
+                return;
+            componentsToLoad.push(c.type);
+        });
+        let componentsConfig = this.props.componentsConfig;
+        let promises = componentsToLoad.map(typeName => componentsConfig[typeName]).filter(o => o).map(o => o.editor);
+        await Promise.all(promises);
+        let componentDatas = pageData.children.filter(o => typeof o != "string").map(c => c);
+        let editors = this.state.componentEditors;
+        for (let c of componentDatas) {
+            editors[c.type] = editors[c.type] || {};
+            let propEditors = component_1.Component.getPropEditors(c);
+            for (let e of propEditors) {
+                editors[c.type][e.propName] = e.editorType;
+            }
+        }
+        this.setState({ componentEditors: editors });
+    }
+    loadComponentTypes(pageData) {
+        let componentTypes = {};
+        let componentsConfig = this.props.componentsConfig;
+        let componentsToLoad = [];
+        let travel = new page_data_travel_1.PageDataTravel(pageData);
+        travel.each((c) => {
+            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !(0, common_1.isCustomComponent)(c))
+                return;
+            componentsToLoad.push(c.type);
+        });
+        return PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
+            Object.assign(componentTypes, loadedComponentTypes);
+            this.setState({ componentTypes });
+        });
+    }
+    static async loadComponentTypes(componentsToLoad, componentsConfig) {
+        let promises = [];
+        let componentTypes = {};
+        for (let i = 0; i < componentsToLoad.length; i++) {
+            let typeName = componentsToLoad[i];
+            if (!typeName) {
+                let errorText = `Component '${typeName}' has not a config.`;
+                componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
+                continue;
+            }
+            if (maishu_jueying_core_1.componentTypes[typeName]) {
+                promises.push(Promise.resolve(maishu_jueying_core_1.componentTypes[typeName]));
+                continue;
+            }
+            let p = new Promise(function (resolve, reject) {
+                if (!componentsConfig[typeName]) {
+                    let errorText = `Component '${typeName}' is not exists.`;
+                    componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
+                    resolve({});
+                    return;
+                }
+                if (!(componentsConfig[typeName].type instanceof Promise)) {
+                    let errorText = `Component '${typeName}' type is invalid.`;
+                    componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
+                    resolve({});
+                    return;
+                }
+                componentsConfig[typeName].type.then(p => {
+                    if (!p.default) {
+                        let errorText = `Component '${typeName}' module has not export default member.`;
+                        componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
+                    }
+                    else {
+                        componentTypes[typeName] = p.default;
+                    }
+                    resolve({});
+                }).catch(err => {
+                    reject(err);
+                });
+            });
+            promises.push(p);
+        }
+        await Promise.all(promises);
+        return componentTypes;
+    }
     onKeyDown(e) {
         const DELETE_KEY_CODE = 46;
         if (e.keyCode == DELETE_KEY_CODE) {
@@ -621,7 +1164,20 @@ class PageDesigner extends React.Component {
             this.removeComponents(this.selectedComponentIds);
         }
     }
+    async onPageDataChanged(pageData) {
+        this.loadComponentTypes(pageData);
+        this.loadEditorTypes(pageData);
+    }
+    static getDerivedStateFromProps(props, state) {
+        return { pageData: props.pageData };
+    }
     render() {
+        let pageData = this.state.pageData;
+        let equal = (0, deep_equal_1.deepEqual)(this.prePageData, pageData);
+        if (!equal) {
+            this.prePageData = JSON.parse(JSON.stringify(pageData));
+            this.onPageDataChanged(pageData);
+        }
         return React.createElement("div", { tabIndex: 0, ref: e => this._element = this._element || e, onKeyDown: e => this.onKeyDown(e), className: this.props.className, style: this.props.style },
             React.createElement(exports.DesignerContext.Provider, { value: { designer: this } }, this.props.children));
     }
@@ -631,45 +1187,10 @@ exports.PageDesigner = PageDesigner;
 
 /***/ }),
 
-/***/ "./out/prop-editor.js":
-/*!****************************!*\
-  !*** ./out/prop-editor.js ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TextInput = exports.PropEditor = void 0;
-const React = __webpack_require__(/*! react */ "react");
-class PropEditor extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    static textInput() {
-        return TextInput;
-    }
-}
-exports.PropEditor = PropEditor;
-class TextInput extends PropEditor {
-    render() {
-        let { value } = this.props;
-        return React.createElement("input", { className: 'form-control', value: value || '', onChange: e => {
-                // this.setState({ value: e.target.value })
-                this.props.updateComponentProp(e.target.value);
-            } });
-    }
-}
-exports.TextInput = TextInput;
-//# sourceMappingURL=prop-editor.js.map
-
-/***/ }),
-
-/***/ "./out/property-editor.js":
-/*!********************************!*\
-  !*** ./out/property-editor.js ***!
-  \********************************/
+/***/ "./out/design/property-editor.js":
+/*!***************************************!*\
+  !*** ./out/design/property-editor.js ***!
+  \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -678,10 +1199,11 @@ exports.TextInput = TextInput;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ErrorBoundary = exports.PropertyEditor = exports.defaultGroupName = void 0;
 const React = __webpack_require__(/*! react */ "react");
-const component_1 = __webpack_require__(/*! ./component */ "./out/component.js");
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-const page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/page-designer.js");
-const common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
+const component_1 = __webpack_require__(/*! ../component/component */ "./out/component/component.js");
+// import { PropEditorProps } from "./prop-editor";
+const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
+const page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/design/page-designer.js");
+const common_1 = __webpack_require__(/*! ../common */ "./out/common.js");
 const maishu_dilu_1 = __webpack_require__(/*! maishu-dilu */ "maishu-dilu");
 exports.defaultGroupName = "";
 class PropertyEditor extends React.Component {
@@ -706,8 +1228,8 @@ class PropertyEditor extends React.Component {
                 let items = [];
                 commonPropEditorInfos.forEach(propInfo1 => {
                     propEditorInfos.forEach(propInfo2 => {
-                        let propName1 = propInfo1.propName; //propInfo1.propNames.join('.')
-                        let propName2 = propInfo2.propName; //propInfo2.propNames.join('.')
+                        let propName1 = propInfo1.propName;
+                        let propName2 = propInfo2.propName;
                         if (propInfo1.editorType == propInfo2.editorType && propName1 == propName2) {
                             items.push(propInfo1);
                         }
@@ -781,9 +1303,9 @@ class PropertyEditor extends React.Component {
     }
     render() {
         return React.createElement(page_designer_1.DesignerContext.Consumer, null, args => {
+            if (!args)
+                throw errors_1.errors.designerContextArgumentNull();
             let designer = args.designer;
-            if (designer == null)
-                return null;
             let editors = this.getEditors(designer);
             if (editors.length == 0) {
                 let empty = this.props.empty;
@@ -849,6 +1371,166 @@ exports.ErrorBoundary = ErrorBoundary;
 
 /***/ }),
 
+/***/ "./out/errors.js":
+/*!***********************!*\
+  !*** ./out/errors.js ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errors = void 0;
+const errors_1 = __webpack_require__(/*! maishu-toolkit/out/errors */ "./node_modules/maishu-toolkit/out/errors.js");
+class Errors extends errors_1.Errors {
+    placeHolderIdNull() {
+        let msg = `Place holder property id cannt be null or empty.`;
+        return new Error(msg);
+    }
+    fileNotExists(fileName) {
+        return new Error(`File '${fileName}' is not exists.`);
+    }
+    argumentNull(argumentName) {
+        return new Error(`Argument ${argumentName} is null or empty.`);
+    }
+    argumentRangeError(argumentName) {
+        return new Error(`Argument ${argumentName} range error.`);
+    }
+    pageDataIsNull() {
+        return new Error(`Page data is null.`);
+    }
+    toolbarRequiredKey() {
+        return new Error(`Toolbar has not a key prop.`);
+    }
+    loadPluginFail(pluginId) {
+        return new Error(`Load plugin '${pluginId}' fail.`);
+    }
+    idRequired() {
+        return new Error(`Property id is required.`);
+    }
+    canntFindMasterPage(componentId) {
+        return new Error(`Can not find master page for component container ${componentId}.`);
+    }
+    propCanntNull(componentName, property) {
+        let msg = `${componentName} property ${property} cannt be null or empty.`;
+        return new Error(msg);
+    }
+    argumentFieldCanntNull(fieldName, argumentName) {
+        let msg = `${fieldName} of argument ${argumentName} cannt be null or empty.`;
+        return new Error(msg);
+    }
+    designerContextArgumentNull() {
+        let msg = `Designer cottext argument null.`;
+        let error = new Error(msg);
+        error.name = exports.errors.designerContextArgumentNull.name;
+        return error;
+    }
+}
+exports.errors = new Errors();
+//# sourceMappingURL=errors.js.map
+
+/***/ }),
+
+/***/ "./out/index.js":
+/*!**********************!*\
+  !*** ./out/index.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComponentDiagram = exports.classNames = exports.DesignerContext = exports.PageDesigner = exports.EditorPanel = exports.Component = exports.groupDisplayNames = void 0;
+var common_1 = __webpack_require__(/*! ./common */ "./out/common.js");
+Object.defineProperty(exports, "groupDisplayNames", { enumerable: true, get: function () { return common_1.groupDisplayNames; } });
+var component_1 = __webpack_require__(/*! ./component/component */ "./out/component/component.js");
+Object.defineProperty(exports, "Component", { enumerable: true, get: function () { return component_1.Component; } });
+var editor_panel_1 = __webpack_require__(/*! ./design/editor-panel */ "./out/design/editor-panel.js");
+Object.defineProperty(exports, "EditorPanel", { enumerable: true, get: function () { return editor_panel_1.EditorPanel; } });
+var page_designer_1 = __webpack_require__(/*! ./design/page-designer */ "./out/design/page-designer.js");
+Object.defineProperty(exports, "PageDesigner", { enumerable: true, get: function () { return page_designer_1.PageDesigner; } });
+Object.defineProperty(exports, "DesignerContext", { enumerable: true, get: function () { return page_designer_1.DesignerContext; } });
+var style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
+Object.defineProperty(exports, "classNames", { enumerable: true, get: function () { return style_1.classNames; } });
+var component_diagram_1 = __webpack_require__(/*! ./design/component-diagram */ "./out/design/component-diagram.js");
+Object.defineProperty(exports, "ComponentDiagram", { enumerable: true, get: function () { return component_diagram_1.ComponentDiagram; } });
+__webpack_require__(/*! ./component/create-element */ "./out/component/create-element.js");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./out/page-data-travel.js":
+/*!*********************************!*\
+  !*** ./out/page-data-travel.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageDataTravel = void 0;
+const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
+/** 页面数据（PageData）遍历器，遍历 PageData 里的组件 */
+class PageDataTravel {
+    constructor(pageData) {
+        this.pageData = pageData;
+    }
+    each(callback) {
+        let stack = [...(this.pageData.children || [])];
+        let componentData = stack.pop();
+        while (componentData != null) {
+            callback(componentData);
+            if (typeof componentData != "string") {
+                let children = componentData.children || [];
+                stack.push(...children);
+            }
+            componentData = stack.pop();
+        }
+    }
+    static findComponent(pageData, componentId) {
+        if (!pageData)
+            throw errors_1.errors.argumentNull("pageData");
+        if (!componentId)
+            throw errors_1.errors.argumentNull("componentId");
+        let travel = new PageDataTravel(pageData);
+        let r;
+        travel.each(function (c) {
+            if (typeof c == "string" || r)
+                return;
+            if (componentId == c.id)
+                r = c;
+        });
+        return r;
+    }
+}
+exports.PageDataTravel = PageDataTravel;
+//# sourceMappingURL=page-data-travel.js.map
+
+/***/ }),
+
+/***/ "./out/strings.js":
+/*!************************!*\
+  !*** ./out/strings.js ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.strings = void 0;
+exports.strings = {
+    emptyCompoenntPanel: "暂无可用组件",
+    emptyDiagram: "请拖放组件到此处",
+    componentLoading: "组件正在加载中...",
+};
+//# sourceMappingURL=strings.js.map
+
+/***/ }),
+
 /***/ "./out/style.js":
 /*!**********************!*\
   !*** ./out/style.js ***!
@@ -868,6 +1550,8 @@ exports.classNames = {
     templateSelected: `template-selected`,
     templateDialog: `template-dialog`,
     emptyDocument: `empty-document`,
+    empty: "empty",
+    selected: "selected",
     component: 'component',
     componentWrapper: 'component-wrapper',
     componentPanel: 'component-panel',
