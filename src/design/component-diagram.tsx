@@ -1,14 +1,12 @@
 import { errors } from "../errors";
-import { ComponentProps, ComponentStatus } from "maishu-jueying-core/out/types";
-import { parseComponentData } from "maishu-jueying-core/out/parse-component-data"
+import { ComponentStatus } from "maishu-jueying-core/out/types";
 import * as React from "react";
 import { DesignerContext, DesignerContextValue, PageDesigner } from "./page-designer";
 import { strings } from "../strings";
 import { classNames } from "../style";
-import { PageDataTravel } from "../page-data-travel";
-import { DesignComponentContext, DesignComponentContextValue } from "../component/design-component-context";
 import Sortable from "sortablejs";
 import { guid } from "maishu-toolkit/out/guid";
+import { parseDesigntimeComponentData } from "./parse-component-data";
 
 interface Props {
     children?: React.ReactNode
@@ -38,27 +36,6 @@ export class ComponentDiagram extends React.Component<Props, State> {
         designer.selectComponent(componentId);
     }
 
-    private static createComponent(type: any, props: any, children: any) {
-        let p = props as ComponentProps
-        if (!p.id) throw errors.argumentFieldNull("id", "props")
-
-        return React.createElement(DesignerContext.Consumer, null, ((args: DesignerContextValue) => {
-            if (!args) throw errors.designerContextArgumentNull()
-            let componentData = PageDataTravel.findComponent(args.designer.pageData, p.id)//args.designer.pageData.children.filter(o => o.id == p.id)[0]
-            if (!componentData)
-                throw new Error(`Can not find component data by '${p.id}' in the page data.`)
-
-            let componentConfig = args.designer.props.componentsConfig[componentData.type]
-            if (!componentConfig)
-                return React.createElement(type, props, children)
-
-            let value: DesignComponentContextValue = {
-                componentData, componentConfig
-            }
-            return React.createElement(DesignComponentContext.Provider, { value }, React.createElement(type, props, children))
-        }) as any)
-    }
-
     private ref(e: HTMLElement | null, args: DesignerContextValue) {
         if (!e) return
 
@@ -77,7 +54,7 @@ export class ComponentDiagram extends React.Component<Props, State> {
         let connect = (panelElement: HTMLElement) => {
             let groupName = guid()
             new Sortable(panelElement, {
-                group: { name: groupName, pull: "clone" },
+                group: { name: groupName, pull: "clone", put: false },
                 animation: 150,
                 sort: false,
             });
@@ -108,19 +85,21 @@ export class ComponentDiagram extends React.Component<Props, State> {
                     </ul>
 
                 let componentTypes = args.designer.componentTypes
-                return <ul ref={e => this.ref(e, args)}>{componentDatas.map(c => {
-                    let status = c.status || ComponentStatus.default;
-                    let selected = (status & ComponentStatus.selected) == ComponentStatus.selected
-                    return <li key={c.id} className={selected ? classNames.selected : ""}
-                        onClick={e => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            this.selectComponent(args.designer, c.id);
-                        }}>
-                        {parseComponentData(c, componentTypes, ComponentDiagram.createComponent)}
-                    </li>
+                return <ul className={classNames.componentDiagram} ref={e => this.ref(e, args)}>{
+                    componentDatas.map(c => {
+                        let status = c.status || ComponentStatus.default;
+                        let selected = (status & ComponentStatus.selected) == ComponentStatus.selected
+                        return <li key={c.id} className={selected ? classNames.selected : ""}
+                            onClick={e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.selectComponent(args.designer, c.id);
+                            }}>
+                            {parseDesigntimeComponentData(c, componentTypes)}
+                        </li>
 
-                })}</ul>
+                    })}
+                </ul>
             }}
         </DesignerContext.Consumer>
 
