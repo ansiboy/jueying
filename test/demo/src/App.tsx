@@ -8,7 +8,8 @@ function App() {
   let ids = {
     image1: "image1",
     div1: "div1",
-    div2: "div2"
+    div2: "div2",
+    button: "button"
   }
 
   let hello = "hello"
@@ -17,7 +18,8 @@ function App() {
     id: "simple",
     children: [
       { id: ids.div1, type: "div", props: {}, children: [hello] },
-      { id: ids.div2, type: "div", props: {}, children: [word] }
+      { id: ids.div2, type: "div", props: {}, children: [word] },
+      { id: ids.button, type: "Button", props: { clickedText: "Hello World" }, children: [word] }
     ]
   }
 
