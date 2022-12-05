@@ -1,5 +1,5 @@
 import { ComponentsConfig } from "../../../out"
-export let typeNames = { image: "Image", button: "Button" }
+export let typeNames = { image: "Image", button: "Button", div: "div" }
 
 export let componentsConfig: ComponentsConfig = {}
 
@@ -11,4 +11,8 @@ componentsConfig[typeNames.image] = {
 componentsConfig[typeNames.button] = {
     type: import("./components/button"),
     editor: import("./editors/button"),
+}
+
+componentsConfig[typeNames.div] = {
+    editor: import("./editors/div")
 }

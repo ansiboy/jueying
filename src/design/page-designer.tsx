@@ -11,7 +11,7 @@ import { PageDataTravel } from "../page-data-travel";
 import { Component } from "../component/component";
 import { deepEqual } from "../deep-equal"
 import { isCustomComponent } from "../common";
-import { DataList } from "../core/data-list";
+import { DataList } from "../data/data-list";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
@@ -385,7 +385,12 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                     return
                 }
 
-                componentsConfig[typeName].type.then(p => {
+                let componentType = componentsConfig[typeName].type
+                if (!componentType) {
+                    return resolve({})
+                }
+
+                componentType.then(p => {
                     if (!p.default) {
                         let errorText = `Component '${typeName}' module has not export default member.`
                         componentTypes[typeName] = createInfoComponent(errorText)
