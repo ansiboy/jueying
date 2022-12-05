@@ -1,7 +1,7 @@
-import './App.css';
 import { PageData } from 'maishu-jueying-core';
 import { PageDesigner, ComponentDiagram, ComponentPanel } from "maishu-jueying/out"
 import { componentsConfig } from "./components-config"
+import "maishu-jueying/out/style"
 
 function App() {
 
@@ -23,10 +23,12 @@ function App() {
     ]
   }
 
-  return <PageDesigner pageData={pageData1} componentsConfig={componentsConfig}>
-    <ComponentPanel />
-    <ComponentDiagram />
-  </PageDesigner>
+  return <div className='container'>
+    <PageDesigner pageData={pageData1} componentsConfig={componentsConfig}>
+      <ComponentPanel />
+      <ComponentDiagram />
+    </PageDesigner>
+  </div>
 }
 
 export default App;
