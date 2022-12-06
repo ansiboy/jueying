@@ -18,7 +18,7 @@ export let groupDisplayNames: { [prop: string]: string } = {
 
 export function isCustomComponent(componentData: ComponentData) {
     // 全小写为 HTML 元素，不需要加载
-    if (componentData.type.toLocaleLowerCase() == componentData.type)
+    if (componentData.type.toLowerCase() == componentData.type)
         return false
 
     if (defaultComponentTypes[componentData.type])

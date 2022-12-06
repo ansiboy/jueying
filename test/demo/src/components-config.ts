@@ -1,5 +1,5 @@
 import { ComponentsConfig } from "../../../out"
-export let typeNames = { image: "Image", button: "Button" }
+export let typeNames = { image: "Image", button: "Button", div: "div" }
 
 export let componentsConfig: ComponentsConfig = {}
 
@@ -15,4 +15,10 @@ componentsConfig[typeNames.button] = {
     editor: import("./editors/button"),
     displayName: "按钮",
     icon: "glyphicon glyphicon-tag"
+}
+
+componentsConfig[typeNames.div] = {
+    editor: import("./editors/div")
+
+
 }

@@ -19,7 +19,7 @@ function App() {
     children: [
       { id: ids.div1, type: "div", props: {}, children: [hello] },
       { id: ids.div2, type: "div", props: {}, children: [word] },
-      { id: ids.button, type: "Button", props: { clickedText: "HelloWorld" } }
+      { id: ids.button, type: "Button", props: { clickedText: "Hello World" }, children: [word] }
     ]
   }
 
