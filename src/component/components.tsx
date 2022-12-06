@@ -1,4 +1,4 @@
-import React = require("react")
+import * as React from "react"
 import { strings } from "../strings"
 
 export function createInfoComponent(text: string) {

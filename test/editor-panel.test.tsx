@@ -1,11 +1,11 @@
-import { PageData } from "maishu-jueying-core"
+import { PageData } from "maishu-jueying-core/out/types"
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { PageDesigner, ComponentDiagram, ComponentPanel } from "../out"
-import { componentsConfig } from "./demo/src/components-config"
+import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGroup } from "../out"
 import { JSDOM } from "./common"
+import { componentsConfig } from "./demo/src/components-config"
 
-test("ComponentPanel 创建测试", async function () {
+test("editor panel test", async function () {
 
     let ids = {
         image1: "image1",
@@ -32,7 +32,12 @@ test("ComponentPanel 创建测试", async function () {
             }}>
             <ComponentDiagram />
             <ComponentPanel />
+            <EditorPanel>
+                <EditorGroup />
+            </EditorPanel>
         </PageDesigner>)
     })
-})
 
+    console.log(pageDesigner.element.innerHTML)
+
+})

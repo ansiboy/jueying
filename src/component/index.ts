@@ -1,1 +1,1 @@
-export { Component } from "./component"
+export { Component, PropEditorInfo } from "./component"

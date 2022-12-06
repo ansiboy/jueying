@@ -44,7 +44,7 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         return <ComponentPanelContext.Provider value={{ instance: this }}>
             <DesignerContext.Consumer>
                 {args => {
-                    if (!args) throw errors.designerContextArgumentNull()
+                    if (!args) throw errors.contextArgumentNull()
 
                     let componentsConfig = args.designer.props.componentsConfig
                     let componentInfos = Object.keys(componentsConfig).map(k => Object.assign({}, componentsConfig[k], { typeName: k }))

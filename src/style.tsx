@@ -1,23 +1,12 @@
 export let classNames = {
-    // componentSelected: `component-selected`,
-    // emptyTemplates: `empty-templates`,
-    // loadingTemplates: `loading-templates`,
-    // templateSelected: `template-selected`,
-    // templateDialog: `template-dialog`,
-    // emptyDocument: `empty-document`,
     empty: "empty",
     selected: "selected",
-    // component: 'component',
     componentDiagram: 'component-diagram',
-    // componentWrapper: 'component-wrapper',
     componentPanel: 'component-panel',
-    // componentIcon: 'component-icon',
-    // placeholder: 'placeholder',
-
-     editorPanel: 'editor-panel',
-    // designer: 'designer',
-    // moveDown: 'move-down',
-
+    editorPanel: 'editor-panel',
+    propertyEditor: "property-editor",
+    propertyEditorControl: "property-editor-control",
+    propertyEditorLabel: "property-editor-label",
 }
 
 // let templateDialog = {

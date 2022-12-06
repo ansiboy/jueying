@@ -57,7 +57,7 @@
     "scripts": {
         "build": "grunt build",
         "test": "jest",
-        "temp": "jest component-panel.test"
+        "temp": "jest editor-panel.test"
     },
     "typings": "out/index.d.ts",
     "version": "4.0.3"

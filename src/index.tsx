@@ -11,6 +11,7 @@ export { ComponentsConfig } from "./components-config"
 export { ComponentDiagram } from "./design/component-diagram"
 import "./component/create-element"
 export { ComponentPanel } from "./design/component-panel"
+export { EditorGroup } from "./design/editor-group"
 
 
 

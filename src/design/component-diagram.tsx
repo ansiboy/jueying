@@ -72,7 +72,7 @@ export class ComponentDiagram extends React.Component<Props, State> {
     render(): React.ReactNode {
         return <DesignerContext.Consumer>
             {args => {
-                if (!args) throw errors.designerContextArgumentNull()
+                if (!args) throw errors.contextArgumentNull()
                 let designer = args.designer
                 this.designer = designer
 

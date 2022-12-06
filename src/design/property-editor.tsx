@@ -173,7 +173,7 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
         return <DesignerContext.Consumer>
             {args => {
 
-                if (!args) throw errors.designerContextArgumentNull()
+                if (!args) throw errors.contextArgumentNull()
 
                 let designer = args.designer;
                 let editors = this.getEditors(designer);

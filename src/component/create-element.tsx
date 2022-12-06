@@ -1,4 +1,3 @@
-import { DesignerContext, DesignerContextValue } from "../design/page-designer";
 import * as React from "react";
 import { DesignComponentContext, DesignComponentContextValue } from "./design-component-context";
 import { DesignBehavior } from "../design/design-behavior";
@@ -10,12 +9,11 @@ const createElement = (type: any, props: any, ...children: Array<any>) => {
         props1 = { key: props.id || props.key }
 
     return React.createElement(DesignComponentContext.Consumer, props1, ((args: DesignComponentContextValue) => {
-        debugger
         let isDesigntime = args != null
         if (!isDesigntime) {
             return React.createElement(type, props, ...children)
         }
-        debugger
+
         let designBehavior = typeof args.componentConfig.design == "number" ? args.componentConfig.design : DesignBehavior.default
         let disableClick = (designBehavior & DesignBehavior.disableClick) == DesignBehavior.disableClick
         if (disableClick) {

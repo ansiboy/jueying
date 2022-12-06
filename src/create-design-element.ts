@@ -1,7 +1,6 @@
 import * as React from "react";
 
 export function createDesignElement(type: any, props: any, ...children: any[]) {
-
     props = Object.assign({}, props || {});
 
     if (type != React.Fragment) {
