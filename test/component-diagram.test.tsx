@@ -3,7 +3,7 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { PageDesigner, ComponentDiagram } from "../out"
 import { componentsConfig, typeNames } from "./demo/src/components-config"
-import { componentUpdateFinish } from "./common"
+import { designerUpdateFinish } from "./common"
 import { JSDOM } from "jsdom"
 import type Image from "./demo/src/components/image"
 import type Button from "./demo/src/components/button"
@@ -39,7 +39,7 @@ test("ComponentDiagram HTML 元素测试", async function () {
         </PageDesigner>)
     })
 
-    await componentUpdateFinish(pageDesigner)
+    await designerUpdateFinish(pageDesigner)
     let div1 = container.querySelector(`#${ids.div1}`) as HTMLElement
     expect(div1).not.toBeNull()
     expect(div1.innerHTML).toEqual(helloWorld)
@@ -73,7 +73,7 @@ test("ComponentDiagram 自定义组件测试", async function () {
         </PageDesigner>)
     })
 
-    await componentUpdateFinish(pageDesigner)
+    await designerUpdateFinish(pageDesigner)
 
     let imageElement = container.querySelector(`#${ids.image1}`) as HTMLImageElement
     expect(imageElement).not.toBeNull()
@@ -113,7 +113,7 @@ test("ComponentDiagram 按钮点击", async function () {
     })
 
     expect(pageDesigner || null).not.toBeNull()
-    await componentUpdateFinish(pageDesigner)
+    await designerUpdateFinish(pageDesigner)
 
     let button = component.root.findAllByType("button")[0]
     expect(button || null).not.toBeNull()

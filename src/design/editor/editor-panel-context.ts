@@ -1,5 +1,3 @@
-import { ComponentsConfig } from "../components-config";
-import type { ComponentData } from "maishu-jueying-core";
 import * as React from "react"
 
 export type PropertyEditor = {

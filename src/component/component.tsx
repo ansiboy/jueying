@@ -8,9 +8,9 @@ import { ValidateField } from "maishu-dilu";
 export interface PropEditorInfo {
     propName: string,
     displayName: string,
-    editorType: PropEditorConstructor,
+    editorType: React.ComponentClass<PropEditorProps<any>> | React.FC<PropEditorProps<any>>,//PropEditorConstructor,
     group: GroupedEditor["group"],
-    defaultValue: any,
+    defaultValue?: any,
     validation?: Omit<ValidateField, "name">,
 }
 

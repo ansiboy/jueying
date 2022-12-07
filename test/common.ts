@@ -1,7 +1,8 @@
 import { Component } from "react";
 import { TextDecoder, TextEncoder } from "util"
+import { PageDesigner } from "../out";
 
-export function componentUpdateFinish<P, S>(component: Component<P, S>) {
+export function designerUpdateFinish<P, S>(component: PageDesigner) {
     return new Promise(function (resolve, reject) {
         let render = component.render
         let timeoutId: number | null = null

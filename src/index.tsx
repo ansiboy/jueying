@@ -1,6 +1,6 @@
 export { groupDisplayNames } from "./common";
 export { Component } from "./component/component";
-export { EditorPanel, EditorPanelProps } from "./design/editor-panel";
+export { EditorPanel, EditorPanelProps } from "./design/editor";
 export {
     PageDesigner, PageDesignerProps, PageDesignerState, DesignerContext, DesignerContextValue
 } from "./design/page-designer";
@@ -11,7 +11,8 @@ export { ComponentsConfig } from "./components-config"
 export { ComponentDiagram } from "./design/component-diagram"
 import "./component/create-element"
 export { ComponentPanel } from "./design/component-panel"
-export { EditorGroup } from "./design/editor-group"
+export { EditorGroup } from "./design/editor"
+export { ComponentPropertyEditors } from "./design/editor"
 
 
 

@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes } from "maishu-jueying-core";
 import { errors, errors as Errors } from "../errors";
 import { guid } from "maishu-toolkit/out/guid";
@@ -117,8 +116,16 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     //     return this._elementFactory
     // }
 
+    get componentsConfig() {
+        return this.props.componentsConfig
+    }
+
     get componentTypes(): ComponentTypes {
         return this.state.componentTypes
+    }
+
+    get componentEditors(): ComponentEditors {
+        return this.state.componentEditors
     }
 
     get prePageData(): PageData | null {
@@ -334,7 +341,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.setState({ componentEditors: editors })
     }
 
-    private loadComponentTypes(pageData: PageData) {
+    private async loadComponentTypes(pageData: PageData) {
         let componentTypes: ComponentTypes = {}
         let componentsConfig = this.props.componentsConfig
         let componentsToLoad: string[] = []
@@ -346,10 +353,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             componentsToLoad.push(c.type)
         })
 
-        return PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
-            Object.assign(componentTypes, loadedComponentTypes)
-            this.setState({ componentTypes })
-        })
+        const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
+        Object.assign(componentTypes, loadedComponentTypes);
+        this.setState({ componentTypes });
     }
 
     static async loadComponentTypes(componentsToLoad: string[], componentsConfig: ComponentsConfig): Promise<ComponentTypes> {

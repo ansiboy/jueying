@@ -1,11 +1,11 @@
 import { ComponentData } from "maishu-jueying-core";
 import * as React from "react";
-import { EditorProps } from "./property-editor";
-import { classNames } from "../style";
-import { errors } from "../errors";
-import { PropEditorProps } from "./property-editor";
-import { DesignerContext, PageDesigner } from "./page-designer";
-import { Component, PropEditorInfo } from "../component";
+import { EditorProps } from "../property-editor";
+import { classNames } from "../../style";
+import { errors } from "../../errors";
+import { PropEditorProps } from "../property-editor";
+import { DesignerContext, PageDesigner } from "../page-designer";
+import { PropEditorInfo } from "../../component";
 import { FormValidator, ValidateField } from "maishu-dilu/out/formValidator";
 import { EditPanelContext, PropertyEditor } from "./editor-panel-context";
 interface EditorPanelState {
@@ -19,7 +19,6 @@ export interface EditorPanelProps {
     customRender?: EditorProps["customRender"];
     children?: React.ReactNode;
 }
-
 
 export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelState> {
     element: HTMLElement;
@@ -46,8 +45,22 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
         let commonPropEditorInfos: PropEditorInfo[] = []
         let selectedComponents = designer.selectedComponents;
         for (let i = 0; i < selectedComponents.length; i++) {
-            let componentData = selectedComponents[i]
-            let propEditorInfos = Component.getPropEditors(componentData)
+            let componentData = selectedComponents[i];
+            let componentEditors = designer.componentEditors[componentData.type];
+            if (!componentEditors)
+                continue;
+
+            let componentConfig = designer.componentsConfig[componentData.type];
+            let propEditorInfos = Object.keys(componentEditors).map(propertyName => {
+
+                let r: PropEditorInfo = {
+                    propName: propertyName, displayName: componentConfig.displayName || componentData.type,
+                    editorType: componentEditors[propertyName], group: componentConfig.group || ""
+                }
+
+                return r
+            })
+
             if (i == 0) {
                 commonPropEditorInfos = propEditorInfos || []
             }
@@ -115,9 +128,9 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
                         this._validator.checkElement(propEditorInfo.propName);
 
                     designer.updateComponentProps(componentProps);
-
                 }
             };
+
             let editor = React.createElement(editorType, editorProps);
             editors.push({ prop: propEditorInfo.propName, displayName: propEditorInfo.displayName, editor, group: propEditorInfo.group })
         }
@@ -149,7 +162,7 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
         return <DesignerContext.Consumer>
             {args => {
                 if (!args) throw errors.contextArgumentNull()
-
+                console.log(args.designer.componentEditors)
                 let editors = this.getEditors(args.designer)
                 return <EditPanelContext.Provider value={{ editors }}>
                     <div className={`${classNames.editorPanel} ${this.props.className || ""}`}

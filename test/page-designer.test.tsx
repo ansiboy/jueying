@@ -2,7 +2,7 @@ import { ComponentDiagram, PageDesigner } from "../out"
 import { componentsConfig } from "./demo/src/components-config"
 import * as pageDatas from "./demo/page-datas"
 import React from "react"
-import { componentUpdateFinish, JSDOM } from "./common"
+import { designerUpdateFinish, JSDOM } from "./common"
 import ReactDOM from "react-dom/client"
 
 test("page-designer 测试 loadComponentTypes 方法", async function () {
@@ -46,8 +46,6 @@ test("page-designer 测试组件类型加载", async function () {
     // typeNames = Object.keys(componentTypes)
     // expect(typeNames.length).toBeGreaterThan(0)
 
-    //TODO
-
 })
 
 test("page-designer 测试组件类型加载", async function () {
@@ -67,7 +65,7 @@ test("page-designer 测试组件类型加载", async function () {
 
     expect(pageDesigner).not.toBeNull()
 
-    await componentUpdateFinish(pageDesigner)
+    await designerUpdateFinish(pageDesigner)
 
     let componentTypes = pageDesigner.componentTypes
     let typeNames = Object.keys(componentTypes)

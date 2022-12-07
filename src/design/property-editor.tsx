@@ -1,11 +1,11 @@
 import * as React from "react";
 import { PropEditorInfo, Component } from "../component/component";
-// import { PropEditorProps } from "./prop-editor";
 import { errors, errors as Errors } from "../errors";
 import { ComponentData } from "maishu-jueying-core";
 import { DesignerContext, PageDesigner } from "./page-designer";
 import { groupDisplayNames } from "../common";
 import { FormValidator, ValidateField } from "maishu-dilu";
+import { PropertyEditorProps } from "./editor";
 
 
 export interface EditorProps extends React.ComponentProps<any> {
@@ -16,15 +16,9 @@ export interface EditorProps extends React.ComponentProps<any> {
 export interface PropEditorConstructor {
     new(props: PropEditorProps<any>): any;
 }
-export interface PropEditorProps<T> {
-    value: T,
-    updateComponentProp: (value: T) => void,
-
-    /** 该编辑器所编辑的控件 */
-    editComponents: ComponentData[],
-}
+export type PropEditorProps<T> = PropertyEditorProps<T>
 export interface PropEditorState<T> {
-    // value: T
+    value: T
 }
 
 interface EditorState {
@@ -143,8 +137,9 @@ export class PropertyEditor extends React.Component<EditorProps, EditorState>{
 
                 }
             };
+
             let editor = React.createElement(editorType, editorProps);
-            editors.push({ prop: propEditorInfo.propName, displayName: propEditorInfo.displayName, editor, group: propEditorInfo.group })
+            editors.push({ prop: propEditorInfo.propName, displayName: propEditorInfo.displayName, editor, group: propEditorInfo.group || "" })
         }
 
         return editors
