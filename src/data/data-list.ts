@@ -5,15 +5,15 @@ export class DataList<T> {
 
     private items: T[] = []
 
-    added: Callback<{ sender: DataList<T>, element: T }> = new Callback()
-    removed: Callback<{ sender: DataList<T>, element: T }> = new Callback()
+    added: Callback<{ sender: DataList<T>, dataItem: T }> = new Callback()
+    removed: Callback<{ sender: DataList<T>, dataItem: T }> = new Callback()
 
     add(element: T) {
         if (!element)
             throw errors.argumentNull("element")
 
         this.items.push(element)
-        this.added.fire({ sender: this, element })
+        this.added.fire({ sender: this, dataItem: element })
     }
 
     contains(element: T) {
@@ -28,7 +28,7 @@ export class DataList<T> {
             throw errors.argumentNull("element")
 
         this.items = this.items.filter(o => o != element)
-        this.removed.fire({ sender: this, element })
+        this.removed.fire({ sender: this, dataItem: element })
     }
 
     each(callback: (element: T, index?: number) => void) {
@@ -40,5 +40,9 @@ export class DataList<T> {
 
     get count() {
         return this.items.length
+    }
+
+    map<S>(callback: (dataItem: T) => S) {
+        return this.items.map(o => callback(o))
     }
 }

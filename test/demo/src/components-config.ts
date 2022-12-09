@@ -18,7 +18,8 @@ componentsConfig[typeNames.button] = {
 }
 
 componentsConfig[typeNames.div] = {
-    editor: import("./editors/div")
+    editor: import("./editors/div"),
+    icon: "glyphicon glyphicon-tag"
 
 
 }

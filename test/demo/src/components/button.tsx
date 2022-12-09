@@ -3,6 +3,7 @@ import React from "react";
 interface Props {
     id?: string
     clickedText: string
+    text: string
 }
 
 interface State {
@@ -13,7 +14,7 @@ export default class Button extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
 
-        this.state = { text: "button" }
+        this.state = { text: props.text }
     }
     render(): React.ReactNode {
         let { text } = this.state

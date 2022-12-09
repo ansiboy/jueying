@@ -4,10 +4,14 @@ import { DesignerContext, DesignerContextValue } from "./page-designer"
 import { classNames } from "../style"
 import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
+import { ComponentData } from "maishu-jueying-core"
+import { guid } from "maishu-toolkit"
 
 interface ComponentPanelProps {
     renderItem?: (typeName: string, compoenntConfig: ComponentsConfig[0]) => ReturnType<React.Component["render"]>
 }
+
+const DATA_TYPE = "data-type"
 
 export let ComponentPanelContext = React.createContext<{ instance: ComponentPanel } | null>(null)
 
@@ -18,7 +22,7 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
 
     private static renderItem(typeName: string, componentConfig: ComponentsConfig[0]) {
         let displayName = componentConfig.displayName || typeName
-        return <li key={typeName}>
+        return <li key={typeName} ref={e => e ? e.setAttribute(DATA_TYPE, typeName) : null}>
             <i className={componentConfig.icon} />
             <div>
                 {displayName}
@@ -30,12 +34,25 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         return this._element
     }
 
+    getComponentData(toolbarElement: HTMLElement): ComponentData {
+        if (!toolbarElement) throw errors.argumentNull("toolbarElement")
+
+        let dataType = toolbarElement.getAttribute(DATA_TYPE)
+        if (!dataType) throw new Error(`Argument toolbarElement is an invalid component panel element.`)
+
+        let c: ComponentData = {
+            id: guid(), type: dataType, props: {}
+        }
+        return c
+    }
+
     private ref(e: HTMLElement | null, args: DesignerContextValue) {
         if (!e) return
 
         this._element = e
-        if (!args.designer.componentPanelElements.contains(e)) {
-            args.designer.componentPanelElements.add(e)
+        let elements = args.designer.componentPanelElements.map(o => o.element)
+        if (elements.indexOf(e) < 0) {
+            args.designer.componentPanelElements.add({ element: e, instance: this })
         }
     }
 

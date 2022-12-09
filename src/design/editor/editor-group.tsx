@@ -26,13 +26,13 @@ export class EditorGroup extends React.Component<EditorGroupProps> {
             {args => {
                 if (!args) throw errors.contextArgumentNull()
 
-                let editors = this.props.groupName ? args.editors.filter(o => o.group == this.props.groupName) : args.editors
+                let propertyEditor = this.props.groupName ? args.editors.filter(o => o.group == this.props.groupName) : args.editors
                 return <>
-                    {editors.map(o => <div key={o.prop} className={classNames.propertyEditor}>
+                    {propertyEditor.map(o => <div key={o.proppertyName} className={classNames.propertyEditor}>
                         <label className={classNames.propertyEditorLabel}>{o.displayName}</label>
                         <div className={classNames.propertyEditorControl}>
                             <ErrorBoundary>
-                                {o.editor}
+                                {/* {o.editorType} */}
                             </ErrorBoundary>
                         </div>
                     </div>)}

@@ -25,8 +25,8 @@ const createElement = (type: any, props: any, ...children: Array<any>) => {
 }
 
 if (typeof window === "undefined") {
-    global[elementFactoryName] = createElement
+    (global as any)[elementFactoryName] = createElement
 }
 else {
-    window[elementFactoryName] = createElement
+    (window as any)[elementFactoryName] = createElement
 }

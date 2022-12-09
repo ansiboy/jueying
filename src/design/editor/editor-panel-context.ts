@@ -1,10 +1,11 @@
 import * as React from "react"
 
+/** 属性编辑器 */
 export type PropertyEditor = {
     /** 用于对编辑器进行分组，方便查看各个属性 */
     group: string,
     /** 属性名称 */
-    prop: string,
+    proppertyName: string,
     /** 属性显示名称 */
     displayName: string,
     /** 属性编辑器 */

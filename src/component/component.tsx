@@ -1,28 +1,19 @@
 import * as React from "react";
-import { PropEditorConstructor, PropEditorProps } from "../design/property-editor";
+import { PropertyEditorProps } from "../design/editor";
 import { ComponentData } from "maishu-jueying-core";
 import { GroupedEditor, defaultGroupName } from "../design/property-editor";
 import { registerComponent } from "maishu-jueying-core";
-import { ValidateField } from "maishu-dilu";
-
-export interface PropEditorInfo {
-    propName: string,
-    displayName: string,
-    editorType: React.ComponentClass<PropEditorProps<any>> | React.FC<PropEditorProps<any>>,//PropEditorConstructor,
-    group: GroupedEditor["group"],
-    defaultValue?: any,
-    validation?: Omit<ValidateField, "name">,
-}
+import { PropertyEditorInfo } from "../design/editor";
 
 interface SetPropEditorOptions {
     componentType: React.ComponentClass<any> | string,
     propName: string,
-    editorType: React.ComponentClass<PropEditorProps<any>> | React.FC<PropEditorProps<any>>,
+    editorType: React.ComponentClass<PropertyEditorProps<any>> | React.FC<PropertyEditorProps<any>>,
     group?: GroupedEditor["group"],
     display?: ComponentPropEditorDisplay,
     displayName?: string,
     defaultValue?: any,
-    validation?: PropEditorInfo["validation"],
+    validation?: PropertyEditorInfo["validation"],
 }
 
 /** 组件是否显示回调函数 */
@@ -39,7 +30,7 @@ export class Component {
     //==========================================
 
     private static componentPropEditors: {
-        [controlClassName: string]: PropEditorInfo[] | null
+        [controlClassName: string]: PropertyEditorInfo[] | null
     } = {};
 
     private static componentPropEditorDisplay: {
@@ -47,12 +38,12 @@ export class Component {
     } = {};
 
 
-    static getPropEditors(componentData: ComponentData): PropEditorInfo[] {
+    static getPropEditors(componentData: ComponentData): PropertyEditorInfo[] {
         let componentType: string = componentData.type;
-        let result: PropEditorInfo[] = [];
+        let result: PropertyEditorInfo[] = [];
         let propEditorInfo = this.componentPropEditors[componentType] || [];
         for (let i = 0; i < propEditorInfo.length; i++) {
-            let propName = propEditorInfo[i].propName;
+            let propName = propEditorInfo[i].propertyName as string;
             let display = Component.componentPropEditorDisplay[`${componentType}.${propName}`];
             if (display != null && display(componentData) == false)
                 continue;
@@ -63,21 +54,21 @@ export class Component {
         return result;
     }
 
-    static getPropEditor<T, K extends keyof T, K1 extends keyof T[K]>(controlClassName: string, propName: K, propName1: K1): PropEditorInfo
-    static getPropEditor<T, K extends keyof T>(controlClassName: string, propName: string): PropEditorInfo
+    static getPropEditor<T, K extends keyof T, K1 extends keyof T[K]>(controlClassName: string, propName: K, propName1: K1): PropertyEditorInfo
+    static getPropEditor<T, K extends keyof T>(controlClassName: string, propName: string): PropertyEditorInfo
     /** 
      * 获取指定组件的属性编辑器
      * @param controlClassName 指定组件的类名
      * @param propName 组件的属性名称 
      * */
-    static getPropEditor(controlClassName: string, propName: string): PropEditorInfo {
+    static getPropEditor(controlClassName: string, propName: string): PropertyEditorInfo {
         return this.getPropEditorByArray(controlClassName, propName)
     }
 
     /** 通过属性数组获取属性的编辑器 */
     private static getPropEditorByArray(controlClassName: string, propNames: string) {
         let classEditors = this.componentPropEditors[controlClassName] || []
-        let editor = classEditors.filter(o => o.propName == propNames)[0]
+        let editor = classEditors.filter(o => o.propertyName == propNames)[0]
         return editor
     }
 
@@ -95,15 +86,15 @@ export class Component {
         Component.componentPropEditorDisplay[`${className}.${propName}`] = editorDisplay;
         let classProps = Component.componentPropEditors[className] = Component.componentPropEditors[className] || []
         for (let i = 0; i < classProps.length; i++) {
-            let propName1 = classProps[i].propName;
+            let propName1 = classProps[i].propertyName;
             let propName2 = propNames.join('.')
             if (propName1 == propName2) {
-                classProps[i].editorType = editorType as PropEditorConstructor;
+                classProps[i].editorType = editorType;
                 return
             }
         }
         classProps.push({
-            propName, displayName, editorType: editorType as PropEditorConstructor,
+            propertyName: propName, displayName, editorType,
             group, defaultValue, validation
         })
     }

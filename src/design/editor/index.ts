@@ -1,4 +1,5 @@
-export { ComponentPropertyEditors, PropertyEditorProps } from "./types"
+export { PropertyEditorProps } from "./types"
 export { EditorPanel, EditorPanelProps } from "./editor-panel"
 export { EditPanelContext, EditPanelContextValue } from "./editor-panel-context"
 export { EditorGroup } from "./editor-group"
+export { PropertyEditorInfo } from "./types"

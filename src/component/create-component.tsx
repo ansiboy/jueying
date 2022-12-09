@@ -1,5 +1,5 @@
 import { errors } from "../errors";
-import { ComponentData, ComponentProps, ElementFactory } from "maishu-jueying-core/out/types";
+import { ComponentProps, ElementFactory } from "maishu-jueying-core/out/types";
 import { DesignerContext, DesignerContextValue } from "../design/page-designer";
 import { DesignComponentContext, DesignComponentContextValue } from "./design-component-context";
 import { PageDataTravel } from "../page-data-travel";

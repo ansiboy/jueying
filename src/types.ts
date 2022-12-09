@@ -1,6 +1,5 @@
-import * as React from "react"
-import { PropEditorProps } from "./design/property-editor"
+import { PropertyEditorInfo } from "./design/editor"
 
 export type ComponentEditors = {
-    [typeName: string]: { [propertyName: string]: React.ComponentClass<PropEditorProps<any>> | React.FC<PropEditorProps<any>> }
+    [typeName: string]: PropertyEditorInfo<any>[]
 }

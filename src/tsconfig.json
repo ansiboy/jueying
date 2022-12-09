@@ -7,7 +7,7 @@
         // "outFile": "../out/jueying.js",
         "outDir": "../out",
         "jsx": "react",
-        "strict": false,
+        "strict": true,
         "strictPropertyInitialization": false,
         "strictNullChecks": true,
         "experimentalDecorators": true,

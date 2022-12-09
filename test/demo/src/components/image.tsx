@@ -6,19 +6,15 @@ interface Props {
 }
 
 interface State {
-    url: string
 }
 
 export default class Image extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
-
-        this.state = { url: props.url }
     }
 
     render(): React.ReactNode {
-        let { url } = this.state
-        return <img id={this.props.id} src={url} />
+        return <img id={this.props.id} src={this.props.url || "https://shop-image.gemwon.com/image/blank"} style={{ maxWidth: 200, maxHeight: 200 }} />
     }
 }

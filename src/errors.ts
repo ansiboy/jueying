@@ -43,6 +43,12 @@ class Errors extends BaseErrors {
         error.name = errors.contextArgumentNull.name
         return error
     }
+    editorModuleNoneDefaultExport(typeName: string) {
+        let msg = `Component ${typeName} has not export default member.`
+        let error = new Error(msg)
+        error.name = errors.editorModuleNoneDefaultExport.name
+        return error
+    }
 }
 
 export let errors = new Errors();

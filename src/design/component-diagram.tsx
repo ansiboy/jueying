@@ -6,7 +6,8 @@ import { strings } from "../strings";
 import { classNames } from "../style";
 import Sortable from "sortablejs";
 import { guid } from "maishu-toolkit/out/guid";
-import { parseDesigntimeComponentData } from "./parse-component-data";
+import { parseDesigntimeComponentData } from "./component/parse-component-data";
+import { ComponentPanel } from "./component-panel";
 
 interface Props {
     children?: React.ReactNode
@@ -51,12 +52,17 @@ export class ComponentDiagram extends React.Component<Props, State> {
 
     componentDidMount(): void {
 
-        let connect = (panelElement: HTMLElement) => {
+        let connect = (panelElement: HTMLElement, panel: ComponentPanel) => {
             let groupName = guid()
             new Sortable(panelElement, {
                 group: { name: groupName, pull: "clone", put: false },
                 animation: 150,
                 sort: false,
+                onEnd: (ev) => {
+                    debugger
+                    let componentData = panel.getComponentData(ev.item);
+                    this.designer.appendComponent(componentData);
+                }
             });
 
             new Sortable(this.element, {
@@ -65,8 +71,8 @@ export class ComponentDiagram extends React.Component<Props, State> {
             })
         }
 
-        this.designer.componentPanelElements.each(e => connect(e))
-        this.designer.componentPanelElements.added.add(args => connect(args.element))
+        this.designer.componentPanelElements.each(e => connect(e.element, e.instance))
+        this.designer.componentPanelElements.added.add(args => connect(args.dataItem.element, args.dataItem.instance))
     }
 
     render(): React.ReactNode {

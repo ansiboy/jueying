@@ -11,6 +11,7 @@ import { Component } from "../component/component";
 import { deepEqual } from "../deep-equal"
 import { isCustomComponent } from "../common";
 import { DataList } from "../data/data-list";
+import { ComponentPanel } from "./component-panel";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
@@ -28,8 +29,6 @@ export interface PageDesignerState {
 
 export type DesignerContextValue = {
     designer: PageDesigner,
-    // addComponentPanelElement: (element: HTMLElement) => void,
-    // addComponentDiagramElement: (element: HTMLElement) => void,
 };
 
 export let DesignerContext = React.createContext<DesignerContextValue | null>(null)
@@ -42,7 +41,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
     private _prePageData: PageData | null = null
     readonly componentDiagramElements = new DataList<HTMLElement>()
-    readonly componentPanelElements = new DataList<HTMLElement>()
+    readonly componentPanelElements = new DataList<{ element: HTMLElement, instance: ComponentPanel }>()
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -111,10 +110,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     get pageData() {
         return this.state.pageData;
     }
-
-    // get elementFactory(): ElementFactory {
-    //     return this._elementFactory
-    // }
 
     get componentsConfig() {
         return this.props.componentsConfig
@@ -187,8 +182,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * @param componentIndex 新添加组件在子组件中的次序 
      */
     appendComponent(componentData: ComponentData, componentIndex?: number) {
-        let parentId = componentData.parentId;
-        if (!parentId) throw new Error('ParentId field of component data is null.');
+        // let parentId = componentData.parentId;
+        // if (!parentId) throw new Error('ParentId field of component data is null.');
         if (!componentData) throw Errors.argumentNull('childComponent');
 
         let pageData: PageData = this.pageData;
@@ -210,6 +205,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * @param componentIds 指定的控件编号
      */
     selectComponent(componentIds: string[] | string): void {
+        debugger
         this.selectComponents(componentIds);
         //====================================================
         // 设置焦点，以便获取键盘事件
@@ -323,22 +319,35 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         })
 
         let componentsConfig = this.props.componentsConfig
-        let promises = componentsToLoad.map(typeName => componentsConfig[typeName]).filter(o => o).map(o => o.editor)
-        await Promise.all(promises)
+        let promises = componentsToLoad.map(typeName => ({ typeName, componentConfig: componentsConfig[typeName] }))
+            .map(o => o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })))
+        let r = await Promise.all(promises)
+
+        let componentEditors = this.state.componentEditors
+        r.forEach(m => {
+            let editors = m.module.default
+            if (!m.module.default)
+                throw errors.editorModuleNoneDefaultExport(m.typeName)
+
+            componentEditors[m.typeName] = m.module.default
+        })
 
         let componentDatas = pageData.children.filter(o => typeof o != "string").map(c => c)
-        let editors = this.state.componentEditors
         for (let c of componentDatas) {
-            editors[c.type] = editors[c.type] || {}
+            let defaultValue: ComponentEditors[""] = []
+            componentEditors[c.type] = componentEditors[c.type] || defaultValue
             let propEditors = Component.getPropEditors(c)
             for (let e of propEditors) {
-                editors[c.type][e.propName] = e.editorType
+                componentEditors[c.type] = componentEditors[c.type] || []
+                componentEditors[c.type] = componentEditors[c.type].filter(o => o.propertyName != e.propertyName)
+                componentEditors[c.type].push(e)
+
             }
 
         }
 
 
-        this.setState({ componentEditors: editors })
+        this.setState({ componentEditors: componentEditors })
     }
 
     private async loadComponentTypes(pageData: PageData) {
@@ -360,7 +369,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     static async loadComponentTypes(componentsToLoad: string[], componentsConfig: ComponentsConfig): Promise<ComponentTypes> {
         let promises: Promise<any>[] = []
-        let componentTypes = {}
+        let componentTypes: { [typeName: string]: React.ComponentClass | string | React.FC } = {}
         for (let i = 0; i < componentsToLoad.length; i++) {
             let typeName = componentsToLoad[i]
             if (!typeName) {
@@ -475,18 +484,5 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         </div>
     }
 
-    addComponentDiagramElement(element: HTMLElement) {
-        if (element == null || this.componentDiagramElements.contains(element))
-            return
-
-        this.componentDiagramElements.add(element)
-    }
-
-    addComponentPanelElement(element: HTMLElement) {
-        if (element == null || this.componentPanelElements.contains(element))
-            return
-
-        this.componentPanelElements.add(element)
-    }
 
 }

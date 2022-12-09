@@ -1,1 +1,7 @@
-import React, { useState } from "react";
+import { HTMLAttributes } from "react";
+import { PropertyEditorInfo } from "../../../../out";
+
+let editors: PropertyEditorInfo<HTMLAttributes<HTMLElement>>[] = [
+
+]
+export default editors
