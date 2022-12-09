@@ -1,4 +1,3 @@
-export { groupDisplayNames } from "./common";
 export { Component } from "./component/component";
 export {
     PageDesigner, PageDesignerProps, PageDesignerState, DesignerContext, DesignerContextValue

@@ -6,10 +6,8 @@ import { ComponentTypes } from "maishu-jueying-core/out/types";
 import type { ComponentsConfig } from "../components-config";
 import { createInfoComponent, createLoadingComponent } from "../component/components";
 import { ComponentEditors } from "types";
-import { PageDataTravel } from "../page-data-travel";
-import { Component } from "../component/component";
-import { deepEqual } from "../deep-equal"
-import { isCustomComponent } from "../common";
+import { deepEqual } from "../utility"
+import { isCustomComponent, PageDataTravel } from "../utility";
 import { DataList } from "../data/data-list";
 import { ComponentPanel } from "./component-panel";
 
@@ -332,19 +330,19 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             componentEditors[m.typeName] = m.module.default
         })
 
-        let componentDatas = pageData.children.filter(o => typeof o != "string").map(c => c)
-        for (let c of componentDatas) {
-            let defaultValue: ComponentEditors[""] = []
-            componentEditors[c.type] = componentEditors[c.type] || defaultValue
-            let propEditors = Component.getPropEditors(c)
-            for (let e of propEditors) {
-                componentEditors[c.type] = componentEditors[c.type] || []
-                componentEditors[c.type] = componentEditors[c.type].filter(o => o.propertyName != e.propertyName)
-                componentEditors[c.type].push(e)
+        // let componentDatas = pageData.children.filter(o => typeof o != "string").map(c => c)
+        // for (let c of componentDatas) {
+        //     let defaultValue: ComponentEditors[""] = []
+        //     componentEditors[c.type] = componentEditors[c.type] || defaultValue
+        //     let propEditors = Component.getPropEditors(c)
+        //     for (let e of propEditors) {
+        //         componentEditors[c.type] = componentEditors[c.type] || []
+        //         componentEditors[c.type] = componentEditors[c.type].filter(o => o.propertyName != e.propertyName)
+        //         componentEditors[c.type].push(e)
 
-            }
+        //     }
 
-        }
+        // }
 
 
         this.setState({ componentEditors: componentEditors })

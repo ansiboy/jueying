@@ -3,7 +3,7 @@ import { parseComponentData } from "maishu-jueying-core/out/parse-component-data
 import type { ComponentData, ComponentProps, ComponentTypes } from "maishu-jueying-core/out/types"
 import React from "react"
 import { DesignerContext } from "../page-designer"
-import { PageDataTravel } from "../../page-data-travel"
+import { PageDataTravel } from "../../utility/page-data-travel"
 import { DesignComponentContext, DesignComponentContextValue } from "../../component/design-component-context"
 
 export function parseDesigntimeComponentData(componentData: ComponentData, componentTypes: ComponentTypes) {
