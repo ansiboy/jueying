@@ -1,7 +1,7 @@
 import { errors } from "../errors"
-import { ComponentData } from "maishu-jueying-core"
+import { ComponentData } from "./types"
 import * as React from "react"
-import { DesignerContext } from "../design"
+import { DesignerContext } from "../designer"
 
 interface Props {
     children?: React.ReactNode

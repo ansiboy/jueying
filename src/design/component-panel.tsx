@@ -4,7 +4,7 @@ import { DesignerContext, DesignerContextValue } from "./page-designer"
 import { classNames } from "../style"
 import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
-import { ComponentData } from "maishu-jueying-core"
+import { ComponentData } from "../component"
 import { guid } from "maishu-toolkit"
 
 interface ComponentPanelProps {

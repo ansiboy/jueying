@@ -1,4 +1,4 @@
-import { PageData } from "maishu-jueying-core"
+import type { PageData } from "../../out/component/index"
 
 export let simple: PageData = {
     id: "simple",

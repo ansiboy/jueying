@@ -1,8 +1,8 @@
 import { errors } from "../errors"
-import { parseComponentData } from "maishu-jueying-core/out/parse-component-data"
-import type { ComponentData, ComponentProps, ComponentTypes } from "maishu-jueying-core/out/types"
+import { parseComponentData } from "../component"
+import type { ComponentData, ComponentProps, ComponentTypes } from "../component"
 import React from "react"
-import { DesignerContext } from "../design"
+import { DesignerContext } from "../designer"
 import { PageDataTravel } from "../utility"
 import { DesignComponentContext, DesignComponentContextValue } from "./design-component-context"
 

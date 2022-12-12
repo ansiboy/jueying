@@ -1,5 +1,4 @@
 import * as React from "react";
-import { ComponentData } from "maishu-jueying-core";
 import { PropertyEditorProps, PropertyEditorInfo } from "../editor";
 
 

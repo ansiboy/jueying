@@ -1,14 +1,5 @@
-import { ComponentData } from "maishu-jueying-core"
-import { componentTypes as defaultComponentTypes } from "maishu-jueying-core"
+import { ComponentData, componentTypes as defaultComponentTypes } from "../component"
 import React from "react"
-
-export let constants = {
-    componentsDir: 'components',
-    connectorElementClassName: 'component-container',
-    componentTypeName: 'data-component-name',
-    componentData: 'component-data',
-    componentPosition: "component-position"
-}
 
 export let proptDisplayNames: { [prop: string]: string } = {
 }

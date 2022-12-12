@@ -1,12 +1,12 @@
 import { errors } from "../errors";
-import { ComponentStatus } from "maishu-jueying-core/out/types";
+import { ComponentStatus } from "../component";
 import * as React from "react";
 import { DesignerContext, DesignerContextValue, PageDesigner } from "./page-designer";
 import { strings } from "../strings";
 import { classNames } from "../style";
 import Sortable from "sortablejs";
 import { guid } from "maishu-toolkit/out/guid";
-import { parseDesigntimeComponentData } from "../component";
+import { parseDesigntimeComponentData } from "./parse-design-component-data";
 import { ComponentPanel } from "./component-panel";
 
 interface Props {

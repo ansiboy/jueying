@@ -1,1 +1,1 @@
-export { DesignerContext, PageDesigner } from "./page-designer";
+export { ComponentPanel } from "./component-panel"

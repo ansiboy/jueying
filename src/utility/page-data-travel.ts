@@ -1,5 +1,5 @@
 import { errors } from "../errors";
-import { ComponentData, PageData } from "maishu-jueying-core";
+import { ComponentData, PageData } from "../component";
 
 /** 页面数据（PageData）遍历器，遍历 PageData 里的组件 */
 export class PageDataTravel {

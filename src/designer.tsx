@@ -1,15 +1,13 @@
 import * as React from "react";
-import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes } from "../component";
-import { errors, errors as Errors } from "../errors";
+import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes, ComponentTypes } from "./component";
+import { errors, errors as Errors } from "./errors";
 import { guid } from "maishu-toolkit/out/guid";
-import { ComponentTypes } from "../component";
-import type { ComponentsConfig } from "../components-config";
-import { createInfoComponent, createLoadingComponent } from "../component";
+import type { ComponentsConfig } from "./components-config";
+import { createInfoComponent, createLoadingComponent } from "./component";
 import { ComponentEditors } from "types";
-import { deepEqual } from "../utility"
-import { isCustomComponent, PageDataTravel } from "../utility";
-import { DataList } from "../data/data-list";
-import { ComponentPanel } from "./component-panel";
+import { isCustomComponent, PageDataTravel, deepEqual } from "./utility";
+import { DataList } from "./data/data-list";
+import { ComponentPanel } from "./design";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData,
@@ -31,6 +29,12 @@ export type DesignerContextValue = {
 
 export let DesignerContext = React.createContext<DesignerContextValue | null>(null)
 
+export type DesignComponentContextValue = {
+    componentData: ComponentData
+    componentConfig: ComponentsConfig[0]
+};
+
+export let DesignComponentContext = React.createContext<DesignComponentContextValue | null>(null)
 /**
  * 组件数据处理，负责对对组件数据进行处理维护。
  */

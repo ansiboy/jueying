@@ -1,10 +1,10 @@
 import * as React from "react";
 import { DesignComponentContext, DesignComponentContextValue } from "./design-component-context";
-import { DesignBehavior } from "../design/design-behavior";
-import { elementFactoryName } from "../common";
+import { DesignBehavior } from "./design-behavior";
+import { constants } from "../common";
 import { errors } from "../errors";
 
-const createElement = (type: any, props: any, ...children: Array<any>) => {
+const createDesignElement = (type: any, props: any, ...children: Array<any>) => {
     let props1: any = {}
     if (props)
         props1 = { key: props.id || props.key }
@@ -26,7 +26,7 @@ const createElement = (type: any, props: any, ...children: Array<any>) => {
 }
 
 let g: any = typeof window === "undefined" ? global : window
-if (g[elementFactoryName])
+if (g[constants.elementFactoryName])
     throw errors.elementFactoryExists()
 
-g[elementFactoryName] = createElement
+g[constants.elementFactoryName] = createDesignElement
