@@ -4,9 +4,9 @@ import { PageDataParserContext } from "../../runtime/page-data-parser";
 import { errors } from "../errors";
 import { parseComponentData } from "../../runtime/parse-component-data";
 
-export class ComponentPlaceHolder extends React.Component<ComponentProps> {
+export class Page extends React.Component<ComponentProps> {
 
-    static typeName = "PlaceHolder";
+    static typeName = "Page";
 
     constructor(props: ComponentProps) {
         super(props);

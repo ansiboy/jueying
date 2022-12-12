@@ -38,6 +38,7 @@ class Errors extends BaseErrors {
         return new Error(msg)
     }
     contextArgumentNull() {
+        debugger
         let msg = `Context argument null.`
         let error = new Error(msg)
         error.name = errors.contextArgumentNull.name

@@ -1,7 +1,7 @@
 import { errors } from "../errors";
 import { ComponentStatus } from "../component";
 import * as React from "react";
-import { DesignerContext, DesignerContextValue, PageDesigner } from "./page-designer";
+import { DesignerContext, DesignerContextValue, PageDesigner } from "../designer";
 import { strings } from "../strings";
 import { classNames } from "../style";
 import Sortable from "sortablejs";

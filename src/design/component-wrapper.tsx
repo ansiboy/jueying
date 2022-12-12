@@ -1,5 +1,5 @@
 import { errors } from "../errors"
-import { ComponentData } from "./types"
+import { ComponentData } from "../component"
 import * as React from "react"
 import { DesignerContext } from "../designer"
 

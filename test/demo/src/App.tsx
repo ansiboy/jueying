@@ -1,5 +1,4 @@
-import { PageData } from 'maishu-jueying-core';
-import { PageDesigner, ComponentDiagram, ComponentPanel, EditorPanel, EditorGroup } from "maishu-jueying/out"
+import { PageDesigner, ComponentDiagram, ComponentPanel, EditorPanel, EditorGroup, PageData } from "maishu-jueying/out"
 import { componentsConfig } from "./components-config"
 import "maishu-jueying/out/style"
 import Image from "./components/image"

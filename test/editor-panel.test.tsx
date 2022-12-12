@@ -1,7 +1,6 @@
-import { ComponentStatus, PageData } from "maishu-jueying-core/out/types"
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGroup, classNames } from "../out"
+import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGroup, classNames, ComponentStatus, PageData } from "../out"
 import { designerUpdateFinish, JSDOM } from "./common"
 import { componentsConfig, typeNames } from "./demo/src/components-config"
 import Image from "./demo/src/components/image"

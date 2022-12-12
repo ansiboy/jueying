@@ -1,7 +1,6 @@
-import { PageData } from "maishu-jueying-core"
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { PageDesigner, ComponentDiagram, ComponentPanel } from "../out"
+import { PageDesigner, ComponentDiagram, ComponentPanel, PageData } from "../out"
 import { componentsConfig } from "./demo/src/components-config"
 import { JSDOM } from "./common"
 

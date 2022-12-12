@@ -1,5 +1,5 @@
-import { PageData } from "maishu-jueying-core"
-import { PageDataTravel } from "../out/page-data-travel"
+import { PageData } from "../out"
+import { PageDataTravel } from "../out/utility"
 
 test("ComponentDataTraver each 测试", async function () {
 

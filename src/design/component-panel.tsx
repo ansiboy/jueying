@@ -1,6 +1,6 @@
 import { errors } from "../errors"
 import * as React from "react"
-import { DesignerContext, DesignerContextValue } from "./page-designer"
+import { DesignerContext, DesignerContextValue } from "../designer"
 import { classNames } from "../style"
 import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"

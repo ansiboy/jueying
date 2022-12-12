@@ -1,8 +1,7 @@
-import { errors } from "../errors";
+import { errors } from "./errors";
 import * as React from "react";
-import { PageData } from "../types";
-import { ComponentTypes, ElementFactory } from "../types";
-import { parseComponentData } from "../parse-component-data";
+import { ComponentTypes, ElementFactory, PageData } from "./types";
+import { parseComponentData } from ".";
 
 interface Props {
     pageData: PageData
