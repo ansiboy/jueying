@@ -2,6 +2,7 @@ import * as React from "react";
 import { DesignComponentContext, DesignComponentContextValue } from "./design-component-context";
 import { DesignBehavior } from "../design/design-behavior";
 import { elementFactoryName } from "../common";
+import { errors } from "../errors";
 
 const createElement = (type: any, props: any, ...children: Array<any>) => {
     let props1: any = {}
@@ -24,9 +25,8 @@ const createElement = (type: any, props: any, ...children: Array<any>) => {
     }) as any)
 }
 
-if (typeof window === "undefined") {
-    (global as any)[elementFactoryName] = createElement
-}
-else {
-    (window as any)[elementFactoryName] = createElement
-}
+let g: any = typeof window === "undefined" ? global : window
+if (g[elementFactoryName])
+    throw errors.elementFactoryExists()
+
+g[elementFactoryName] = createElement

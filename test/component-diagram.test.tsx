@@ -87,7 +87,7 @@ test("ComponentDiagram 按钮点击", async function () {
     }
 
     let clickedText = "clicked"
-    let buttonProps: Button["props"] = { clickedText }
+    let buttonProps: Button["props"] = { clickedText, text: "button" }
     let pageData1: PageData = {
         id: "page-data1",
         children: [

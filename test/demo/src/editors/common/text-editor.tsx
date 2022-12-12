@@ -1,8 +1,12 @@
 import React from "react";
-import { PropEditorProps, PropEditorState } from "maishu-jueying/out"
+import { PropertyEditorProps } from "maishu-jueying/out"
 
-export class TextEditor extends React.Component<PropEditorProps<string>, PropEditorState<string>> {
-    constructor(props: PropEditorProps<string>) {
+interface State {
+    value: string
+}
+
+export class TextEditor extends React.Component<PropertyEditorProps<string>, State> {
+    constructor(props: PropertyEditorProps<string>) {
         super(props)
 
         this.state = { value: props.value }

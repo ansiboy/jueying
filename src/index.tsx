@@ -7,8 +7,8 @@ export { ComponentsConfig } from "./components-config"
 export { ComponentDiagram } from "./design/component-diagram"
 import "./component/create-element"
 export { ComponentPanel } from "./design/component-panel"
-export { EditorGroup, EditorPanel, EditorPanelProps, PropertyEditorInfo } from "./design/editor"
-
+export { EditorGroup, EditorPanel, EditorPanelProps, PropertyEditorInfo, PropertyEditorProps } from "./design/editor"
+export { } from "./design/component/"
 
 
 

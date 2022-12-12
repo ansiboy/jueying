@@ -49,6 +49,12 @@ class Errors extends BaseErrors {
         error.name = errors.editorModuleNoneDefaultExport.name
         return error
     }
+    elementFactoryExists() {
+        let msg = `Element factory '${name}' exists.`
+        let error = new Error(msg)
+        error.name = errors.elementFactoryExists.name
+        return error
+    }
 }
 
 export let errors = new Errors();
