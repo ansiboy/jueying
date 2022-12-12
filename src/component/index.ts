@@ -1,0 +1,1 @@
+export { parseDesigntimeComponentData } from "./parse-component-data"

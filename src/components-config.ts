@@ -1,4 +1,4 @@
-import { PropertyEditorInfo } from "design/editor"
+import { PropertyEditorInfo } from "./editor"
 import { ComponentTypes } from "maishu-jueying-core/out/types"
 type ComponentModule = { default: ComponentTypes[0] }
 export type ComponentsConfig = {

@@ -1,12 +1,9 @@
 import * as React from "react";
 import { ComponentData } from "maishu-jueying-core";
-import { PropertyEditorProps, PropertyEditorInfo } from "./editor";
+import { PropertyEditorProps, PropertyEditorInfo } from "../editor";
 
 
-export interface EditorProps extends React.ComponentProps<any> {
-    empty: string | JSX.Element,
-    customRender?: (editComponents: ComponentData[], items: PropertyEditorInfo[]) => JSX.Element
-}
+
 
 export interface PropEditorConstructor {
     new(props: PropertyEditorInfo<any>): any;
@@ -229,27 +226,4 @@ export let defaultGroupName = "";
 
 // PropertyEditor.contextType = DesignerContext;
 
-export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { error?: Error }> {
-    constructor(props: ErrorBoundary["props"]) {
-        super(props);
-        this.state = {};
-    }
 
-    componentDidCatch(error: Error, info: any) {
-        // Display fallback UI
-        this.setState({ error });
-        // You can also log the error to an error reporting service
-        //   logErrorToMyService(error, info);
-    }
-
-    render() {
-        let { error } = this.state || {} as this["state"];
-        if (error) {
-            return <div className="error">
-                <div>{error.message}</div>
-                <div>{error.stack}</div>
-            </div>;
-        }
-        return this.props.children;
-    }
-}

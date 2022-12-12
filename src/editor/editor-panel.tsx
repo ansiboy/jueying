@@ -1,9 +1,9 @@
 import { ComponentData } from "maishu-jueying-core";
 import * as React from "react";
-import { EditorProps } from "../property-editor";
-import { classNames } from "../../style";
-import { errors } from "../../errors";
-import { DesignerContext, PageDesigner } from "../page-designer";
+import { EditorProps } from "./types";
+import { classNames } from "../style";
+import { errors } from "../errors";
+import { DesignerContext, PageDesigner } from "../design";
 
 import { FormValidator, ValidateField } from "maishu-dilu/out/formValidator";
 import { EditPanelContext, PropertyEditor } from "./editor-panel-context";

@@ -30,3 +30,8 @@ export interface PropertyEditorInfo<T = any> {
     defaultValue?: any,
     validation?: Omit<ValidateField, "name">,
 }
+
+export interface EditorProps extends React.ComponentProps<any> {
+    empty: string | JSX.Element,
+    customRender?: (editComponents: ComponentData[], items: PropertyEditorInfo[]) => JSX.Element
+}

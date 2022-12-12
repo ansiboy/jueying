@@ -1,8 +1,8 @@
 import * as React from "react";
-import { errors } from "../../errors";
+import { errors } from "../errors";
 import { EditPanelContext } from "./editor-panel-context";
-import { ErrorBoundary } from "../property-editor";
-import { classNames } from "../../style";
+import { ErrorBoundary } from "../utility";
+import { classNames } from "../style";
 
 interface EditorGroupProps {
     // editors: React.ReactElement<any>[]

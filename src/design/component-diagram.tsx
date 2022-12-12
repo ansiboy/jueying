@@ -6,7 +6,7 @@ import { strings } from "../strings";
 import { classNames } from "../style";
 import Sortable from "sortablejs";
 import { guid } from "maishu-toolkit/out/guid";
-import { parseDesigntimeComponentData } from "./component/parse-component-data";
+import { parseDesigntimeComponentData } from "../component";
 import { ComponentPanel } from "./component-panel";
 
 interface Props {

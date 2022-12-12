@@ -1,9 +1,8 @@
 import * as React from "react";
-import { PropertyEditorProps } from "../design/editor";
+import { PropertyEditorProps, PropertyEditorInfo } from "../editor";
 import { ComponentData } from "maishu-jueying-core";
 import { GroupedEditor, defaultGroupName } from "../design/property-editor";
 import { registerComponent } from "maishu-jueying-core";
-import { PropertyEditorInfo } from "../design/editor";
 
 interface SetPropEditorOptions {
     componentType: React.ComponentClass<any> | string,
