@@ -1,4 +1,4 @@
-import { ComponentData } from "../component";
+import { ComponentData } from "../runtime";
 import * as React from "react";
 import { EditorProps } from "./types";
 import { classNames } from "../style";

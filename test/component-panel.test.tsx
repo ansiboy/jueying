@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client"
 import { PageDesigner, ComponentDiagram, ComponentPanel, PageData } from "../out"
 import { componentsConfig } from "./demo/src/components-config"
 import { JSDOM } from "./common"
+import { Page } from "../out/runtime/components/page"
 
 test("ComponentPanel 创建测试", async function () {
 
@@ -14,7 +15,7 @@ test("ComponentPanel 创建测试", async function () {
 
     let helloWorld = "hello world"
     let pageData1: PageData = {
-        id: "simple",
+        id: "simple", type: Page.typeName, props: {},
         children: [
             { id: ids.div1, type: "div", props: {}, children: [helloWorld] }
         ]

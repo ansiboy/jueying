@@ -1,9 +1,9 @@
 import * as React from "react";
-import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes, ComponentTypes } from "./component";
+import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes, ComponentTypes } from "./runtime";
 import { errors, errors as Errors } from "./errors";
 import { guid } from "maishu-toolkit/out/guid";
 import type { ComponentsConfig } from "./components-config";
-import { createInfoComponent, createLoadingComponent } from "./component";
+import { createInfoComponent, createLoadingComponent } from "./design/components";
 import { ComponentEditors } from "types";
 import { isCustomComponent, PageDataTravel, deepEqual } from "./utility";
 import { DataList } from "./data/data-list";
@@ -87,6 +87,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     private initComponent(componentData: ComponentData, pageData: PageData) {
         let namedComponents: { [key: string]: PageData | ComponentData } = {};
         pageData.children.forEach(c => {
+            if (typeof c == "string")
+                return
+
             if (c.name) {
                 namedComponents[c.name] = c;
             }
@@ -139,7 +142,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     /** 获取已选择了的组件 */
     get selectedComponents(): ComponentData[] {
-        let arr = this.pageData.children.filter(o => ((o.status || ComponentStatus.default) & ComponentStatus.selected) == ComponentStatus.selected);
+        let arr = this.pageData.children.filter(o => typeof o != "string" &&
+            ((o.status || ComponentStatus.default) & ComponentStatus.selected) == ComponentStatus.selected) as ComponentData[];
         return arr;
     }
 
@@ -207,7 +211,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * @param componentIds 指定的控件编号
      */
     selectComponent(componentIds: string[] | string): void {
-        debugger
         this.selectComponents(componentIds);
         //====================================================
         // 设置焦点，以便获取键盘事件
@@ -224,12 +227,14 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (typeof componentIds == 'string')
             componentIds = [componentIds]
 
-        this.pageData.children.forEach(c => {
+        let children = (this.pageData.children || []).filter(o => typeof o != "string") as ComponentData[]
+
+        children.forEach(c => {
             // c.selected = false;
             c.status = c.status || ComponentStatus.default;
             c.status = c.status & (~ComponentStatus.selected);
         })
-        this.pageData.children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
+        children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
             // c.selected = true;
             c.status = c.status || ComponentStatus.default;
             c.status = c.status | ComponentStatus.selected;
@@ -277,7 +282,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
 
     private removeComponentFrom(componentId: string, pageData: PageData,) {
-        let child = pageData.children.filter(o => o.id == componentId)[0];
+        let componentChildren = (this.pageData.children || []).filter(o => typeof o != "string") as ComponentData[]
+        let child = componentChildren.filter(o => o.id == componentId)[0];
         if (child == null)
             throw new Error(`Component '${componentId}' is not exists.`);
 
@@ -285,16 +291,16 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let componentsToRemove: string[] = [componentId];
         while (stack.length > 0) {
             let item = stack.pop() as ComponentData;
-            let children = pageData.children.filter(o => o.parentId == item.id);
-            if (children.length > 0) {
-                stack.push(...children);
+            let childs = componentChildren.filter(o => o.parentId == item.id);
+            if (childs.length > 0) {
+                stack.push(...childs);
 
                 // status 为 ComponentStatus.asset 不要删除
-                componentsToRemove.push(...children.filter(o => o.status == null || (o.status & ComponentStatus.asset) != ComponentStatus.asset).map(o => o.id));
+                componentsToRemove.push(...childs.filter(o => o.status == null || (o.status & ComponentStatus.asset) != ComponentStatus.asset).map(o => o.id));
             }
         }
 
-        pageData.children = pageData.children.filter(o => componentsToRemove.indexOf(o.id) < 0);
+        pageData.children = pageData.children.filter(o => typeof o != "string" && componentsToRemove.indexOf(o.id) < 0);
     }
 
     /**
@@ -306,7 +312,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (!pageData)
             throw Errors.pageDataIsNull();
 
-        let componentData = pageData.children.filter(o => o.id == componentId)[0];
+        let componentData = pageData.children.filter(o => typeof o != "string" && o.id == componentId)[0] as ComponentData;
         return componentData;
     }
 

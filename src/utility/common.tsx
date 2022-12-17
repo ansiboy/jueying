@@ -1,4 +1,4 @@
-import { ComponentData, componentTypes as defaultComponentTypes } from "../component"
+import { ComponentData, componentTypes as defaultComponentTypes } from "../runtime"
 import React from "react"
 
 export let proptDisplayNames: { [prop: string]: string } = {

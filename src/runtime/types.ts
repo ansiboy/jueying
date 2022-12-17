@@ -1,3 +1,13 @@
+export interface ComponentProps {
+    ref?: any,
+    key?: string,
+    /** 组件的编号，在页面中唯一 */
+    id: string;
+    /** 组件的名称，在页面中唯一 */
+    name?: string;
+    children?: React.ReactNode
+}
+
 export interface ComponentData {
     /** 
      * 组件类型名称
@@ -11,7 +21,7 @@ export interface ComponentData {
     parentId?: string;
     name?: string;
     status?: ComponentStatus,
-    children?: (ComponentData | string)[]
+    children: (ComponentData | string)[]
 }
 
 export enum ComponentStatus {
@@ -24,7 +34,7 @@ export enum ComponentStatus {
     asset = 4,
 }
 
-export type PageData = { id: string, children: ComponentData[] };
+export type PageData = ComponentData;//Omit<ComponentData, "children"> & { children: ComponentData[] };//{ id: string, children: ComponentData[] };
 
 
 export type ElementFactory = (type: React.ComponentClass<any> | React.FunctionComponent | string, props: any,

@@ -1,5 +1,5 @@
 import { ValidateField } from "maishu-dilu/out/formValidator";
-import { ComponentData } from "../component";
+import { ComponentData } from "../runtime";
 import React, { ComponentClass, FC } from "react";
 
 // /** 组件属性编辑器 */

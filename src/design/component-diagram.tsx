@@ -1,5 +1,5 @@
 import { errors } from "../errors";
-import { ComponentStatus } from "../component";
+import { ComponentStatus } from "../runtime";
 import * as React from "react";
 import { DesignerContext, DesignerContextValue, PageDesigner } from "../designer";
 import { strings } from "../strings";
@@ -59,7 +59,6 @@ export class ComponentDiagram extends React.Component<Props, State> {
                 animation: 150,
                 sort: false,
                 onEnd: (ev) => {
-                    debugger
                     let componentData = panel.getComponentData(ev.item);
                     this.designer.appendComponent(componentData);
                 }
@@ -93,6 +92,9 @@ export class ComponentDiagram extends React.Component<Props, State> {
                 let componentTypes = args.designer.componentTypes
                 return <ul className={classNames.componentDiagram} ref={e => this.ref(e, args)}>{
                     componentDatas.map(c => {
+                        if (typeof c == "string")
+                            throw new Error(`string is not supported`)
+
                         let status = c.status || ComponentStatus.default;
                         let selected = (status & ComponentStatus.selected) == ComponentStatus.selected
                         return <li key={c.id} className={selected ? classNames.selected : ""}

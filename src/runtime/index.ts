@@ -1,3 +1,5 @@
 export { parseComponentData } from "./parse-component-data"
 export { PageDataParser, PageDataParserContext } from "./page-data-parser"
-export { PageData, ComponentData, ComponentStatus, ComponentTypes, ElementFactory } from "./types"
+export { PageData, ComponentData, ComponentStatus, ComponentTypes, ElementFactory, ComponentProps } from "./types"
+export { componentTypes } from "./components"
+export { componentTypeNames } from "./components/component-type-names"

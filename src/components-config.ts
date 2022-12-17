@@ -1,5 +1,5 @@
 import { PropertyEditorInfo } from "./editor"
-import { ComponentTypes } from "./component"
+import { ComponentTypes } from "./runtime"
 type ComponentModule = { default: ComponentTypes[0] }
 export type ComponentsConfig = {
     [typeName: string]: {

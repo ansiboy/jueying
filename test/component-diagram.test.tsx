@@ -7,6 +7,7 @@ import { JSDOM } from "jsdom"
 import type Image from "./demo/src/components/image"
 import type Button from "./demo/src/components/button"
 import renderer from "react-test-renderer"
+import { Page } from "../out/runtime/components/page"
 
 test("ComponentDiagram HTML 元素测试", async function () {
 
@@ -18,7 +19,7 @@ test("ComponentDiagram HTML 元素测试", async function () {
 
     let helloWorld = "hello world"
     let pageData1: PageData = {
-        id: "simple",
+        id: "simple", type: Page.typeName, props: {},
         children: [
             { id: ids.div1, type: "div", props: {}, children: [helloWorld] }
         ]
@@ -53,9 +54,9 @@ test("ComponentDiagram 自定义组件测试", async function () {
     let url = "imageUrl"
     let imageProps: Image["props"] = { url }
     let pageData1: PageData = {
-        id: "page-data1",
+        id: "page-data1", type: Page.typeName, props: {},
         children: [
-            { id: ids.image1, type: typeNames.image, props: imageProps }
+            { id: ids.image1, type: typeNames.image, props: imageProps, children: [] }
         ]
     }
 
@@ -89,8 +90,10 @@ test("ComponentDiagram 按钮点击", async function () {
     let buttonProps: Button["props"] = { clickedText, text: "button" }
     let pageData1: PageData = {
         id: "page-data1",
+        type: Page.typeName,
+        props: {},
         children: [
-            { id: ids.button1, type: typeNames.button, props: buttonProps }
+            { id: ids.button1, type: typeNames.button, props: buttonProps, children: [] }
         ]
     }
 

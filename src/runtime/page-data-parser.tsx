@@ -36,12 +36,22 @@ export class PageDataParser extends React.Component<Props, State> {
     render(): React.ReactNode {
         let { pageData } = this.state;
         let { elementFactory, componentTypes } = this.props;
-        let children = pageData.children.filter(o => !o.parentId);
+        let children = (pageData.children || []).filter(o => typeof o == "string" || !o.parentId);
         let childComponents = children.map(o => {
+            if (typeof o == "string")
+                return o
+
             return parseComponentData(o, componentTypes, elementFactory);
         });
+
+        let pageType = componentTypes[pageData.type]
+        if (!pageType)
+            throw new Error(`Component type '${pageData.type}' is not exists.`)
+
+        let pageElement = React.createElement(pageType, pageData.props, childComponents)
+
         return <PageDataParserContext.Provider value={{ pageData, elementFactory, componentTypes }}>
-            {childComponents}
+            {pageElement}
         </PageDataParserContext.Provider>
     }
 }

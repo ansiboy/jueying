@@ -1,8 +1,7 @@
-import { ComponentData, ComponentTypes } from "../component/types";
+import { ComponentData, ComponentTypes, ElementFactory } from "./types";
 import * as React from "react";
-import { errors } from "../component/errors";
-import { ElementFactory } from "../component/types";
-import { componentTypes as defaultComponentTypes } from "../component/register"
+import { errors } from "./errors";
+import { componentTypes as defaultComponentTypes } from "./components"
 
 export function parseComponentData(componentData: ComponentData, componentTypes: ComponentTypes, createElement: ElementFactory) {
     if (!componentData) throw errors.argumentNull("componentData");

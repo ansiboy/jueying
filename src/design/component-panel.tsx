@@ -4,7 +4,7 @@ import { DesignerContext, DesignerContextValue } from "../designer"
 import { classNames } from "../style"
 import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
-import { ComponentData } from "../component"
+import { ComponentData } from "../runtime"
 import { guid } from "maishu-toolkit"
 
 interface ComponentPanelProps {
@@ -41,7 +41,7 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         if (!dataType) throw new Error(`Argument toolbarElement is an invalid component panel element.`)
 
         let c: ComponentData = {
-            id: guid(), type: dataType, props: {}
+            id: guid(), type: dataType, props: {}, children: []
         }
         return c
     }

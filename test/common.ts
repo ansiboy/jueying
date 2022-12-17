@@ -3,8 +3,8 @@ import { TextDecoder, TextEncoder } from "util"
 import { PageDesigner } from "../out";
 
 export function designerUpdateFinish<P, S>(component: PageDesigner) {
-    return new Promise(function (resolve, reject) {
-        let render = component.render
+    let render = component.render
+    let p = new Promise(function (resolve, reject) {
         let timeoutId: number | null = null
         component.render = function () {
             let r = render.apply(component, [])
@@ -19,6 +19,12 @@ export function designerUpdateFinish<P, S>(component: PageDesigner) {
             return r
         }
     })
+
+    p.finally(() => {
+        component.render = render
+    })
+
+    return p
 }
 
 global["TextEncoder"] = TextEncoder as any

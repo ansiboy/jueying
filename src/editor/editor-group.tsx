@@ -32,7 +32,7 @@ export class EditorGroup extends React.Component<EditorGroupProps> {
                         <label className={classNames.propertyEditorLabel}>{o.displayName}</label>
                         <div className={classNames.propertyEditorControl}>
                             <ErrorBoundary>
-                                {/* {o.editorType} */}
+                                {o.editor}
                             </ErrorBoundary>
                         </div>
                     </div>)}

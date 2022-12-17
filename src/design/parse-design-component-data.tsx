@@ -1,6 +1,6 @@
 import { errors } from "../errors"
 import { parseComponentData } from "../runtime"
-import type { ComponentData, ComponentProps, ComponentTypes } from "../component"
+import type { ComponentData, ComponentProps, ComponentTypes } from "../runtime"
 import React from "react"
 import { DesignerContext } from "../designer"
 import { PageDataTravel } from "../utility"
