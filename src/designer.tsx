@@ -4,7 +4,7 @@ import { errors, errors as Errors } from "./errors";
 import { guid } from "maishu-toolkit/out/guid";
 import type { ComponentsConfig } from "./components-config";
 import { createInfoComponent, createLoadingComponent } from "./design/components";
-import { ComponentEditors } from "types";
+import { ComponentEditors } from "./types";
 import { isCustomComponent, PageDataTravel, deepEqual } from "./utility";
 import { DataList } from "./data/data-list";
 import { ComponentPanel } from "./design";
@@ -54,10 +54,10 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.checkComponentsConfig(props.componentsConfig)
 
         let pageData = this.props.pageData;
-        let componentTypes: ComponentTypes = {}
-        this.initPageData(pageData, componentTypes);
+        // let componentTypes: ComponentTypes = {}
+        // this.initPageData(pageData, componentTypes);
 
-        this.state = { pageData, componentTypes, componentEditors: {} };
+        this.state = { pageData, componentTypes: {}, componentEditors: {} };
     }
 
     /** 检查组件配置 */
@@ -65,19 +65,19 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         // TODO: 检查组件配置
     }
 
-    private initPageData(pageData: PageData, componentTypes: ComponentTypes) {
-        if (pageData == null) throw errors.argumentNull("pageData")
+    // private initPageData(pageData: PageData, componentTypes: ComponentTypes) {
+    //     if (pageData == null) throw errors.argumentNull("pageData")
 
-        console.assert(pageData.children != null, "PageData children is null.")
+    //     console.assert(pageData.children != null, "PageData children is null.")
 
-        let travel = new PageDataTravel(pageData)
-        travel.each((c) => {
-            if (typeof c == "string" || !isCustomComponent(c) || componentTypes[c.type])
-                return
+    //     let travel = new PageDataTravel(pageData)
+    //     travel.each((c) => {
+    //         if (typeof c == "string" || !isCustomComponent(c) || componentTypes[c.type])
+    //             return
 
-            componentTypes[c.type] = createLoadingComponent()
-        })
-    }
+    //         componentTypes[c.type] = createLoadingComponent()
+    //     })
+    // }
 
 
     /**
@@ -328,11 +328,16 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         let componentsConfig = this.props.componentsConfig
         let promises = componentsToLoad.map(typeName => ({ typeName, componentConfig: componentsConfig[typeName] }))
-            .map(o => o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })))
+            .map(o => o.componentConfig.editor ?
+                o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })) : Promise.resolve(null))
+
         let r = await Promise.all(promises)
 
         let componentEditors = this.state.componentEditors
         r.forEach(m => {
+            if (m == null)
+                return
+
             let editors = m.module.default
             if (!m.module.default)
                 throw errors.editorModuleNoneDefaultExport(m.typeName)
@@ -340,39 +345,31 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             componentEditors[m.typeName] = m.module.default
         })
 
-        // let componentDatas = pageData.children.filter(o => typeof o != "string").map(c => c)
-        // for (let c of componentDatas) {
-        //     let defaultValue: ComponentEditors[""] = []
-        //     componentEditors[c.type] = componentEditors[c.type] || defaultValue
-        //     let propEditors = Component.getPropEditors(c)
-        //     for (let e of propEditors) {
-        //         componentEditors[c.type] = componentEditors[c.type] || []
-        //         componentEditors[c.type] = componentEditors[c.type].filter(o => o.propertyName != e.propertyName)
-        //         componentEditors[c.type].push(e)
-
-        //     }
-
-        // }
-
-
         this.setState({ componentEditors: componentEditors })
     }
 
     private async loadComponentTypes(pageData: PageData) {
-        let componentTypes: ComponentTypes = {}
+        let componentTypes: ComponentTypes = this.state.componentTypes
         let componentsConfig = this.props.componentsConfig
         let componentsToLoad: string[] = []
         let travel = new PageDataTravel(pageData)
         travel.each((c) => {
-            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !isCustomComponent(c))
+            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !isCustomComponent(c) || componentTypes[c.type])
                 return
 
             componentsToLoad.push(c.type)
         })
 
-        const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
-        Object.assign(componentTypes, loadedComponentTypes);
-        this.setState({ componentTypes });
+        componentsToLoad.forEach(typeName => {
+            componentTypes[typeName] = createLoadingComponent()
+            // this.setState({ componentTypes })
+        })
+
+        // const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
+        PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
+            Object.assign(componentTypes, loadedComponentTypes);
+            this.setState({ componentTypes });
+        })
     }
 
     static async loadComponentTypes(componentsToLoad: string[], componentsConfig: ComponentsConfig): Promise<ComponentTypes> {

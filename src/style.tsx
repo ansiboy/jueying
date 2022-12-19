@@ -1,3 +1,5 @@
+import { ComponentPlaceHolder } from "./runtime";
+
 export let classNames = {
     empty: "empty",
     selected: "selected",
@@ -7,6 +9,7 @@ export let classNames = {
     propertyEditor: "property-editor",
     propertyEditorControl: "property-editor-control",
     propertyEditorLabel: "property-editor-label",
+    componentPlaceHolder: "component-place-holder"
 }
 
 // let templateDialog = {
@@ -66,6 +69,10 @@ element.innerHTML = `
 }
 .${classNames.propertyEditor} {
     display: flex;
+}
+.${classNames.componentPlaceHolder} {
+    min-height: 50px;
+    min-width: 50px;
 }
         `;
 

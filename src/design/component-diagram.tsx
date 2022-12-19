@@ -52,14 +52,14 @@ export class ComponentDiagram extends React.Component<Props, State> {
 
     componentDidMount(): void {
 
-        let connect = (panelElement: HTMLElement, panel: ComponentPanel) => {
+        let connect = (componentPanelElement: HTMLElement, componentPanel: ComponentPanel) => {
             let groupName = guid()
-            new Sortable(panelElement, {
+            new Sortable(componentPanelElement, {
                 group: { name: groupName, pull: "clone", put: false },
                 animation: 150,
                 sort: false,
                 onEnd: (ev) => {
-                    let componentData = panel.getComponentData(ev.item);
+                    let componentData = componentPanel.getComponentData(ev.item);
                     let childNodes = ev.item.parentElement?.childNodes || []
                     let targetIndex: number | undefined
                     for (let i = 0; i < childNodes.length; i++) {

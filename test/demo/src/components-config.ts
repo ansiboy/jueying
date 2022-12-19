@@ -1,5 +1,5 @@
-import { ComponentsConfig } from "../../../out"
-export let typeNames = { image: "Image", button: "Button", div: "div" }
+import type { ComponentsConfig } from "../../../out"
+export let typeNames = { image: "Image", button: "Button", div: "div", columns: "Columns" }
 
 export let componentsConfig: ComponentsConfig = {}
 
@@ -20,6 +20,10 @@ componentsConfig[typeNames.button] = {
 componentsConfig[typeNames.div] = {
     editor: import("./editors/div"),
     icon: "glyphicon glyphicon-tag"
+}
 
-
+componentsConfig[typeNames.columns] = {
+    type: import("./components/columns"),
+    displayName: "列",
+    icon: "glyphicon glyphicon-tag"
 }

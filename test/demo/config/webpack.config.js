@@ -403,8 +403,10 @@ module.exports = function (webpackEnv) {
             },
             /** 修改组件的 React Factory 为 h */
             {
-              test: /components\/\.(js|mjs|jsx|ts|tsx)$/,
-              include: paths.appSrc,
+              test: /\.tsx$/,
+              include: [
+                path.join(paths.appSrc, "components")
+              ],
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
@@ -451,6 +453,7 @@ module.exports = function (webpackEnv) {
                       runtime: hasJsxRuntime ? 'automatic' : 'classic',
                     },
                   ],
+                  // ["@babel/preset-react", { pragma: "h" }],
                 ],
 
                 plugins: [

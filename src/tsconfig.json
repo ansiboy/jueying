@@ -11,7 +11,7 @@
         "strictPropertyInitialization": false,
         "strictNullChecks": true,
         "experimentalDecorators": true,
-        "baseUrl": "./",
+        // "baseUrl": "./",
         "esModuleInterop": true
     }
 }
