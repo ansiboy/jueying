@@ -8,6 +8,7 @@ import { DesignerContext, PageDesigner } from "../designer";
 import { FormValidator, ValidateField } from "maishu-dilu/out/formValidator";
 import { EditPanelContext, PropertyEditor } from "./editor-panel-context";
 import { PropertyEditorInfo, PropertyEditorProps } from "./types";
+import { strings } from "../strings";
 
 type ComponentEditors = { [typeName: string]: PropertyEditorInfo<any>[] }
 
@@ -248,7 +249,7 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
                 return <EditPanelContext.Provider value={{ editors }}>
                     <div className={`${classNames.editorPanel} ${this.props.className || ""}`}
                         ref={(e: any) => this.element = e || this.element}>
-                        {this.props.children}
+                        {editors.length == 0 ? <div className={classNames.empty}>{strings.emptyEditorPanel}</div> : this.props.children}
                     </div>
                 </EditPanelContext.Provider>
             }}

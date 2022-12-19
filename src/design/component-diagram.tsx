@@ -60,7 +60,16 @@ export class ComponentDiagram extends React.Component<Props, State> {
                 sort: false,
                 onEnd: (ev) => {
                     let componentData = panel.getComponentData(ev.item);
-                    this.designer.appendComponent(componentData);
+                    let childNodes = ev.item.parentElement?.childNodes || []
+                    let targetIndex: number | undefined
+                    for (let i = 0; i < childNodes.length; i++) {
+                        if (childNodes[i] == ev.item) {
+                            targetIndex = i
+                            childNodes[i].remove()
+                            break
+                        }
+                    }
+                    this.designer.appendComponent(componentData, targetIndex);
                 }
             });
 

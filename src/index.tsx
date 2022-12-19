@@ -6,7 +6,7 @@ export { ComponentsConfig } from "./components-config"
 export { ComponentDiagram } from "./design/component-diagram"
 export { ComponentPanel } from "./design/component-panel"
 export { EditorGroup, EditorPanel, EditorPanelProps, PropertyEditorInfo, PropertyEditorProps } from "./editor"
-export { PageData, ComponentStatus, componentTypeNames } from "./runtime"
+export { PageData, ComponentStatus, componentTypeNames, ComponentData } from "./runtime"
 import "./design/create-design-element"
 
 

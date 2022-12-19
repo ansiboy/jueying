@@ -22,22 +22,18 @@ element.innerHTML = `
     list-style: none;
     margin: 0;
     padding: 0;
+    border: solid 1px #ccc;
 }
 .${classNames.componentPanel} {
     display: flex;
+    border: solid 1px #ccc;
 }
 .${classNames.editorPanel} {
-    width: 300px;
-    background: white;
-    color: black;
-    margin: 0;
-    font-size: 14px;
-    z-index: 100;
-    overflow: auto;
+    border: solid 1px #ccc;
+    min-height: 50px;
 }
 .${classNames.editorPanel} label {
     width: 80px;
-    float: left;
     padding: 4px;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -46,7 +42,7 @@ element.innerHTML = `
     padding-left: 90px;
 }
 .${classNames.editorPanel} .empty {
-    padding-top: 200px;
+    padding-top: 20px;
     text-align: center;
 }
 .${classNames.editorPanel} .error {
@@ -67,6 +63,9 @@ element.innerHTML = `
 .${classNames.componentPanel} li {
     text-align: center;
     padding: 8px;
+}
+.${classNames.propertyEditor} {
+    display: flex;
 }
         `;
 
