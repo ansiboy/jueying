@@ -2,7 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { PageDesigner, ComponentDiagram, ComponentPanel, PageData } from "../out"
 import { componentsConfig } from "./demo/src/components-config"
-import { JSDOM } from "./common"
+import { JSDOM, text } from "./common"
 import { Page } from "../out/runtime/components/page"
 
 test("ComponentPanel 创建测试", async function () {
@@ -13,7 +13,7 @@ test("ComponentPanel 创建测试", async function () {
         div2: "div2"
     }
 
-    let helloWorld = "hello world"
+    let helloWorld = text("hello world")
     let pageData1: PageData = {
         id: "simple", type: Page.typeName, props: {},
         children: [

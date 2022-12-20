@@ -51,7 +51,6 @@ describe("设计时行为测试", function () {
         expect(pageDesigner || null).not.toBeNull()
         await designerUpdateFinish(pageDesigner)
 
-        console.log(container.innerHTML)
 
     })
 })

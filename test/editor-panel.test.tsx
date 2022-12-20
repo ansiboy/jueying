@@ -2,7 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGroup, classNames, ComponentStatus, PageData } from "../out"
 import { Page } from "../out/runtime/components/page"
-import { designerUpdateFinish, JSDOM } from "./common"
+import { designerUpdateFinish, JSDOM, text } from "./common"
 import { componentsConfig, typeNames } from "./demo/src/components-config"
 import Image from "./demo/src/components/image"
 import { TextEditor } from "./demo/src/editors/common/text-editor"
@@ -18,7 +18,7 @@ test("editor panel 检查元素", async function () {
 
     let imageProps: Image["props"] = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
 
-    let helloWorld = "hello world"
+    let helloWorld = text("hello world")
     let pageData1: PageData = {
         id: "simple", type: Page.typeName, props: {},
         children: [
@@ -63,7 +63,7 @@ test("editor panel 单个选择中图片编辑器", async function () {
 
     let imageProps: Image["props"] = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
 
-    let helloWorld = "hello world"
+    let helloWorld = text("hello world")
     let pageData1: PageData = {
         id: "simple", type: Page.typeName, props: {},
         children: [

@@ -1,6 +1,7 @@
-import { Component } from "react";
 import { TextDecoder, TextEncoder } from "util"
-import { PageDesigner } from "../out";
+import { ComponentData, PageDesigner, componentTypeNames } from "../out";
+import { Text } from "../out/runtime/components"
+import { guid } from "maishu-toolkit/out/guid"
 
 export function designerUpdateFinish<P, S>(component: PageDesigner) {
     let render = component.render
@@ -25,6 +26,11 @@ export function designerUpdateFinish<P, S>(component: PageDesigner) {
     })
 
     return p
+}
+
+export function text(text: string): ComponentData {
+    let props: Text["props"] = { value: text }
+    return { id: guid(), type: componentTypeNames.text, props, children: [] }
 }
 
 global["TextEncoder"] = TextEncoder as any

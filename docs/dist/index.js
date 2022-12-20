@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v4.0.4
+ *  maishu-jueying v4.0.7
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -5048,276 +5048,9 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "./out/common.js":
-/*!***********************!*\
-  !*** ./out/common.js ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.elementFactoryName = exports.constants = void 0;
-exports.constants = {
-    componentsDir: 'components',
-    connectorElementClassName: 'component-container',
-    componentTypeName: 'data-component-name',
-    componentData: 'component-data',
-    componentPosition: "component-position"
-};
-exports.elementFactoryName = "h";
-//# sourceMappingURL=common.js.map
-
-/***/ }),
-
-/***/ "./out/component/components/component-placeholder.js":
-/*!***********************************************************!*\
-  !*** ./out/component/components/component-placeholder.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ComponentPlaceHolder = void 0;
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const page_data_parser_1 = __webpack_require__(/*! ./page-data-parser */ "./out/component/components/page-data-parser.js");
-const errors_1 = __webpack_require__(/*! ../errors */ "./out/component/errors.js");
-const parse_component_data_1 = __webpack_require__(/*! ../parse-component-data */ "./out/component/parse-component-data.js");
-class ComponentPlaceHolder extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return React.createElement(page_data_parser_1.PageDataParserContext.Consumer, null, args => {
-            if (!args)
-                throw errors_1.errors.nullPageDataParserArguments();
-            let children = args.pageData.children.filter(o => o.parentId && o.parentId == this.props.id);
-            let childComponents = children.map(c => (0, parse_component_data_1.parseComponentData)(c, args.componentTypes, args.elementFactory));
-            return childComponents;
-        });
-    }
-}
-exports.ComponentPlaceHolder = ComponentPlaceHolder;
-ComponentPlaceHolder.typeName = "PlaceHolder";
-//# sourceMappingURL=component-placeholder.js.map
-
-/***/ }),
-
-/***/ "./out/component/components/create-info-component.js":
-/*!***********************************************************!*\
-  !*** ./out/component/components/create-info-component.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createInfoComponent = void 0;
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-function createInfoComponent(text) {
-    return class InfoComponent extends React.Component {
-        render() {
-            return React.createElement("div", { className: "text-center", style: { paddingTop: 20, paddingBottom: 20 } }, text);
-        }
-    };
-}
-exports.createInfoComponent = createInfoComponent;
-//# sourceMappingURL=create-info-component.js.map
-
-/***/ }),
-
-/***/ "./out/component/components/create-loading-component.js":
-/*!**************************************************************!*\
-  !*** ./out/component/components/create-loading-component.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createLoadingComponent = void 0;
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const strings_1 = __webpack_require__(/*! ../../strings */ "./out/strings.js");
-function createLoadingComponent() {
-    return class FakeComponent extends React.Component {
-        render() {
-            return React.createElement("div", { key: this.props.id, style: { padding: "50px 0 50px 0", textAlign: "center" } }, strings_1.strings.componentLoading);
-        }
-    };
-}
-exports.createLoadingComponent = createLoadingComponent;
-//# sourceMappingURL=create-loading-component.js.map
-
-/***/ }),
-
-/***/ "./out/component/components/index.js":
-/*!*******************************************!*\
-  !*** ./out/component/components/index.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PageDataParserContext = exports.PageDataParser = exports.ComponentPlaceHolder = exports.createLoadingComponent = exports.createInfoComponent = void 0;
-var create_info_component_1 = __webpack_require__(/*! ./create-info-component */ "./out/component/components/create-info-component.js");
-Object.defineProperty(exports, "createInfoComponent", { enumerable: true, get: function () { return create_info_component_1.createInfoComponent; } });
-var create_loading_component_1 = __webpack_require__(/*! ./create-loading-component */ "./out/component/components/create-loading-component.js");
-Object.defineProperty(exports, "createLoadingComponent", { enumerable: true, get: function () { return create_loading_component_1.createLoadingComponent; } });
-var component_placeholder_1 = __webpack_require__(/*! ./component-placeholder */ "./out/component/components/component-placeholder.js");
-Object.defineProperty(exports, "ComponentPlaceHolder", { enumerable: true, get: function () { return component_placeholder_1.ComponentPlaceHolder; } });
-var page_data_parser_1 = __webpack_require__(/*! ./page-data-parser */ "./out/component/components/page-data-parser.js");
-Object.defineProperty(exports, "PageDataParser", { enumerable: true, get: function () { return page_data_parser_1.PageDataParser; } });
-Object.defineProperty(exports, "PageDataParserContext", { enumerable: true, get: function () { return page_data_parser_1.PageDataParserContext; } });
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "./out/component/components/page-data-parser.js":
-/*!******************************************************!*\
-  !*** ./out/component/components/page-data-parser.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PageDataParser = exports.PageDataParserContext = void 0;
-const errors_1 = __webpack_require__(/*! ../errors */ "./out/component/errors.js");
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const parse_component_data_1 = __webpack_require__(/*! ../parse-component-data */ "./out/component/parse-component-data.js");
-exports.PageDataParserContext = React.createContext(null);
-class PageDataParser extends React.Component {
-    constructor(props) {
-        super(props);
-        if (!props)
-            throw errors_1.errors.argumentNull("props");
-        if (!props.pageData)
-            throw errors_1.errors.argumentFieldNull("pageData", "props");
-        if (!props.elementFactory)
-            throw errors_1.errors.argumentFieldNull("elementFactory", "props");
-        this.state = { pageData: props.pageData, componentTypes: props.componentTypes };
-    }
-    static getDerivedStateFromProps(props, state) {
-        return { pageData: props.pageData, componentTypes: props.componentTypes };
-    }
-    render() {
-        let { pageData } = this.state;
-        let { elementFactory, componentTypes } = this.props;
-        let children = pageData.children.filter(o => !o.parentId);
-        let childComponents = children.map(o => {
-            return (0, parse_component_data_1.parseComponentData)(o, componentTypes, elementFactory);
-        });
-        return React.createElement(exports.PageDataParserContext.Provider, { value: { pageData, elementFactory, componentTypes } }, childComponents);
-    }
-}
-exports.PageDataParser = PageDataParser;
-//# sourceMappingURL=page-data-parser.js.map
-
-/***/ }),
-
-/***/ "./out/component/errors.js":
+/***/ "./out/common/constants.js":
 /*!*********************************!*\
-  !*** ./out/component/errors.js ***!
+  !*** ./out/common/constants.js ***!
   \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -5325,155 +5058,34 @@ exports.PageDataParser = PageDataParser;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = void 0;
-const errors_1 = __webpack_require__(/*! maishu-toolkit/out/errors */ "./node_modules/maishu-toolkit/out/errors.js");
-const page_data_parser_1 = __webpack_require__(/*! ./components/page-data-parser */ "./out/component/components/page-data-parser.js");
-class MyErrors extends errors_1.Errors {
-    pathFieldRequired(name) {
-        let msg = `Path field of '${name}' component config can not be null or empty.`;
-        return new Error(msg);
-    }
-    canntFindModule(name, path) {
-        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
-        return new Error(msg);
-    }
-    componentTypeNotExists(name) {
-        let msg = `Component '${name}' not exists.`;
-        return new Error(msg);
-    }
-    argumentNull(name) {
-        let msg = `Argument '${name}' can not be null or empty.`;
-        return new Error(msg);
-    }
-    propsFileNull(fieldName) {
-        let msg = `Field '${fieldName}' of props is null.`;
-        let error = new Error(msg);
-        let name = "propsFileNull";
-        error.name = name;
-        return error;
-    }
-    nullPageDataParserArguments() {
-        let obj = { PageDataParser: page_data_parser_1.PageDataParser };
-        let typeName = "PageDataParser";
-        let msg = `PageDataParser arguments is null. Is this component child of ${typeName}?`;
-        let error = new Error(msg);
-        let name = "nullPageDataParserArguments";
-        error.name = name;
-        return error;
-    }
-}
-exports.errors = new MyErrors();
-//# sourceMappingURL=errors.js.map
+exports.constants = void 0;
+exports.constants = {
+    componentsDir: 'components',
+    connectorElementClassName: 'component-container',
+    componentTypeName: 'data-component-name',
+    componentData: 'component-data',
+    componentPosition: "component-position",
+    /** 设计时组件工厂 */
+    designComponentFactoryName: "h"
+};
+//# sourceMappingURL=constants.js.map
 
 /***/ }),
 
-/***/ "./out/component/index.js":
-/*!********************************!*\
-  !*** ./out/component/index.js ***!
-  \********************************/
+/***/ "./out/common/index.js":
+/*!*****************************!*\
+  !*** ./out/common/index.js ***!
+  \*****************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseComponentData = exports.componentTypes = exports.ComponentStatus = exports.createLoadingComponent = exports.createInfoComponent = void 0;
-var index_1 = __webpack_require__(/*! ./components/index */ "./out/component/components/index.js");
-Object.defineProperty(exports, "createInfoComponent", { enumerable: true, get: function () { return index_1.createInfoComponent; } });
-Object.defineProperty(exports, "createLoadingComponent", { enumerable: true, get: function () { return index_1.createLoadingComponent; } });
-var types_1 = __webpack_require__(/*! ./types */ "./out/component/types.js");
-Object.defineProperty(exports, "ComponentStatus", { enumerable: true, get: function () { return types_1.ComponentStatus; } });
-var register_1 = __webpack_require__(/*! ./register */ "./out/component/register.js");
-Object.defineProperty(exports, "componentTypes", { enumerable: true, get: function () { return register_1.componentTypes; } });
-var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./out/component/parse-component-data.js");
-Object.defineProperty(exports, "parseComponentData", { enumerable: true, get: function () { return parse_component_data_1.parseComponentData; } });
+exports.constants = void 0;
+var constants_1 = __webpack_require__(/*! ./constants */ "./out/common/constants.js");
+Object.defineProperty(exports, "constants", { enumerable: true, get: function () { return constants_1.constants; } });
 //# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "./out/component/parse-component-data.js":
-/*!***********************************************!*\
-  !*** ./out/component/parse-component-data.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseComponentData = void 0;
-const errors_1 = __webpack_require__(/*! ./errors */ "./out/component/errors.js");
-const register_1 = __webpack_require__(/*! ./register */ "./out/component/register.js");
-function parseComponentData(componentData, componentTypes, createElement) {
-    if (!componentData)
-        throw errors_1.errors.argumentNull("componentData");
-    if (!componentTypes)
-        throw errors_1.errors.argumentNull("componentTypes");
-    if (!componentData.type)
-        throw errors_1.errors.argumentFieldNull("type", "componentData");
-    let isHtmlComponent = componentData.type.toLowerCase() == componentData.type;
-    let type = isHtmlComponent ? componentData.type : (componentTypes[componentData.type] || register_1.componentTypes[componentData.type]);
-    if (type == null) {
-        throw errors_1.errors.componentTypeNotExists(componentData.type);
-    }
-    let children = [];
-    let childComponentInfos = componentData.children || [];
-    if (childComponentInfos.length > 0) {
-        children = childComponentInfos.map(c => {
-            if (typeof c == "string")
-                return c;
-            return parseComponentData(c, componentTypes, createElement);
-        });
-    }
-    let props = Object.assign({}, componentData.props);
-    props.key = props.key || componentData.id;
-    props.id = componentData.id;
-    return createElement(type, props, children);
-}
-exports.parseComponentData = parseComponentData;
-//# sourceMappingURL=parse-component-data.js.map
-
-/***/ }),
-
-/***/ "./out/component/register.js":
-/*!***********************************!*\
-  !*** ./out/component/register.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.componentTypes = void 0;
-exports.componentTypes = {};
-//# sourceMappingURL=register.js.map
-
-/***/ }),
-
-/***/ "./out/component/types.js":
-/*!********************************!*\
-  !*** ./out/component/types.js ***!
-  \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ComponentStatus = void 0;
-var ComponentStatus;
-(function (ComponentStatus) {
-    ComponentStatus[ComponentStatus["default"] = 0] = "default";
-    /** 已选中 */
-    ComponentStatus[ComponentStatus["selected"] = 1] = "selected";
-    /** 禁用 */
-    ComponentStatus[ComponentStatus["disabled"] = 2] = "disabled";
-    /** 不允许删除 */
-    ComponentStatus[ComponentStatus["asset"] = 4] = "asset";
-})(ComponentStatus = exports.ComponentStatus || (exports.ComponentStatus = {}));
-// export type ChildComponentProps = { parentId: string };
-//# sourceMappingURL=types.js.map
 
 /***/ }),
 
@@ -5569,9 +5181,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComponentDiagram = void 0;
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
-const component_1 = __webpack_require__(/*! ../component */ "./out/component/index.js");
+const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
 const React = __importStar(__webpack_require__(/*! react */ "react"));
-const page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/design/page-designer.js");
+const designer_1 = __webpack_require__(/*! ../designer */ "./out/designer.js");
 const strings_1 = __webpack_require__(/*! ../strings */ "./out/strings.js");
 const style_1 = __webpack_require__(/*! ../style */ "./out/style.js");
 const sortablejs_1 = __importDefault(__webpack_require__(/*! sortablejs */ "./node_modules/sortablejs/modular/sortable.esm.js"));
@@ -5603,16 +5215,24 @@ class ComponentDiagram extends React.Component {
         return this._element;
     }
     componentDidMount() {
-        let connect = (panelElement, panel) => {
+        let connect = (componentPanelElement, componentPanel) => {
             let groupName = (0, guid_1.guid)();
-            new sortablejs_1.default(panelElement, {
+            new sortablejs_1.default(componentPanelElement, {
                 group: { name: groupName, pull: "clone", put: false },
                 animation: 150,
                 sort: false,
                 onEnd: (ev) => {
-                    debugger;
-                    let componentData = panel.getComponentData(ev.item);
-                    this.designer.appendComponent(componentData);
+                    let componentData = componentPanel.getComponentData(ev.item);
+                    let childNodes = ev.item.parentElement.childNodes || [];
+                    let targetIndex;
+                    for (let i = 0; i < childNodes.length; i++) {
+                        if (childNodes[i] == ev.item) {
+                            targetIndex = i;
+                            childNodes[i].remove();
+                            break;
+                        }
+                    }
+                    this.designer.appendComponent(componentData, targetIndex);
                 }
             });
             new sortablejs_1.default(this.element, {
@@ -5624,7 +5244,7 @@ class ComponentDiagram extends React.Component {
         this.designer.componentPanelElements.added.add(args => connect(args.dataItem.element, args.dataItem.instance));
     }
     render() {
-        return React.createElement(page_designer_1.DesignerContext.Consumer, null, args => {
+        return React.createElement(designer_1.DesignerContext.Consumer, null, args => {
             if (!args)
                 throw errors_1.errors.contextArgumentNull();
             let designer = args.designer;
@@ -5635,8 +5255,10 @@ class ComponentDiagram extends React.Component {
                     React.createElement("li", null, strings_1.strings.emptyCompoenntPanel));
             let componentTypes = args.designer.componentTypes;
             return React.createElement("ul", { className: style_1.classNames.componentDiagram, ref: e => this.ref(e, args) }, componentDatas.map(c => {
-                let status = c.status || component_1.ComponentStatus.default;
-                let selected = (status & component_1.ComponentStatus.selected) == component_1.ComponentStatus.selected;
+                if (typeof c == "string")
+                    throw new Error(`string is not supported`);
+                let status = c.status || runtime_1.ComponentStatus.default;
+                let selected = (status & runtime_1.ComponentStatus.selected) == runtime_1.ComponentStatus.selected;
                 return React.createElement("li", { key: c.id, className: selected ? style_1.classNames.selected : "", onClick: e => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -5687,7 +5309,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComponentPanel = exports.ComponentPanelContext = void 0;
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
 const React = __importStar(__webpack_require__(/*! react */ "react"));
-const page_designer_1 = __webpack_require__(/*! ./page-designer */ "./out/design/page-designer.js");
+const designer_1 = __webpack_require__(/*! ../designer */ "./out/designer.js");
 const style_1 = __webpack_require__(/*! ../style */ "./out/style.js");
 const strings_1 = __webpack_require__(/*! ../strings */ "./out/strings.js");
 const maishu_toolkit_1 = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/dist/index.js");
@@ -5711,7 +5333,7 @@ class ComponentPanel extends React.Component {
         if (!dataType)
             throw new Error(`Argument toolbarElement is an invalid component panel element.`);
         let c = {
-            id: (0, maishu_toolkit_1.guid)(), type: dataType, props: {}
+            id: (0, maishu_toolkit_1.guid)(), type: dataType, props: {}, children: []
         };
         return c;
     }
@@ -5726,7 +5348,7 @@ class ComponentPanel extends React.Component {
     }
     render() {
         return React.createElement(exports.ComponentPanelContext.Provider, { value: { instance: this } },
-            React.createElement(page_designer_1.DesignerContext.Consumer, null, args => {
+            React.createElement(designer_1.DesignerContext.Consumer, null, args => {
                 if (!args)
                     throw errors_1.errors.contextArgumentNull();
                 let componentsConfig = args.designer.props.componentsConfig;
@@ -5740,6 +5362,183 @@ class ComponentPanel extends React.Component {
 }
 exports.ComponentPanel = ComponentPanel;
 //# sourceMappingURL=component-panel.js.map
+
+/***/ }),
+
+/***/ "./out/design/components/create-info-component.js":
+/*!********************************************************!*\
+  !*** ./out/design/components/create-info-component.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createInfoComponent = void 0;
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+function createInfoComponent(text) {
+    return class InfoComponent extends React.Component {
+        render() {
+            return React.createElement("div", { className: "text-center", style: { paddingTop: 20, paddingBottom: 20 } }, text);
+        }
+    };
+}
+exports.createInfoComponent = createInfoComponent;
+//# sourceMappingURL=create-info-component.js.map
+
+/***/ }),
+
+/***/ "./out/design/components/create-loading-component.js":
+/*!***********************************************************!*\
+  !*** ./out/design/components/create-loading-component.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createLoadingComponent = void 0;
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+const strings_1 = __webpack_require__(/*! ../../strings */ "./out/strings.js");
+function createLoadingComponent() {
+    return class FakeComponent extends React.Component {
+        render() {
+            return React.createElement("div", { key: this.props.id, style: { padding: "50px 0 50px 0", textAlign: "center" } }, strings_1.strings.componentLoading);
+        }
+    };
+}
+exports.createLoadingComponent = createLoadingComponent;
+//# sourceMappingURL=create-loading-component.js.map
+
+/***/ }),
+
+/***/ "./out/design/components/design-component-placeholder.js":
+/*!***************************************************************!*\
+  !*** ./out/design/components/design-component-placeholder.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DesignComponentPlaceHolder = void 0;
+const guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+const designer_1 = __webpack_require__(/*! ../../designer */ "./out/designer.js");
+const errors_1 = __webpack_require__(/*! ../../errors */ "./out/errors.js");
+const style_1 = __webpack_require__(/*! ../../style */ "./out/style.js");
+class DesignComponentPlaceHolder extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    enableDrop(element) {
+        if (!element || this.element)
+            return;
+        this.element = element;
+        let groupName = (0, guid_1.guid)();
+    }
+    render() {
+        return React.createElement(designer_1.DesignerContext.Consumer, null, args => {
+            if (!args)
+                throw errors_1.errors.contextArgumentNull();
+            // args.designer.componentPanelElements
+            return React.createElement("div", { className: style_1.classNames.componentPlaceHolder });
+        });
+    }
+}
+exports.DesignComponentPlaceHolder = DesignComponentPlaceHolder;
+//# sourceMappingURL=design-component-placeholder.js.map
+
+/***/ }),
+
+/***/ "./out/design/components/index.js":
+/*!****************************************!*\
+  !*** ./out/design/components/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createLoadingComponent = exports.createInfoComponent = void 0;
+var create_info_component_1 = __webpack_require__(/*! ./create-info-component */ "./out/design/components/create-info-component.js");
+Object.defineProperty(exports, "createInfoComponent", { enumerable: true, get: function () { return create_info_component_1.createInfoComponent; } });
+var create_loading_component_1 = __webpack_require__(/*! ./create-loading-component */ "./out/design/components/create-loading-component.js");
+Object.defineProperty(exports, "createLoadingComponent", { enumerable: true, get: function () { return create_loading_component_1.createLoadingComponent; } });
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -5779,8 +5578,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(/*! react */ "react"));
 const design_component_context_1 = __webpack_require__(/*! ./design-component-context */ "./out/design/design-component-context.js");
 const design_behavior_1 = __webpack_require__(/*! ./design-behavior */ "./out/design/design-behavior.js");
-const common_1 = __webpack_require__(/*! ../common */ "./out/common.js");
+const common_1 = __webpack_require__(/*! ../common */ "./out/common/index.js");
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
+const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
+const design_component_placeholder_1 = __webpack_require__(/*! ./components/design-component-placeholder */ "./out/design/components/design-component-placeholder.js");
 const createDesignElement = (type, props, ...children) => {
     let props1 = {};
     if (props)
@@ -5795,13 +5596,16 @@ const createDesignElement = (type, props, ...children) => {
         if (disableClick) {
             delete props.onClick;
         }
+        if (type == runtime_1.ComponentPlaceHolder) {
+            type = design_component_placeholder_1.DesignComponentPlaceHolder;
+        }
         return React.createElement(type, props, ...children);
     }));
 };
 let g = typeof window === "undefined" ? global : window;
-if (g[common_1.constants.elementFactoryName])
+if (g[common_1.constants.designComponentFactoryName])
     throw errors_1.errors.elementFactoryExists();
-g[common_1.constants.elementFactoryName] = createDesignElement;
+g[common_1.constants.designComponentFactoryName] = createDesignElement;
 //# sourceMappingURL=create-design-element.js.map
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
@@ -5820,8 +5624,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DesignBehavior = void 0;
 var DesignBehavior;
 (function (DesignBehavior) {
-    DesignBehavior[DesignBehavior["default"] = 1] = "default";
     DesignBehavior[DesignBehavior["disableClick"] = 1] = "disableClick";
+    DesignBehavior[DesignBehavior["disableHref"] = 2] = "disableHref";
+    DesignBehavior[DesignBehavior["isContainer"] = 4] = "isContainer";
+    DesignBehavior[DesignBehavior["default"] = 3] = "default";
 })(DesignBehavior = exports.DesignBehavior || (exports.DesignBehavior = {}));
 //# sourceMappingURL=design-behavior.js.map
 
@@ -5844,416 +5650,6 @@ Object.defineProperty(exports, "DesignComponentContext", { enumerable: true, get
 
 /***/ }),
 
-/***/ "./out/design/page-designer.js":
-/*!*************************************!*\
-  !*** ./out/design/page-designer.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PageDesigner = exports.DesignerContext = void 0;
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const component_1 = __webpack_require__(/*! ../component */ "./out/component/index.js");
-const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
-const guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
-const component_2 = __webpack_require__(/*! ../component */ "./out/component/index.js");
-const utility_1 = __webpack_require__(/*! ../utility */ "./out/utility/index.js");
-const utility_2 = __webpack_require__(/*! ../utility */ "./out/utility/index.js");
-const data_list_1 = __webpack_require__(/*! ../data/data-list */ "./out/data/data-list.js");
-exports.DesignerContext = React.createContext(null);
-/**
- * 组件数据处理，负责对对组件数据进行处理维护。
- */
-class PageDesigner extends React.Component {
-    constructor(props) {
-        super(props);
-        // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
-        this._prePageData = null;
-        this.componentDiagramElements = new data_list_1.DataList();
-        this.componentPanelElements = new data_list_1.DataList();
-        if (!props)
-            throw errors_1.errors.argumentNull("props");
-        if (!props.componentsConfig)
-            throw errors_1.errors.argumentFieldCanntNull("componentsConfig", "props");
-        this.checkComponentsConfig(props.componentsConfig);
-        let pageData = this.props.pageData;
-        let componentTypes = {};
-        this.initPageData(pageData, componentTypes);
-        this.state = { pageData, componentTypes, componentEditors: {} };
-    }
-    /** 检查组件配置 */
-    checkComponentsConfig(componentsConfig) {
-        // TODO: 检查组件配置
-    }
-    initPageData(pageData, componentTypes) {
-        if (pageData == null)
-            throw errors_1.errors.argumentNull("pageData");
-        console.assert(pageData.children != null, "PageData children is null.");
-        let travel = new utility_2.PageDataTravel(pageData);
-        travel.each((c) => {
-            if (typeof c == "string" || !(0, utility_2.isCustomComponent)(c) || componentTypes[c.type])
-                return;
-            componentTypes[c.type] = (0, component_2.createLoadingComponent)();
-        });
-    }
-    /**
-     * 对组件及其子控件进行命名
-     * @param componentData
-     */
-    initComponent(componentData, pageData) {
-        let namedComponents = {};
-        pageData.children.forEach(c => {
-            if (c.name) {
-                namedComponents[c.name] = c;
-            }
-        });
-        if (!componentData.name) {
-            let num = 0;
-            let name;
-            do {
-                num = num + 1;
-                name = `${componentData.type}${num}`;
-            } while (namedComponents[name]);
-            namedComponents[name] = componentData;
-            componentData.name = name;
-        }
-        if (!componentData.id)
-            componentData.id = (0, guid_1.guid)();
-    }
-    /** 页面数据 */
-    get pageData() {
-        return this.state.pageData;
-    }
-    get componentsConfig() {
-        return this.props.componentsConfig;
-    }
-    get componentTypes() {
-        return this.state.componentTypes;
-    }
-    get componentEditors() {
-        return this.state.componentEditors;
-    }
-    get prePageData() {
-        return this._prePageData;
-    }
-    set prePageData(value) {
-        this._prePageData = value;
-    }
-    /** 获取已选择了的组件编号 */
-    get selectedComponentIds() {
-        return this.selectedComponents.map(o => o.id);
-    }
-    /** 获取已选择了的组件 */
-    get selectedComponents() {
-        let arr = this.pageData.children.filter(o => ((o.status || component_1.ComponentStatus.default) & component_1.ComponentStatus.selected) == component_1.ComponentStatus.selected);
-        return arr;
-    }
-    get element() {
-        return this._element;
-    }
-    updateComponentProp(componentId, propName, value) {
-        return this.updateComponentProps([{ componentId, propName, value }]);
-    }
-    updateComponentProps(componentProps) {
-        let componentDatas = [];
-        for (let i = 0; i < componentProps.length; i++) {
-            let { componentId, propName, value } = componentProps[i];
-            let componentData = this.findComponentData(componentId);
-            if (componentData == null)
-                continue;
-            let navPropsNames = propName.split(".");
-            console.assert(componentData != null);
-            console.assert(navPropsNames != null, 'props is null');
-            componentData.props = componentData.props || {};
-            let obj = componentData.props;
-            for (let i = 0; i < navPropsNames.length - 1; i++) {
-                obj = obj[navPropsNames[i]] = obj[navPropsNames[i]] || {};
-            }
-            obj[navPropsNames[navPropsNames.length - 1]] = value;
-            componentDatas.push(componentData);
-        }
-        this.setState({ pageData: this.pageData });
-    }
-    /**
-     * 添加控件
-     * @param componentData 控件数据
-     * @param componentIndex 新添加组件在子组件中的次序
-     */
-    appendComponent(componentData, componentIndex) {
-        // let parentId = componentData.parentId;
-        // if (!parentId) throw new Error('ParentId field of component data is null.');
-        if (!componentData)
-            throw errors_1.errors.argumentNull('childComponent');
-        let pageData = this.pageData;
-        this.initComponent(componentData, pageData);
-        if (componentIndex == null) {
-            pageData.children.push(componentData);
-        }
-        else {
-            pageData.children.splice(componentIndex, 0, componentData);
-        }
-        this.selectComponents(componentData.id);
-    }
-    /**
-     * 选择指定的控件
-     * @param componentIds 指定的控件编号
-     */
-    selectComponent(componentIds) {
-        debugger;
-        this.selectComponents(componentIds);
-        //====================================================
-        // 设置焦点，以便获取键盘事件
-        if (this._element)
-            this._element.focus();
-        //====================================================
-    }
-    /**
-     * 选择指定的控件，一个或多个。已经选择的控件取消选择。
-     * @param componentIds 指定的控件 ID
-     */
-    selectComponents(componentIds) {
-        if (typeof componentIds == 'string')
-            componentIds = [componentIds];
-        this.pageData.children.forEach(c => {
-            // c.selected = false;
-            c.status = c.status || component_1.ComponentStatus.default;
-            c.status = c.status & (~component_1.ComponentStatus.selected);
-        });
-        this.pageData.children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
-            // c.selected = true;
-            c.status = c.status || component_1.ComponentStatus.default;
-            c.status = c.status | component_1.ComponentStatus.selected;
-        });
-        this.setState({ pageData: this.pageData });
-    }
-    /** 移除控件 */
-    removeComponent(...componentIds) {
-        this.removeComponents(componentIds);
-    }
-    removeComponents(componentIds) {
-        let pageData = this.pageData;
-        if (!pageData || !pageData.children || pageData.children.length == 0)
-            return;
-        for (let i = 0; i < componentIds.length; i++) {
-            this.removeComponentFrom(componentIds[i], pageData);
-        }
-        this.setState({ pageData: pageData });
-    }
-    /**
-     * 移动控件到另外一个控件容器
-     * @param componentId 要移动的组件编号
-     * @param parentId 目标组件编号
-     * @param childComponentIndex 组件位置
-     */
-    moveComponent(componentId, parentId, childComponentIndex) {
-        let component = this.findComponentData(componentId);
-        if (component == null)
-            throw new Error(`Cannt find component by id ${componentId}`);
-        console.assert(component != null, `Cannt find component by id ${componentId}`);
-        component.parentId = parentId;
-        let pageData = this.pageData;
-        console.assert(pageData.children != null);
-        this.removeComponentFrom(componentId, pageData);
-        this.appendComponent(component, childComponentIndex);
-    }
-    removeComponentFrom(componentId, pageData) {
-        let child = pageData.children.filter(o => o.id == componentId)[0];
-        if (child == null)
-            throw new Error(`Component '${componentId}' is not exists.`);
-        let stack = [child];
-        let componentsToRemove = [componentId];
-        while (stack.length > 0) {
-            let item = stack.pop();
-            let children = pageData.children.filter(o => o.parentId == item.id);
-            if (children.length > 0) {
-                stack.push(...children);
-                // status 为 ComponentStatus.asset 不要删除
-                componentsToRemove.push(...children.filter(o => o.status == null || (o.status & component_1.ComponentStatus.asset) != component_1.ComponentStatus.asset).map(o => o.id));
-            }
-        }
-        pageData.children = pageData.children.filter(o => componentsToRemove.indexOf(o.id) < 0);
-    }
-    /**
-     * 通过组件编号获取组件的数据
-     * @param componentId 组件编号
-     */
-    findComponentData(componentId) {
-        let pageData = this.state.pageData;
-        if (!pageData)
-            throw errors_1.errors.pageDataIsNull();
-        let componentData = pageData.children.filter(o => o.id == componentId)[0];
-        return componentData;
-    }
-    async loadEditorTypes(pageData) {
-        let componentsToLoad = [];
-        let travel = new utility_2.PageDataTravel(pageData);
-        travel.each((c) => {
-            if (typeof c == "string" || !(0, utility_2.isCustomComponent)(c))
-                return;
-            componentsToLoad.push(c.type);
-        });
-        let componentsConfig = this.props.componentsConfig;
-        let promises = componentsToLoad.map(typeName => ({ typeName, componentConfig: componentsConfig[typeName] }))
-            .map(o => o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })));
-        let r = await Promise.all(promises);
-        let componentEditors = this.state.componentEditors;
-        r.forEach(m => {
-            let editors = m.module.default;
-            if (!m.module.default)
-                throw errors_1.errors.editorModuleNoneDefaultExport(m.typeName);
-            componentEditors[m.typeName] = m.module.default;
-        });
-        // let componentDatas = pageData.children.filter(o => typeof o != "string").map(c => c)
-        // for (let c of componentDatas) {
-        //     let defaultValue: ComponentEditors[""] = []
-        //     componentEditors[c.type] = componentEditors[c.type] || defaultValue
-        //     let propEditors = Component.getPropEditors(c)
-        //     for (let e of propEditors) {
-        //         componentEditors[c.type] = componentEditors[c.type] || []
-        //         componentEditors[c.type] = componentEditors[c.type].filter(o => o.propertyName != e.propertyName)
-        //         componentEditors[c.type].push(e)
-        //     }
-        // }
-        this.setState({ componentEditors: componentEditors });
-    }
-    async loadComponentTypes(pageData) {
-        let componentTypes = {};
-        let componentsConfig = this.props.componentsConfig;
-        let componentsToLoad = [];
-        let travel = new utility_2.PageDataTravel(pageData);
-        travel.each((c) => {
-            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !(0, utility_2.isCustomComponent)(c))
-                return;
-            componentsToLoad.push(c.type);
-        });
-        const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
-        Object.assign(componentTypes, loadedComponentTypes);
-        this.setState({ componentTypes });
-    }
-    static async loadComponentTypes(componentsToLoad, componentsConfig) {
-        let promises = [];
-        let componentTypes = {};
-        for (let i = 0; i < componentsToLoad.length; i++) {
-            let typeName = componentsToLoad[i];
-            if (!typeName) {
-                let errorText = `Component '${typeName}' has not a config.`;
-                componentTypes[typeName] = (0, component_2.createInfoComponent)(errorText);
-                continue;
-            }
-            if (component_1.componentTypes[typeName]) {
-                promises.push(Promise.resolve(component_1.componentTypes[typeName]));
-                continue;
-            }
-            let p = new Promise(function (resolve, reject) {
-                if (!componentsConfig[typeName]) {
-                    let errorText = `Component '${typeName}' is not exists.`;
-                    componentTypes[typeName] = (0, component_2.createInfoComponent)(errorText);
-                    resolve({});
-                    return;
-                }
-                if (!(componentsConfig[typeName].type instanceof Promise)) {
-                    let errorText = `Component '${typeName}' type is invalid.`;
-                    componentTypes[typeName] = (0, component_2.createInfoComponent)(errorText);
-                    resolve({});
-                    return;
-                }
-                let componentType = componentsConfig[typeName].type;
-                if (!componentType) {
-                    return resolve({});
-                }
-                componentType.then(p => {
-                    if (!p.default) {
-                        let errorText = `Component '${typeName}' module has not export default member.`;
-                        componentTypes[typeName] = (0, component_2.createInfoComponent)(errorText);
-                    }
-                    else {
-                        componentTypes[typeName] = p.default;
-                    }
-                    resolve({});
-                }).catch(err => {
-                    reject(err);
-                });
-            });
-            promises.push(p);
-        }
-        await Promise.all(promises);
-        return componentTypes;
-    }
-    onKeyDown(e) {
-        const DELETE_KEY_CODE = 46;
-        if (e.keyCode == DELETE_KEY_CODE) {
-            if (this.selectedComponents.length == 0)
-                return;
-            this.removeComponents(this.selectedComponentIds);
-        }
-    }
-    async onPageDataChanged(pageData) {
-        this.loadComponentTypes(pageData);
-        this.loadEditorTypes(pageData);
-    }
-    static getDerivedStateFromProps(props, state) {
-        return { pageData: props.pageData };
-    }
-    componentDidMount() {
-        // let groupBaseName = 'diagram'
-        // for (let i = 0; i < this.componentPanelElements.count; i++) {
-        //     let groupName = groupBaseName + i
-        //     new Sortable(this.componentPanelElements[i], {
-        //         group: groupName,
-        //         animation: 150
-        //     })
-        //     for (let j = 0; j < this.componentDiagramElements.length; j++) {
-        //         new Sortable(this.componentDiagramElements[j], {
-        //             group: groupName,
-        //             animation: 150
-        //         })
-        //     }
-        // }
-    }
-    render() {
-        let pageData = this.state.pageData;
-        let equal = (0, utility_1.deepEqual)(this.prePageData, pageData);
-        if (!equal) {
-            this.prePageData = JSON.parse(JSON.stringify(pageData));
-            this.onPageDataChanged(pageData);
-        }
-        return React.createElement("div", { tabIndex: 0, ref: e => this._element = this._element || e, onKeyDown: e => this.onKeyDown(e), className: this.props.className, style: this.props.style },
-            React.createElement(exports.DesignerContext.Provider, { value: {
-                    designer: this,
-                } }, this.props.children));
-    }
-}
-exports.PageDesigner = PageDesigner;
-//# sourceMappingURL=page-designer.js.map
-
-/***/ }),
-
 /***/ "./out/design/parse-design-component-data.js":
 /*!***************************************************!*\
   !*** ./out/design/parse-design-component-data.js ***!
@@ -6269,13 +5665,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseDesigntimeComponentData = void 0;
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
-const component_1 = __webpack_require__(/*! ../component */ "./out/component/index.js");
+const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const designer_1 = __webpack_require__(/*! ../designer */ "./out/designer.js");
 const utility_1 = __webpack_require__(/*! ../utility */ "./out/utility/index.js");
 const design_component_context_1 = __webpack_require__(/*! ./design-component-context */ "./out/design/design-component-context.js");
 function parseDesigntimeComponentData(componentData, componentTypes) {
-    return (0, component_1.parseComponentData)(componentData, componentTypes, createDesigntimeComponent);
+    return (0, runtime_1.parseComponentData)(componentData, componentTypes, createDesigntimeComponent);
 }
 exports.parseDesigntimeComponentData = parseDesigntimeComponentData;
 function createDesigntimeComponent(type, props, children) {
@@ -6336,10 +5732,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PageDesigner = exports.DesignComponentContext = exports.DesignerContext = void 0;
 const React = __importStar(__webpack_require__(/*! react */ "react"));
-const component_1 = __webpack_require__(/*! ./component */ "./out/component/index.js");
+const runtime_1 = __webpack_require__(/*! ./runtime */ "./out/runtime/index.js");
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
 const guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
-const component_2 = __webpack_require__(/*! ./component */ "./out/component/index.js");
+const components_1 = __webpack_require__(/*! ./design/components */ "./out/design/components/index.js");
 const utility_1 = __webpack_require__(/*! ./utility */ "./out/utility/index.js");
 const data_list_1 = __webpack_require__(/*! ./data/data-list */ "./out/data/data-list.js");
 exports.DesignerContext = React.createContext(null);
@@ -6360,25 +5756,24 @@ class PageDesigner extends React.Component {
             throw errors_1.errors.argumentFieldCanntNull("componentsConfig", "props");
         this.checkComponentsConfig(props.componentsConfig);
         let pageData = this.props.pageData;
-        let componentTypes = {};
-        this.initPageData(pageData, componentTypes);
-        this.state = { pageData, componentTypes, componentEditors: {} };
+        // let componentTypes: ComponentTypes = {}
+        // this.initPageData(pageData, componentTypes);
+        this.state = { pageData, componentTypes: {}, componentEditors: {} };
     }
     /** 检查组件配置 */
     checkComponentsConfig(componentsConfig) {
         // TODO: 检查组件配置
     }
-    initPageData(pageData, componentTypes) {
-        if (pageData == null)
-            throw errors_1.errors.argumentNull("pageData");
-        console.assert(pageData.children != null, "PageData children is null.");
-        let travel = new utility_1.PageDataTravel(pageData);
-        travel.each((c) => {
-            if (typeof c == "string" || !(0, utility_1.isCustomComponent)(c) || componentTypes[c.type])
-                return;
-            componentTypes[c.type] = (0, component_2.createLoadingComponent)();
-        });
-    }
+    // private initPageData(pageData: PageData, componentTypes: ComponentTypes) {
+    //     if (pageData == null) throw errors.argumentNull("pageData")
+    //     console.assert(pageData.children != null, "PageData children is null.")
+    //     let travel = new PageDataTravel(pageData)
+    //     travel.each((c) => {
+    //         if (typeof c == "string" || !isCustomComponent(c) || componentTypes[c.type])
+    //             return
+    //         componentTypes[c.type] = createLoadingComponent()
+    //     })
+    // }
     /**
      * 对组件及其子控件进行命名
      * @param componentData
@@ -6386,6 +5781,8 @@ class PageDesigner extends React.Component {
     initComponent(componentData, pageData) {
         let namedComponents = {};
         pageData.children.forEach(c => {
+            if (typeof c == "string")
+                return;
             if (c.name) {
                 namedComponents[c.name] = c;
             }
@@ -6428,7 +5825,8 @@ class PageDesigner extends React.Component {
     }
     /** 获取已选择了的组件 */
     get selectedComponents() {
-        let arr = this.pageData.children.filter(o => ((o.status || component_1.ComponentStatus.default) & component_1.ComponentStatus.selected) == component_1.ComponentStatus.selected);
+        let arr = this.pageData.children.filter(o => typeof o != "string" &&
+            ((o.status || runtime_1.ComponentStatus.default) & runtime_1.ComponentStatus.selected) == runtime_1.ComponentStatus.selected);
         return arr;
     }
     get element() {
@@ -6482,7 +5880,6 @@ class PageDesigner extends React.Component {
      * @param componentIds 指定的控件编号
      */
     selectComponent(componentIds) {
-        debugger;
         this.selectComponents(componentIds);
         //====================================================
         // 设置焦点，以便获取键盘事件
@@ -6497,15 +5894,16 @@ class PageDesigner extends React.Component {
     selectComponents(componentIds) {
         if (typeof componentIds == 'string')
             componentIds = [componentIds];
-        this.pageData.children.forEach(c => {
+        let children = (this.pageData.children || []).filter(o => typeof o != "string");
+        children.forEach(c => {
             // c.selected = false;
-            c.status = c.status || component_1.ComponentStatus.default;
-            c.status = c.status & (~component_1.ComponentStatus.selected);
+            c.status = c.status || runtime_1.ComponentStatus.default;
+            c.status = c.status & (~runtime_1.ComponentStatus.selected);
         });
-        this.pageData.children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
+        children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
             // c.selected = true;
-            c.status = c.status || component_1.ComponentStatus.default;
-            c.status = c.status | component_1.ComponentStatus.selected;
+            c.status = c.status || runtime_1.ComponentStatus.default;
+            c.status = c.status | runtime_1.ComponentStatus.selected;
         });
         this.setState({ pageData: this.pageData });
     }
@@ -6540,21 +5938,22 @@ class PageDesigner extends React.Component {
         this.appendComponent(component, childComponentIndex);
     }
     removeComponentFrom(componentId, pageData) {
-        let child = pageData.children.filter(o => o.id == componentId)[0];
+        let componentChildren = (this.pageData.children || []).filter(o => typeof o != "string");
+        let child = componentChildren.filter(o => o.id == componentId)[0];
         if (child == null)
             throw new Error(`Component '${componentId}' is not exists.`);
         let stack = [child];
         let componentsToRemove = [componentId];
         while (stack.length > 0) {
             let item = stack.pop();
-            let children = pageData.children.filter(o => o.parentId == item.id);
-            if (children.length > 0) {
-                stack.push(...children);
+            let childs = componentChildren.filter(o => o.parentId == item.id);
+            if (childs.length > 0) {
+                stack.push(...childs);
                 // status 为 ComponentStatus.asset 不要删除
-                componentsToRemove.push(...children.filter(o => o.status == null || (o.status & component_1.ComponentStatus.asset) != component_1.ComponentStatus.asset).map(o => o.id));
+                componentsToRemove.push(...childs.filter(o => o.status == null || (o.status & runtime_1.ComponentStatus.asset) != runtime_1.ComponentStatus.asset).map(o => o.id));
             }
         }
-        pageData.children = pageData.children.filter(o => componentsToRemove.indexOf(o.id) < 0);
+        pageData.children = pageData.children.filter(o => typeof o != "string" && componentsToRemove.indexOf(o.id) < 0);
     }
     /**
      * 通过组件编号获取组件的数据
@@ -6564,7 +5963,7 @@ class PageDesigner extends React.Component {
         let pageData = this.state.pageData;
         if (!pageData)
             throw errors_1.errors.pageDataIsNull();
-        let componentData = pageData.children.filter(o => o.id == componentId)[0];
+        let componentData = pageData.children.filter(o => typeof o != "string" && o.id == componentId)[0];
         return componentData;
     }
     async loadEditorTypes(pageData) {
@@ -6577,41 +5976,39 @@ class PageDesigner extends React.Component {
         });
         let componentsConfig = this.props.componentsConfig;
         let promises = componentsToLoad.map(typeName => ({ typeName, componentConfig: componentsConfig[typeName] }))
-            .map(o => o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })));
+            .map(o => o.componentConfig.editor ?
+            o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })) : Promise.resolve(null));
         let r = await Promise.all(promises);
         let componentEditors = this.state.componentEditors;
         r.forEach(m => {
+            if (m == null)
+                return;
             let editors = m.module.default;
             if (!m.module.default)
                 throw errors_1.errors.editorModuleNoneDefaultExport(m.typeName);
             componentEditors[m.typeName] = m.module.default;
         });
-        // let componentDatas = pageData.children.filter(o => typeof o != "string").map(c => c)
-        // for (let c of componentDatas) {
-        //     let defaultValue: ComponentEditors[""] = []
-        //     componentEditors[c.type] = componentEditors[c.type] || defaultValue
-        //     let propEditors = Component.getPropEditors(c)
-        //     for (let e of propEditors) {
-        //         componentEditors[c.type] = componentEditors[c.type] || []
-        //         componentEditors[c.type] = componentEditors[c.type].filter(o => o.propertyName != e.propertyName)
-        //         componentEditors[c.type].push(e)
-        //     }
-        // }
         this.setState({ componentEditors: componentEditors });
     }
     async loadComponentTypes(pageData) {
-        let componentTypes = {};
+        let componentTypes = this.state.componentTypes;
         let componentsConfig = this.props.componentsConfig;
         let componentsToLoad = [];
         let travel = new utility_1.PageDataTravel(pageData);
         travel.each((c) => {
-            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !(0, utility_1.isCustomComponent)(c))
+            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !(0, utility_1.isCustomComponent)(c) || componentTypes[c.type])
                 return;
             componentsToLoad.push(c.type);
         });
-        const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
-        Object.assign(componentTypes, loadedComponentTypes);
-        this.setState({ componentTypes });
+        componentsToLoad.forEach(typeName => {
+            componentTypes[typeName] = (0, components_1.createLoadingComponent)();
+            // this.setState({ componentTypes })
+        });
+        // const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
+        PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
+            Object.assign(componentTypes, loadedComponentTypes);
+            this.setState({ componentTypes });
+        });
     }
     static async loadComponentTypes(componentsToLoad, componentsConfig) {
         let promises = [];
@@ -6620,23 +6017,23 @@ class PageDesigner extends React.Component {
             let typeName = componentsToLoad[i];
             if (!typeName) {
                 let errorText = `Component '${typeName}' has not a config.`;
-                componentTypes[typeName] = (0, component_2.createInfoComponent)(errorText);
+                componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
                 continue;
             }
-            if (component_1.componentTypes[typeName]) {
-                promises.push(Promise.resolve(component_1.componentTypes[typeName]));
+            if (runtime_1.componentTypes[typeName]) {
+                promises.push(Promise.resolve(runtime_1.componentTypes[typeName]));
                 continue;
             }
             let p = new Promise(function (resolve, reject) {
                 if (!componentsConfig[typeName]) {
                     let errorText = `Component '${typeName}' is not exists.`;
-                    componentTypes[typeName] = (0, component_2.createInfoComponent)(errorText);
+                    componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
                     resolve({});
                     return;
                 }
                 if (!(componentsConfig[typeName].type instanceof Promise)) {
                     let errorText = `Component '${typeName}' type is invalid.`;
-                    componentTypes[typeName] = (0, component_2.createInfoComponent)(errorText);
+                    componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
                     resolve({});
                     return;
                 }
@@ -6647,7 +6044,7 @@ class PageDesigner extends React.Component {
                 componentType.then(p => {
                     if (!p.default) {
                         let errorText = `Component '${typeName}' module has not export default member.`;
-                        componentTypes[typeName] = (0, component_2.createInfoComponent)(errorText);
+                        componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
                     }
                     else {
                         componentTypes[typeName] = p.default;
@@ -6759,7 +6156,7 @@ class EditorGroup extends React.Component {
             return React.createElement(React.Fragment, null, propertyEditor.map(o => React.createElement("div", { key: o.proppertyName, className: style_1.classNames.propertyEditor },
                 React.createElement("label", { className: style_1.classNames.propertyEditorLabel }, o.displayName),
                 React.createElement("div", { className: style_1.classNames.propertyEditorControl },
-                    React.createElement(utility_1.ErrorBoundary, null)))));
+                    React.createElement(utility_1.ErrorBoundary, null, o.editor)))));
         });
     }
 }
@@ -6847,6 +6244,7 @@ const style_1 = __webpack_require__(/*! ../style */ "./out/style.js");
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
 const designer_1 = __webpack_require__(/*! ../designer */ "./out/designer.js");
 const editor_panel_context_1 = __webpack_require__(/*! ./editor-panel-context */ "./out/editor/editor-panel-context.js");
+const strings_1 = __webpack_require__(/*! ../strings */ "./out/strings.js");
 class EditorPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -7023,7 +6421,7 @@ class EditorPanel extends React.Component {
                 throw errors_1.errors.contextArgumentNull();
             let editors = EditorPanel.getEditors(args.designer);
             return React.createElement(editor_panel_context_1.EditPanelContext.Provider, { value: { editors } },
-                React.createElement("div", { className: `${style_1.classNames.editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element }, this.props.children));
+                React.createElement("div", { className: `${style_1.classNames.editorPanel} ${this.props.className || ""}`, ref: (e) => this.element = e || this.element }, editors.length == 0 ? React.createElement("div", { className: style_1.classNames.empty }, strings_1.strings.emptyEditorPanel) : this.props.children));
         });
     }
 }
@@ -7136,10 +6534,10 @@ exports.errors = new Errors();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EditorPanel = exports.EditorGroup = exports.ComponentPanel = exports.ComponentDiagram = exports.classNames = exports.DesignerContext = exports.PageDesigner = void 0;
-var page_designer_1 = __webpack_require__(/*! ./design/page-designer */ "./out/design/page-designer.js");
-Object.defineProperty(exports, "PageDesigner", { enumerable: true, get: function () { return page_designer_1.PageDesigner; } });
-Object.defineProperty(exports, "DesignerContext", { enumerable: true, get: function () { return page_designer_1.DesignerContext; } });
+exports.componentTypeNames = exports.ComponentStatus = exports.EditorPanel = exports.EditorGroup = exports.ComponentPanel = exports.ComponentDiagram = exports.classNames = exports.DesignerContext = exports.PageDesigner = void 0;
+var designer_1 = __webpack_require__(/*! ./designer */ "./out/designer.js");
+Object.defineProperty(exports, "PageDesigner", { enumerable: true, get: function () { return designer_1.PageDesigner; } });
+Object.defineProperty(exports, "DesignerContext", { enumerable: true, get: function () { return designer_1.DesignerContext; } });
 var style_1 = __webpack_require__(/*! ./style */ "./out/style.js");
 Object.defineProperty(exports, "classNames", { enumerable: true, get: function () { return style_1.classNames; } });
 var component_diagram_1 = __webpack_require__(/*! ./design/component-diagram */ "./out/design/component-diagram.js");
@@ -7149,8 +6547,421 @@ Object.defineProperty(exports, "ComponentPanel", { enumerable: true, get: functi
 var editor_1 = __webpack_require__(/*! ./editor */ "./out/editor/index.js");
 Object.defineProperty(exports, "EditorGroup", { enumerable: true, get: function () { return editor_1.EditorGroup; } });
 Object.defineProperty(exports, "EditorPanel", { enumerable: true, get: function () { return editor_1.EditorPanel; } });
+var runtime_1 = __webpack_require__(/*! ./runtime */ "./out/runtime/index.js");
+Object.defineProperty(exports, "ComponentStatus", { enumerable: true, get: function () { return runtime_1.ComponentStatus; } });
+Object.defineProperty(exports, "componentTypeNames", { enumerable: true, get: function () { return runtime_1.componentTypeNames; } });
 __webpack_require__(/*! ./design/create-design-element */ "./out/design/create-design-element.js");
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/components.js":
+/*!***********************************!*\
+  !*** ./out/runtime/components.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.componentTypes = void 0;
+const component_placeholder_1 = __webpack_require__(/*! ./components/component-placeholder */ "./out/runtime/components/component-placeholder.js");
+const component_type_names_1 = __webpack_require__(/*! ./components/component-type-names */ "./out/runtime/components/component-type-names.js");
+const page_1 = __webpack_require__(/*! ./components/page */ "./out/runtime/components/page.js");
+const text_1 = __webpack_require__(/*! ./components/text */ "./out/runtime/components/text.js");
+exports.componentTypes = {};
+exports.componentTypes[component_type_names_1.componentTypeNames.placeHolder] = component_placeholder_1.ComponentPlaceHolder;
+exports.componentTypes[component_type_names_1.componentTypeNames.page] = page_1.Page;
+exports.componentTypes[component_type_names_1.componentTypeNames.text] = text_1.Text;
+//# sourceMappingURL=components.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/components/component-placeholder.js":
+/*!*********************************************************!*\
+  !*** ./out/runtime/components/component-placeholder.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComponentPlaceHolder = void 0;
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+class ComponentPlaceHolder extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return React.createElement(React.Fragment, null, this.props.children);
+    }
+}
+exports.ComponentPlaceHolder = ComponentPlaceHolder;
+//# sourceMappingURL=component-placeholder.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/components/component-type-names.js":
+/*!********************************************************!*\
+  !*** ./out/runtime/components/component-type-names.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.componentTypeNames = void 0;
+exports.componentTypeNames = {
+    page: "Page",
+    placeHolder: "PlaceHolder",
+    text: "Text",
+};
+//# sourceMappingURL=component-type-names.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/components/page.js":
+/*!****************************************!*\
+  !*** ./out/runtime/components/page.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Page = void 0;
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+const component_type_names_1 = __webpack_require__(/*! ./component-type-names */ "./out/runtime/components/component-type-names.js");
+class Page extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return React.createElement(React.Fragment, null, this.props.children);
+    }
+}
+exports.Page = Page;
+Page.typeName = component_type_names_1.componentTypeNames.page;
+//# sourceMappingURL=page.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/components/text.js":
+/*!****************************************!*\
+  !*** ./out/runtime/components/text.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Text = void 0;
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+class Text extends React.Component {
+    render() {
+        return this.props.value;
+    }
+}
+exports.Text = Text;
+//# sourceMappingURL=text.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/errors.js":
+/*!*******************************!*\
+  !*** ./out/runtime/errors.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errors = void 0;
+const errors_1 = __webpack_require__(/*! maishu-toolkit/out/errors */ "./node_modules/maishu-toolkit/out/errors.js");
+const page_data_parser_1 = __webpack_require__(/*! ../runtime/page-data-parser */ "./out/runtime/page-data-parser.js");
+class MyErrors extends errors_1.Errors {
+    pathFieldRequired(name) {
+        let msg = `Path field of '${name}' component config can not be null or empty.`;
+        return new Error(msg);
+    }
+    canntFindModule(name, path) {
+        let msg = `Can not find component '${name}' in the module, module path is: '${path}'.`;
+        return new Error(msg);
+    }
+    componentTypeNotExists(name) {
+        let msg = `Component '${name}' not exists.`;
+        return new Error(msg);
+    }
+    argumentNull(name) {
+        let msg = `Argument '${name}' can not be null or empty.`;
+        return new Error(msg);
+    }
+    propsFileNull(fieldName) {
+        let msg = `Field '${fieldName}' of props is null.`;
+        let error = new Error(msg);
+        let name = "propsFileNull";
+        error.name = name;
+        return error;
+    }
+    nullPageDataParserArguments() {
+        let obj = { PageDataParser: page_data_parser_1.PageDataParser };
+        let typeName = "PageDataParser";
+        let msg = `PageDataParser arguments is null. Is this component child of ${typeName}?`;
+        let error = new Error(msg);
+        let name = "nullPageDataParserArguments";
+        error.name = name;
+        return error;
+    }
+}
+exports.errors = new MyErrors();
+//# sourceMappingURL=errors.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/index.js":
+/*!******************************!*\
+  !*** ./out/runtime/index.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Page = exports.ComponentPlaceHolder = exports.componentTypeNames = exports.componentTypes = exports.ComponentStatus = exports.PageDataParserContext = exports.PageDataParser = exports.parseComponentData = void 0;
+var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./out/runtime/parse-component-data.js");
+Object.defineProperty(exports, "parseComponentData", { enumerable: true, get: function () { return parse_component_data_1.parseComponentData; } });
+var page_data_parser_1 = __webpack_require__(/*! ./page-data-parser */ "./out/runtime/page-data-parser.js");
+Object.defineProperty(exports, "PageDataParser", { enumerable: true, get: function () { return page_data_parser_1.PageDataParser; } });
+Object.defineProperty(exports, "PageDataParserContext", { enumerable: true, get: function () { return page_data_parser_1.PageDataParserContext; } });
+var types_1 = __webpack_require__(/*! ./types */ "./out/runtime/types.js");
+Object.defineProperty(exports, "ComponentStatus", { enumerable: true, get: function () { return types_1.ComponentStatus; } });
+var components_1 = __webpack_require__(/*! ./components */ "./out/runtime/components.js");
+Object.defineProperty(exports, "componentTypes", { enumerable: true, get: function () { return components_1.componentTypes; } });
+var component_type_names_1 = __webpack_require__(/*! ./components/component-type-names */ "./out/runtime/components/component-type-names.js");
+Object.defineProperty(exports, "componentTypeNames", { enumerable: true, get: function () { return component_type_names_1.componentTypeNames; } });
+var component_placeholder_1 = __webpack_require__(/*! ./components/component-placeholder */ "./out/runtime/components/component-placeholder.js");
+Object.defineProperty(exports, "ComponentPlaceHolder", { enumerable: true, get: function () { return component_placeholder_1.ComponentPlaceHolder; } });
+var page_1 = __webpack_require__(/*! ./components/page */ "./out/runtime/components/page.js");
+Object.defineProperty(exports, "Page", { enumerable: true, get: function () { return page_1.Page; } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/page-data-parser.js":
+/*!*****************************************!*\
+  !*** ./out/runtime/page-data-parser.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageDataParser = exports.PageDataParserContext = void 0;
+const errors_1 = __webpack_require__(/*! ./errors */ "./out/runtime/errors.js");
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+const _1 = __webpack_require__(/*! . */ "./out/runtime/index.js");
+exports.PageDataParserContext = React.createContext(null);
+class PageDataParser extends React.Component {
+    constructor(props) {
+        super(props);
+        if (!props)
+            throw errors_1.errors.argumentNull("props");
+        if (!props.pageData)
+            throw errors_1.errors.argumentFieldNull("pageData", "props");
+        if (!props.elementFactory)
+            throw errors_1.errors.argumentFieldNull("elementFactory", "props");
+        this.state = { pageData: props.pageData, componentTypes: props.componentTypes };
+    }
+    static getDerivedStateFromProps(props, state) {
+        return { pageData: props.pageData, componentTypes: props.componentTypes };
+    }
+    render() {
+        let { pageData } = this.state;
+        let { elementFactory, componentTypes } = this.props;
+        let children = (pageData.children || []).filter(o => typeof o == "string" || !o.parentId);
+        let childComponents = children.map(o => {
+            if (typeof o == "string")
+                return o;
+            return (0, _1.parseComponentData)(o, componentTypes, elementFactory);
+        });
+        let pageType = componentTypes[pageData.type];
+        if (!pageType)
+            throw new Error(`Component type '${pageData.type}' is not exists.`);
+        let pageElement = React.createElement(pageType, pageData.props, childComponents);
+        return React.createElement(exports.PageDataParserContext.Provider, { value: { pageData, elementFactory, componentTypes } }, pageElement);
+    }
+}
+exports.PageDataParser = PageDataParser;
+//# sourceMappingURL=page-data-parser.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/parse-component-data.js":
+/*!*********************************************!*\
+  !*** ./out/runtime/parse-component-data.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseComponentData = void 0;
+const errors_1 = __webpack_require__(/*! ./errors */ "./out/runtime/errors.js");
+const components_1 = __webpack_require__(/*! ./components */ "./out/runtime/components.js");
+function parseComponentData(componentData, componentTypes, createElement) {
+    if (!componentData)
+        throw errors_1.errors.argumentNull("componentData");
+    if (!componentTypes)
+        throw errors_1.errors.argumentNull("componentTypes");
+    if (!componentData.type)
+        throw errors_1.errors.argumentFieldNull("type", "componentData");
+    let isHtmlComponent = componentData.type.toLowerCase() == componentData.type;
+    let type = isHtmlComponent ? componentData.type : (componentTypes[componentData.type] || components_1.componentTypes[componentData.type]);
+    if (type == null) {
+        throw errors_1.errors.componentTypeNotExists(componentData.type);
+    }
+    let children = [];
+    let childComponentInfos = componentData.children || [];
+    if (childComponentInfos.length > 0) {
+        children = childComponentInfos.map(c => {
+            if (typeof c == "string")
+                return c;
+            return parseComponentData(c, componentTypes, createElement);
+        });
+    }
+    let props = Object.assign({}, componentData.props);
+    props.key = props.key || componentData.id;
+    props.id = componentData.id;
+    return createElement(type, props, children);
+}
+exports.parseComponentData = parseComponentData;
+//# sourceMappingURL=parse-component-data.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/types.js":
+/*!******************************!*\
+  !*** ./out/runtime/types.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ComponentStatus = void 0;
+var ComponentStatus;
+(function (ComponentStatus) {
+    ComponentStatus[ComponentStatus["default"] = 0] = "default";
+    /** 已选中 */
+    ComponentStatus[ComponentStatus["selected"] = 1] = "selected";
+    /** 禁用 */
+    ComponentStatus[ComponentStatus["disabled"] = 2] = "disabled";
+    /** 不允许删除 */
+    ComponentStatus[ComponentStatus["asset"] = 4] = "asset";
+})(ComponentStatus = exports.ComponentStatus || (exports.ComponentStatus = {}));
+//# sourceMappingURL=types.js.map
 
 /***/ }),
 
@@ -7169,6 +6980,7 @@ exports.strings = {
     emptyCompoenntPanel: "暂无可用组件",
     emptyDiagram: "请拖放组件到此处",
     componentLoading: "组件正在加载中...",
+    emptyEditorPanel: "暂无可编辑属性"
 };
 //# sourceMappingURL=strings.js.map
 
@@ -7194,6 +7006,7 @@ exports.classNames = {
     propertyEditor: "property-editor",
     propertyEditorControl: "property-editor-control",
     propertyEditorLabel: "property-editor-label",
+    componentPlaceHolder: "component-place-holder"
 };
 // let templateDialog = {
 //     nameHeight: 40,
@@ -7207,22 +7020,18 @@ element.innerHTML = `
     list-style: none;
     margin: 0;
     padding: 0;
+    border: solid 1px #ccc;
 }
 .${exports.classNames.componentPanel} {
     display: flex;
+    border: solid 1px #ccc;
 }
 .${exports.classNames.editorPanel} {
-    width: 300px;
-    background: white;
-    color: black;
-    margin: 0;
-    font-size: 14px;
-    z-index: 100;
-    overflow: auto;
+    border: solid 1px #ccc;
+    min-height: 50px;
 }
 .${exports.classNames.editorPanel} label {
     width: 80px;
-    float: left;
     padding: 4px;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -7231,7 +7040,7 @@ element.innerHTML = `
     padding-left: 90px;
 }
 .${exports.classNames.editorPanel} .empty {
-    padding-top: 200px;
+    padding-top: 20px;
     text-align: center;
 }
 .${exports.classNames.editorPanel} .error {
@@ -7253,6 +7062,13 @@ element.innerHTML = `
     text-align: center;
     padding: 8px;
 }
+.${exports.classNames.propertyEditor} {
+    display: flex;
+}
+.${exports.classNames.componentPlaceHolder} {
+    min-height: 50px;
+    min-width: 50px;
+}
         `;
 if (document.head != null) {
     document.head.appendChild(element);
@@ -7272,14 +7088,14 @@ if (document.head != null) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.elementFactoryName = exports.childrenNodeToArray = exports.isCustomComponent = exports.groupDisplayNames = exports.proptDisplayNames = void 0;
-const component_1 = __webpack_require__(/*! ../component */ "./out/component/index.js");
+const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
 exports.proptDisplayNames = {};
 exports.groupDisplayNames = {};
 function isCustomComponent(componentData) {
     // 全小写为 HTML 元素，不需要加载
     if (componentData.type.toLowerCase() == componentData.type)
         return false;
-    if (component_1.componentTypes[componentData.type])
+    if (runtime_1.componentTypes[componentData.type])
         return false;
     return true;
 }

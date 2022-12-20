@@ -5,7 +5,7 @@ import { classNames } from "../style"
 import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
 import { ComponentData } from "../runtime"
-import { guid } from "maishu-toolkit"
+import { guid } from "maishu-toolkit/out/guid"
 
 interface ComponentPanelProps {
     renderItem?: (typeName: string, compoenntConfig: ComponentsConfig[0]) => ReturnType<React.Component["render"]>

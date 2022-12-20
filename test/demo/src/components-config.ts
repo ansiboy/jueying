@@ -1,4 +1,4 @@
-import type { ComponentsConfig } from "../../../out"
+import type { ComponentsConfig, componentTypeNames } from "../../../out"
 export let typeNames = { image: "Image", button: "Button", div: "div", columns: "Columns" }
 
 export let componentsConfig: ComponentsConfig = {}

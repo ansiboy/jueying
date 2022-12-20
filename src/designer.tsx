@@ -53,10 +53,17 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         this.checkComponentsConfig(props.componentsConfig)
 
-        let pageData = this.props.pageData;
-        // let componentTypes: ComponentTypes = {}
-        // this.initPageData(pageData, componentTypes);
+        // 设置默认组件
+        for (let typeName in defaultComponentTypes) {
+            if (!props.componentsConfig[typeName]) {
+                props.componentsConfig[typeName] = {
+                    type: Promise.resolve({ default: defaultComponentTypes[typeName] })
+                }
+            }
+        }
 
+
+        let pageData = this.props.pageData;
         this.state = { pageData, componentTypes: {}, componentEditors: {} };
     }
 
@@ -64,21 +71,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     private checkComponentsConfig(componentsConfig: ComponentsConfig) {
         // TODO: 检查组件配置
     }
-
-    // private initPageData(pageData: PageData, componentTypes: ComponentTypes) {
-    //     if (pageData == null) throw errors.argumentNull("pageData")
-
-    //     console.assert(pageData.children != null, "PageData children is null.")
-
-    //     let travel = new PageDataTravel(pageData)
-    //     travel.each((c) => {
-    //         if (typeof c == "string" || !isCustomComponent(c) || componentTypes[c.type])
-    //             return
-
-    //         componentTypes[c.type] = createLoadingComponent()
-    //     })
-    // }
-
 
     /**
      * 对组件及其子控件进行命名
@@ -382,12 +374,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                 componentTypes[typeName] = createInfoComponent(errorText)
                 continue
             }
-
-            if (defaultComponentTypes[typeName]) {
-                promises.push(Promise.resolve(defaultComponentTypes[typeName]))
-                continue
-            }
-
 
             let p = new Promise(function (resolve, reject) {
 
