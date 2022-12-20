@@ -1,4 +1,5 @@
 export let componentTypeNames = {
     page: "Page",
-    placeHolder: "PlaceHolder"
+    placeHolder: "PlaceHolder",
+    text: "Text",
 }
