@@ -14,7 +14,7 @@ function createDesigntimeComponent(type: any, props: any, children: any) {
     let p = props as ComponentProps
     if (!p.id) throw errors.argumentFieldNull("id", "props")
 
-    return <DesignerContext.Consumer>
+    return <DesignerContext.Consumer key={p.id}>
         {args => {
             if (!args) throw errors.contextArgumentNull()
             let componentData = PageDataTravel.findComponent(args.designer.pageData, p.id)//args.designer.pageData.children.filter(o => o.id == p.id)[0]

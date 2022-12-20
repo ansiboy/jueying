@@ -8,7 +8,7 @@ export type ComponentsConfig = {
         renderSide?: "server" | "client" | "both"
         icon?: string
         group?: string,
-        editor: Promise<{ default: PropertyEditorInfo<any>[] }>,
+        editor?: Promise<{ default: PropertyEditorInfo<any>[] }>,
         design?: number | Promise<ComponentModule>
     }
 }

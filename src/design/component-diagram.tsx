@@ -60,7 +60,7 @@ export class ComponentDiagram extends React.Component<Props, State> {
                 sort: false,
                 onEnd: (ev) => {
                     let componentData = componentPanel.getComponentData(ev.item);
-                    let childNodes = ev.item.parentElement?.childNodes || []
+                    let childNodes = ev.item.parentElement == null ? [] : ev.item.parentElement.childNodes
                     let targetIndex: number | undefined
                     for (let i = 0; i < childNodes.length; i++) {
                         if (childNodes[i] == ev.item) {

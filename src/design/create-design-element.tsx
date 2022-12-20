@@ -12,12 +12,10 @@ const createDesignElement = (type: any, props: any, ...children: Array<any>) => 
         props1 = { key: props.id || props.key }
 
     return React.createElement(DesignComponentContext.Consumer, props1, ((args: DesignComponentContextValue) => {
-        // let isDesigntime = args != null
-        // if (!isDesigntime) {
-        //     return React.createElement(type, props, ...children)
-        // }
-        if (args == null)
-            throw errors.contextArgumentNull()
+        let isDesigntime = args != null
+        if (!isDesigntime) {
+            return React.createElement(type, props, ...children)
+        }
 
         let designBehavior = typeof args.componentConfig.design == "number" ? args.componentConfig.design : DesignBehavior.default
         let disableClick = (designBehavior & DesignBehavior.disableClick) == DesignBehavior.disableClick
