@@ -21,7 +21,7 @@ export interface ComponentData {
     parentId?: string;
     name?: string;
     status?: ComponentStatus,
-    children: (ComponentData | string)[]
+    children: ComponentData[]
 }
 
 export enum ComponentStatus {

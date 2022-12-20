@@ -64,7 +64,9 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
                     if (!args) throw errors.contextArgumentNull()
 
                     let componentsConfig = args.designer.props.componentsConfig
-                    let componentInfos = Object.keys(componentsConfig).map(k => Object.assign({}, componentsConfig[k], { typeName: k }))
+                    let componentInfos = Object.keys(componentsConfig).filter(k => !componentsConfig[k].hidden)
+                        .map(k => Object.assign({}, componentsConfig[k], { typeName: k }))
+                        
                     let renderItem = this.props.renderItem || ComponentPanel.renderItem
                     renderItem.bind(this)
                     return <ul className={classNames.componentPanel} ref={e => this.ref(e, args)}>

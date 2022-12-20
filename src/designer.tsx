@@ -57,7 +57,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         for (let typeName in defaultComponentTypes) {
             if (!props.componentsConfig[typeName]) {
                 props.componentsConfig[typeName] = {
-                    type: Promise.resolve({ default: defaultComponentTypes[typeName] })
+                    type: Promise.resolve({ default: defaultComponentTypes[typeName] }),
+                    hidden: true
                 }
             }
         }
