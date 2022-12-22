@@ -1,4 +1,4 @@
-import React, { ImgHTMLAttributes } from "react";
+import React, { ComponentProps, ImgHTMLAttributes } from "react";
 
 interface Props {
     id?: string

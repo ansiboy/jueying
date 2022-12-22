@@ -6,7 +6,7 @@ import { errors } from "../errors";
 import { ComponentPlaceHolder } from "../runtime";
 import { DesignComponentPlaceHolder } from "./components/design-component-placeholder";
 
-const createDesignElement = (type: any, props: any, ...children: Array<any>) => {
+ const createDesignElement = (type: any, props: any, ...children: Array<any>) => {
     let props1: any = {}
     if (props)
         props1 = { key: props.id || props.key }

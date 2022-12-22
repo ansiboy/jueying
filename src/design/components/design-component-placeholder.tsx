@@ -1,7 +1,5 @@
-import { guid } from "maishu-toolkit/out/guid";
 import * as React from "react";
-import Sortable from "sortablejs";
-import { DesignerContext } from "../../designer";
+import { DesignerContext, DesignerContextValue } from "../../designer";
 import { errors } from "../../errors";
 import { ComponentProps } from "../../runtime";
 import { classNames } from "../../style";
@@ -15,22 +13,23 @@ export class DesignComponentPlaceHolder extends React.Component<ComponentProps> 
 
     }
 
-    enableDrop(element: HTMLElement | undefined) {
-        if (!element || this.element) return
+    private enableDrop(element: HTMLElement | null, args: DesignerContextValue) {
+        if (!element || this.element)
+            return;
 
-        this.element = element
-        
-        let groupName = guid()
-    
+        this.element = element;
+        args.designer.componentPanels.each((componentPanel) => {
+            componentPanel.appendDropTarget(this.element, args.designer, this.props.id)
+        })
+
     }
 
     render() {
         return <DesignerContext.Consumer>
             {args => {
                 if (!args) throw errors.contextArgumentNull()
-                // args.designer.componentPanelElements
-                return <div className={classNames.componentPlaceHolder}>
-
+                return <div className={classNames.componentPlaceHolder} ref={e => this.enableDrop(e, args)}>
+                    {this.props.children}
                 </div>
             }}
         </DesignerContext.Consumer>

@@ -9,7 +9,9 @@ export let classNames = {
     propertyEditor: "property-editor",
     propertyEditorControl: "property-editor-control",
     propertyEditorLabel: "property-editor-label",
-    componentPlaceHolder: "component-place-holder"
+    componentPlaceHolder: "component-place-holder",
+    componentWrapper: "component-wrapper",
+    page: "page"
 }
 
 // let templateDialog = {
@@ -73,6 +75,16 @@ element.innerHTML = `
 .${classNames.componentPlaceHolder} {
     min-height: 50px;
     min-width: 50px;
+}
+.${classNames.componentWrapper} {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.${classNames.page} {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
         `;
 

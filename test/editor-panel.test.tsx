@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client"
 import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGroup, classNames, ComponentStatus, PageData } from "../out"
 import { Page } from "../out/runtime/components/page"
 import { designerUpdateFinish, JSDOM, text } from "./common"
-import { componentsConfig, typeNames } from "./demo/src/components-config"
+import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import Image from "./demo/src/components/image"
 import { TextEditor } from "./demo/src/editors/common/text-editor"
 import imageEditors from "./demo/src/editors/image"
@@ -30,6 +30,7 @@ test("editor panel 检查元素", async function () {
     let jsdom = new JSDOM()
     let container = jsdom.window.document.createElement("div")
     let root = ReactDOM.createRoot(container)
+    let componentsConfig = createComponentsConfig()
     let editorPanel: EditorPanel
     let pageDesigner = await new Promise<PageDesigner>((resolve, reject) => {
         root.render(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}
@@ -72,6 +73,7 @@ test("editor panel 单个选择中图片编辑器", async function () {
         ]
     }
 
+    let componentsConfig = createComponentsConfig()
     let jsdom = new JSDOM()
     let container = jsdom.window.document.createElement("div")
     let root = ReactDOM.createRoot(container)
@@ -115,7 +117,7 @@ test("editor panel 切换选中的图片", async function () {
 
     let image1Props: Image["props"] = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
     let image2Props: Image["props"] = {} as Image["props"]
-    let helloWorld = "hello world"
+    let helloWorld = text("hello world")
     let pageData1: PageData = {
         id: "simple", type: Page.typeName, props: {},
         children: [
@@ -129,6 +131,7 @@ test("editor panel 切换选中的图片", async function () {
     let container = jsdom.window.document.createElement("div")
     let root = ReactDOM.createRoot(container)
     let editorPanel: EditorPanel = null as any
+    let componentsConfig = createComponentsConfig()
     let pageDesigner = await new Promise<PageDesigner>((resolve, reject) => {
         root.render(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}
             ref={e => {

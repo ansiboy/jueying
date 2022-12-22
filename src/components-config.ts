@@ -1,6 +1,6 @@
 import { PropertyEditorInfo } from "./editor"
 import { ComponentTypes } from "./runtime"
-type ComponentModule = { default: ComponentTypes[0] }
+export type ComponentModule = { default: ComponentTypes[0] }
 export type ComponentsConfig = {
     [typeName: string]: {
         type?: Promise<ComponentModule>

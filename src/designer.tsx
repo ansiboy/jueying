@@ -1,26 +1,28 @@
 import * as React from "react";
-import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes, ComponentTypes } from "./runtime";
+import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes, ComponentTypes, componentTypeNames } from "./runtime";
 import { errors, errors as Errors } from "./errors";
 import { guid } from "maishu-toolkit/out/guid";
-import type { ComponentsConfig } from "./components-config";
+import type { ComponentModule, ComponentsConfig } from "./components-config";
 import { createInfoComponent, createLoadingComponent } from "./design/components";
 import { ComponentEditors } from "./types";
-import { isCustomComponent, PageDataTravel, deepEqual } from "./utility";
+import { PageDataTravel, deepEqual, isHTMLComponent } from "./utility";
 import { DataList } from "./data/data-list";
 import { ComponentPanel } from "./design";
+import { DesignBehavior } from "./design/design-behavior";
+import { DesignPage } from "./design/components/design-page";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
-    pageData: PageData,
-    className?: string,
-    style?: React.CSSProperties,
-    children?: React.ReactNode
-    componentsConfig: ComponentsConfig
+    pageData: PageData;
+    className?: string;
+    style?: React.CSSProperties;
+    children?: React.ReactNode;
+    componentsConfig: ComponentsConfig;
 }
 
 export interface PageDesignerState {
-    pageData: PageData,
-    componentTypes: ComponentTypes,
-    componentEditors: ComponentEditors,
+    pageData: PageData;
+    componentTypes: ComponentTypes;
+    componentEditors: ComponentEditors;
 }
 
 export type DesignerContextValue = {
@@ -30,8 +32,9 @@ export type DesignerContextValue = {
 export let DesignerContext = React.createContext<DesignerContextValue | null>(null)
 
 export type DesignComponentContextValue = {
-    componentData: ComponentData
-    componentConfig: ComponentsConfig[0]
+    componentData: ComponentData;
+    componentConfig: ComponentsConfig[0];
+    designer: PageDesigner;
 };
 
 export let DesignComponentContext = React.createContext<DesignComponentContextValue | null>(null)
@@ -43,7 +46,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
     private _prePageData: PageData | null = null
     readonly componentDiagramElements = new DataList<HTMLElement>()
-    readonly componentPanelElements = new DataList<{ element: HTMLElement, instance: ComponentPanel }>()
+    readonly componentPanels = new DataList<ComponentPanel>()
 
     constructor(props: PageDesignerProps) {
         super(props);
@@ -52,17 +55,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (!props.componentsConfig) throw errors.argumentFieldCanntNull("componentsConfig", "props")
 
         this.checkComponentsConfig(props.componentsConfig)
-
-        // 设置默认组件
-        for (let typeName in defaultComponentTypes) {
-            if (!props.componentsConfig[typeName]) {
-                props.componentsConfig[typeName] = {
-                    type: Promise.resolve({ default: defaultComponentTypes[typeName] }),
-                    hidden: true
-                }
-            }
-        }
-
 
         let pageData = this.props.pageData;
         this.state = { pageData, componentTypes: {}, componentEditors: {} };
@@ -195,7 +187,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             pageData.children.splice(componentIndex, 0, componentData);
         }
 
-
         this.selectComponents(componentData.id);
     }
 
@@ -313,9 +304,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let componentsToLoad: string[] = []
         let travel = new PageDataTravel(pageData)
         travel.each((c) => {
-            if (typeof c == "string" || !isCustomComponent(c))
-                return
-
             componentsToLoad.push(c.type)
         })
 
@@ -347,7 +335,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         let componentsToLoad: string[] = []
         let travel = new PageDataTravel(pageData)
         travel.each((c) => {
-            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !isCustomComponent(c) || componentTypes[c.type])
+            if (isHTMLComponent(c))
                 return
 
             componentsToLoad.push(c.type)
@@ -355,7 +343,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         componentsToLoad.forEach(typeName => {
             componentTypes[typeName] = createLoadingComponent()
-            // this.setState({ componentTypes })
         })
 
         // const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
@@ -366,15 +353,30 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     static async loadComponentTypes(componentsToLoad: string[], componentsConfig: ComponentsConfig): Promise<ComponentTypes> {
+        if (!componentsToLoad) throw errors.argumentNull("componentsToLoad")
+        if (!componentsConfig) throw errors.argumentNull("componentsConfig")
+
+        // 设置默认组件
+        for (let typeName in defaultComponentTypes) {
+            if (!componentsConfig[typeName]) {
+                let designBehavior = DesignBehavior.default
+
+
+                componentsConfig[typeName] = {
+                    type: Promise.resolve({ default: defaultComponentTypes[typeName] }),
+                    hidden: true, design: designBehavior
+                }
+
+                if (typeName == componentTypeNames.page) {
+                    componentsConfig[typeName].design = Promise.resolve({ default: DesignPage })
+                }
+            }
+        }
+
         let promises: Promise<any>[] = []
         let componentTypes: { [typeName: string]: React.ComponentClass | string | React.FC } = {}
         for (let i = 0; i < componentsToLoad.length; i++) {
             let typeName = componentsToLoad[i]
-            if (!typeName) {
-                let errorText = `Component '${typeName}' has not a config.`
-                componentTypes[typeName] = createInfoComponent(errorText)
-                continue
-            }
 
             let p = new Promise(function (resolve, reject) {
 
@@ -392,7 +394,14 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                     return
                 }
 
-                let componentType = componentsConfig[typeName].type
+                let componentType: Promise<ComponentModule> | undefined
+                if (componentsConfig[typeName].design instanceof Promise) {
+                    componentType = componentsConfig[typeName].design as Promise<ComponentModule>
+                }
+                else {
+                    componentType = componentsConfig[typeName].type
+                }
+
                 if (!componentType) {
                     return resolve({})
                 }

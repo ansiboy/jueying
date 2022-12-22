@@ -1,7 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { PageDesigner, ComponentDiagram, ComponentPanel, PageData } from "../out"
-import { componentsConfig } from "./demo/src/components-config"
+import { createComponentsConfig } from "./demo/src/components-config"
 import { JSDOM, text } from "./common"
 import { Page } from "../out/runtime/components/page"
 
@@ -24,7 +24,8 @@ test("ComponentPanel 创建测试", async function () {
     let jsdom = new JSDOM()
     let container = jsdom.window.document.createElement("div")
     let root = ReactDOM.createRoot(container)
-    let componentPanel: ComponentPanel;
+    let componentPanel: ComponentPanel
+    let componentsConfig = createComponentsConfig()
     let pageDesigner = await new Promise<PageDesigner>((resolve, reject) => {
         root.render(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}
             ref={e => {

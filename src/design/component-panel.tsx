@@ -1,11 +1,12 @@
 import { errors } from "../errors"
 import * as React from "react"
-import { DesignerContext, DesignerContextValue } from "../designer"
+import { DesignerContext, DesignerContextValue, PageDesigner } from "../designer"
 import { classNames } from "../style"
 import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
 import { ComponentData } from "../runtime"
 import { guid } from "maishu-toolkit/out/guid"
+import Sortable from "sortablejs"
 
 interface ComponentPanelProps {
     renderItem?: (typeName: string, compoenntConfig: ComponentsConfig[0]) => ReturnType<React.Component["render"]>
@@ -19,6 +20,7 @@ export let ComponentPanelContext = React.createContext<{ instance: ComponentPane
 export class ComponentPanel extends React.Component<ComponentPanelProps> {
 
     private _element: HTMLElement
+    private dropTargets: HTMLElement[] = []
 
     private static renderItem(typeName: string, componentConfig: ComponentsConfig[0]) {
         let displayName = componentConfig.displayName || typeName
@@ -50,12 +52,46 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         if (!e) return
 
         this._element = e
-        let elements = args.designer.componentPanelElements.map(o => o.element)
+        let elements = args.designer.componentPanels.map(o => o.element)
         if (elements.indexOf(e) < 0) {
-            args.designer.componentPanelElements.add({ element: e, instance: this })
+            args.designer.componentPanels.add(this)
         }
     }
 
+    appendDropTarget(element: HTMLElement, designer: PageDesigner, parentId: string) {
+        if (!element) throw errors.argumentNull("element")
+        if (this.dropTargets.indexOf(element) >= 0)
+            return
+
+        this.dropTargets.push(element)
+
+        let groupName = guid()
+        new Sortable(this.element, {
+            group: { name: groupName, pull: "clone", put: false },
+            animation: 150,
+            sort: false,
+            onEnd: (ev) => {
+                let componentData = this.getComponentData(ev.item);
+                let childNodes = ev.item.parentElement == null ? [] : ev.item.parentElement.childNodes
+                let targetIndex: number | undefined
+                for (let i = 0; i < childNodes.length; i++) {
+                    if (childNodes[i] == ev.item) {
+                        targetIndex = i
+                        childNodes[i].remove()
+                        break
+                    }
+                }
+
+                componentData.parentId = parentId
+                designer.appendComponent(componentData, targetIndex);
+            }
+        });
+
+        new Sortable(element, {
+            group: groupName,
+            animation: 150
+        })
+    }
 
     render(): React.ReactNode {
         return <ComponentPanelContext.Provider value={{ instance: this }}>
@@ -66,7 +102,7 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
                     let componentsConfig = args.designer.props.componentsConfig
                     let componentInfos = Object.keys(componentsConfig).filter(k => !componentsConfig[k].hidden)
                         .map(k => Object.assign({}, componentsConfig[k], { typeName: k }))
-                        
+
                     let renderItem = this.props.renderItem || ComponentPanel.renderItem
                     renderItem.bind(this)
                     return <ul className={classNames.componentPanel} ref={e => this.ref(e, args)}>

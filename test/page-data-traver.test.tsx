@@ -23,7 +23,7 @@ test("ComponentDataTraver each 测试", async function () {
             componentDataIds.push(c.id)
     })
 
-    expect(componentDataIds[0]).toEqual(ids.image1)
+    expect(componentDataIds[0]).toEqual(pageData1.id)
 
 
     let pageData2: PageData = {

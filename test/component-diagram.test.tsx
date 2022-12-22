@@ -1,8 +1,8 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { PageDesigner, ComponentDiagram, PageData } from "../out"
-import { componentsConfig, typeNames } from "./demo/src/components-config"
-import { designerUpdateFinish } from "./common"
+import { createComponentsConfig, typeNames } from "./demo/src/components-config"
+import { designerUpdateFinish, text } from "./common"
 import { JSDOM } from "jsdom"
 import type Image from "./demo/src/components/image"
 import type Button from "./demo/src/components/button"
@@ -17,7 +17,7 @@ test("ComponentDiagram HTML 元素测试", async function () {
         div2: "div2"
     }
 
-    let helloWorld = "hello world"
+    let helloWorld = text("hello world")
     let pageData1: PageData = {
         id: "simple", type: Page.typeName, props: {},
         children: [
@@ -27,7 +27,7 @@ test("ComponentDiagram HTML 元素测试", async function () {
 
     let jsdom = new JSDOM()
     let container = jsdom.window.document.createElement("div")
-
+    let componentsConfig = createComponentsConfig()
     let root = ReactDOM.createRoot(container)
     let pageDesigner = await new Promise<PageDesigner>((resolve, reject) => {
         root.render(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}
@@ -42,7 +42,7 @@ test("ComponentDiagram HTML 元素测试", async function () {
     await designerUpdateFinish(pageDesigner)
     let div1 = container.querySelector(`#${ids.div1}`) as HTMLElement
     expect(div1).not.toBeNull()
-    expect(div1.innerHTML).toEqual(helloWorld)
+    expect(div1.innerHTML).toEqual(helloWorld.props.value)
 })
 
 test("ComponentDiagram 自定义组件测试", async function () {
@@ -63,6 +63,7 @@ test("ComponentDiagram 自定义组件测试", async function () {
     let jsdom = new JSDOM()
     let container = jsdom.window.document.createElement("div")
     let root = ReactDOM.createRoot(container)
+    let componentsConfig = createComponentsConfig()
     let pageDesigner = await new Promise<PageDesigner>((resolve, reject) => {
         root.render(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}
             ref={e => {
@@ -97,6 +98,7 @@ test("ComponentDiagram 按钮点击", async function () {
         ]
     }
 
+    let componentsConfig = createComponentsConfig()
     const component = renderer.create(<PageDesigner pageData={pageData1} componentsConfig={componentsConfig}>
         <ComponentDiagram />
     </PageDesigner>)

@@ -8,20 +8,23 @@ export class PageDataTravel {
         this.pageData = pageData
     }
 
-    each(callback: (componentData: ComponentData | string) => void) {
-        let stack: (ComponentData | string)[] = [...(this.pageData.children || [])]
-        let componentData = stack.pop()
-        while (componentData != null) {
+    each(callback: (componentData: ComponentData) => void) {
+        PageDataTravel.each(this.pageData, callback)
+    }
 
-            callback(componentData)
-            if (typeof componentData != "string") {
-                let children = componentData.children || []
+    static each(componentData: ComponentData, callback: (componentData: ComponentData) => void) {
+        let stack: ComponentData[] = [componentData]
+        let item = stack.pop()
+        while (item != null) {
+
+            callback(item)
+            if (typeof item != "string") {
+                let children = item.children || []
                 stack.push(...children)
             }
 
-            componentData = stack.pop()
+            item = stack.pop()
         }
-
     }
 
     static findComponent(pageData: PageData, componentId: string) {
