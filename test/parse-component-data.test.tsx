@@ -1,11 +1,11 @@
 import React from "react"
 import { PageDesigner } from "../out"
-import { PageData, componentTypeNames, parseComponentData, PageDataParser } from "../out/runtime"
+import { PageData, componentTypeNames, parsePageData, PageDataParser } from "../out/runtime"
 import { PageDataTravel } from "../out/utility"
 import { createComponentsConfig } from "./demo/src/components-config"
 import { DesignPage } from "../out/design/components"
 
-describe("parse-component-data 函数测试", function () {
+describe("parse-page-data 函数测试", function () {
 
     test("简单页面解析", async function () {
         let pageData1: PageData = {
@@ -22,8 +22,20 @@ describe("parse-component-data 函数测试", function () {
 
         let componentsConfig = createComponentsConfig()
         let componentTypes = await PageDesigner.loadComponentTypes(typeNames, componentsConfig)
-        let e = parseComponentData(pageData1, componentTypes, React.createElement)
+        let e = parsePageData(pageData1, componentTypes, React.createElement)
         expect(e.type).toEqual(DesignPage)
+    })
+
+    test("容器组件测试", async function () {
+
+        let pageData1: PageData = {
+            id: "simple", type: componentTypeNames.page, props: {},
+            children: [
+
+            ]
+        }
+
+
     })
 
 })

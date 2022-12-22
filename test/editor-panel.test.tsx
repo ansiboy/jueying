@@ -8,6 +8,7 @@ import Image from "./demo/src/components/image"
 import { TextEditor } from "./demo/src/editors/common/text-editor"
 import imageEditors from "./demo/src/editors/image"
 
+
 test("editor panel 检查元素", async function () {
 
     let ids = {

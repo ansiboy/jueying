@@ -1,9 +1,11 @@
-import { ComponentData, ComponentTypes, ElementFactory } from "./types";
+import { ComponentData, ComponentTypes, ElementFactory, PageData } from "./types";
 import * as React from "react";
 import { errors } from "./errors";
 import { componentTypes as defaultComponentTypes } from "./components"
+import { PageDataParser } from "./page-data-parser";
+import { PageDataTravel } from "../utility";
 
-export function parseComponentData(componentData: ComponentData, componentTypes: ComponentTypes, createElement: ElementFactory) {
+function parseComponentData(componentData: ComponentData, componentTypes: ComponentTypes, createElement: ElementFactory) {
     if (!componentData) throw errors.argumentNull("componentData");
     if (!componentTypes) throw errors.argumentNull("componentTypes");
     if (!componentData.type) {
@@ -31,4 +33,24 @@ export function parseComponentData(componentData: ComponentData, componentTypes:
     props.id = componentData.id;
     return createElement(type, props, children);
 }
+
+export function parsePageData(pageData: PageData, componentTypes: ComponentTypes, createElement: ElementFactory) {
+    if (!pageData) throw errors.argumentNull("pageData");
+    if (!componentTypes) throw errors.argumentNull("componentTypes");
+    if (!pageData.type) {
+        throw errors.argumentFieldNull("type", "pageData")
+    }
+
+    // PageDataTravel.each(pageData, function (c) {
+    //     c.children = c.children || []
+    //     let componentChildren = pageData.componentChildren || {}
+    //     if (componentChildren[c.id]) {
+    //         c.children.push(...componentChildren[c.id])
+    //     }
+    // })
+
+    return parseComponentData(pageData, componentTypes, createElement)
+
+}
+
 

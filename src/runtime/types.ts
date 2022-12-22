@@ -18,7 +18,7 @@ export interface ComponentData {
     /** 组件属性 */
     props: any;
     id: string;
-    parentId?: string;
+    // parentId?: string;
     name?: string;
     status?: ComponentStatus,
     children: ComponentData[]
@@ -34,7 +34,10 @@ export enum ComponentStatus {
     asset = 4,
 }
 
-export type PageData = ComponentData;//Omit<ComponentData, "children"> & { children: ComponentData[] };//{ id: string, children: ComponentData[] };
+export type PageData = ComponentData & {
+    /** 组件子元素 */
+    // componentChildren: { [key: string]: ComponentData[] }
+};//Omit<ComponentData, "children"> & { children: ComponentData[] };//{ id: string, children: ComponentData[] };
 
 
 export type ElementFactory = (type: React.ComponentClass<any> | React.FunctionComponent | string, props: any,

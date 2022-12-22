@@ -8,21 +8,21 @@ export class PageDataTravel {
         this.pageData = pageData
     }
 
-    each(callback: (componentData: ComponentData) => void) {
+    each(callback: (componentData: ComponentData, parent: ComponentData | null) => void) {
         PageDataTravel.each(this.pageData, callback)
     }
 
-    static each(componentData: ComponentData, callback: (componentData: ComponentData) => void) {
-        let stack: ComponentData[] = [componentData]
+    static each(componentData: ComponentData, callback: (componentData: ComponentData, parent: ComponentData | null) => void) {
+        let stack: { component: ComponentData, parent: ComponentData | null }[] = [{ component: componentData, parent: null }]
         let item = stack.pop()
         while (item != null) {
 
-            callback(item)
-            if (typeof item != "string") {
-                let children = item.children || []
-                stack.push(...children)
+            callback(item.component, item.parent)
+            // if (typeof item != "string") {
+            for (let i = 0; i < item.component.children.length; i++) {
+                let c = item.component.children[i]
+                stack.push({ component: c, parent: item.component })
             }
-
             item = stack.pop()
         }
     }
@@ -42,5 +42,25 @@ export class PageDataTravel {
         })
 
         return r
+    }
+
+    static findComponentAndParent(pageData: PageData, componentId: string): { component: ComponentData | null, parent: ComponentData | null } {
+        if (!pageData) throw errors.argumentNull("pageData")
+        if (!componentId) throw errors.argumentNull("componentId")
+
+        let travel = new PageDataTravel(pageData)
+        let component: ComponentData | null = null
+        let parent: ComponentData | null = null
+        travel.each(function (c, p) {
+            if (typeof c == "string" || component)
+                return
+
+            if (componentId == c.id) {
+                component = c
+                parent = p
+            }
+        })
+
+        return { component, parent }
     }
 }

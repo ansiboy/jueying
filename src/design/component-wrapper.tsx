@@ -18,11 +18,11 @@ export class ComponentWrapper extends React.Component<Props> {
         if (!element) return
 
         let isContainer = (this.props.designBehavior & DesignBehavior.isContainer) == DesignBehavior.isContainer;
-        if (isContainer) {
-            this.props.designer.componentPanels.each(componentPanel => {
-                componentPanel.appendDropTarget(element, this.props.designer, this.props.componentData.id)
-            })
-        }
+        // if (isContainer) {
+        //     this.props.designer.componentPanels.each(componentPanel => {
+        //         componentPanel.appendDropTarget(element, this.props.designer, this.props.componentData.id)
+        //     })
+        // }
     }
 
     render(): React.ReactNode {

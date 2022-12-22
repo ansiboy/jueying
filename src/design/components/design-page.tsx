@@ -4,6 +4,8 @@ import { errors } from "../../errors"
 import { childrenNodeToArray } from "../../utility"
 import { Page } from "../../runtime/components"
 import { classNames } from "../../style"
+import { ComponentData } from "../../runtime"
+import { guid } from "maishu-toolkit/out/guid"
 
 type Props = Page["props"]
 export class DesignPage extends React.Component<Props> {
@@ -16,7 +18,12 @@ export class DesignPage extends React.Component<Props> {
 
         this.element = element
         designer.componentPanels.each(componentPanel => {
-            componentPanel.appendDropTarget(element, designer, designer.pageData.id)
+            componentPanel.appendDropTarget(element, designer, designer.pageData.id, (componentType: string) => {
+                let c: ComponentData = {
+                    id: guid(), type: componentType, props: {}, children: []
+                }
+                return c;
+            })
         })
     }
 
@@ -26,7 +33,7 @@ export class DesignPage extends React.Component<Props> {
             {args => {
                 if (!args) throw errors.contextArgumentNull()
 
-                return <ul key={args.designer.pageData.id} className={classNames.page} ref={e => this.ref(e, args.designer)}>
+                return <ul key={args.designer.pageData.id} className={classNames.designPage} ref={e => this.ref(e, args.designer)}>
                     {children.map(o => <li key={o.key} onClick={e => {
                         let id = o.key
                         if (typeof id == "string") {
@@ -35,7 +42,6 @@ export class DesignPage extends React.Component<Props> {
 
                             args.designer.selectComponent(id);
                         }
-
                     }}>
                         {o}
                     </li>)}

@@ -1,4 +1,3 @@
-import { ComponentPlaceHolder } from "./runtime";
 
 export let classNames = {
     empty: "empty",
@@ -9,9 +8,9 @@ export let classNames = {
     propertyEditor: "property-editor",
     propertyEditorControl: "property-editor-control",
     propertyEditorLabel: "property-editor-label",
-    componentPlaceHolder: "component-place-holder",
     componentWrapper: "component-wrapper",
-    page: "page"
+    designComponentPlaceHolder: "design-component-place-holder",
+    designPage: "design-page",
 }
 
 // let templateDialog = {
@@ -72,19 +71,25 @@ element.innerHTML = `
 .${classNames.propertyEditor} {
     display: flex;
 }
-.${classNames.componentPlaceHolder} {
+.${classNames.designComponentPlaceHolder} {
     min-height: 50px;
     min-width: 50px;
+    padding: 0;
+    list-style: none;
 }
 .${classNames.componentWrapper} {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-.${classNames.page} {
+.${classNames.designPage} {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+.${classNames.empty} {
+    text-align: center;
+    padding-top: 15px;
 }
         `;
 

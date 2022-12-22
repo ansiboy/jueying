@@ -6,8 +6,7 @@ import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
 import { ComponentData } from "../runtime"
 import { guid } from "maishu-toolkit/out/guid"
-import Sortable from "sortablejs"
-
+import $ from "jquery"
 interface ComponentPanelProps {
     renderItem?: (typeName: string, compoenntConfig: ComponentsConfig[0]) => ReturnType<React.Component["render"]>
 }
@@ -15,6 +14,7 @@ interface ComponentPanelProps {
 const DATA_TYPE = "data-type"
 
 export let ComponentPanelContext = React.createContext<{ instance: ComponentPanel } | null>(null)
+type CompoenntDataFactory = (typeName: string) => ComponentData
 
 /** 组件面板 */
 export class ComponentPanel extends React.Component<ComponentPanelProps> {
@@ -36,15 +36,13 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         return this._element
     }
 
-    getComponentData(toolbarElement: HTMLElement): ComponentData {
+    getComponentData(toolbarElement: HTMLElement, componentDataFactory: CompoenntDataFactory): ComponentData {
         if (!toolbarElement) throw errors.argumentNull("toolbarElement")
 
         let dataType = toolbarElement.getAttribute(DATA_TYPE)
         if (!dataType) throw new Error(`Argument toolbarElement is an invalid component panel element.`)
 
-        let c: ComponentData = {
-            id: guid(), type: dataType, props: {}, children: []
-        }
+        let c: ComponentData = componentDataFactory(dataType)
         return c
     }
 
@@ -58,39 +56,44 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         }
     }
 
-    appendDropTarget(element: HTMLElement, designer: PageDesigner, parentId: string) {
+    async appendDropTarget(element: HTMLElement, designer: PageDesigner, parentId: string, componentDataFactory: CompoenntDataFactory) {
+        //==========================================
+        // jquery-ui 不用用于 jest 测试
+        if (typeof process != "undefined" && process.env["NODE_ENV"] == "test")
+            return
+        //==========================================
+
         if (!element) throw errors.argumentNull("element")
         if (this.dropTargets.indexOf(element) >= 0)
             return
 
+        await import("../../lib/jquery-ui-1.13.2.custom/jquery-ui.min.js" as any)
         this.dropTargets.push(element)
+        $(this.element.querySelectorAll("li")).draggable({
+            connectToSortable: this.dropTargets,
+            helper: "clone",
+        })
 
-        let groupName = guid()
-        new Sortable(this.element, {
-            group: { name: groupName, pull: "clone", put: false },
-            animation: 150,
-            sort: false,
-            onEnd: (ev) => {
-                let componentData = this.getComponentData(ev.item);
-                let childNodes = ev.item.parentElement == null ? [] : ev.item.parentElement.childNodes
+        $([element]).sortable({
+            dropOnEmpty: true,
+            receive: (ev, ui) => {
+                console.log("receive")
+
+                let componentData = this.getComponentData(ui.helper[0], componentDataFactory);
+                let childNodes = ui.helper.parent().children().toArray()
                 let targetIndex: number | undefined
                 for (let i = 0; i < childNodes.length; i++) {
-                    if (childNodes[i] == ev.item) {
+                    if (childNodes[i] == ui.helper[0]) {
                         targetIndex = i
-                        childNodes[i].remove()
                         break
                     }
                 }
 
-                componentData.parentId = parentId
-                designer.appendComponent(componentData, targetIndex);
+                designer.appendComponent(componentData, parentId, targetIndex);
             }
-        });
-
-        new Sortable(element, {
-            group: groupName,
-            animation: 150
         })
+
+
     }
 
     render(): React.ReactNode {

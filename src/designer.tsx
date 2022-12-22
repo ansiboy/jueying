@@ -35,6 +35,7 @@ export type DesignComponentContextValue = {
     componentData: ComponentData;
     componentConfig: ComponentsConfig[0];
     designer: PageDesigner;
+    componentTypes: ComponentTypes;
 };
 
 export let DesignComponentContext = React.createContext<DesignComponentContextValue | null>(null)
@@ -127,9 +128,13 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     /** 获取已选择了的组件 */
     get selectedComponents(): ComponentData[] {
-        let arr = this.pageData.children.filter(o => typeof o != "string" &&
-            ((o.status || ComponentStatus.default) & ComponentStatus.selected) == ComponentStatus.selected) as ComponentData[];
-        return arr;
+        let arr: ComponentData[] = []
+        PageDataTravel.each(this.pageData, (o) => {
+            if (((o.status || ComponentStatus.default) & ComponentStatus.selected) == ComponentStatus.selected) {
+                arr.push(o)
+            }
+        })
+        return arr
     }
 
     get element(): HTMLElement {
@@ -172,19 +177,30 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * @param componentData 控件数据
      * @param componentIndex 新添加组件在子组件中的次序 
      */
-    appendComponent(componentData: ComponentData, componentIndex?: number) {
+    appendComponent(componentData: ComponentData, parentId: string, componentIndex?: number) {
         // let parentId = componentData.parentId;
         // if (!parentId) throw new Error('ParentId field of component data is null.');
         if (!componentData) throw Errors.argumentNull('childComponent');
+        if (!parentId) throw errors.argumentNull("parentId");
 
-        let pageData: PageData = this.pageData;
-        this.initComponent(componentData, pageData)
+        let parentComponentData = PageDataTravel.findComponent(this.pageData, parentId);
+        if (!parentComponentData)
+            throw new Error(`Component data '${parentId}' is not exists`)
+
+        let children: ComponentData[] = parentComponentData.children;
+        // if (parentComponentData) {
+        //     children = parentComponentData.children;
+        // }
+        // else {
+        //     let componentChildren = pageData.componentChildren = pageData.componentChildren || {};
+        //     children = componentChildren[parentId] = componentChildren[parentId] || []
+        // }
 
         if (componentIndex == null) {
-            pageData.children.push(componentData);
+            children.push(componentData);
         }
         else {
-            pageData.children.splice(componentIndex, 0, componentData);
+            children.splice(componentIndex, 0, componentData);
         }
 
         this.selectComponents(componentData.id);
@@ -211,18 +227,33 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (typeof componentIds == 'string')
             componentIds = [componentIds]
 
-        let children = (this.pageData.children || []).filter(o => typeof o != "string") as ComponentData[]
+        // let children = (this.pageData.children || []).filter(o => typeof o != "string") as ComponentData[]
 
-        children.forEach(c => {
-            // c.selected = false;
+        /** 取消选中 */
+        PageDataTravel.each(this.pageData, (c) => {
             c.status = c.status || ComponentStatus.default;
             c.status = c.status & (~ComponentStatus.selected);
         })
-        children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
-            // c.selected = true;
+
+        /** 设置选中 */
+        PageDataTravel.each(this.pageData, (c) => {
+            if (componentIds.indexOf(c.id) < 0)
+                return;
+
             c.status = c.status || ComponentStatus.default;
             c.status = c.status | ComponentStatus.selected;
-        });
+        })
+
+        // children.forEach(c => {
+        //     // c.selected = false;
+        //     c.status = c.status || ComponentStatus.default;
+        //     c.status = c.status & (~ComponentStatus.selected);
+        // })
+        // children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
+        //     // c.selected = true;
+        //     c.status = c.status || ComponentStatus.default;
+        //     c.status = c.status | ComponentStatus.selected;
+        // });
 
         this.setState({ pageData: this.pageData });
     }
@@ -256,35 +287,26 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             throw new Error(`Cannt find component by id ${componentId}`)
 
         console.assert(component != null, `Cannt find component by id ${componentId}`);
-        component.parentId = parentId;
+        // component.parentId = parentId;
 
         let pageData = this.pageData;
         console.assert(pageData.children != null);
         this.removeComponentFrom(componentId, pageData);
-        this.appendComponent(component, childComponentIndex);
+        this.appendComponent(component, parentId, childComponentIndex);
     }
 
 
     private removeComponentFrom(componentId: string, pageData: PageData,) {
-        let componentChildren = (this.pageData.children || []).filter(o => typeof o != "string") as ComponentData[]
-        let child = componentChildren.filter(o => o.id == componentId)[0];
-        if (child == null)
+        let { component, parent } = PageDataTravel.findComponentAndParent(this.pageData, componentId);//componentChildren.filter(o => o.id == componentId)[0];
+        if (component == null)
             throw new Error(`Component '${componentId}' is not exists.`);
 
-        let stack: PageData["children"] = [child];
-        let componentsToRemove: string[] = [componentId];
-        while (stack.length > 0) {
-            let item = stack.pop() as ComponentData;
-            let childs = componentChildren.filter(o => o.parentId == item.id);
-            if (childs.length > 0) {
-                stack.push(...childs);
+        if (parent == null)
+            return
 
-                // status 为 ComponentStatus.asset 不要删除
-                componentsToRemove.push(...childs.filter(o => o.status == null || (o.status & ComponentStatus.asset) != ComponentStatus.asset).map(o => o.id));
-            }
-        }
+        parent.children = parent.children.filter(o => o.id != componentId)
+        this.setState({ pageData })
 
-        pageData.children = pageData.children.filter(o => typeof o != "string" && componentsToRemove.indexOf(o.id) < 0);
     }
 
     /**
@@ -296,7 +318,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (!pageData)
             throw Errors.pageDataIsNull();
 
-        let componentData = pageData.children.filter(o => typeof o != "string" && o.id == componentId)[0] as ComponentData;
+        let componentData = PageDataTravel.findComponent(pageData, componentId) || null;
         return componentData;
     }
 
