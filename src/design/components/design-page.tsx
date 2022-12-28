@@ -1,12 +1,13 @@
 import * as React from "react"
 import { DesignerContext, PageDesigner } from "../../designer"
 import { errors } from "../../errors"
-import { childrenNodeToArray } from "../../utility"
+import { childrenNodeToArray, PageDataTravel } from "../../utility"
 import { Page } from "../../runtime/components"
 import { classNames } from "../../style"
 import { ComponentData } from "../../runtime"
 import { guid } from "maishu-toolkit/out/guid"
 
+const DATA_ID = "data-id"
 type Props = Page["props"]
 export class DesignPage extends React.Component<Props> {
 
@@ -18,12 +19,23 @@ export class DesignPage extends React.Component<Props> {
 
         this.element = element
         designer.componentPanels.each(componentPanel => {
-            componentPanel.appendDropTarget(element, designer, designer.pageData.id, (componentType: string) => {
-                let c: ComponentData = {
-                    id: guid(), type: componentType, props: {}, children: []
-                }
-                return c;
-            })
+            componentPanel.appendDropTarget(element, designer, designer.pageData.id,
+                (arg: string | HTMLElement) => {
+                    if (typeof arg == "string") {
+                        let c: ComponentData = {
+                            id: guid(), type: arg, props: {}, children: []
+                        }
+                        return c;
+                    }
+
+                    let element: HTMLElement = arg
+                    let dataId = element.getAttribute(DATA_ID)
+                    if (!dataId)
+                        throw new Error(`Invalid element`)
+
+                    let c = PageDataTravel.findComponent(designer.pageData, dataId) as ComponentData
+                    return c
+                })
         })
     }
 
@@ -34,15 +46,21 @@ export class DesignPage extends React.Component<Props> {
                 if (!args) throw errors.contextArgumentNull()
 
                 return <ul key={args.designer.pageData.id} className={classNames.designPage} ref={e => this.ref(e, args.designer)}>
-                    {children.map(o => <li key={o.key} onClick={e => {
-                        let id = o.key
-                        if (typeof id == "string") {
-                            e.preventDefault();
-                            e.stopPropagation();
+                    {children.map(o => <li key={o.key}
+                        onClick={e => {
+                            let id = o.key
+                            if (typeof id == "string") {
+                                e.preventDefault();
+                                e.stopPropagation();
 
-                            args.designer.selectComponent(id);
-                        }
-                    }}>
+                                args.designer.selectComponent(id);
+                            }
+                        }}
+                        ref={e => {
+                            if (!e) return
+                            e.setAttribute(DATA_ID, o.key as string)
+                        }}
+                    >
                         {o}
                     </li>)}
                 </ul>

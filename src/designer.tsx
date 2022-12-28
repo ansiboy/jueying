@@ -178,8 +178,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
      * @param componentIndex 新添加组件在子组件中的次序 
      */
     appendComponent(componentData: ComponentData, parentId: string, componentIndex?: number) {
-        // let parentId = componentData.parentId;
-        // if (!parentId) throw new Error('ParentId field of component data is null.');
         if (!componentData) throw Errors.argumentNull('childComponent');
         if (!parentId) throw errors.argumentNull("parentId");
 
@@ -188,14 +186,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             throw new Error(`Component data '${parentId}' is not exists`)
 
         let children: ComponentData[] = parentComponentData.children;
-        // if (parentComponentData) {
-        //     children = parentComponentData.children;
-        // }
-        // else {
-        //     let componentChildren = pageData.componentChildren = pageData.componentChildren || {};
-        //     children = componentChildren[parentId] = componentChildren[parentId] || []
-        // }
-
         if (componentIndex == null) {
             children.push(componentData);
         }
@@ -260,7 +250,31 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
     /** 移除控件 */
     removeComponent(...componentIds: string[]) {
-        this.removeComponents(componentIds);
+        for (let i = 0; i < componentIds.length; i++) {
+            let componentId = componentIds[i]
+            let { component, parent } = PageDataTravel.findComponentAndParent(this.pageData, componentId);//componentChildren.filter(o => o.id == componentId)[0];
+            if (component == null)
+                throw new Error(`Component '${componentId}' is not exists.`);
+
+            if (parent == null)
+                throw new Error(`Component '${componentId}' is root element, can not remove.`)
+
+            parent.children = parent.children.filter(o => o.id != componentId)
+        }
+    }
+
+    removeComponentIfExists(...componentIds: string[]) {
+        for (let i = 0; i < componentIds.length; i++) {
+            let componentId = componentIds[i]
+            let { component, parent } = PageDataTravel.findComponentAndParent(this.pageData, componentId);//componentChildren.filter(o => o.id == componentId)[0];
+            if (component == null)
+                continue
+
+            if (parent == null)
+                throw new Error(`Component '${componentId}' is root element, can not remove.`)
+
+            parent.children = parent.children.filter(o => o.id != componentId)
+        }
     }
 
     removeComponents(componentIds: string[]) {
@@ -269,7 +283,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             return;
 
         for (let i = 0; i < componentIds.length; i++) {
-            this.removeComponentFrom(componentIds[i], pageData);
+            this.removeComponent(componentIds[i]);
         }
 
         this.setState({ pageData: pageData })
@@ -291,23 +305,22 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         let pageData = this.pageData;
         console.assert(pageData.children != null);
-        this.removeComponentFrom(componentId, pageData);
+        this.removeComponent(componentId);
         this.appendComponent(component, parentId, childComponentIndex);
     }
 
 
-    private removeComponentFrom(componentId: string, pageData: PageData,) {
-        let { component, parent } = PageDataTravel.findComponentAndParent(this.pageData, componentId);//componentChildren.filter(o => o.id == componentId)[0];
-        if (component == null)
-            throw new Error(`Component '${componentId}' is not exists.`);
+    // private removeComponentFrom(componentId: string, pageData: PageData,) {
+    //     let { component, parent } = PageDataTravel.findComponentAndParent(this.pageData, componentId);//componentChildren.filter(o => o.id == componentId)[0];
+    //     if (component == null)
+    //         throw new Error(`Component '${componentId}' is not exists.`);
 
-        if (parent == null)
-            return
+    //     if (parent == null)
+    //         return
 
-        parent.children = parent.children.filter(o => o.id != componentId)
-        this.setState({ pageData })
+    //     parent.children = parent.children.filter(o => o.id != componentId)
 
-    }
+    // }
 
     /**
      * 通过组件编号获取组件的数据

@@ -5,9 +5,11 @@ import { errors } from "../../errors";
 import { ComponentData, ComponentProps } from "../../runtime";
 import { strings } from "../../strings";
 import { classNames } from "../../style";
+import { PageDataTravel } from "../../utility";
 import { parseDesigntimeComponentData } from "../parse-design-component-data";
 
 const CONTAINER_ID = "container_id"
+const DATA_ID = "data-id"
 export class DesignComponentPlaceHolder extends React.Component<ComponentProps> {
 
     private element: HTMLElement
@@ -24,8 +26,18 @@ export class DesignComponentPlaceHolder extends React.Component<ComponentProps> 
         this.element = element;
         designer.componentPanels.each((componentPanel) => {
             componentPanel.appendDropTarget(this.element, designer, componentId,
-                (componentType: string) => {
-                    return DesignComponentPlaceHolder.createComponentData(componentType, this.props.id)
+                (arg: string | HTMLElement) => {
+                    if (typeof arg == "string") {
+                        let componentType = arg
+                        return DesignComponentPlaceHolder.createComponentData(componentType, this.props.id)
+                    }
+
+                    let element: HTMLElement = arg;
+                    let dataId = element.getAttribute(DATA_ID) as string;
+                    console.assert(dataId != null)
+                    let c = PageDataTravel.findComponent(designer.pageData, dataId) as ComponentData
+                    c.props[CONTAINER_ID] = this.props.id
+                    return c
                 })
         })
     }
@@ -39,12 +51,6 @@ export class DesignComponentPlaceHolder extends React.Component<ComponentProps> 
         return c;
     }
 
-    // static getDerivedStateFromProps(props: ComponentProps, state: any) {
-    //     debugger
-
-    //     return {}
-    // }
-
     render() {
         return <DesignComponentContext.Consumer>
             {args => {
@@ -54,6 +60,10 @@ export class DesignComponentPlaceHolder extends React.Component<ComponentProps> 
                 return <ul className={classNames.designComponentPlaceHolder}
                     ref={e => this.enableDrop(e, args.designer, args.componentData.id)}>
                     {childComponentDatas.length > 0 ? childComponentDatas.map(c => <li key={c.id}
+                        ref={e => {
+                            if (!e) return
+                            e.setAttribute(DATA_ID, c.id)
+                        }}
                         onClick={e => {
                             e.preventDefault()
                             e.stopPropagation()

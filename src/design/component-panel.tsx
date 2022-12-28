@@ -5,16 +5,15 @@ import { classNames } from "../style"
 import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
 import { ComponentData } from "../runtime"
-import { guid } from "maishu-toolkit/out/guid"
-import $ from "jquery"
+import Sortable from "sortablejs"
 interface ComponentPanelProps {
     renderItem?: (typeName: string, compoenntConfig: ComponentsConfig[0]) => ReturnType<React.Component["render"]>
 }
 
+const GROUP = "shared"
 const DATA_TYPE = "data-type"
-
 export let ComponentPanelContext = React.createContext<{ instance: ComponentPanel } | null>(null)
-type CompoenntDataFactory = (typeName: string) => ComponentData
+type CompoenntDataFactory = (typeName: string | HTMLElement) => ComponentData
 
 /** 组件面板 */
 export class ComponentPanel extends React.Component<ComponentPanelProps> {
@@ -36,13 +35,15 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         return this._element
     }
 
-    getComponentData(toolbarElement: HTMLElement, componentDataFactory: CompoenntDataFactory): ComponentData {
-        if (!toolbarElement) throw errors.argumentNull("toolbarElement")
+    getComponentData(ui: Sortable.SortableEvent, componentDataFactory: CompoenntDataFactory): ComponentData {
+        if (!ui) throw errors.argumentNull("ui")
 
-        let dataType = toolbarElement.getAttribute(DATA_TYPE)
-        if (!dataType) throw new Error(`Argument toolbarElement is an invalid component panel element.`)
+        if (!ui.item) {
+            throw new Error("Not supported.")
+        }
 
-        let c: ComponentData = componentDataFactory(dataType)
+        let dataType = ui.item.getAttribute(DATA_TYPE)
+        let c: ComponentData = dataType ? componentDataFactory(dataType) : componentDataFactory(ui.item)
         return c
     }
 
@@ -56,6 +57,18 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         }
     }
 
+    componentDidMount(): void {
+        new Sortable(this.element, {
+            group: {
+                name: GROUP,
+                pull: "clone",
+                put: false,
+            },
+            animation: 150,
+            sort: false,
+        })
+    }
+
     async appendDropTarget(element: HTMLElement, designer: PageDesigner, parentId: string, componentDataFactory: CompoenntDataFactory) {
         //==========================================
         // jquery-ui 不用用于 jest 测试
@@ -67,32 +80,28 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         if (this.dropTargets.indexOf(element) >= 0)
             return
 
-        await import("../../lib/jquery-ui-1.13.2.custom/jquery-ui.min.js" as any)
         this.dropTargets.push(element)
-        $(this.element.querySelectorAll("li")).draggable({
-            connectToSortable: this.dropTargets,
-            helper: "clone",
-        })
 
-        $([element]).sortable({
-            dropOnEmpty: true,
-            receive: (ev, ui) => {
-                console.log("receive")
-
-                let componentData = this.getComponentData(ui.helper[0], componentDataFactory);
-                let childNodes = ui.helper.parent().children().toArray()
+        new Sortable(element, {
+            group: {
+                name: GROUP,
+            },
+            animation: 150,
+            onAdd: (evt) => {
+                let componentData = this.getComponentData(evt, componentDataFactory);
                 let targetIndex: number | undefined
-                for (let i = 0; i < childNodes.length; i++) {
-                    if (childNodes[i] == ui.helper[0]) {
+                let parentElement = evt.item.parentElement as HTMLElement
+                for (let i = 0; i < parentElement.children.length; i++) {
+                    if (parentElement.children[i] == evt.item) {
                         targetIndex = i
                         break
                     }
                 }
 
-                designer.appendComponent(componentData, parentId, targetIndex);
+                designer.removeComponentIfExists(componentData.id)
+                designer.appendComponent(componentData, parentId, targetIndex)
             }
         })
-
 
     }
 
@@ -110,12 +119,13 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
                     renderItem.bind(this)
                     return <ul className={classNames.componentPanel} ref={e => this.ref(e, args)}>
                         {componentInfos.length > 0 ? componentInfos.map(o => renderItem(o.typeName, o)) :
-                            <li className={classNames.empty}>
+                            <li className={classNames.empty} >
                                 {strings.emptyCompoenntPanel}
-                            </li>}
+                            </li>
+                        }
                     </ul>
                 }}
             </DesignerContext.Consumer>
-        </ComponentPanelContext.Provider>
+        </ComponentPanelContext.Provider >
     }
 }

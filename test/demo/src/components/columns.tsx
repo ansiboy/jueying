@@ -5,6 +5,7 @@ import "./columns.scss"
 interface Props {
     firstContainerid: string
     secondContainerId: string
+    thirdContainerId: string
     children?: React.ReactNode
 }
 export default class Columns extends React.Component<Props> {
@@ -12,12 +13,16 @@ export default class Columns extends React.Component<Props> {
         return <div>
             <div>多列</div>
             <div className="columns">
-                <ComponentPlaceHolder id={this.props.firstContainerid}>
+
+                {this.props.firstContainerid ? <ComponentPlaceHolder id={this.props.firstContainerid}>
                     {this.props.children}
-                </ComponentPlaceHolder>
-                <ComponentPlaceHolder id={this.props.secondContainerId}>
+                </ComponentPlaceHolder> : null}
+                {this.props.secondContainerId ? <ComponentPlaceHolder id={this.props.secondContainerId}>
                     {this.props.children}
-                </ComponentPlaceHolder>
+                </ComponentPlaceHolder> : null}
+                {this.props.thirdContainerId ? <ComponentPlaceHolder id={this.props.thirdContainerId}>
+                    {this.props.children}
+                </ComponentPlaceHolder> : null}
             </div>
         </div>
     }
