@@ -19,7 +19,7 @@ export interface ComponentData {
     props: any;
     id: string;
     // parentId?: string;
-    name?: string;
+    // name?: string;
     status?: ComponentStatus,
     children: ComponentData[]
 }

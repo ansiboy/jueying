@@ -1,7 +1,6 @@
 import * as React from "react";
 import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes, ComponentTypes, componentTypeNames } from "./runtime";
 import { errors, errors as Errors } from "./errors";
-import { guid } from "maishu-toolkit/out/guid";
 import type { ComponentModule, ComponentsConfig } from "./components-config";
 import { createInfoComponent, createLoadingComponent } from "./design/components";
 import { ComponentEditors } from "./types";
@@ -44,7 +43,6 @@ export let DesignComponentContext = React.createContext<DesignComponentContextVa
  */
 export class PageDesigner extends React.Component<PageDesignerProps, PageDesignerState> {
     private _element: HTMLElement
-    // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
     private _prePageData: PageData | null = null
     readonly componentDiagramElements = new DataList<HTMLElement>()
     readonly componentPanels = new DataList<ComponentPanel>()
@@ -64,37 +62,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     /** 检查组件配置 */
     private checkComponentsConfig(componentsConfig: ComponentsConfig) {
         // TODO: 检查组件配置
-    }
-
-    /**
-     * 对组件及其子控件进行命名
-     * @param componentData 
-     */
-    private initComponent(componentData: ComponentData, pageData: PageData) {
-        let namedComponents: { [key: string]: PageData | ComponentData } = {};
-        pageData.children.forEach(c => {
-            if (typeof c == "string")
-                return
-
-            if (c.name) {
-                namedComponents[c.name] = c;
-            }
-        })
-
-        if (!componentData.name) {
-            let num = 0;
-            let name: string;
-            do {
-                num = num + 1;
-                name = `${componentData.type}${num}`;
-            } while (namedComponents[name]);
-
-            namedComponents[name] = componentData
-            componentData.name = name;
-        }
-
-        if (!componentData.id)
-            componentData.id = guid();
     }
 
     /** 页面数据 */
@@ -217,8 +184,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (typeof componentIds == 'string')
             componentIds = [componentIds]
 
-        // let children = (this.pageData.children || []).filter(o => typeof o != "string") as ComponentData[]
-
         /** 取消选中 */
         PageDataTravel.each(this.pageData, (c) => {
             c.status = c.status || ComponentStatus.default;
@@ -233,17 +198,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             c.status = c.status || ComponentStatus.default;
             c.status = c.status | ComponentStatus.selected;
         })
-
-        // children.forEach(c => {
-        //     // c.selected = false;
-        //     c.status = c.status || ComponentStatus.default;
-        //     c.status = c.status & (~ComponentStatus.selected);
-        // })
-        // children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
-        //     // c.selected = true;
-        //     c.status = c.status || ComponentStatus.default;
-        //     c.status = c.status | ComponentStatus.selected;
-        // });
 
         this.setState({ pageData: this.pageData });
     }
@@ -308,19 +262,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         this.removeComponent(componentId);
         this.appendComponent(component, parentId, childComponentIndex);
     }
-
-
-    // private removeComponentFrom(componentId: string, pageData: PageData,) {
-    //     let { component, parent } = PageDataTravel.findComponentAndParent(this.pageData, componentId);//componentChildren.filter(o => o.id == componentId)[0];
-    //     if (component == null)
-    //         throw new Error(`Component '${componentId}' is not exists.`);
-
-    //     if (parent == null)
-    //         return
-
-    //     parent.children = parent.children.filter(o => o.id != componentId)
-
-    // }
 
     /**
      * 通过组件编号获取组件的数据
@@ -483,22 +424,6 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     componentDidMount(): void {
-
-        // let groupBaseName = 'diagram'
-        // for (let i = 0; i < this.componentPanelElements.count; i++) {
-        //     let groupName = groupBaseName + i
-        //     new Sortable(this.componentPanelElements[i], {
-        //         group: groupName,
-        //         animation: 150
-        //     })
-
-        //     for (let j = 0; j < this.componentDiagramElements.length; j++) {
-        //         new Sortable(this.componentDiagramElements[j], {
-        //             group: groupName,
-        //             animation: 150
-        //         })
-        //     }
-        // }
     }
 
     render() {

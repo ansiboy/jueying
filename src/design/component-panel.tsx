@@ -6,6 +6,7 @@ import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
 import { ComponentData } from "../runtime"
 import Sortable from "sortablejs"
+import { PageDataTravel } from "../utility"
 interface ComponentPanelProps {
     renderItem?: (typeName: string, compoenntConfig: ComponentsConfig[0]) => ReturnType<React.Component["render"]>
 }
@@ -88,6 +89,9 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
             },
             animation: 150,
             onAdd: (evt) => {
+                evt.preventDefault()
+                evt.stopPropagation()
+
                 let componentData = this.getComponentData(evt, componentDataFactory);
                 let targetIndex: number | undefined
                 let parentElement = evt.item.parentElement as HTMLElement
@@ -100,7 +104,20 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
 
                 designer.removeComponentIfExists(componentData.id)
                 designer.appendComponent(componentData, parentId, targetIndex)
-            }
+            },
+            onSort(event) {
+                if (event.item.getAttribute(DATA_TYPE))
+                    return
+
+                let componentData = componentDataFactory(event.item)
+                console.assert(componentData != null, "componentData is null")
+                // debugger
+                let r = PageDataTravel.findComponentAndParent(designer.pageData, componentData.id)
+                let parent = r.parent as ComponentData
+                // parent.children.splice(event.oldIndex || 0, 1)
+                // parent.children.splice(event.newIndex || 0, 0, componentData)
+                designer.moveComponent(componentData.id, parent.id, event.newIndex)
+            },
         })
 
     }

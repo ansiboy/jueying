@@ -1,8 +1,7 @@
-import { guid } from "maishu-toolkit/out/guid";
 import * as React from "react";
 import { DesignComponentContext, PageDesigner } from "../../designer";
 import { errors } from "../../errors";
-import { ComponentData, ComponentProps } from "../../runtime";
+import { ComponentData, ComponentProps, PageData } from "../../runtime";
 import { strings } from "../../strings";
 import { classNames } from "../../style";
 import { PageDataTravel } from "../../utility";
@@ -29,7 +28,7 @@ export class DesignComponentPlaceHolder extends React.Component<ComponentProps> 
                 (arg: string | HTMLElement) => {
                     if (typeof arg == "string") {
                         let componentType = arg
-                        return DesignComponentPlaceHolder.createComponentData(componentType, this.props.id)
+                        return this.createComponentData(designer.pageData, componentType, this.props.id)
                     }
 
                     let element: HTMLElement = arg;
@@ -42,11 +41,13 @@ export class DesignComponentPlaceHolder extends React.Component<ComponentProps> 
         })
     }
 
-    static createComponentData(componentType: string, containerId: string) {
+    private createComponentData(pageData: PageData, componentType: string, containerId: string) {
         let props: any = {};
         props[CONTAINER_ID] = containerId;
+
+        let id = PageDataTravel.generateId(pageData, componentType)
         let c: ComponentData = {
-            id: guid(), type: componentType, props, children: []
+            id, type: componentType, props, children: []
         }
         return c;
     }

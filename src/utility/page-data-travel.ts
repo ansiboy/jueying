@@ -63,4 +63,20 @@ export class PageDataTravel {
 
         return { component, parent }
     }
+
+    static generateId(pageData: PageData, typeName: string) {
+        let namedComponents: { [key: string]: ComponentData } = {};
+        PageDataTravel.each(pageData, (c, p) => {
+            namedComponents[c.id] = c
+        })
+
+        let num = 0;
+        let name: string;
+        do {
+            num = num + 1;
+            name = `${typeName}${num}`;
+        } while (namedComponents[name]);
+
+        return name;
+    }
 }

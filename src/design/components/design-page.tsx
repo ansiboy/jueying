@@ -5,7 +5,6 @@ import { childrenNodeToArray, PageDataTravel } from "../../utility"
 import { Page } from "../../runtime/components"
 import { classNames } from "../../style"
 import { ComponentData } from "../../runtime"
-import { guid } from "maishu-toolkit/out/guid"
 
 const DATA_ID = "data-id"
 type Props = Page["props"]
@@ -23,7 +22,7 @@ export class DesignPage extends React.Component<Props> {
                 (arg: string | HTMLElement) => {
                     if (typeof arg == "string") {
                         let c: ComponentData = {
-                            id: guid(), type: arg, props: {}, children: []
+                            id: PageDataTravel.generateId(designer.pageData, arg), type: arg, props: {}, children: []
                         }
                         return c;
                     }
@@ -64,8 +63,7 @@ export class DesignPage extends React.Component<Props> {
                         {o}
                     </li>)}
                 </ul>
-            }
-            }
+            }}
         </DesignerContext.Consumer >
     }
 }
