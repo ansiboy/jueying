@@ -12,7 +12,6 @@ let license = `
  
  个人博客：   http://www.cnblogs.com/ansiboy/
  GITHUB:     https://github.com/ansiboy/jueying
- QQ 讨论组：  119038574 
 `;
 module.exports = {
     entry: __dirname + "/out/index.js", //已多次提及的唯一入口文件
@@ -25,7 +24,7 @@ module.exports = {
     },
     mode: 'development',
     devtool: 'source-map',
-    externals: ["react", "react-dom", "maishu-dilu", "maishu-jueying-core"],
+    externals: ["react", "react-dom"],
     plugins: [
         new webpack.BannerPlugin(license),
     ],

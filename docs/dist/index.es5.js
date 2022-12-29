@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v4.0.7
+ *  maishu-jueying v4.0.11
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -11,7 +11,6 @@
  *  
  *  个人博客：   http://www.cnblogs.com/ansiboy/
  *  GITHUB:     https://github.com/ansiboy/jueying
- *  QQ 讨论组：  119038574 
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -112,1000 +111,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
-/***/ "./node_modules/maishu-toolkit/dist/index.js":
-/*!***************************************************!*\
-  !*** ./node_modules/maishu-toolkit/dist/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {/*!
- * ~
- *  maishu-toolkit v1.12.5
- *  https://github.com/ansiboy/toolkit
- *  
- *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
- *  Licensed under the MIT License.
- * 
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(true)
-		module.exports = factory();
-	else { var i, a; }
-})(typeof window === 'undefined' ? global : window, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./out/index.js");
-/******/ })
-/************************************************************************/
-/******/ ({
-
-/***/ "./out/assign-deep.js":
-/*!****************************!*\
-  !*** ./out/assign-deep.js ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.withOptions = exports.objectAssignDeepInto = exports.objectAssignDeep = void 0;
-/*
- * OBJECT ASSIGN DEEP
- * Allows deep cloning of plain objects that contain primitives, nested plain objects, or nested plain arrays.
- */
-/*
- * A unified way of returning a string that describes the type of the given variable.
- */
-function getTypeOf(input) {
-    if (input === null) {
-        return 'null';
-    }
-    else if (typeof input === 'undefined') {
-        return 'undefined';
-    }
-    else if (typeof input === 'object') {
-        return (Array.isArray(input) ? 'array' : 'object');
-    }
-    return typeof input;
-}
-/*
- * Branching logic which calls the correct function to clone the given value base on its type.
- */
-function cloneValue(value) {
-    // The value is an object so lets clone it.
-    if (getTypeOf(value) === 'object') {
-        return quickCloneObject(value);
-    }
-    // The value is an array so lets clone it.
-    else if (getTypeOf(value) === 'array') {
-        return quickCloneArray(value);
-    }
-    // Any other value can just be copied.
-    return value;
-}
-/*
- * Enumerates the given array and returns a new array, with each of its values cloned (i.e. references broken).
- */
-function quickCloneArray(input) {
-    return input.map(cloneValue);
-}
-/*
- * Enumerates the properties of the given object (ignoring the prototype chain) and returns a new object, with each of
- * its values cloned (i.e. references broken).
- */
-function quickCloneObject(input) {
-    const output = {};
-    for (const key in input) {
-        if (!input.hasOwnProperty(key)) {
-            continue;
-        }
-        output[key] = cloneValue(input[key]);
-    }
-    return output;
-}
-/*
- * Does the actual deep merging.
- */
-function executeDeepMerge(target, _objects = [], _options = {}) {
-    const options = {
-        arrayBehaviour: _options.arrayBehaviour || 'replace', // Can be "merge" or "replace".
-    };
-    // Ensure we have actual objects for each.
-    const objects = _objects.map(object => object || {});
-    const output = target || {};
-    // Enumerate the objects and their keys.
-    for (let oindex = 0; oindex < objects.length; oindex++) {
-        const object = objects[oindex];
-        const keys = Object.keys(object);
-        for (let kindex = 0; kindex < keys.length; kindex++) {
-            const key = keys[kindex];
-            const value = object[key];
-            const type = getTypeOf(value);
-            const existingValueType = getTypeOf(output[key]);
-            if (type === 'object') {
-                if (existingValueType !== 'undefined') {
-                    const existingValue = (existingValueType === 'object' ? output[key] : {});
-                    output[key] = executeDeepMerge({}, [existingValue, quickCloneObject(value)], options);
-                }
-                else {
-                    output[key] = quickCloneObject(value);
-                }
-            }
-            else if (type === 'array') {
-                if (existingValueType === 'array') {
-                    const newValue = quickCloneArray(value);
-                    output[key] = (options.arrayBehaviour === 'merge' ? output[key].concat(newValue) : newValue);
-                }
-                else {
-                    output[key] = quickCloneArray(value);
-                }
-            }
-            else {
-                output[key] = value;
-            }
-        }
-    }
-    return output;
-}
-/*
- * Merge all the supplied objects into the target object, breaking all references, including those of nested objects
- * and arrays, and even objects nested inside arrays. The first parameter is not mutated unlike Object.assign().
- * Properties in later objects will always overwrite.
- */
-function objectAssignDeep(target, ...objects) {
-    return executeDeepMerge(target, objects);
-}
-exports.objectAssignDeep = objectAssignDeep;
-;
-/*
- * Same as objectAssignDeep() except it doesn't mutate the target object and returns an entirely new object.
- */
-function objectAssignDeepInto(...objects) {
-    return executeDeepMerge({}, objects);
-}
-exports.objectAssignDeepInto = objectAssignDeepInto;
-;
-/*
- * Allows an options object to be passed in to customise the behaviour of the function.
- */
-let withOptions = function objectAssignDeepInto(target, objects, options) {
-    return executeDeepMerge(target, objects, options);
-};
-exports.withOptions = withOptions;
-
-
-/***/ }),
-
-/***/ "./out/callback.js":
-/*!*************************!*\
-  !*** ./out/callback.js ***!
-  \*************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Callback = void 0;
-class Callback {
-    constructor() {
-        this.funcs = new Array();
-    }
-    add(func) {
-        this.funcs.push(func);
-    }
-    remove(func) {
-        this.funcs = this.funcs.filter(o => o != func);
-    }
-    fire(args) {
-        this.funcs.forEach(o => o(args));
-    }
-    static create() {
-        return new Callback();
-    }
-}
-exports.Callback = Callback;
-
-
-/***/ }),
-
-/***/ "./out/data.js":
-/*!*********************!*\
-  !*** ./out/data.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DataSourceSelectArguments = exports.DataSource = void 0;
-const errors_js_1 = __webpack_require__(/*! ./errors.js */ "./out/errors.js");
-const callback_js_1 = __webpack_require__(/*! ./callback.js */ "./out/callback.js");
-let errors = Object.assign(errors_js_1.errors, {
-    dataSourceCanntInsert() {
-        return new Error("DataSource can not insert.");
-    },
-    dataSourceCanntDelete() {
-        return new Error("DataSource can not delete.");
-    },
-    dataSourceCanntUpdate() {
-        return new Error("DataSource can not update.");
-    },
-    primaryKeyNull(key) {
-        let msg = `Primary key named '${key}' value is null.`;
-        return new Error(msg);
-    },
-    queryResultTypeError() {
-        let msg = `Query result type error.`;
-        return new Error(msg);
-    }
-});
-class DataSource {
-    constructor(args) {
-        this.inserting = new callback_js_1.Callback(); //callbacks1<DataSource<T>, T, number>();
-        this.inserted = new callback_js_1.Callback();
-        this.deleting = new callback_js_1.Callback(); //callbacks<DataSource<T>, T>();
-        this.deleted = new callback_js_1.Callback(); //callbacks<DataSource<T>, T>();
-        this.updating = new callback_js_1.Callback();
-        this.updated = new callback_js_1.Callback();
-        this.selecting = new callback_js_1.Callback();
-        this.selected = new callback_js_1.Callback(); //callbacks<DataSource<T>, DataSourceSelectResult<T>>();
-        this.error = new callback_js_1.Callback(); //callbacks<this, DataSourceError>();
-        this.args = args;
-        this.primaryKeys = args.primaryKeys || [];
-    }
-    ; //callbacks<DataSource<T>, DataSourceSelectArguments>();
-    get canDelete() {
-        return this.args.delete != null && this.primaryKeys.length > 0;
-    }
-    get canInsert() {
-        return this.args.insert != null && this.primaryKeys.length > 0;
-    }
-    get canUpdate() {
-        return this.args.update != null && this.primaryKeys.length > 0;
-    }
-    executeInsert(item, args) {
-        return this.args.insert(item, args);
-    }
-    executeDelete(item, args) {
-        return this.args.delete(item, args);
-    }
-    executeUpdate(item, args) {
-        return this.args.update(item, args);
-    }
-    executeSelect(args) {
-        args = args || {};
-        return this.args.select(args);
-    }
-    insert(item, args, index) {
-        if (!this.canInsert)
-            throw errors.dataSourceCanntInsert();
-        if (!item)
-            throw errors.argumentNull("item");
-        if (typeof args == 'number') {
-            index = args;
-            args = null;
-        }
-        this.inserting.fire({ sender: this, dataItem: item, index });
-        return this.executeInsert(item, args).then((data) => {
-            Object.assign(item, data);
-            this.inserted.fire({ sender: this, dataItem: item, index });
-            return data;
-        }).catch(exc => {
-            this.processError(exc, 'insert');
-            throw exc;
-        });
-    }
-    delete(item, args) {
-        if (!this.canDelete)
-            throw errors.dataSourceCanntDelete();
-        if (!item)
-            throw errors.argumentNull("item");
-        this.checkPrimaryKeys(item);
-        this.deleting.fire({ sender: this, dataItem: item });
-        return this.executeDelete(item, args).then((data) => {
-            this.deleted.fire({ sender: this, dataItem: item });
-            return data;
-        }).catch(exc => {
-            this.processError(exc, 'delete');
-            throw exc;
-        });
-    }
-    update(item, args) {
-        if (!this.canUpdate)
-            throw errors.dataSourceCanntUpdate();
-        if (!item)
-            throw errors.argumentNull("item");
-        this.checkPrimaryKeys(item);
-        this.updating.fire({ sender: this, dataItem: item });
-        return this.executeUpdate(item, args).then((data) => {
-            Object.assign(item, data);
-            this.updated.fire({ sender: this, dataItem: item });
-            return data;
-        }).catch((exc) => {
-            this.processError(exc, 'update');
-            throw exc;
-        });
-    }
-    isSameItem(theItem, otherItem) {
-        if (theItem == null)
-            throw errors.argumentNull('theItem');
-        if (otherItem == null)
-            throw errors.argumentNull('otherItem');
-        if (this.primaryKeys.length == 0)
-            return theItem == otherItem;
-        this.checkPrimaryKeys(theItem);
-        this.checkPrimaryKeys(otherItem);
-        for (let pk of this.primaryKeys) {
-            if (theItem[pk] != otherItem[pk])
-                return false;
-        }
-        return true;
-    }
-    checkPrimaryKeys(item) {
-        for (let key in item) {
-            if (item[key] == null && this.primaryKeys.indexOf(key) >= 0)
-                throw errors.primaryKeyNull(key);
-        }
-    }
-    select(args) {
-        args = args || {};
-        // fireCallback(this.selecting, this, args);
-        this.selecting.fire({ sender: this, selectArguments: args });
-        return this.executeSelect(args).then((data) => {
-            let dataItems;
-            let totalRowCount;
-            if (Array.isArray(data)) {
-                dataItems = data;
-                totalRowCount = data.length;
-            }
-            else if (data.dataItems !== undefined && data.totalRowCount !== undefined) {
-                dataItems = data.dataItems;
-                totalRowCount = data.totalRowCount;
-            }
-            else {
-                throw errors.queryResultTypeError();
-            }
-            this.selected.fire({ sender: this, selectResult: { totalRowCount, dataItems }, selectArguments: args });
-            return { totalRowCount, dataItems };
-        }).catch(exc => {
-            this.processError(exc, 'select');
-            throw exc;
-        });
-    }
-    processError(exc, method) {
-        exc.method = method;
-        this.error.fire({ sender: this, error: exc });
-        if (!exc.handled)
-            throw exc;
-    }
-}
-exports.DataSource = DataSource;
-class DataSourceSelectArguments {
-    constructor() {
-        this.startRowIndex = 0;
-        this.maximumRows = 2147483647;
-    }
-}
-exports.DataSourceSelectArguments = DataSourceSelectArguments;
-
-
-/***/ }),
-
-/***/ "./out/deep-equal.js":
-/*!***************************!*\
-  !*** ./out/deep-equal.js ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deepEqual = void 0;
-function deepEqual(x, y) {
-    if (x === y) {
-        return true;
-    }
-    if ((typeof x == "object" && x != null) && (typeof y == "object" && y != null)) {
-        if (Object.keys(x).length != Object.keys(y).length)
-            return false;
-        for (var prop in x) {
-            if (y.hasOwnProperty(prop)) {
-                if (!deepEqual(x[prop], y[prop]))
-                    return false;
-            }
-            else
-                return false;
-        }
-        return true;
-    }
-    return false;
-}
-exports.deepEqual = deepEqual;
-
-
-/***/ }),
-
-/***/ "./out/errors.js":
-/*!***********************!*\
-  !*** ./out/errors.js ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = exports.Errors = void 0;
-class Errors {
-    argumentNull(argumentName) {
-        let error = new Error(`Argument ${argumentName} cannt be null or emtpy.`);
-        let name = "argumentNull";
-        error.name = name;
-        return error;
-    }
-    routeDataFieldNull(fieldName) {
-        let msg = `The ${fieldName} field of route data cannt be null.`;
-        let error = new Error(msg);
-        let name = "routeDataFieldNull";
-        error.name = name;
-        return error;
-    }
-    argumentFieldNull(fieldName, argumentName) {
-        let msg = `The ${fieldName} field of ${argumentName} cannt be null.`;
-        let error = new Error(msg);
-        let name = "argumentFieldNull";
-        error.name = name;
-        return error;
-    }
-    argumentTypeIncorrect(argumentName, expectedType) {
-        let msg = `Argument ${argumentName} type error, expected type is ${expectedType}.`;
-        let error = new Error(msg);
-        let name = "argumentTypeIncorrect";
-        error.name = name;
-        return error;
-    }
-    pathStartsHttp(path) {
-        let msg = `Path ${path} start with http or https.`;
-        let error = new Error(msg);
-        let name = "pathStartsHttp";
-        error.name = name;
-        return error;
-    }
-}
-exports.Errors = Errors;
-exports.errors = new Errors();
-
-
-/***/ }),
-
-/***/ "./out/format.js":
-/*!***********************!*\
-  !*** ./out/format.js ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.format = exports.formatString = exports.formatDate = void 0;
-function formatDate(date, showHourMinutes, showSeconds) {
-    if (typeof date == "string")
-        return date;
-    let d = date;
-    if (showHourMinutes) {
-        let str = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
-        if (showSeconds)
-            str = `${str}:${d.getSeconds()}`;
-        return str;
-    }
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-}
-exports.formatDate = formatDate;
-function formatString(pattern, ...args) {
-    let a = pattern;
-    for (let k in args) {
-        a = a.replace("{" + k + "}", args[k]);
-    }
-    return a;
-}
-exports.formatString = formatString;
-function format(value, format) {
-    if (!format)
-        return `${value}`;
-    var result = '';
-    for (var i = 0;;) {
-        var open = format.indexOf('{', i);
-        var close = format.indexOf('}', i);
-        if ((open < 0) && (close < 0)) {
-            result += format.slice(i);
-            break;
-        }
-        if ((close > 0) && ((close < open) || (open < 0))) {
-            if (format.charAt(close + 1) !== '}') {
-                throw new Error('Sys.Res.stringFormatBraceMismatch');
-            }
-            result += format.slice(i, close + 1);
-            i = close + 2;
-            continue;
-        }
-        result += format.slice(i, open);
-        i = open + 1;
-        if (format.charAt(i) === '{') {
-            result += '{';
-            i++;
-            continue;
-        }
-        if (close < 0)
-            throw new Error('Sys.Res.stringFormatBraceMismatch');
-        var brace = format.substring(i, close);
-        var argFormat = brace;
-        if (typeof (value) === "undefined" || value === null) {
-            value = '';
-        }
-        if (value instanceof Date)
-            result = result + formatDate1(value, argFormat);
-        else if (value instanceof Number || typeof value == 'number')
-            result = result + formatNumber(value, argFormat);
-        else
-            result = result + value.toString();
-        i = close + 1;
-    }
-    return result;
-}
-exports.format = format;
-function formatDate1(value, format) {
-    let y = value.getFullYear();
-    let m = value.getMonth() + 1;
-    let d = value.getDate();
-    let h = value.getHours();
-    let M = value.getMinutes();
-    let s = value.getSeconds();
-    let twoDigit = function (value) {
-        const TEN = 10;
-        if (value < TEN)
-            return `0` + value;
-        return value.toString();
-    };
-    switch (format) {
-        case 'd':
-            return `${y}-${m}-${d}`;
-        case 'g':
-            return `${y}-${m}-${d} ${h}:${M}`;
-        case 'gg':
-            return `${y}-${twoDigit(m)}-${twoDigit(d)} ${twoDigit(h)}:${twoDigit(M)}`;
-        case 'G':
-            return `${y}-${m}-${d} ${h}:${M}:${s}`;
-        case 'GG':
-            return `${y}-${twoDigit(m)}-${twoDigit(d)} ${twoDigit(h)}:${twoDigit(M)}:${twoDigit(s)}`;
-        case 't':
-            return `${h}:${M}`;
-        case 'T':
-            return `${h}:${M}:${s}`;
-    }
-    return value.toString();
-}
-function formatNumber(value, format) {
-    let reg = new RegExp('^C[0-9]+');
-    if (reg.test(format)) {
-        let num = format.substr(1);
-        return value.toFixed(num);
-    }
-    return value.toString();
-}
-
-
-/***/ }),
-
-/***/ "./out/guid.js":
-/*!*********************!*\
-  !*** ./out/guid.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.guid = void 0;
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-exports.guid = guid;
-
-
-/***/ }),
-
-/***/ "./out/html.js":
-/*!*********************!*\
-  !*** ./out/html.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.HTML = void 0;
-const errors_js_1 = __webpack_require__(/*! ./errors.js */ "./out/errors.js");
-class HTML {
-    static addClassName(element, addonClassName) {
-        if (element == null)
-            throw errors_js_1.errors.argumentNull('element');
-        if (!addonClassName)
-            throw errors_js_1.errors.argumentNull('addonClassName');
-        let sourceClassName;
-        if (typeof element == 'string')
-            sourceClassName = element;
-        else
-            sourceClassName = element.className;
-        sourceClassName = sourceClassName || '';
-        console.assert(addonClassName != null);
-        if (sourceClassName.indexOf(addonClassName) >= 0)
-            return sourceClassName;
-        let className = `${sourceClassName} ${addonClassName}`;
-        if (typeof element != 'string')
-            element.className = className;
-        return className;
-    }
-    static removeClassName(element, targetClassName) {
-        let sourceClassName;
-        if (typeof element == 'string')
-            sourceClassName = element;
-        else
-            sourceClassName = element.className || '';
-        if (sourceClassName.indexOf(targetClassName) < 0)
-            return sourceClassName;
-        sourceClassName = sourceClassName || '';
-        sourceClassName = sourceClassName.replace(new RegExp(targetClassName, 'g'), '');
-        sourceClassName = sourceClassName.trim();
-        if (typeof element != 'string')
-            element.className = sourceClassName;
-        return sourceClassName;
-    }
-}
-exports.HTML = HTML;
-
-
-/***/ }),
-
-/***/ "./out/index.js":
-/*!**********************!*\
-  !*** ./out/index.js ***!
-  \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SingleInvoke = exports.ValueStore = exports.HTML = exports.format = exports.formatString = exports.formatDate = exports.objectAssignDeep = exports.deepEqual = exports.parseUrl = exports.DataSourceSelectArguments = exports.DataSource = exports.Callback = exports.errors = exports.Errors = exports.pathConcat = exports.guid = void 0;
-var guid_js_1 = __webpack_require__(/*! ./guid.js */ "./out/guid.js");
-Object.defineProperty(exports, "guid", { enumerable: true, get: function () { return guid_js_1.guid; } });
-var path_js_1 = __webpack_require__(/*! ./path.js */ "./out/path.js");
-Object.defineProperty(exports, "pathConcat", { enumerable: true, get: function () { return path_js_1.pathConcat; } });
-var errors_js_1 = __webpack_require__(/*! ./errors.js */ "./out/errors.js");
-Object.defineProperty(exports, "Errors", { enumerable: true, get: function () { return errors_js_1.Errors; } });
-Object.defineProperty(exports, "errors", { enumerable: true, get: function () { return errors_js_1.errors; } });
-var callback_js_1 = __webpack_require__(/*! ./callback.js */ "./out/callback.js");
-Object.defineProperty(exports, "Callback", { enumerable: true, get: function () { return callback_js_1.Callback; } });
-var data_js_1 = __webpack_require__(/*! ./data.js */ "./out/data.js");
-Object.defineProperty(exports, "DataSource", { enumerable: true, get: function () { return data_js_1.DataSource; } });
-Object.defineProperty(exports, "DataSourceSelectArguments", { enumerable: true, get: function () { return data_js_1.DataSourceSelectArguments; } });
-var url_js_1 = __webpack_require__(/*! ./url.js */ "./out/url.js");
-Object.defineProperty(exports, "parseUrl", { enumerable: true, get: function () { return url_js_1.parseUrl; } });
-var deep_equal_js_1 = __webpack_require__(/*! ./deep-equal.js */ "./out/deep-equal.js");
-Object.defineProperty(exports, "deepEqual", { enumerable: true, get: function () { return deep_equal_js_1.deepEqual; } });
-var assign_deep_js_1 = __webpack_require__(/*! ./assign-deep.js */ "./out/assign-deep.js");
-Object.defineProperty(exports, "objectAssignDeep", { enumerable: true, get: function () { return assign_deep_js_1.objectAssignDeep; } });
-var format_js_1 = __webpack_require__(/*! ./format.js */ "./out/format.js");
-Object.defineProperty(exports, "formatDate", { enumerable: true, get: function () { return format_js_1.formatDate; } });
-Object.defineProperty(exports, "formatString", { enumerable: true, get: function () { return format_js_1.formatString; } });
-Object.defineProperty(exports, "format", { enumerable: true, get: function () { return format_js_1.format; } });
-var html_js_1 = __webpack_require__(/*! ./html.js */ "./out/html.js");
-Object.defineProperty(exports, "HTML", { enumerable: true, get: function () { return html_js_1.HTML; } });
-var value_store_js_1 = __webpack_require__(/*! ./value-store.js */ "./out/value-store.js");
-Object.defineProperty(exports, "ValueStore", { enumerable: true, get: function () { return value_store_js_1.ValueStore; } });
-var single_inoke_js_1 = __webpack_require__(/*! ./single-inoke.js */ "./out/single-inoke.js");
-Object.defineProperty(exports, "SingleInvoke", { enumerable: true, get: function () { return single_inoke_js_1.SingleInvoke; } });
-
-
-/***/ }),
-
-/***/ "./out/path.js":
-/*!*********************!*\
-  !*** ./out/path.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.partConcat2 = exports.pathConcat = void 0;
-const errors_js_1 = __webpack_require__(/*! ./errors.js */ "./out/errors.js");
-/** 连接多个路径 */
-function pathConcat(path, ...otherPaths) {
-    if (!path)
-        throw errors_js_1.errors.argumentNull("path");
-    let prefix = "";
-    if (path.startsWith("http://"))
-        prefix = "http://";
-    else if (path.startsWith("https://"))
-        prefix = "https://";
-    path = path.substring(prefix.length);
-    for (let i = 0; i < otherPaths.length; i++) {
-        path = partConcat2(path, otherPaths[i]);
-    }
-    path = prefix + path;
-    return path;
-}
-exports.pathConcat = pathConcat;
-function partConcat2(path1, path2) {
-    if (path1.startsWith("http://") || path1.startsWith("https://"))
-        throw errors_js_1.errors.pathStartsHttp(path1);
-    if (path2.startsWith("http://") || path2.startsWith("https://"))
-        throw errors_js_1.errors.pathStartsHttp(path2);
-    path1 = path1.replace(/(\/+\\*|\\+\/*)/g, '/');
-    path2 = path2.replace(/(\/+\\*|\\+\/*)/g, '/');
-    let arr1 = path1.split('/').filter(o => o);
-    let arr2 = path2.split('/').filter(o => o);
-    if (path1[0] == "/") {
-        arr1.unshift("");
-    }
-    while (arr2[0] == "." || arr2[0] == "..") {
-        if (arr2[0] == ".." && arr1.length > 0 && arr1[arr1.length - 1] != "") {
-            arr1.pop();
-        }
-        arr2.shift();
-    }
-    if (arr1.length == 1 && arr1[0] == "" && arr2.length == 0) {
-        return "/";
-    }
-    let path = [...arr1, ...arr2].join("/");
-    return path;
-}
-exports.partConcat2 = partConcat2;
-
-
-/***/ }),
-
-/***/ "./out/single-inoke.js":
-/*!*****************************!*\
-  !*** ./out/single-inoke.js ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SingleInvoke = void 0;
-const value_store_js_1 = __webpack_require__(/*! ./value-store.js */ "./out/value-store.js");
-class SingleInvoke {
-    constructor(func) {
-        this.result = new value_store_js_1.ValueStore(undefined);
-        this.error = new value_store_js_1.ValueStore(undefined);
-        this.executing = false;
-        this.func = func;
-    }
-    clear() {
-        this.result = new value_store_js_1.ValueStore(undefined);
-        this.error = new value_store_js_1.ValueStore(undefined);
-    }
-    execute() {
-        if (this.result.value !== undefined) {
-            return Promise.resolve(this.result.value);
-        }
-        if (this.executing) {
-            return new Promise((resolve, reject) => {
-                this.result.add(value => {
-                    resolve(value);
-                });
-                this.error.add(err => {
-                    reject(err);
-                });
-            });
-        }
-        this.executing = true;
-        return new Promise((resolve, reject) => {
-            this.func().then(r => {
-                this.result.value = r || null;
-                this.executing = false;
-                resolve(r);
-            }).catch(err => {
-                this.error = err;
-                this.executing = false;
-                reject(err);
-            });
-        });
-    }
-}
-exports.SingleInvoke = SingleInvoke;
-
-
-/***/ }),
-
-/***/ "./out/url.js":
-/*!********************!*\
-  !*** ./out/url.js ***!
-  \********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseUrl = void 0;
-function parseUrl(url) {
-    let i = url.indexOf("?");
-    if (i < 0)
-        return {};
-    let query = url.substr(i + 1);
-    return pareeUrlQuery(query);
-}
-exports.parseUrl = parseUrl;
-function pareeUrlQuery(query) {
-    let match, pl = /\+/g, // Regex for replacing addition symbol with a space
-    search = /([^&=]+)=?([^&]*)/g, decode = function (s) {
-        return decodeURIComponent(s.replace(pl, " "));
-    };
-    let urlParams = {};
-    while (match = search.exec(query))
-        urlParams[decode(match[1])] = decode(match[2]);
-    return urlParams;
-}
-
-
-/***/ }),
-
-/***/ "./out/value-store.js":
-/*!****************************!*\
-  !*** ./out/value-store.js ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ValueStore = void 0;
-/**
- * 实现数据的存储，以及数据修改的通知
- */
-class ValueStore {
-    constructor(value) {
-        this.items = new Array();
-        this._value = value;
-    }
-    attach(func, sender) {
-        if (this.value !== undefined) {
-            func(this.value, sender);
-        }
-        return this.add(func, sender);
-    }
-    add(func, sender) {
-        this.items.push({ func, sender });
-        return func;
-    }
-    remove(func) {
-        this.items = this.items.filter(o => o.func != func);
-    }
-    fire(value) {
-        this.items.forEach(o => o.func(value, o.sender));
-    }
-    get value() {
-        return this._value;
-    }
-    set value(value) {
-        this._value = value;
-        this.fire(value);
-    }
-}
-exports.ValueStore = ValueStore;
-
-
-/***/ })
-
-/******/ });
-});
-//# sourceMappingURL=index.js.map
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
-
-/***/ }),
-
 /***/ "./node_modules/maishu-toolkit/out/callback.js":
 /*!*****************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/callback.js ***!
@@ -1192,27 +197,197 @@ exports.errors = new Errors();
 
 /***/ }),
 
-/***/ "./node_modules/maishu-toolkit/out/guid.js":
-/*!*************************************************!*\
-  !*** ./node_modules/maishu-toolkit/out/guid.js ***!
-  \*************************************************/
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
+  !*** ./node_modules/process/browser.js ***!
+  \*****************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
+// shim for using process in browser
+var process = module.exports = {};
 
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.guid = void 0;
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
 }
-exports.guid = guid;
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 
 /***/ }),
@@ -5239,23 +4414,14 @@ var __importStar = void 0 && (void 0).__importStar || function (mod) {
   __setModuleDefault(result, mod);
   return result;
 };
-var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ComponentDiagram = void 0;
 var errors_1 = __webpack_require__(/*! ../errors */ "./out-es5/errors.js");
-var runtime_1 = __webpack_require__(/*! ../runtime */ "./out-es5/runtime/index.js");
 var React = __importStar(__webpack_require__(/*! react */ "react"));
 var designer_1 = __webpack_require__(/*! ../designer */ "./out-es5/designer.js");
-var strings_1 = __webpack_require__(/*! ../strings */ "./out-es5/strings.js");
-var style_1 = __webpack_require__(/*! ../style */ "./out-es5/style.js");
-var sortablejs_1 = __importDefault(__webpack_require__(/*! sortablejs */ "./node_modules/sortablejs/modular/sortable.esm.js"));
-var guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
+var runtime_1 = __webpack_require__(/*! ../runtime */ "./out-es5/runtime/index.js");
 var parse_design_component_data_1 = __webpack_require__(/*! ./parse-design-component-data */ "./out-es5/design/parse-design-component-data.js");
 var ComponentDiagram = /*#__PURE__*/function (_React$Component) {
   _inherits(ComponentDiagram, _React$Component);
@@ -5292,79 +4458,13 @@ var ComponentDiagram = /*#__PURE__*/function (_React$Component) {
       return this._element;
     }
   }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-      var connect = function connect(componentPanelElement, componentPanel) {
-        var groupName = (0, guid_1.guid)();
-        new sortablejs_1.default(componentPanelElement, {
-          group: {
-            name: groupName,
-            pull: "clone",
-            put: false
-          },
-          animation: 150,
-          sort: false,
-          onEnd: function onEnd(ev) {
-            var componentData = componentPanel.getComponentData(ev.item);
-            var childNodes = ev.item.parentElement.childNodes || [];
-            var targetIndex;
-            for (var i = 0; i < childNodes.length; i++) {
-              if (childNodes[i] == ev.item) {
-                targetIndex = i;
-                childNodes[i].remove();
-                break;
-              }
-            }
-            _this2.designer.appendComponent(componentData, targetIndex);
-          }
-        });
-        new sortablejs_1.default(_this2.element, {
-          group: groupName,
-          animation: 150
-        });
-      };
-      this.designer.componentPanelElements.each(function (e) {
-        return connect(e.element, e.instance);
-      });
-      this.designer.componentPanelElements.added.add(function (args) {
-        return connect(args.dataItem.element, args.dataItem.instance);
-      });
-    }
-  }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
       return React.createElement(designer_1.DesignerContext.Consumer, null, function (args) {
         if (!args) throw errors_1.errors.contextArgumentNull();
         var designer = args.designer;
-        _this3.designer = designer;
-        var componentDatas = designer.pageData.children || [];
-        if (componentDatas.length == 0) return React.createElement("ul", {
-          ref: function ref(e) {
-            return _this3.ref(e, args);
-          }
-        }, React.createElement("li", null, strings_1.strings.emptyCompoenntPanel));
         var componentTypes = args.designer.componentTypes;
-        return React.createElement("ul", {
-          className: style_1.classNames.componentDiagram,
-          ref: function ref(e) {
-            return _this3.ref(e, args);
-          }
-        }, componentDatas.map(function (c) {
-          if (typeof c == "string") throw new Error("string is not supported");
-          var status = c.status || runtime_1.ComponentStatus.default;
-          var selected = (status & runtime_1.ComponentStatus.selected) == runtime_1.ComponentStatus.selected;
-          return React.createElement("li", {
-            key: c.id,
-            className: selected ? style_1.classNames.selected : "",
-            onClick: function onClick(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              _this3.selectComponent(args.designer, c.id);
-            }
-          }, (0, parse_design_component_data_1.parseDesigntimeComponentData)(c, componentTypes));
-        }));
+        return (0, runtime_1.parsePageData)(designer.pageData, componentTypes, parse_design_component_data_1.createDesigntimeComponent);
       });
     }
   }]);
@@ -5384,9 +4484,12 @@ exports.ComponentDiagram = ComponentDiagram;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(process) {
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -5430,6 +4533,11 @@ var __importStar = void 0 && (void 0).__importStar || function (mod) {
   __setModuleDefault(result, mod);
   return result;
 };
+var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -5439,7 +4547,9 @@ var React = __importStar(__webpack_require__(/*! react */ "react"));
 var designer_1 = __webpack_require__(/*! ../designer */ "./out-es5/designer.js");
 var style_1 = __webpack_require__(/*! ../style */ "./out-es5/style.js");
 var strings_1 = __webpack_require__(/*! ../strings */ "./out-es5/strings.js");
-var maishu_toolkit_1 = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/dist/index.js");
+var sortablejs_1 = __importDefault(__webpack_require__(/*! sortablejs */ "./node_modules/sortablejs/modular/sortable.esm.js"));
+var utility_1 = __webpack_require__(/*! ../utility */ "./out-es5/utility/index.js");
+var GROUP = "shared";
 var DATA_TYPE = "data-type";
 exports.ComponentPanelContext = React.createContext(null);
 /** 组件面板 */
@@ -5447,8 +4557,11 @@ var ComponentPanel = /*#__PURE__*/function (_React$Component) {
   _inherits(ComponentPanel, _React$Component);
   var _super = _createSuper(ComponentPanel);
   function ComponentPanel() {
+    var _this;
     _classCallCheck(this, ComponentPanel);
-    return _super.apply(this, arguments);
+    _this = _super.apply(this, arguments);
+    _this.dropTargets = [];
+    return _this;
   }
   _createClass(ComponentPanel, [{
     key: "element",
@@ -5457,16 +4570,13 @@ var ComponentPanel = /*#__PURE__*/function (_React$Component) {
     }
   }, {
     key: "getComponentData",
-    value: function getComponentData(toolbarElement) {
-      if (!toolbarElement) throw errors_1.errors.argumentNull("toolbarElement");
-      var dataType = toolbarElement.getAttribute(DATA_TYPE);
-      if (!dataType) throw new Error("Argument toolbarElement is an invalid component panel element.");
-      var c = {
-        id: (0, maishu_toolkit_1.guid)(),
-        type: dataType,
-        props: {},
-        children: []
-      };
+    value: function getComponentData(ui, componentDataFactory) {
+      if (!ui) throw errors_1.errors.argumentNull("ui");
+      if (!ui.item) {
+        throw new Error("Not supported.");
+      }
+      var dataType = ui.item.getAttribute(DATA_TYPE);
+      var c = dataType ? componentDataFactory(dataType) : componentDataFactory(ui.item);
       return c;
     }
   }, {
@@ -5474,20 +4584,102 @@ var ComponentPanel = /*#__PURE__*/function (_React$Component) {
     value: function ref(e, args) {
       if (!e) return;
       this._element = e;
-      var elements = args.designer.componentPanelElements.map(function (o) {
+      var elements = args.designer.componentPanels.map(function (o) {
         return o.element;
       });
       if (elements.indexOf(e) < 0) {
-        args.designer.componentPanelElements.add({
-          element: e,
-          instance: this
-        });
+        args.designer.componentPanels.add(this);
       }
     }
   }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      new sortablejs_1.default(this.element, {
+        group: {
+          name: GROUP,
+          pull: "clone",
+          put: false
+        },
+        animation: 150,
+        sort: false
+      });
+    }
+  }, {
+    key: "appendDropTarget",
+    value: function () {
+      var _appendDropTarget = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(element, designer, parentId, componentDataFactory) {
+        var _this2 = this;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (!(typeof process != "undefined" && "development" == "test")) {
+                  _context.next = 2;
+                  break;
+                }
+                return _context.abrupt("return");
+              case 2:
+                if (element) {
+                  _context.next = 4;
+                  break;
+                }
+                throw errors_1.errors.argumentNull("element");
+              case 4:
+                if (!(this.dropTargets.indexOf(element) >= 0)) {
+                  _context.next = 6;
+                  break;
+                }
+                return _context.abrupt("return");
+              case 6:
+                this.dropTargets.push(element);
+                new sortablejs_1.default(element, {
+                  group: {
+                    name: GROUP
+                  },
+                  animation: 150,
+                  onAdd: function onAdd(evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    var componentData = _this2.getComponentData(evt, componentDataFactory);
+                    var targetIndex;
+                    var parentElement = evt.item.parentElement;
+                    for (var i = 0; i < parentElement.children.length; i++) {
+                      if (parentElement.children[i] == evt.item) {
+                        targetIndex = i;
+                        break;
+                      }
+                    }
+                    designer.removeComponentIfExists(componentData.id);
+                    designer.appendComponent(componentData, parentId, targetIndex);
+                  },
+                  onSort: function onSort(event) {
+                    if (event.item.getAttribute(DATA_TYPE)) return;
+                    var componentData = componentDataFactory(event.item);
+                    console.assert(componentData != null, "componentData is null");
+                    // debugger
+                    var r = utility_1.PageDataTravel.findComponentAndParent(designer.pageData, componentData.id);
+                    var parent = r.parent;
+                    // parent.children.splice(event.oldIndex || 0, 1)
+                    // parent.children.splice(event.newIndex || 0, 0, componentData)
+                    designer.moveComponent(componentData.id, parent.id, event.newIndex);
+                  }
+                });
+              case 8:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+      function appendDropTarget(_x, _x2, _x3, _x4) {
+        return _appendDropTarget.apply(this, arguments);
+      }
+      return appendDropTarget;
+    }()
+  }, {
     key: "render",
     value: function render() {
-      var _this = this;
+      var _this3 = this;
       return React.createElement(exports.ComponentPanelContext.Provider, {
         value: {
           instance: this
@@ -5495,17 +4687,19 @@ var ComponentPanel = /*#__PURE__*/function (_React$Component) {
       }, React.createElement(designer_1.DesignerContext.Consumer, null, function (args) {
         if (!args) throw errors_1.errors.contextArgumentNull();
         var componentsConfig = args.designer.props.componentsConfig;
-        var componentInfos = Object.keys(componentsConfig).map(function (k) {
+        var componentInfos = Object.keys(componentsConfig).filter(function (k) {
+          return !componentsConfig[k].hidden;
+        }).map(function (k) {
           return Object.assign({}, componentsConfig[k], {
             typeName: k
           });
         });
-        var renderItem = _this.props.renderItem || ComponentPanel.renderItem;
-        renderItem.bind(_this);
+        var renderItem = _this3.props.renderItem || ComponentPanel.renderItem;
+        renderItem.bind(_this3);
         return React.createElement("ul", {
           className: style_1.classNames.componentPanel,
           ref: function ref(e) {
-            return _this.ref(e, args);
+            return _this3.ref(e, args);
           }
         }, componentInfos.length > 0 ? componentInfos.map(function (o) {
           return renderItem(o.typeName, o);
@@ -5533,6 +4727,7 @@ var ComponentPanel = /*#__PURE__*/function (_React$Component) {
 exports.ComponentPanel = ComponentPanel;
 //# sourceMappingURL=component-panel.js.map
 
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -5771,11 +4966,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DesignComponentPlaceHolder = void 0;
-var guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
 var React = __importStar(__webpack_require__(/*! react */ "react"));
 var designer_1 = __webpack_require__(/*! ../../designer */ "./out-es5/designer.js");
 var errors_1 = __webpack_require__(/*! ../../errors */ "./out-es5/errors.js");
+var strings_1 = __webpack_require__(/*! ../../strings */ "./out-es5/strings.js");
 var style_1 = __webpack_require__(/*! ../../style */ "./out-es5/style.js");
+var utility_1 = __webpack_require__(/*! ../../utility */ "./out-es5/utility/index.js");
+var parse_design_component_data_1 = __webpack_require__(/*! ../parse-design-component-data */ "./out-es5/design/parse-design-component-data.js");
+var CONTAINER_ID = "container_id";
+var DATA_ID = "data-id";
 var DesignComponentPlaceHolder = /*#__PURE__*/function (_React$Component) {
   _inherits(DesignComponentPlaceHolder, _React$Component);
   var _super = _createSuper(DesignComponentPlaceHolder);
@@ -5785,20 +4984,69 @@ var DesignComponentPlaceHolder = /*#__PURE__*/function (_React$Component) {
   }
   _createClass(DesignComponentPlaceHolder, [{
     key: "enableDrop",
-    value: function enableDrop(element) {
+    value: function enableDrop(element, designer, componentId) {
+      var _this = this;
       if (!element || this.element) return;
       this.element = element;
-      var groupName = (0, guid_1.guid)();
+      designer.componentPanels.each(function (componentPanel) {
+        componentPanel.appendDropTarget(_this.element, designer, componentId, function (arg) {
+          if (typeof arg == "string") {
+            var componentType = arg;
+            return _this.createComponentData(designer.pageData, componentType, _this.props.id);
+          }
+          var element = arg;
+          var dataId = element.getAttribute(DATA_ID);
+          console.assert(dataId != null);
+          var c = utility_1.PageDataTravel.findComponent(designer.pageData, dataId);
+          c.props[CONTAINER_ID] = _this.props.id;
+          return c;
+        });
+      });
+    }
+  }, {
+    key: "createComponentData",
+    value: function createComponentData(pageData, componentType, containerId) {
+      var props = {};
+      props[CONTAINER_ID] = containerId;
+      var id = utility_1.PageDataTravel.generateId(pageData, componentType);
+      var c = {
+        id: id,
+        type: componentType,
+        props: props,
+        children: []
+      };
+      return c;
     }
   }, {
     key: "render",
     value: function render() {
-      return React.createElement(designer_1.DesignerContext.Consumer, null, function (args) {
+      var _this2 = this;
+      return React.createElement(designer_1.DesignComponentContext.Consumer, null, function (args) {
         if (!args) throw errors_1.errors.contextArgumentNull();
-        // args.designer.componentPanelElements
-        return React.createElement("div", {
-          className: style_1.classNames.componentPlaceHolder
+        var childComponentDatas = args.componentData.children.filter(function (o) {
+          return o.props[CONTAINER_ID] == _this2.props.id;
         });
+        return React.createElement("ul", {
+          className: style_1.classNames.designComponentPlaceHolder,
+          ref: function ref(e) {
+            return _this2.enableDrop(e, args.designer, args.componentData.id);
+          }
+        }, childComponentDatas.length > 0 ? childComponentDatas.map(function (c) {
+          return React.createElement("li", {
+            key: c.id,
+            ref: function ref(e) {
+              if (!e) return;
+              e.setAttribute(DATA_ID, c.id);
+            },
+            onClick: function onClick(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              args.designer.selectComponent(c.id);
+            }
+          }, (0, parse_design_component_data_1.parseDesigntimeComponentData)(c, args.componentTypes));
+        }) : React.createElement("li", {
+          className: style_1.classNames.empty
+        }, strings_1.strings.emptyDiagram));
       });
     }
   }]);
@@ -5806,6 +5054,142 @@ var DesignComponentPlaceHolder = /*#__PURE__*/function (_React$Component) {
 }(React.Component);
 exports.DesignComponentPlaceHolder = DesignComponentPlaceHolder;
 //# sourceMappingURL=design-component-placeholder.js.map
+
+
+/***/ }),
+
+/***/ "./out-es5/design/components/design-page.js":
+/*!**************************************************!*\
+  !*** ./out-es5/design/components/design-page.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+var __createBinding = void 0 && (void 0).__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+var __setModuleDefault = void 0 && (void 0).__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+var __importStar = void 0 && (void 0).__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+  __setModuleDefault(result, mod);
+  return result;
+};
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DesignPage = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "react"));
+var designer_1 = __webpack_require__(/*! ../../designer */ "./out-es5/designer.js");
+var errors_1 = __webpack_require__(/*! ../../errors */ "./out-es5/errors.js");
+var utility_1 = __webpack_require__(/*! ../../utility */ "./out-es5/utility/index.js");
+var style_1 = __webpack_require__(/*! ../../style */ "./out-es5/style.js");
+var DATA_ID = "data-id";
+var DesignPage = /*#__PURE__*/function (_React$Component) {
+  _inherits(DesignPage, _React$Component);
+  var _super = _createSuper(DesignPage);
+  function DesignPage() {
+    _classCallCheck(this, DesignPage);
+    return _super.apply(this, arguments);
+  }
+  _createClass(DesignPage, [{
+    key: "ref",
+    value: function ref(element, designer) {
+      if (!element || this.element) return;
+      this.element = element;
+      designer.componentPanels.each(function (componentPanel) {
+        componentPanel.appendDropTarget(element, designer, designer.pageData.id, function (arg) {
+          if (typeof arg == "string") {
+            var _c = {
+              id: utility_1.PageDataTravel.generateId(designer.pageData, arg),
+              type: arg,
+              props: {},
+              children: []
+            };
+            return _c;
+          }
+          var element = arg;
+          var dataId = element.getAttribute(DATA_ID);
+          if (!dataId) throw new Error("Invalid element");
+          var c = utility_1.PageDataTravel.findComponent(designer.pageData, dataId);
+          return c;
+        });
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this = this;
+      var children = (0, utility_1.childrenNodeToArray)(this.props.children);
+      return React.createElement(designer_1.DesignerContext.Consumer, null, function (args) {
+        if (!args) throw errors_1.errors.contextArgumentNull();
+        return React.createElement("ul", {
+          key: args.designer.pageData.id,
+          className: style_1.classNames.designPage,
+          ref: function ref(e) {
+            return _this.ref(e, args.designer);
+          }
+        }, children.map(function (o) {
+          return React.createElement("li", {
+            key: o.key,
+            onClick: function onClick(e) {
+              var id = o.key;
+              if (typeof id == "string") {
+                e.preventDefault();
+                e.stopPropagation();
+                args.designer.selectComponent(id);
+              }
+            },
+            ref: function ref(e) {
+              if (!e) return;
+              e.setAttribute(DATA_ID, o.key);
+            }
+          }, o);
+        }));
+      });
+    }
+  }]);
+  return DesignPage;
+}(React.Component);
+exports.DesignPage = DesignPage;
+//# sourceMappingURL=design-page.js.map
 
 
 /***/ }),
@@ -5823,7 +5207,7 @@ exports.DesignComponentPlaceHolder = DesignComponentPlaceHolder;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createLoadingComponent = exports.createInfoComponent = void 0;
+exports.DesignComponentPlaceHolder = exports.DesignPage = exports.createLoadingComponent = exports.createInfoComponent = void 0;
 var create_info_component_1 = __webpack_require__(/*! ./create-info-component */ "./out-es5/design/components/create-info-component.js");
 Object.defineProperty(exports, "createInfoComponent", {
   enumerable: true,
@@ -5836,6 +5220,20 @@ Object.defineProperty(exports, "createLoadingComponent", {
   enumerable: true,
   get: function get() {
     return create_loading_component_1.createLoadingComponent;
+  }
+});
+var design_page_1 = __webpack_require__(/*! ./design-page */ "./out-es5/design/components/design-page.js");
+Object.defineProperty(exports, "DesignPage", {
+  enumerable: true,
+  get: function get() {
+    return design_page_1.DesignPage;
+  }
+});
+var design_component_placeholder_1 = __webpack_require__(/*! ./design-component-placeholder */ "./out-es5/design/components/design-component-placeholder.js");
+Object.defineProperty(exports, "DesignComponentPlaceHolder", {
+  enumerable: true,
+  get: function get() {
+    return design_component_placeholder_1.DesignComponentPlaceHolder;
   }
 });
 //# sourceMappingURL=index.js.map
@@ -5895,7 +5293,7 @@ var design_behavior_1 = __webpack_require__(/*! ./design-behavior */ "./out-es5/
 var common_1 = __webpack_require__(/*! ../common */ "./out-es5/common/index.js");
 var errors_1 = __webpack_require__(/*! ../errors */ "./out-es5/errors.js");
 var runtime_1 = __webpack_require__(/*! ../runtime */ "./out-es5/runtime/index.js");
-var design_component_placeholder_1 = __webpack_require__(/*! ./components/design-component-placeholder */ "./out-es5/design/components/design-component-placeholder.js");
+var components_1 = __webpack_require__(/*! ./components */ "./out-es5/design/components/index.js");
 var createDesignElement = function createDesignElement(type, props) {
   for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     children[_key - 2] = arguments[_key];
@@ -5915,7 +5313,7 @@ var createDesignElement = function createDesignElement(type, props) {
       delete props.onClick;
     }
     if (type == runtime_1.ComponentPlaceHolder) {
-      type = design_component_placeholder_1.DesignComponentPlaceHolder;
+      type = components_1.DesignComponentPlaceHolder;
     }
     return React.createElement.apply(React, [type, props].concat(children));
   });
@@ -5999,35 +5397,43 @@ var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.parseDesigntimeComponentData = void 0;
+exports.createDesigntimeComponent = exports.parseDesigntimeComponentData = void 0;
 var errors_1 = __webpack_require__(/*! ../errors */ "./out-es5/errors.js");
 var runtime_1 = __webpack_require__(/*! ../runtime */ "./out-es5/runtime/index.js");
 var react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 var designer_1 = __webpack_require__(/*! ../designer */ "./out-es5/designer.js");
 var utility_1 = __webpack_require__(/*! ../utility */ "./out-es5/utility/index.js");
 var design_component_context_1 = __webpack_require__(/*! ./design-component-context */ "./out-es5/design/design-component-context.js");
+var design_behavior_1 = __webpack_require__(/*! ./design-behavior */ "./out-es5/design/design-behavior.js");
 function parseDesigntimeComponentData(componentData, componentTypes) {
-  return (0, runtime_1.parseComponentData)(componentData, componentTypes, createDesigntimeComponent);
+  return (0, runtime_1.parsePageData)(componentData, componentTypes, createDesigntimeComponent);
 }
 exports.parseDesigntimeComponentData = parseDesigntimeComponentData;
 function createDesigntimeComponent(type, props, children) {
   var p = props;
   if (!p.id) throw errors_1.errors.argumentFieldNull("id", "props");
-  return react_1.default.createElement(designer_1.DesignerContext.Consumer, null, function (args) {
+  return react_1.default.createElement(designer_1.DesignerContext.Consumer, {
+    key: p.id
+  }, function (args) {
     if (!args) throw errors_1.errors.contextArgumentNull();
-    var componentData = utility_1.PageDataTravel.findComponent(args.designer.pageData, p.id); //args.designer.pageData.children.filter(o => o.id == p.id)[0]
+    var componentData = utility_1.PageDataTravel.findComponent(args.designer.pageData, p.id);
     if (!componentData) throw new Error("Can not find component data by '".concat(p.id, "' in the page data."));
-    var componentConfig = args.designer.props.componentsConfig[componentData.type];
-    if (!componentConfig) return react_1.default.createElement(type, props, children);
+    var componentConfig = args.designer.componentsConfig;
+    if (!componentConfig) throw new Error("Component config is null for component type '".concat(componentData.type, "'"));
+    var componentTypes = args.designer.componentTypes;
     var value = {
       componentData: componentData,
-      componentConfig: componentConfig
+      componentConfig: componentConfig,
+      designer: args.designer,
+      componentTypes: componentTypes
     };
+    var designBehavior = typeof componentConfig.design == "number" ? componentConfig.design : design_behavior_1.DesignBehavior.default;
     return react_1.default.createElement(design_component_context_1.DesignComponentContext.Provider, {
       value: value
     }, react_1.default.createElement(type, props, children));
   });
 }
+exports.createDesigntimeComponent = createDesigntimeComponent;
 //# sourceMappingURL=parse-design-component-data.js.map
 
 
@@ -6047,12 +5453,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -6103,10 +5503,11 @@ exports.PageDesigner = exports.DesignComponentContext = exports.DesignerContext 
 var React = __importStar(__webpack_require__(/*! react */ "react"));
 var runtime_1 = __webpack_require__(/*! ./runtime */ "./out-es5/runtime/index.js");
 var errors_1 = __webpack_require__(/*! ./errors */ "./out-es5/errors.js");
-var guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
 var components_1 = __webpack_require__(/*! ./design/components */ "./out-es5/design/components/index.js");
 var utility_1 = __webpack_require__(/*! ./utility */ "./out-es5/utility/index.js");
 var data_list_1 = __webpack_require__(/*! ./data/data-list */ "./out-es5/data/data-list.js");
+var design_behavior_1 = __webpack_require__(/*! ./design/design-behavior */ "./out-es5/design/design-behavior.js");
+var design_page_1 = __webpack_require__(/*! ./design/components/design-page */ "./out-es5/design/components/design-page.js");
 exports.DesignerContext = React.createContext(null);
 exports.DesignComponentContext = React.createContext(null);
 /**
@@ -6119,16 +5520,13 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
     var _this;
     _classCallCheck(this, PageDesigner);
     _this = _super.call(this, props);
-    // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
     _this._prePageData = null;
     _this.componentDiagramElements = new data_list_1.DataList();
-    _this.componentPanelElements = new data_list_1.DataList();
+    _this.componentPanels = new data_list_1.DataList();
     if (!props) throw errors_1.errors.argumentNull("props");
     if (!props.componentsConfig) throw errors_1.errors.argumentFieldCanntNull("componentsConfig", "props");
     _this.checkComponentsConfig(props.componentsConfig);
     var pageData = _this.props.pageData;
-    // let componentTypes: ComponentTypes = {}
-    // this.initPageData(pageData, componentTypes);
     _this.state = {
       pageData: pageData,
       componentTypes: {},
@@ -6141,42 +5539,6 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
     key: "checkComponentsConfig",
     value: function checkComponentsConfig(componentsConfig) {
       // TODO: 检查组件配置
-    }
-    // private initPageData(pageData: PageData, componentTypes: ComponentTypes) {
-    //     if (pageData == null) throw errors.argumentNull("pageData")
-    //     console.assert(pageData.children != null, "PageData children is null.")
-    //     let travel = new PageDataTravel(pageData)
-    //     travel.each((c) => {
-    //         if (typeof c == "string" || !isCustomComponent(c) || componentTypes[c.type])
-    //             return
-    //         componentTypes[c.type] = createLoadingComponent()
-    //     })
-    // }
-    /**
-     * 对组件及其子控件进行命名
-     * @param componentData
-     */
-  }, {
-    key: "initComponent",
-    value: function initComponent(componentData, pageData) {
-      var namedComponents = {};
-      pageData.children.forEach(function (c) {
-        if (typeof c == "string") return;
-        if (c.name) {
-          namedComponents[c.name] = c;
-        }
-      });
-      if (!componentData.name) {
-        var num = 0;
-        var name;
-        do {
-          num = num + 1;
-          name = "".concat(componentData.type).concat(num);
-        } while (namedComponents[name]);
-        namedComponents[name] = componentData;
-        componentData.name = name;
-      }
-      if (!componentData.id) componentData.id = (0, guid_1.guid)();
     }
     /** 页面数据 */
   }, {
@@ -6219,8 +5581,11 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "selectedComponents",
     get: function get() {
-      var arr = this.pageData.children.filter(function (o) {
-        return typeof o != "string" && ((o.status || runtime_1.ComponentStatus.default) & runtime_1.ComponentStatus.selected) == runtime_1.ComponentStatus.selected;
+      var arr = [];
+      utility_1.PageDataTravel.each(this.pageData, function (o) {
+        if (((o.status || runtime_1.ComponentStatus.default) & runtime_1.ComponentStatus.selected) == runtime_1.ComponentStatus.selected) {
+          arr.push(o);
+        }
       });
       return arr;
     }
@@ -6271,16 +5636,16 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
      */
   }, {
     key: "appendComponent",
-    value: function appendComponent(componentData, componentIndex) {
-      // let parentId = componentData.parentId;
-      // if (!parentId) throw new Error('ParentId field of component data is null.');
+    value: function appendComponent(componentData, parentId, componentIndex) {
       if (!componentData) throw errors_1.errors.argumentNull('childComponent');
-      var pageData = this.pageData;
-      this.initComponent(componentData, pageData);
+      if (!parentId) throw errors_1.errors.argumentNull("parentId");
+      var parentComponentData = utility_1.PageDataTravel.findComponent(this.pageData, parentId);
+      if (!parentComponentData) throw new Error("Component data '".concat(parentId, "' is not exists"));
+      var children = parentComponentData.children;
       if (componentIndex == null) {
-        pageData.children.push(componentData);
+        children.push(componentData);
       } else {
-        pageData.children.splice(componentIndex, 0, componentData);
+        children.splice(componentIndex, 0, componentData);
       }
       this.selectComponents(componentData.id);
     }
@@ -6305,18 +5670,14 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
     key: "selectComponents",
     value: function selectComponents(componentIds) {
       if (typeof componentIds == 'string') componentIds = [componentIds];
-      var children = (this.pageData.children || []).filter(function (o) {
-        return typeof o != "string";
-      });
-      children.forEach(function (c) {
-        // c.selected = false;
+      /** 取消选中 */
+      utility_1.PageDataTravel.each(this.pageData, function (c) {
         c.status = c.status || runtime_1.ComponentStatus.default;
         c.status = c.status & ~runtime_1.ComponentStatus.selected;
       });
-      children.filter(function (o) {
-        return componentIds.indexOf(o.id) >= 0;
-      }).forEach(function (c) {
-        // c.selected = true;
+      /** 设置选中 */
+      utility_1.PageDataTravel.each(this.pageData, function (c) {
+        if (componentIds.indexOf(c.id) < 0) return;
         c.status = c.status || runtime_1.ComponentStatus.default;
         c.status = c.status | runtime_1.ComponentStatus.selected;
       });
@@ -6328,10 +5689,43 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "removeComponent",
     value: function removeComponent() {
-      for (var _len = arguments.length, componentIds = new Array(_len), _key = 0; _key < _len; _key++) {
-        componentIds[_key] = arguments[_key];
+      var _arguments = arguments,
+        _this2 = this;
+      var _loop = function _loop(i) {
+        var componentId = i < 0 || _arguments.length <= i ? undefined : _arguments[i];
+        var _utility_1$PageDataTr = utility_1.PageDataTravel.findComponentAndParent(_this2.pageData, componentId),
+          component = _utility_1$PageDataTr.component,
+          parent = _utility_1$PageDataTr.parent; //componentChildren.filter(o => o.id == componentId)[0];
+        if (component == null) throw new Error("Component '".concat(componentId, "' is not exists."));
+        if (parent == null) throw new Error("Component '".concat(componentId, "' is root element, can not remove."));
+        parent.children = parent.children.filter(function (o) {
+          return o.id != componentId;
+        });
+      };
+      for (var i = 0; i < arguments.length; i++) {
+        _loop(i);
       }
-      this.removeComponents(componentIds);
+    }
+  }, {
+    key: "removeComponentIfExists",
+    value: function removeComponentIfExists() {
+      var _arguments2 = arguments,
+        _this3 = this;
+      var _loop2 = function _loop2(i) {
+        var componentId = i < 0 || _arguments2.length <= i ? undefined : _arguments2[i];
+        var _utility_1$PageDataTr2 = utility_1.PageDataTravel.findComponentAndParent(_this3.pageData, componentId),
+          component = _utility_1$PageDataTr2.component,
+          parent = _utility_1$PageDataTr2.parent; //componentChildren.filter(o => o.id == componentId)[0];
+        if (component == null) return "continue";
+        if (parent == null) throw new Error("Component '".concat(componentId, "' is root element, can not remove."));
+        parent.children = parent.children.filter(function (o) {
+          return o.id != componentId;
+        });
+      };
+      for (var i = 0; i < arguments.length; i++) {
+        var _ret = _loop2(i);
+        if (_ret === "continue") continue;
+      }
     }
   }, {
     key: "removeComponents",
@@ -6339,7 +5733,7 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
       var pageData = this.pageData;
       if (!pageData || !pageData.children || pageData.children.length == 0) return;
       for (var i = 0; i < componentIds.length; i++) {
-        this.removeComponentFrom(componentIds[i], pageData);
+        this.removeComponent(componentIds[i]);
       }
       this.setState({
         pageData: pageData
@@ -6357,45 +5751,11 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
       var component = this.findComponentData(componentId);
       if (component == null) throw new Error("Cannt find component by id ".concat(componentId));
       console.assert(component != null, "Cannt find component by id ".concat(componentId));
-      component.parentId = parentId;
+      // component.parentId = parentId;
       var pageData = this.pageData;
       console.assert(pageData.children != null);
-      this.removeComponentFrom(componentId, pageData);
-      this.appendComponent(component, childComponentIndex);
-    }
-  }, {
-    key: "removeComponentFrom",
-    value: function removeComponentFrom(componentId, pageData) {
-      var componentChildren = (this.pageData.children || []).filter(function (o) {
-        return typeof o != "string";
-      });
-      var child = componentChildren.filter(function (o) {
-        return o.id == componentId;
-      })[0];
-      if (child == null) throw new Error("Component '".concat(componentId, "' is not exists."));
-      var stack = [child];
-      var componentsToRemove = [componentId];
-      var _loop = function _loop() {
-        var item = stack.pop();
-        var childs = componentChildren.filter(function (o) {
-          return o.parentId == item.id;
-        });
-        if (childs.length > 0) {
-          stack.push.apply(stack, _toConsumableArray(childs));
-          // status 为 ComponentStatus.asset 不要删除
-          componentsToRemove.push.apply(componentsToRemove, _toConsumableArray(childs.filter(function (o) {
-            return o.status == null || (o.status & runtime_1.ComponentStatus.asset) != runtime_1.ComponentStatus.asset;
-          }).map(function (o) {
-            return o.id;
-          })));
-        }
-      };
-      while (stack.length > 0) {
-        _loop();
-      }
-      pageData.children = pageData.children.filter(function (o) {
-        return typeof o != "string" && componentsToRemove.indexOf(o.id) < 0;
-      });
+      this.removeComponent(componentId);
+      this.appendComponent(component, parentId, childComponentIndex);
     }
     /**
      * 通过组件编号获取组件的数据
@@ -6406,9 +5766,7 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
     value: function findComponentData(componentId) {
       var pageData = this.state.pageData;
       if (!pageData) throw errors_1.errors.pageDataIsNull();
-      var componentData = pageData.children.filter(function (o) {
-        return typeof o != "string" && o.id == componentId;
-      })[0];
+      var componentData = utility_1.PageDataTravel.findComponent(pageData, componentId) || null;
       return componentData;
     }
   }, {
@@ -6423,7 +5781,6 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
                 componentsToLoad = [];
                 travel = new utility_1.PageDataTravel(pageData);
                 travel.each(function (c) {
-                  if (typeof c == "string" || !(0, utility_1.isCustomComponent)(c)) return;
                   componentsToLoad.push(c.type);
                 });
                 componentsConfig = this.props.componentsConfig;
@@ -6471,7 +5828,7 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
     key: "loadComponentTypes",
     value: function () {
       var _loadComponentTypes = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(pageData) {
-        var _this2 = this;
+        var _this4 = this;
         var componentTypes, componentsConfig, componentsToLoad, travel;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) {
@@ -6482,17 +5839,16 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
                 componentsToLoad = [];
                 travel = new utility_1.PageDataTravel(pageData);
                 travel.each(function (c) {
-                  if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !(0, utility_1.isCustomComponent)(c) || componentTypes[c.type]) return;
+                  if ((0, utility_1.isHTMLComponent)(c)) return;
                   componentsToLoad.push(c.type);
                 });
                 componentsToLoad.forEach(function (typeName) {
                   componentTypes[typeName] = (0, components_1.createLoadingComponent)();
-                  // this.setState({ componentTypes })
                 });
                 // const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
                 PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(function (loadedComponentTypes) {
                   Object.assign(componentTypes, loadedComponentTypes);
-                  _this2.setState({
+                  _this4.setState({
                     componentTypes: componentTypes
                   });
                 });
@@ -6541,26 +5897,11 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
     }()
   }, {
     key: "componentDidMount",
-    value: function componentDidMount() {
-      // let groupBaseName = 'diagram'
-      // for (let i = 0; i < this.componentPanelElements.count; i++) {
-      //     let groupName = groupBaseName + i
-      //     new Sortable(this.componentPanelElements[i], {
-      //         group: groupName,
-      //         animation: 150
-      //     })
-      //     for (let j = 0; j < this.componentDiagramElements.length; j++) {
-      //         new Sortable(this.componentDiagramElements[j], {
-      //             group: groupName,
-      //             animation: 150
-      //         })
-      //     }
-      // }
-    }
+    value: function componentDidMount() {}
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this5 = this;
       var pageData = this.state.pageData;
       var equal = (0, utility_1.deepEqual)(this.prePageData, pageData);
       if (!equal) {
@@ -6570,10 +5911,10 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
       return React.createElement("div", {
         tabIndex: 0,
         ref: function ref(e) {
-          return _this3._element = _this3._element || e;
+          return _this5._element = _this5._element || e;
         },
         onKeyDown: function onKeyDown(e) {
-          return _this3.onKeyDown(e);
+          return _this5.onKeyDown(e);
         },
         className: this.props.className,
         style: this.props.style
@@ -6587,45 +5928,71 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
     key: "loadComponentTypes",
     value: function () {
       var _loadComponentTypes2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(componentsToLoad, componentsConfig) {
-        var promises, componentTypes, _loop2, i, _ret;
+        var typeName, designBehavior, promises, componentTypes, _loop3, i;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
+                if (componentsToLoad) {
+                  _context4.next = 2;
+                  break;
+                }
+                throw errors_1.errors.argumentNull("componentsToLoad");
+              case 2:
+                if (componentsConfig) {
+                  _context4.next = 4;
+                  break;
+                }
+                throw errors_1.errors.argumentNull("componentsConfig");
+              case 4:
+                // 设置默认组件
+                for (typeName in runtime_1.componentTypes) {
+                  if (!componentsConfig[typeName]) {
+                    designBehavior = design_behavior_1.DesignBehavior.default;
+                    componentsConfig[typeName] = {
+                      type: Promise.resolve({
+                        default: runtime_1.componentTypes[typeName]
+                      }),
+                      hidden: true,
+                      design: designBehavior
+                    };
+                    if (typeName == runtime_1.componentTypeNames.page) {
+                      componentsConfig[typeName].design = Promise.resolve({
+                        default: design_page_1.DesignPage
+                      });
+                    }
+                  }
+                }
                 promises = [];
                 componentTypes = {};
-                _loop2 = function _loop2(i) {
+                _loop3 = function _loop3(i) {
                   var typeName = componentsToLoad[i];
-                  if (!typeName) {
-                    var errorText = "Component '".concat(typeName, "' has not a config.");
-                    componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
-                    return "continue";
-                  }
-                  if (runtime_1.componentTypes[typeName]) {
-                    promises.push(Promise.resolve(runtime_1.componentTypes[typeName]));
-                    return "continue";
-                  }
                   var p = new Promise(function (resolve, reject) {
                     if (!componentsConfig[typeName]) {
-                      var _errorText = "Component '".concat(typeName, "' is not exists.");
-                      componentTypes[typeName] = (0, components_1.createInfoComponent)(_errorText);
+                      var errorText = "Component '".concat(typeName, "' is not exists.");
+                      componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
                       resolve({});
                       return;
                     }
                     if (!(componentsConfig[typeName].type instanceof Promise)) {
-                      var _errorText2 = "Component '".concat(typeName, "' type is invalid.");
-                      componentTypes[typeName] = (0, components_1.createInfoComponent)(_errorText2);
+                      var _errorText = "Component '".concat(typeName, "' type is invalid.");
+                      componentTypes[typeName] = (0, components_1.createInfoComponent)(_errorText);
                       resolve({});
                       return;
                     }
-                    var componentType = componentsConfig[typeName].type;
+                    var componentType;
+                    if (componentsConfig[typeName].design instanceof Promise) {
+                      componentType = componentsConfig[typeName].design;
+                    } else {
+                      componentType = componentsConfig[typeName].type;
+                    }
                     if (!componentType) {
                       return resolve({});
                     }
                     componentType.then(function (p) {
                       if (!p.default) {
-                        var _errorText3 = "Component '".concat(typeName, "' module has not export default member.");
-                        componentTypes[typeName] = (0, components_1.createInfoComponent)(_errorText3);
+                        var _errorText2 = "Component '".concat(typeName, "' module has not export default member.");
+                        componentTypes[typeName] = (0, components_1.createInfoComponent)(_errorText2);
                       } else {
                         componentTypes[typeName] = p.default;
                       }
@@ -6636,28 +6003,14 @@ var PageDesigner = /*#__PURE__*/function (_React$Component) {
                   });
                   promises.push(p);
                 };
-                i = 0;
-              case 4:
-                if (!(i < componentsToLoad.length)) {
-                  _context4.next = 11;
-                  break;
+                for (i = 0; i < componentsToLoad.length; i++) {
+                  _loop3(i);
                 }
-                _ret = _loop2(i);
-                if (!(_ret === "continue")) {
-                  _context4.next = 8;
-                  break;
-                }
-                return _context4.abrupt("continue", 8);
-              case 8:
-                i++;
-                _context4.next = 4;
-                break;
-              case 11:
-                _context4.next = 13;
+                _context4.next = 11;
                 return Promise.all(promises);
-              case 13:
+              case 11:
                 return _context4.abrupt("return", componentTypes);
-              case 14:
+              case 12:
               case "end":
                 return _context4.stop();
             }
@@ -7769,12 +7122,12 @@ exports.errors = new MyErrors();
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Page = exports.ComponentPlaceHolder = exports.componentTypeNames = exports.componentTypes = exports.ComponentStatus = exports.PageDataParserContext = exports.PageDataParser = exports.parseComponentData = void 0;
+exports.Page = exports.ComponentPlaceHolder = exports.componentTypeNames = exports.componentTypes = exports.ComponentStatus = exports.PageDataParserContext = exports.PageDataParser = exports.parsePageData = void 0;
 var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./out-es5/runtime/parse-component-data.js");
-Object.defineProperty(exports, "parseComponentData", {
+Object.defineProperty(exports, "parsePageData", {
   enumerable: true,
   get: function get() {
-    return parse_component_data_1.parseComponentData;
+    return parse_component_data_1.parsePageData;
   }
 });
 var page_data_parser_1 = __webpack_require__(/*! ./page-data-parser */ "./out-es5/runtime/page-data-parser.js");
@@ -7890,7 +7243,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.PageDataParser = exports.PageDataParserContext = void 0;
 var errors_1 = __webpack_require__(/*! ./errors */ "./out-es5/runtime/errors.js");
 var React = __importStar(__webpack_require__(/*! react */ "react"));
-var _1 = __webpack_require__(/*! . */ "./out-es5/runtime/index.js");
+var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./out-es5/runtime/parse-component-data.js");
 exports.PageDataParserContext = React.createContext(null);
 var PageDataParser = /*#__PURE__*/function (_React$Component) {
   _inherits(PageDataParser, _React$Component);
@@ -7915,16 +7268,17 @@ var PageDataParser = /*#__PURE__*/function (_React$Component) {
       var _this$props = this.props,
         elementFactory = _this$props.elementFactory,
         componentTypes = _this$props.componentTypes;
-      var children = (pageData.children || []).filter(function (o) {
-        return typeof o == "string" || !o.parentId;
-      });
-      var childComponents = children.map(function (o) {
-        if (typeof o == "string") return o;
-        return (0, _1.parseComponentData)(o, componentTypes, elementFactory);
-      });
-      var pageType = componentTypes[pageData.type];
-      if (!pageType) throw new Error("Component type '".concat(pageData.type, "' is not exists."));
-      var pageElement = React.createElement(pageType, pageData.props, childComponents);
+      // let children = (pageData.children || []).filter(o => typeof o == "string" || !o.parentId);
+      // let childComponents = children.map(o => {
+      //     if (typeof o == "string")
+      //         return o
+      //     return parseComponentData(o, componentTypes, elementFactory);
+      // });
+      // let pageType = componentTypes[pageData.type]
+      // if (!pageType)
+      //     throw new Error(`Component type '${pageData.type}' is not exists.`)
+      // let pageElement = React.createElement(pageType, pageData.props, childComponents)
+      var pageElement = (0, parse_component_data_1.parsePageData)(pageData, componentTypes, elementFactory);
       return React.createElement(exports.PageDataParserContext.Provider, {
         value: {
           pageData: pageData,
@@ -7963,13 +7317,15 @@ exports.PageDataParser = PageDataParser;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.parseComponentData = void 0;
+exports.parsePageData = void 0;
 var errors_1 = __webpack_require__(/*! ./errors */ "./out-es5/runtime/errors.js");
 var components_1 = __webpack_require__(/*! ./components */ "./out-es5/runtime/components.js");
 function parseComponentData(componentData, componentTypes, createElement) {
   if (!componentData) throw errors_1.errors.argumentNull("componentData");
   if (!componentTypes) throw errors_1.errors.argumentNull("componentTypes");
-  if (!componentData.type) throw errors_1.errors.argumentFieldNull("type", "componentData");
+  if (!componentData.type) {
+    throw errors_1.errors.argumentFieldNull("type", "componentData");
+  }
   var isHtmlComponent = componentData.type.toLowerCase() == componentData.type;
   var type = isHtmlComponent ? componentData.type : componentTypes[componentData.type] || components_1.componentTypes[componentData.type];
   if (type == null) {
@@ -7988,7 +7344,15 @@ function parseComponentData(componentData, componentTypes, createElement) {
   props.id = componentData.id;
   return createElement(type, props, children);
 }
-exports.parseComponentData = parseComponentData;
+function parsePageData(pageData, componentTypes, createElement) {
+  if (!pageData) throw errors_1.errors.argumentNull("pageData");
+  if (!componentTypes) throw errors_1.errors.argumentNull("componentTypes");
+  if (!pageData.type) {
+    throw errors_1.errors.argumentFieldNull("type", "pageData");
+  }
+  return parseComponentData(pageData, componentTypes, createElement);
+}
+exports.parsePageData = parsePageData;
 //# sourceMappingURL=parse-component-data.js.map
 
 
@@ -8071,7 +7435,9 @@ exports.classNames = {
   propertyEditor: "property-editor",
   propertyEditorControl: "property-editor-control",
   propertyEditorLabel: "property-editor-label",
-  componentPlaceHolder: "component-place-holder"
+  componentWrapper: "component-wrapper",
+  designComponentPlaceHolder: "design-component-place-holder",
+  designPage: "design-page"
 };
 // let templateDialog = {
 //     nameHeight: 40,
@@ -8080,7 +7446,7 @@ exports.classNames = {
 var element = document.createElement('style');
 element.type = 'text/css';
 element.setAttribute("data-name", "jueying");
-element.innerHTML = "\n.".concat(exports.classNames.componentDiagram, " {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border: solid 1px #ccc;\n}\n.").concat(exports.classNames.componentPanel, " {\n    display: flex;\n    border: solid 1px #ccc;\n}\n.").concat(exports.classNames.editorPanel, " {\n    border: solid 1px #ccc;\n    min-height: 50px;\n}\n.").concat(exports.classNames.editorPanel, " label {\n    width: 80px;\n    padding: 4px;\n    text-overflow: ellipsis;\n    overflow: hidden;\n}\n.").concat(exports.classNames.editorPanel, " .control {\n    padding-left: 90px;\n}\n.").concat(exports.classNames.editorPanel, " .empty {\n    padding-top: 20px;\n    text-align: center;\n}\n.").concat(exports.classNames.editorPanel, " .error {\n    color: red;\n}\n.").concat(exports.classNames.componentPanel, " {\n    background: white;\n    color: black;\n    font-size: 14px;\n    z-index: 100;\n    list-style: none;\n    padding: 0;\n    text-align: center\n}\n.").concat(exports.classNames.componentPanel, " .panel-heading {\n    text-align: center;\n}\n.").concat(exports.classNames.componentPanel, " li {\n    text-align: center;\n    padding: 8px;\n}\n.").concat(exports.classNames.propertyEditor, " {\n    display: flex;\n}\n.").concat(exports.classNames.componentPlaceHolder, " {\n    min-height: 50px;\n    min-width: 50px;\n}\n        ");
+element.innerHTML = "\n.".concat(exports.classNames.componentDiagram, " {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border: solid 1px #ccc;\n}\n.").concat(exports.classNames.componentPanel, " {\n    display: flex;\n    border: solid 1px #ccc;\n}\n.").concat(exports.classNames.editorPanel, " {\n    border: solid 1px #ccc;\n    min-height: 50px;\n}\n.").concat(exports.classNames.editorPanel, " label {\n    width: 80px;\n    padding: 4px;\n    text-overflow: ellipsis;\n    overflow: hidden;\n}\n.").concat(exports.classNames.editorPanel, " .control {\n    padding-left: 90px;\n}\n.").concat(exports.classNames.editorPanel, " .empty {\n    padding-top: 20px;\n    text-align: center;\n}\n.").concat(exports.classNames.editorPanel, " .error {\n    color: red;\n}\n.").concat(exports.classNames.componentPanel, " {\n    background: white;\n    color: black;\n    font-size: 14px;\n    z-index: 100;\n    list-style: none;\n    padding: 0;\n    text-align: center\n}\n.").concat(exports.classNames.componentPanel, " .panel-heading {\n    text-align: center;\n}\n.").concat(exports.classNames.componentPanel, " li {\n    text-align: center;\n    padding: 8px;\n}\n.").concat(exports.classNames.propertyEditor, " {\n    display: flex;\n}\n.").concat(exports.classNames.designComponentPlaceHolder, " {\n    min-height: 50px;\n    min-width: 50px;\n    padding: 0;\n    list-style: none;\n}\n.").concat(exports.classNames.componentWrapper, " {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n.").concat(exports.classNames.designPage, " {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n.").concat(exports.classNames.empty, " {\n    text-align: center;\n    padding-top: 15px;\n}\n        ");
 if (document.head != null) {
   document.head.appendChild(element);
 }
@@ -8102,17 +7468,14 @@ if (document.head != null) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.elementFactoryName = exports.childrenNodeToArray = exports.isCustomComponent = exports.groupDisplayNames = exports.proptDisplayNames = void 0;
-var runtime_1 = __webpack_require__(/*! ../runtime */ "./out-es5/runtime/index.js");
+exports.elementFactoryName = exports.childrenNodeToArray = exports.isHTMLComponent = exports.groupDisplayNames = exports.proptDisplayNames = void 0;
 exports.proptDisplayNames = {};
 exports.groupDisplayNames = {};
-function isCustomComponent(componentData) {
-  // 全小写为 HTML 元素，不需要加载
-  if (componentData.type.toLowerCase() == componentData.type) return false;
-  if (runtime_1.componentTypes[componentData.type]) return false;
-  return true;
+function isHTMLComponent(componentData) {
+  // 全小写为 HTML 组件
+  return componentData.type.toLowerCase() == componentData.type;
 }
-exports.isCustomComponent = isCustomComponent;
+exports.isHTMLComponent = isHTMLComponent;
 function childrenNodeToArray(children) {
   if (!children) return [];
   if (Array.isArray(children)) return children;
@@ -8252,7 +7615,7 @@ exports.ErrorBoundary = ErrorBoundary;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ErrorBoundary = exports.PageDataTravel = exports.deepEqual = exports.isCustomComponent = exports.childrenNodeToArray = void 0;
+exports.ErrorBoundary = exports.PageDataTravel = exports.deepEqual = exports.isHTMLComponent = exports.childrenNodeToArray = void 0;
 var common_1 = __webpack_require__(/*! ./common */ "./out-es5/utility/common.js");
 Object.defineProperty(exports, "childrenNodeToArray", {
   enumerable: true,
@@ -8260,10 +7623,10 @@ Object.defineProperty(exports, "childrenNodeToArray", {
     return common_1.childrenNodeToArray;
   }
 });
-Object.defineProperty(exports, "isCustomComponent", {
+Object.defineProperty(exports, "isHTMLComponent", {
   enumerable: true,
   get: function get() {
-    return common_1.isCustomComponent;
+    return common_1.isHTMLComponent;
   }
 });
 var deep_equal_1 = __webpack_require__(/*! ./deep-equal */ "./out-es5/utility/deep-equal.js");
@@ -8302,12 +7665,6 @@ Object.defineProperty(exports, "ErrorBoundary", {
 "use strict";
 
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -8325,18 +7682,30 @@ var PageDataTravel = /*#__PURE__*/function () {
   _createClass(PageDataTravel, [{
     key: "each",
     value: function each(callback) {
-      var stack = _toConsumableArray(this.pageData.children || []);
-      var componentData = stack.pop();
-      while (componentData != null) {
-        callback(componentData);
-        if (typeof componentData != "string") {
-          var children = componentData.children || [];
-          stack.push.apply(stack, _toConsumableArray(children));
-        }
-        componentData = stack.pop();
-      }
+      PageDataTravel.each(this.pageData, callback);
     }
   }], [{
+    key: "each",
+    value: function each(componentData, callback) {
+      var stack = [{
+        component: componentData,
+        parent: null
+      }];
+      var item = stack.pop();
+      while (item != null) {
+        callback(item.component, item.parent);
+        // if (typeof item != "string") {
+        for (var i = 0; i < item.component.children.length; i++) {
+          var c = item.component.children[i];
+          stack.push({
+            component: c,
+            parent: item.component
+          });
+        }
+        item = stack.pop();
+      }
+    }
+  }, {
     key: "findComponent",
     value: function findComponent(pageData, componentId) {
       if (!pageData) throw errors_1.errors.argumentNull("pageData");
@@ -8348,6 +7717,41 @@ var PageDataTravel = /*#__PURE__*/function () {
         if (componentId == c.id) r = c;
       });
       return r;
+    }
+  }, {
+    key: "findComponentAndParent",
+    value: function findComponentAndParent(pageData, componentId) {
+      if (!pageData) throw errors_1.errors.argumentNull("pageData");
+      if (!componentId) throw errors_1.errors.argumentNull("componentId");
+      var travel = new PageDataTravel(pageData);
+      var component = null;
+      var parent = null;
+      travel.each(function (c, p) {
+        if (typeof c == "string" || component) return;
+        if (componentId == c.id) {
+          component = c;
+          parent = p;
+        }
+      });
+      return {
+        component: component,
+        parent: parent
+      };
+    }
+  }, {
+    key: "generateId",
+    value: function generateId(pageData, typeName) {
+      var namedComponents = {};
+      PageDataTravel.each(pageData, function (c, p) {
+        namedComponents[c.id] = c;
+      });
+      var num = 0;
+      var name;
+      do {
+        num = num + 1;
+        name = "".concat(typeName).concat(num);
+      } while (namedComponents[name]);
+      return name;
     }
   }]);
   return PageDataTravel;

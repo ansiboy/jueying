@@ -1,6 +1,6 @@
 /*!
  * 
- *  maishu-jueying v4.0.7
+ *  maishu-jueying v4.0.11
  *  
  *  Copyright (C) maishu All rights reserved.
  *  
@@ -11,7 +11,6 @@
  *  
  *  个人博客：   http://www.cnblogs.com/ansiboy/
  *  GITHUB:     https://github.com/ansiboy/jueying
- *  QQ 讨论组：  119038574 
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -112,1000 +111,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
-/***/ "./node_modules/maishu-toolkit/dist/index.js":
-/*!***************************************************!*\
-  !*** ./node_modules/maishu-toolkit/dist/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {/*!
- * ~
- *  maishu-toolkit v1.12.5
- *  https://github.com/ansiboy/toolkit
- *  
- *  Copyright (c) 2016-2018, shu mai <ansiboy@163.com>
- *  Licensed under the MIT License.
- * 
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(true)
-		module.exports = factory();
-	else { var i, a; }
-})(typeof window === 'undefined' ? global : window, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./out/index.js");
-/******/ })
-/************************************************************************/
-/******/ ({
-
-/***/ "./out/assign-deep.js":
-/*!****************************!*\
-  !*** ./out/assign-deep.js ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.withOptions = exports.objectAssignDeepInto = exports.objectAssignDeep = void 0;
-/*
- * OBJECT ASSIGN DEEP
- * Allows deep cloning of plain objects that contain primitives, nested plain objects, or nested plain arrays.
- */
-/*
- * A unified way of returning a string that describes the type of the given variable.
- */
-function getTypeOf(input) {
-    if (input === null) {
-        return 'null';
-    }
-    else if (typeof input === 'undefined') {
-        return 'undefined';
-    }
-    else if (typeof input === 'object') {
-        return (Array.isArray(input) ? 'array' : 'object');
-    }
-    return typeof input;
-}
-/*
- * Branching logic which calls the correct function to clone the given value base on its type.
- */
-function cloneValue(value) {
-    // The value is an object so lets clone it.
-    if (getTypeOf(value) === 'object') {
-        return quickCloneObject(value);
-    }
-    // The value is an array so lets clone it.
-    else if (getTypeOf(value) === 'array') {
-        return quickCloneArray(value);
-    }
-    // Any other value can just be copied.
-    return value;
-}
-/*
- * Enumerates the given array and returns a new array, with each of its values cloned (i.e. references broken).
- */
-function quickCloneArray(input) {
-    return input.map(cloneValue);
-}
-/*
- * Enumerates the properties of the given object (ignoring the prototype chain) and returns a new object, with each of
- * its values cloned (i.e. references broken).
- */
-function quickCloneObject(input) {
-    const output = {};
-    for (const key in input) {
-        if (!input.hasOwnProperty(key)) {
-            continue;
-        }
-        output[key] = cloneValue(input[key]);
-    }
-    return output;
-}
-/*
- * Does the actual deep merging.
- */
-function executeDeepMerge(target, _objects = [], _options = {}) {
-    const options = {
-        arrayBehaviour: _options.arrayBehaviour || 'replace', // Can be "merge" or "replace".
-    };
-    // Ensure we have actual objects for each.
-    const objects = _objects.map(object => object || {});
-    const output = target || {};
-    // Enumerate the objects and their keys.
-    for (let oindex = 0; oindex < objects.length; oindex++) {
-        const object = objects[oindex];
-        const keys = Object.keys(object);
-        for (let kindex = 0; kindex < keys.length; kindex++) {
-            const key = keys[kindex];
-            const value = object[key];
-            const type = getTypeOf(value);
-            const existingValueType = getTypeOf(output[key]);
-            if (type === 'object') {
-                if (existingValueType !== 'undefined') {
-                    const existingValue = (existingValueType === 'object' ? output[key] : {});
-                    output[key] = executeDeepMerge({}, [existingValue, quickCloneObject(value)], options);
-                }
-                else {
-                    output[key] = quickCloneObject(value);
-                }
-            }
-            else if (type === 'array') {
-                if (existingValueType === 'array') {
-                    const newValue = quickCloneArray(value);
-                    output[key] = (options.arrayBehaviour === 'merge' ? output[key].concat(newValue) : newValue);
-                }
-                else {
-                    output[key] = quickCloneArray(value);
-                }
-            }
-            else {
-                output[key] = value;
-            }
-        }
-    }
-    return output;
-}
-/*
- * Merge all the supplied objects into the target object, breaking all references, including those of nested objects
- * and arrays, and even objects nested inside arrays. The first parameter is not mutated unlike Object.assign().
- * Properties in later objects will always overwrite.
- */
-function objectAssignDeep(target, ...objects) {
-    return executeDeepMerge(target, objects);
-}
-exports.objectAssignDeep = objectAssignDeep;
-;
-/*
- * Same as objectAssignDeep() except it doesn't mutate the target object and returns an entirely new object.
- */
-function objectAssignDeepInto(...objects) {
-    return executeDeepMerge({}, objects);
-}
-exports.objectAssignDeepInto = objectAssignDeepInto;
-;
-/*
- * Allows an options object to be passed in to customise the behaviour of the function.
- */
-let withOptions = function objectAssignDeepInto(target, objects, options) {
-    return executeDeepMerge(target, objects, options);
-};
-exports.withOptions = withOptions;
-
-
-/***/ }),
-
-/***/ "./out/callback.js":
-/*!*************************!*\
-  !*** ./out/callback.js ***!
-  \*************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Callback = void 0;
-class Callback {
-    constructor() {
-        this.funcs = new Array();
-    }
-    add(func) {
-        this.funcs.push(func);
-    }
-    remove(func) {
-        this.funcs = this.funcs.filter(o => o != func);
-    }
-    fire(args) {
-        this.funcs.forEach(o => o(args));
-    }
-    static create() {
-        return new Callback();
-    }
-}
-exports.Callback = Callback;
-
-
-/***/ }),
-
-/***/ "./out/data.js":
-/*!*********************!*\
-  !*** ./out/data.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DataSourceSelectArguments = exports.DataSource = void 0;
-const errors_js_1 = __webpack_require__(/*! ./errors.js */ "./out/errors.js");
-const callback_js_1 = __webpack_require__(/*! ./callback.js */ "./out/callback.js");
-let errors = Object.assign(errors_js_1.errors, {
-    dataSourceCanntInsert() {
-        return new Error("DataSource can not insert.");
-    },
-    dataSourceCanntDelete() {
-        return new Error("DataSource can not delete.");
-    },
-    dataSourceCanntUpdate() {
-        return new Error("DataSource can not update.");
-    },
-    primaryKeyNull(key) {
-        let msg = `Primary key named '${key}' value is null.`;
-        return new Error(msg);
-    },
-    queryResultTypeError() {
-        let msg = `Query result type error.`;
-        return new Error(msg);
-    }
-});
-class DataSource {
-    constructor(args) {
-        this.inserting = new callback_js_1.Callback(); //callbacks1<DataSource<T>, T, number>();
-        this.inserted = new callback_js_1.Callback();
-        this.deleting = new callback_js_1.Callback(); //callbacks<DataSource<T>, T>();
-        this.deleted = new callback_js_1.Callback(); //callbacks<DataSource<T>, T>();
-        this.updating = new callback_js_1.Callback();
-        this.updated = new callback_js_1.Callback();
-        this.selecting = new callback_js_1.Callback();
-        this.selected = new callback_js_1.Callback(); //callbacks<DataSource<T>, DataSourceSelectResult<T>>();
-        this.error = new callback_js_1.Callback(); //callbacks<this, DataSourceError>();
-        this.args = args;
-        this.primaryKeys = args.primaryKeys || [];
-    }
-    ; //callbacks<DataSource<T>, DataSourceSelectArguments>();
-    get canDelete() {
-        return this.args.delete != null && this.primaryKeys.length > 0;
-    }
-    get canInsert() {
-        return this.args.insert != null && this.primaryKeys.length > 0;
-    }
-    get canUpdate() {
-        return this.args.update != null && this.primaryKeys.length > 0;
-    }
-    executeInsert(item, args) {
-        return this.args.insert(item, args);
-    }
-    executeDelete(item, args) {
-        return this.args.delete(item, args);
-    }
-    executeUpdate(item, args) {
-        return this.args.update(item, args);
-    }
-    executeSelect(args) {
-        args = args || {};
-        return this.args.select(args);
-    }
-    insert(item, args, index) {
-        if (!this.canInsert)
-            throw errors.dataSourceCanntInsert();
-        if (!item)
-            throw errors.argumentNull("item");
-        if (typeof args == 'number') {
-            index = args;
-            args = null;
-        }
-        this.inserting.fire({ sender: this, dataItem: item, index });
-        return this.executeInsert(item, args).then((data) => {
-            Object.assign(item, data);
-            this.inserted.fire({ sender: this, dataItem: item, index });
-            return data;
-        }).catch(exc => {
-            this.processError(exc, 'insert');
-            throw exc;
-        });
-    }
-    delete(item, args) {
-        if (!this.canDelete)
-            throw errors.dataSourceCanntDelete();
-        if (!item)
-            throw errors.argumentNull("item");
-        this.checkPrimaryKeys(item);
-        this.deleting.fire({ sender: this, dataItem: item });
-        return this.executeDelete(item, args).then((data) => {
-            this.deleted.fire({ sender: this, dataItem: item });
-            return data;
-        }).catch(exc => {
-            this.processError(exc, 'delete');
-            throw exc;
-        });
-    }
-    update(item, args) {
-        if (!this.canUpdate)
-            throw errors.dataSourceCanntUpdate();
-        if (!item)
-            throw errors.argumentNull("item");
-        this.checkPrimaryKeys(item);
-        this.updating.fire({ sender: this, dataItem: item });
-        return this.executeUpdate(item, args).then((data) => {
-            Object.assign(item, data);
-            this.updated.fire({ sender: this, dataItem: item });
-            return data;
-        }).catch((exc) => {
-            this.processError(exc, 'update');
-            throw exc;
-        });
-    }
-    isSameItem(theItem, otherItem) {
-        if (theItem == null)
-            throw errors.argumentNull('theItem');
-        if (otherItem == null)
-            throw errors.argumentNull('otherItem');
-        if (this.primaryKeys.length == 0)
-            return theItem == otherItem;
-        this.checkPrimaryKeys(theItem);
-        this.checkPrimaryKeys(otherItem);
-        for (let pk of this.primaryKeys) {
-            if (theItem[pk] != otherItem[pk])
-                return false;
-        }
-        return true;
-    }
-    checkPrimaryKeys(item) {
-        for (let key in item) {
-            if (item[key] == null && this.primaryKeys.indexOf(key) >= 0)
-                throw errors.primaryKeyNull(key);
-        }
-    }
-    select(args) {
-        args = args || {};
-        // fireCallback(this.selecting, this, args);
-        this.selecting.fire({ sender: this, selectArguments: args });
-        return this.executeSelect(args).then((data) => {
-            let dataItems;
-            let totalRowCount;
-            if (Array.isArray(data)) {
-                dataItems = data;
-                totalRowCount = data.length;
-            }
-            else if (data.dataItems !== undefined && data.totalRowCount !== undefined) {
-                dataItems = data.dataItems;
-                totalRowCount = data.totalRowCount;
-            }
-            else {
-                throw errors.queryResultTypeError();
-            }
-            this.selected.fire({ sender: this, selectResult: { totalRowCount, dataItems }, selectArguments: args });
-            return { totalRowCount, dataItems };
-        }).catch(exc => {
-            this.processError(exc, 'select');
-            throw exc;
-        });
-    }
-    processError(exc, method) {
-        exc.method = method;
-        this.error.fire({ sender: this, error: exc });
-        if (!exc.handled)
-            throw exc;
-    }
-}
-exports.DataSource = DataSource;
-class DataSourceSelectArguments {
-    constructor() {
-        this.startRowIndex = 0;
-        this.maximumRows = 2147483647;
-    }
-}
-exports.DataSourceSelectArguments = DataSourceSelectArguments;
-
-
-/***/ }),
-
-/***/ "./out/deep-equal.js":
-/*!***************************!*\
-  !*** ./out/deep-equal.js ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deepEqual = void 0;
-function deepEqual(x, y) {
-    if (x === y) {
-        return true;
-    }
-    if ((typeof x == "object" && x != null) && (typeof y == "object" && y != null)) {
-        if (Object.keys(x).length != Object.keys(y).length)
-            return false;
-        for (var prop in x) {
-            if (y.hasOwnProperty(prop)) {
-                if (!deepEqual(x[prop], y[prop]))
-                    return false;
-            }
-            else
-                return false;
-        }
-        return true;
-    }
-    return false;
-}
-exports.deepEqual = deepEqual;
-
-
-/***/ }),
-
-/***/ "./out/errors.js":
-/*!***********************!*\
-  !*** ./out/errors.js ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = exports.Errors = void 0;
-class Errors {
-    argumentNull(argumentName) {
-        let error = new Error(`Argument ${argumentName} cannt be null or emtpy.`);
-        let name = "argumentNull";
-        error.name = name;
-        return error;
-    }
-    routeDataFieldNull(fieldName) {
-        let msg = `The ${fieldName} field of route data cannt be null.`;
-        let error = new Error(msg);
-        let name = "routeDataFieldNull";
-        error.name = name;
-        return error;
-    }
-    argumentFieldNull(fieldName, argumentName) {
-        let msg = `The ${fieldName} field of ${argumentName} cannt be null.`;
-        let error = new Error(msg);
-        let name = "argumentFieldNull";
-        error.name = name;
-        return error;
-    }
-    argumentTypeIncorrect(argumentName, expectedType) {
-        let msg = `Argument ${argumentName} type error, expected type is ${expectedType}.`;
-        let error = new Error(msg);
-        let name = "argumentTypeIncorrect";
-        error.name = name;
-        return error;
-    }
-    pathStartsHttp(path) {
-        let msg = `Path ${path} start with http or https.`;
-        let error = new Error(msg);
-        let name = "pathStartsHttp";
-        error.name = name;
-        return error;
-    }
-}
-exports.Errors = Errors;
-exports.errors = new Errors();
-
-
-/***/ }),
-
-/***/ "./out/format.js":
-/*!***********************!*\
-  !*** ./out/format.js ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.format = exports.formatString = exports.formatDate = void 0;
-function formatDate(date, showHourMinutes, showSeconds) {
-    if (typeof date == "string")
-        return date;
-    let d = date;
-    if (showHourMinutes) {
-        let str = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
-        if (showSeconds)
-            str = `${str}:${d.getSeconds()}`;
-        return str;
-    }
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-}
-exports.formatDate = formatDate;
-function formatString(pattern, ...args) {
-    let a = pattern;
-    for (let k in args) {
-        a = a.replace("{" + k + "}", args[k]);
-    }
-    return a;
-}
-exports.formatString = formatString;
-function format(value, format) {
-    if (!format)
-        return `${value}`;
-    var result = '';
-    for (var i = 0;;) {
-        var open = format.indexOf('{', i);
-        var close = format.indexOf('}', i);
-        if ((open < 0) && (close < 0)) {
-            result += format.slice(i);
-            break;
-        }
-        if ((close > 0) && ((close < open) || (open < 0))) {
-            if (format.charAt(close + 1) !== '}') {
-                throw new Error('Sys.Res.stringFormatBraceMismatch');
-            }
-            result += format.slice(i, close + 1);
-            i = close + 2;
-            continue;
-        }
-        result += format.slice(i, open);
-        i = open + 1;
-        if (format.charAt(i) === '{') {
-            result += '{';
-            i++;
-            continue;
-        }
-        if (close < 0)
-            throw new Error('Sys.Res.stringFormatBraceMismatch');
-        var brace = format.substring(i, close);
-        var argFormat = brace;
-        if (typeof (value) === "undefined" || value === null) {
-            value = '';
-        }
-        if (value instanceof Date)
-            result = result + formatDate1(value, argFormat);
-        else if (value instanceof Number || typeof value == 'number')
-            result = result + formatNumber(value, argFormat);
-        else
-            result = result + value.toString();
-        i = close + 1;
-    }
-    return result;
-}
-exports.format = format;
-function formatDate1(value, format) {
-    let y = value.getFullYear();
-    let m = value.getMonth() + 1;
-    let d = value.getDate();
-    let h = value.getHours();
-    let M = value.getMinutes();
-    let s = value.getSeconds();
-    let twoDigit = function (value) {
-        const TEN = 10;
-        if (value < TEN)
-            return `0` + value;
-        return value.toString();
-    };
-    switch (format) {
-        case 'd':
-            return `${y}-${m}-${d}`;
-        case 'g':
-            return `${y}-${m}-${d} ${h}:${M}`;
-        case 'gg':
-            return `${y}-${twoDigit(m)}-${twoDigit(d)} ${twoDigit(h)}:${twoDigit(M)}`;
-        case 'G':
-            return `${y}-${m}-${d} ${h}:${M}:${s}`;
-        case 'GG':
-            return `${y}-${twoDigit(m)}-${twoDigit(d)} ${twoDigit(h)}:${twoDigit(M)}:${twoDigit(s)}`;
-        case 't':
-            return `${h}:${M}`;
-        case 'T':
-            return `${h}:${M}:${s}`;
-    }
-    return value.toString();
-}
-function formatNumber(value, format) {
-    let reg = new RegExp('^C[0-9]+');
-    if (reg.test(format)) {
-        let num = format.substr(1);
-        return value.toFixed(num);
-    }
-    return value.toString();
-}
-
-
-/***/ }),
-
-/***/ "./out/guid.js":
-/*!*********************!*\
-  !*** ./out/guid.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.guid = void 0;
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-exports.guid = guid;
-
-
-/***/ }),
-
-/***/ "./out/html.js":
-/*!*********************!*\
-  !*** ./out/html.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.HTML = void 0;
-const errors_js_1 = __webpack_require__(/*! ./errors.js */ "./out/errors.js");
-class HTML {
-    static addClassName(element, addonClassName) {
-        if (element == null)
-            throw errors_js_1.errors.argumentNull('element');
-        if (!addonClassName)
-            throw errors_js_1.errors.argumentNull('addonClassName');
-        let sourceClassName;
-        if (typeof element == 'string')
-            sourceClassName = element;
-        else
-            sourceClassName = element.className;
-        sourceClassName = sourceClassName || '';
-        console.assert(addonClassName != null);
-        if (sourceClassName.indexOf(addonClassName) >= 0)
-            return sourceClassName;
-        let className = `${sourceClassName} ${addonClassName}`;
-        if (typeof element != 'string')
-            element.className = className;
-        return className;
-    }
-    static removeClassName(element, targetClassName) {
-        let sourceClassName;
-        if (typeof element == 'string')
-            sourceClassName = element;
-        else
-            sourceClassName = element.className || '';
-        if (sourceClassName.indexOf(targetClassName) < 0)
-            return sourceClassName;
-        sourceClassName = sourceClassName || '';
-        sourceClassName = sourceClassName.replace(new RegExp(targetClassName, 'g'), '');
-        sourceClassName = sourceClassName.trim();
-        if (typeof element != 'string')
-            element.className = sourceClassName;
-        return sourceClassName;
-    }
-}
-exports.HTML = HTML;
-
-
-/***/ }),
-
-/***/ "./out/index.js":
-/*!**********************!*\
-  !*** ./out/index.js ***!
-  \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SingleInvoke = exports.ValueStore = exports.HTML = exports.format = exports.formatString = exports.formatDate = exports.objectAssignDeep = exports.deepEqual = exports.parseUrl = exports.DataSourceSelectArguments = exports.DataSource = exports.Callback = exports.errors = exports.Errors = exports.pathConcat = exports.guid = void 0;
-var guid_js_1 = __webpack_require__(/*! ./guid.js */ "./out/guid.js");
-Object.defineProperty(exports, "guid", { enumerable: true, get: function () { return guid_js_1.guid; } });
-var path_js_1 = __webpack_require__(/*! ./path.js */ "./out/path.js");
-Object.defineProperty(exports, "pathConcat", { enumerable: true, get: function () { return path_js_1.pathConcat; } });
-var errors_js_1 = __webpack_require__(/*! ./errors.js */ "./out/errors.js");
-Object.defineProperty(exports, "Errors", { enumerable: true, get: function () { return errors_js_1.Errors; } });
-Object.defineProperty(exports, "errors", { enumerable: true, get: function () { return errors_js_1.errors; } });
-var callback_js_1 = __webpack_require__(/*! ./callback.js */ "./out/callback.js");
-Object.defineProperty(exports, "Callback", { enumerable: true, get: function () { return callback_js_1.Callback; } });
-var data_js_1 = __webpack_require__(/*! ./data.js */ "./out/data.js");
-Object.defineProperty(exports, "DataSource", { enumerable: true, get: function () { return data_js_1.DataSource; } });
-Object.defineProperty(exports, "DataSourceSelectArguments", { enumerable: true, get: function () { return data_js_1.DataSourceSelectArguments; } });
-var url_js_1 = __webpack_require__(/*! ./url.js */ "./out/url.js");
-Object.defineProperty(exports, "parseUrl", { enumerable: true, get: function () { return url_js_1.parseUrl; } });
-var deep_equal_js_1 = __webpack_require__(/*! ./deep-equal.js */ "./out/deep-equal.js");
-Object.defineProperty(exports, "deepEqual", { enumerable: true, get: function () { return deep_equal_js_1.deepEqual; } });
-var assign_deep_js_1 = __webpack_require__(/*! ./assign-deep.js */ "./out/assign-deep.js");
-Object.defineProperty(exports, "objectAssignDeep", { enumerable: true, get: function () { return assign_deep_js_1.objectAssignDeep; } });
-var format_js_1 = __webpack_require__(/*! ./format.js */ "./out/format.js");
-Object.defineProperty(exports, "formatDate", { enumerable: true, get: function () { return format_js_1.formatDate; } });
-Object.defineProperty(exports, "formatString", { enumerable: true, get: function () { return format_js_1.formatString; } });
-Object.defineProperty(exports, "format", { enumerable: true, get: function () { return format_js_1.format; } });
-var html_js_1 = __webpack_require__(/*! ./html.js */ "./out/html.js");
-Object.defineProperty(exports, "HTML", { enumerable: true, get: function () { return html_js_1.HTML; } });
-var value_store_js_1 = __webpack_require__(/*! ./value-store.js */ "./out/value-store.js");
-Object.defineProperty(exports, "ValueStore", { enumerable: true, get: function () { return value_store_js_1.ValueStore; } });
-var single_inoke_js_1 = __webpack_require__(/*! ./single-inoke.js */ "./out/single-inoke.js");
-Object.defineProperty(exports, "SingleInvoke", { enumerable: true, get: function () { return single_inoke_js_1.SingleInvoke; } });
-
-
-/***/ }),
-
-/***/ "./out/path.js":
-/*!*********************!*\
-  !*** ./out/path.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.partConcat2 = exports.pathConcat = void 0;
-const errors_js_1 = __webpack_require__(/*! ./errors.js */ "./out/errors.js");
-/** 连接多个路径 */
-function pathConcat(path, ...otherPaths) {
-    if (!path)
-        throw errors_js_1.errors.argumentNull("path");
-    let prefix = "";
-    if (path.startsWith("http://"))
-        prefix = "http://";
-    else if (path.startsWith("https://"))
-        prefix = "https://";
-    path = path.substring(prefix.length);
-    for (let i = 0; i < otherPaths.length; i++) {
-        path = partConcat2(path, otherPaths[i]);
-    }
-    path = prefix + path;
-    return path;
-}
-exports.pathConcat = pathConcat;
-function partConcat2(path1, path2) {
-    if (path1.startsWith("http://") || path1.startsWith("https://"))
-        throw errors_js_1.errors.pathStartsHttp(path1);
-    if (path2.startsWith("http://") || path2.startsWith("https://"))
-        throw errors_js_1.errors.pathStartsHttp(path2);
-    path1 = path1.replace(/(\/+\\*|\\+\/*)/g, '/');
-    path2 = path2.replace(/(\/+\\*|\\+\/*)/g, '/');
-    let arr1 = path1.split('/').filter(o => o);
-    let arr2 = path2.split('/').filter(o => o);
-    if (path1[0] == "/") {
-        arr1.unshift("");
-    }
-    while (arr2[0] == "." || arr2[0] == "..") {
-        if (arr2[0] == ".." && arr1.length > 0 && arr1[arr1.length - 1] != "") {
-            arr1.pop();
-        }
-        arr2.shift();
-    }
-    if (arr1.length == 1 && arr1[0] == "" && arr2.length == 0) {
-        return "/";
-    }
-    let path = [...arr1, ...arr2].join("/");
-    return path;
-}
-exports.partConcat2 = partConcat2;
-
-
-/***/ }),
-
-/***/ "./out/single-inoke.js":
-/*!*****************************!*\
-  !*** ./out/single-inoke.js ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SingleInvoke = void 0;
-const value_store_js_1 = __webpack_require__(/*! ./value-store.js */ "./out/value-store.js");
-class SingleInvoke {
-    constructor(func) {
-        this.result = new value_store_js_1.ValueStore(undefined);
-        this.error = new value_store_js_1.ValueStore(undefined);
-        this.executing = false;
-        this.func = func;
-    }
-    clear() {
-        this.result = new value_store_js_1.ValueStore(undefined);
-        this.error = new value_store_js_1.ValueStore(undefined);
-    }
-    execute() {
-        if (this.result.value !== undefined) {
-            return Promise.resolve(this.result.value);
-        }
-        if (this.executing) {
-            return new Promise((resolve, reject) => {
-                this.result.add(value => {
-                    resolve(value);
-                });
-                this.error.add(err => {
-                    reject(err);
-                });
-            });
-        }
-        this.executing = true;
-        return new Promise((resolve, reject) => {
-            this.func().then(r => {
-                this.result.value = r || null;
-                this.executing = false;
-                resolve(r);
-            }).catch(err => {
-                this.error = err;
-                this.executing = false;
-                reject(err);
-            });
-        });
-    }
-}
-exports.SingleInvoke = SingleInvoke;
-
-
-/***/ }),
-
-/***/ "./out/url.js":
-/*!********************!*\
-  !*** ./out/url.js ***!
-  \********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseUrl = void 0;
-function parseUrl(url) {
-    let i = url.indexOf("?");
-    if (i < 0)
-        return {};
-    let query = url.substr(i + 1);
-    return pareeUrlQuery(query);
-}
-exports.parseUrl = parseUrl;
-function pareeUrlQuery(query) {
-    let match, pl = /\+/g, // Regex for replacing addition symbol with a space
-    search = /([^&=]+)=?([^&]*)/g, decode = function (s) {
-        return decodeURIComponent(s.replace(pl, " "));
-    };
-    let urlParams = {};
-    while (match = search.exec(query))
-        urlParams[decode(match[1])] = decode(match[2]);
-    return urlParams;
-}
-
-
-/***/ }),
-
-/***/ "./out/value-store.js":
-/*!****************************!*\
-  !*** ./out/value-store.js ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ValueStore = void 0;
-/**
- * 实现数据的存储，以及数据修改的通知
- */
-class ValueStore {
-    constructor(value) {
-        this.items = new Array();
-        this._value = value;
-    }
-    attach(func, sender) {
-        if (this.value !== undefined) {
-            func(this.value, sender);
-        }
-        return this.add(func, sender);
-    }
-    add(func, sender) {
-        this.items.push({ func, sender });
-        return func;
-    }
-    remove(func) {
-        this.items = this.items.filter(o => o.func != func);
-    }
-    fire(value) {
-        this.items.forEach(o => o.func(value, o.sender));
-    }
-    get value() {
-        return this._value;
-    }
-    set value(value) {
-        this._value = value;
-        this.fire(value);
-    }
-}
-exports.ValueStore = ValueStore;
-
-
-/***/ })
-
-/******/ });
-});
-//# sourceMappingURL=index.js.map
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
-
-/***/ }),
-
 /***/ "./node_modules/maishu-toolkit/out/callback.js":
 /*!*****************************************************!*\
   !*** ./node_modules/maishu-toolkit/out/callback.js ***!
@@ -1192,27 +197,197 @@ exports.errors = new Errors();
 
 /***/ }),
 
-/***/ "./node_modules/maishu-toolkit/out/guid.js":
-/*!*************************************************!*\
-  !*** ./node_modules/maishu-toolkit/out/guid.js ***!
-  \*************************************************/
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
+  !*** ./node_modules/process/browser.js ***!
+  \*****************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
+// shim for using process in browser
+var process = module.exports = {};
 
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.guid = void 0;
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
 }
-exports.guid = guid;
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 
 /***/ }),
@@ -5175,19 +4350,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComponentDiagram = void 0;
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
-const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
 const React = __importStar(__webpack_require__(/*! react */ "react"));
 const designer_1 = __webpack_require__(/*! ../designer */ "./out/designer.js");
-const strings_1 = __webpack_require__(/*! ../strings */ "./out/strings.js");
-const style_1 = __webpack_require__(/*! ../style */ "./out/style.js");
-const sortablejs_1 = __importDefault(__webpack_require__(/*! sortablejs */ "./node_modules/sortablejs/modular/sortable.esm.js"));
-const guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
+const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
 const parse_design_component_data_1 = __webpack_require__(/*! ./parse-design-component-data */ "./out/design/parse-design-component-data.js");
 class ComponentDiagram extends React.Component {
     constructor(props) {
@@ -5214,57 +4382,13 @@ class ComponentDiagram extends React.Component {
     get element() {
         return this._element;
     }
-    componentDidMount() {
-        let connect = (componentPanelElement, componentPanel) => {
-            let groupName = (0, guid_1.guid)();
-            new sortablejs_1.default(componentPanelElement, {
-                group: { name: groupName, pull: "clone", put: false },
-                animation: 150,
-                sort: false,
-                onEnd: (ev) => {
-                    let componentData = componentPanel.getComponentData(ev.item);
-                    let childNodes = ev.item.parentElement.childNodes || [];
-                    let targetIndex;
-                    for (let i = 0; i < childNodes.length; i++) {
-                        if (childNodes[i] == ev.item) {
-                            targetIndex = i;
-                            childNodes[i].remove();
-                            break;
-                        }
-                    }
-                    this.designer.appendComponent(componentData, targetIndex);
-                }
-            });
-            new sortablejs_1.default(this.element, {
-                group: groupName,
-                animation: 150
-            });
-        };
-        this.designer.componentPanelElements.each(e => connect(e.element, e.instance));
-        this.designer.componentPanelElements.added.add(args => connect(args.dataItem.element, args.dataItem.instance));
-    }
     render() {
         return React.createElement(designer_1.DesignerContext.Consumer, null, args => {
             if (!args)
                 throw errors_1.errors.contextArgumentNull();
             let designer = args.designer;
-            this.designer = designer;
-            let componentDatas = designer.pageData.children || [];
-            if (componentDatas.length == 0)
-                return React.createElement("ul", { ref: e => this.ref(e, args) },
-                    React.createElement("li", null, strings_1.strings.emptyCompoenntPanel));
             let componentTypes = args.designer.componentTypes;
-            return React.createElement("ul", { className: style_1.classNames.componentDiagram, ref: e => this.ref(e, args) }, componentDatas.map(c => {
-                if (typeof c == "string")
-                    throw new Error(`string is not supported`);
-                let status = c.status || runtime_1.ComponentStatus.default;
-                let selected = (status & runtime_1.ComponentStatus.selected) == runtime_1.ComponentStatus.selected;
-                return React.createElement("li", { key: c.id, className: selected ? style_1.classNames.selected : "", onClick: e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.selectComponent(args.designer, c.id);
-                    } }, (0, parse_design_component_data_1.parseDesigntimeComponentData)(c, componentTypes));
-            }));
+            return (0, runtime_1.parsePageData)(designer.pageData, componentTypes, parse_design_component_data_1.createDesigntimeComponent);
         });
     }
 }
@@ -5281,7 +4405,7 @@ exports.ComponentDiagram = ComponentDiagram;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(process) {
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -5305,6 +4429,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComponentPanel = exports.ComponentPanelContext = void 0;
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
@@ -5312,11 +4439,17 @@ const React = __importStar(__webpack_require__(/*! react */ "react"));
 const designer_1 = __webpack_require__(/*! ../designer */ "./out/designer.js");
 const style_1 = __webpack_require__(/*! ../style */ "./out/style.js");
 const strings_1 = __webpack_require__(/*! ../strings */ "./out/strings.js");
-const maishu_toolkit_1 = __webpack_require__(/*! maishu-toolkit */ "./node_modules/maishu-toolkit/dist/index.js");
+const sortablejs_1 = __importDefault(__webpack_require__(/*! sortablejs */ "./node_modules/sortablejs/modular/sortable.esm.js"));
+const utility_1 = __webpack_require__(/*! ../utility */ "./out/utility/index.js");
+const GROUP = "shared";
 const DATA_TYPE = "data-type";
 exports.ComponentPanelContext = React.createContext(null);
 /** 组件面板 */
 class ComponentPanel extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.dropTargets = [];
+    }
     static renderItem(typeName, componentConfig) {
         let displayName = componentConfig.displayName || typeName;
         return React.createElement("li", { key: typeName, ref: e => e ? e.setAttribute(DATA_TYPE, typeName) : null },
@@ -5326,25 +4459,80 @@ class ComponentPanel extends React.Component {
     get element() {
         return this._element;
     }
-    getComponentData(toolbarElement) {
-        if (!toolbarElement)
-            throw errors_1.errors.argumentNull("toolbarElement");
-        let dataType = toolbarElement.getAttribute(DATA_TYPE);
-        if (!dataType)
-            throw new Error(`Argument toolbarElement is an invalid component panel element.`);
-        let c = {
-            id: (0, maishu_toolkit_1.guid)(), type: dataType, props: {}, children: []
-        };
+    getComponentData(ui, componentDataFactory) {
+        if (!ui)
+            throw errors_1.errors.argumentNull("ui");
+        if (!ui.item) {
+            throw new Error("Not supported.");
+        }
+        let dataType = ui.item.getAttribute(DATA_TYPE);
+        let c = dataType ? componentDataFactory(dataType) : componentDataFactory(ui.item);
         return c;
     }
     ref(e, args) {
         if (!e)
             return;
         this._element = e;
-        let elements = args.designer.componentPanelElements.map(o => o.element);
+        let elements = args.designer.componentPanels.map(o => o.element);
         if (elements.indexOf(e) < 0) {
-            args.designer.componentPanelElements.add({ element: e, instance: this });
+            args.designer.componentPanels.add(this);
         }
+    }
+    componentDidMount() {
+        new sortablejs_1.default(this.element, {
+            group: {
+                name: GROUP,
+                pull: "clone",
+                put: false,
+            },
+            animation: 150,
+            sort: false,
+        });
+    }
+    async appendDropTarget(element, designer, parentId, componentDataFactory) {
+        //==========================================
+        // jquery-ui 不用用于 jest 测试
+        if (typeof process != "undefined" && "development" == "test")
+            return;
+        //==========================================
+        if (!element)
+            throw errors_1.errors.argumentNull("element");
+        if (this.dropTargets.indexOf(element) >= 0)
+            return;
+        this.dropTargets.push(element);
+        new sortablejs_1.default(element, {
+            group: {
+                name: GROUP,
+            },
+            animation: 150,
+            onAdd: (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                let componentData = this.getComponentData(evt, componentDataFactory);
+                let targetIndex;
+                let parentElement = evt.item.parentElement;
+                for (let i = 0; i < parentElement.children.length; i++) {
+                    if (parentElement.children[i] == evt.item) {
+                        targetIndex = i;
+                        break;
+                    }
+                }
+                designer.removeComponentIfExists(componentData.id);
+                designer.appendComponent(componentData, parentId, targetIndex);
+            },
+            onSort(event) {
+                if (event.item.getAttribute(DATA_TYPE))
+                    return;
+                let componentData = componentDataFactory(event.item);
+                console.assert(componentData != null, "componentData is null");
+                // debugger
+                let r = utility_1.PageDataTravel.findComponentAndParent(designer.pageData, componentData.id);
+                let parent = r.parent;
+                // parent.children.splice(event.oldIndex || 0, 1)
+                // parent.children.splice(event.newIndex || 0, 0, componentData)
+                designer.moveComponent(componentData.id, parent.id, event.newIndex);
+            },
+        });
     }
     render() {
         return React.createElement(exports.ComponentPanelContext.Provider, { value: { instance: this } },
@@ -5352,7 +4540,8 @@ class ComponentPanel extends React.Component {
                 if (!args)
                     throw errors_1.errors.contextArgumentNull();
                 let componentsConfig = args.designer.props.componentsConfig;
-                let componentInfos = Object.keys(componentsConfig).map(k => Object.assign({}, componentsConfig[k], { typeName: k }));
+                let componentInfos = Object.keys(componentsConfig).filter(k => !componentsConfig[k].hidden)
+                    .map(k => Object.assign({}, componentsConfig[k], { typeName: k }));
                 let renderItem = this.props.renderItem || ComponentPanel.renderItem;
                 renderItem.bind(this);
                 return React.createElement("ul", { className: style_1.classNames.componentPanel, ref: e => this.ref(e, args) }, componentInfos.length > 0 ? componentInfos.map(o => renderItem(o.typeName, o)) :
@@ -5362,6 +4551,7 @@ class ComponentPanel extends React.Component {
 }
 exports.ComponentPanel = ComponentPanel;
 //# sourceMappingURL=component-panel.js.map
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -5494,32 +4684,153 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DesignComponentPlaceHolder = void 0;
-const guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
 const React = __importStar(__webpack_require__(/*! react */ "react"));
 const designer_1 = __webpack_require__(/*! ../../designer */ "./out/designer.js");
 const errors_1 = __webpack_require__(/*! ../../errors */ "./out/errors.js");
+const strings_1 = __webpack_require__(/*! ../../strings */ "./out/strings.js");
 const style_1 = __webpack_require__(/*! ../../style */ "./out/style.js");
+const utility_1 = __webpack_require__(/*! ../../utility */ "./out/utility/index.js");
+const parse_design_component_data_1 = __webpack_require__(/*! ../parse-design-component-data */ "./out/design/parse-design-component-data.js");
+const CONTAINER_ID = "container_id";
+const DATA_ID = "data-id";
 class DesignComponentPlaceHolder extends React.Component {
     constructor(props) {
         super(props);
     }
-    enableDrop(element) {
+    enableDrop(element, designer, componentId) {
         if (!element || this.element)
             return;
         this.element = element;
-        let groupName = (0, guid_1.guid)();
+        designer.componentPanels.each((componentPanel) => {
+            componentPanel.appendDropTarget(this.element, designer, componentId, (arg) => {
+                if (typeof arg == "string") {
+                    let componentType = arg;
+                    return this.createComponentData(designer.pageData, componentType, this.props.id);
+                }
+                let element = arg;
+                let dataId = element.getAttribute(DATA_ID);
+                console.assert(dataId != null);
+                let c = utility_1.PageDataTravel.findComponent(designer.pageData, dataId);
+                c.props[CONTAINER_ID] = this.props.id;
+                return c;
+            });
+        });
+    }
+    createComponentData(pageData, componentType, containerId) {
+        let props = {};
+        props[CONTAINER_ID] = containerId;
+        let id = utility_1.PageDataTravel.generateId(pageData, componentType);
+        let c = {
+            id, type: componentType, props, children: []
+        };
+        return c;
     }
     render() {
-        return React.createElement(designer_1.DesignerContext.Consumer, null, args => {
+        return React.createElement(designer_1.DesignComponentContext.Consumer, null, args => {
             if (!args)
                 throw errors_1.errors.contextArgumentNull();
-            // args.designer.componentPanelElements
-            return React.createElement("div", { className: style_1.classNames.componentPlaceHolder });
+            let childComponentDatas = args.componentData.children.filter(o => o.props[CONTAINER_ID] == this.props.id);
+            return React.createElement("ul", { className: style_1.classNames.designComponentPlaceHolder, ref: e => this.enableDrop(e, args.designer, args.componentData.id) }, childComponentDatas.length > 0 ? childComponentDatas.map(c => React.createElement("li", { key: c.id, ref: e => {
+                    if (!e)
+                        return;
+                    e.setAttribute(DATA_ID, c.id);
+                }, onClick: e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    args.designer.selectComponent(c.id);
+                } }, (0, parse_design_component_data_1.parseDesigntimeComponentData)(c, args.componentTypes))) : React.createElement("li", { className: style_1.classNames.empty }, strings_1.strings.emptyDiagram));
         });
     }
 }
 exports.DesignComponentPlaceHolder = DesignComponentPlaceHolder;
 //# sourceMappingURL=design-component-placeholder.js.map
+
+/***/ }),
+
+/***/ "./out/design/components/design-page.js":
+/*!**********************************************!*\
+  !*** ./out/design/components/design-page.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DesignPage = void 0;
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+const designer_1 = __webpack_require__(/*! ../../designer */ "./out/designer.js");
+const errors_1 = __webpack_require__(/*! ../../errors */ "./out/errors.js");
+const utility_1 = __webpack_require__(/*! ../../utility */ "./out/utility/index.js");
+const style_1 = __webpack_require__(/*! ../../style */ "./out/style.js");
+const DATA_ID = "data-id";
+class DesignPage extends React.Component {
+    ref(element, designer) {
+        if (!element || this.element)
+            return;
+        this.element = element;
+        designer.componentPanels.each(componentPanel => {
+            componentPanel.appendDropTarget(element, designer, designer.pageData.id, (arg) => {
+                if (typeof arg == "string") {
+                    let c = {
+                        id: utility_1.PageDataTravel.generateId(designer.pageData, arg), type: arg, props: {}, children: []
+                    };
+                    return c;
+                }
+                let element = arg;
+                let dataId = element.getAttribute(DATA_ID);
+                if (!dataId)
+                    throw new Error(`Invalid element`);
+                let c = utility_1.PageDataTravel.findComponent(designer.pageData, dataId);
+                return c;
+            });
+        });
+    }
+    render() {
+        let children = (0, utility_1.childrenNodeToArray)(this.props.children);
+        return React.createElement(designer_1.DesignerContext.Consumer, null, args => {
+            if (!args)
+                throw errors_1.errors.contextArgumentNull();
+            return React.createElement("ul", { key: args.designer.pageData.id, className: style_1.classNames.designPage, ref: e => this.ref(e, args.designer) }, children.map(o => React.createElement("li", { key: o.key, onClick: e => {
+                    let id = o.key;
+                    if (typeof id == "string") {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        args.designer.selectComponent(id);
+                    }
+                }, ref: e => {
+                    if (!e)
+                        return;
+                    e.setAttribute(DATA_ID, o.key);
+                } }, o)));
+        });
+    }
+}
+exports.DesignPage = DesignPage;
+//# sourceMappingURL=design-page.js.map
 
 /***/ }),
 
@@ -5533,11 +4844,15 @@ exports.DesignComponentPlaceHolder = DesignComponentPlaceHolder;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createLoadingComponent = exports.createInfoComponent = void 0;
+exports.DesignComponentPlaceHolder = exports.DesignPage = exports.createLoadingComponent = exports.createInfoComponent = void 0;
 var create_info_component_1 = __webpack_require__(/*! ./create-info-component */ "./out/design/components/create-info-component.js");
 Object.defineProperty(exports, "createInfoComponent", { enumerable: true, get: function () { return create_info_component_1.createInfoComponent; } });
 var create_loading_component_1 = __webpack_require__(/*! ./create-loading-component */ "./out/design/components/create-loading-component.js");
 Object.defineProperty(exports, "createLoadingComponent", { enumerable: true, get: function () { return create_loading_component_1.createLoadingComponent; } });
+var design_page_1 = __webpack_require__(/*! ./design-page */ "./out/design/components/design-page.js");
+Object.defineProperty(exports, "DesignPage", { enumerable: true, get: function () { return design_page_1.DesignPage; } });
+var design_component_placeholder_1 = __webpack_require__(/*! ./design-component-placeholder */ "./out/design/components/design-component-placeholder.js");
+Object.defineProperty(exports, "DesignComponentPlaceHolder", { enumerable: true, get: function () { return design_component_placeholder_1.DesignComponentPlaceHolder; } });
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -5581,7 +4896,7 @@ const design_behavior_1 = __webpack_require__(/*! ./design-behavior */ "./out/de
 const common_1 = __webpack_require__(/*! ../common */ "./out/common/index.js");
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
 const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
-const design_component_placeholder_1 = __webpack_require__(/*! ./components/design-component-placeholder */ "./out/design/components/design-component-placeholder.js");
+const components_1 = __webpack_require__(/*! ./components */ "./out/design/components/index.js");
 const createDesignElement = (type, props, ...children) => {
     let props1 = {};
     if (props)
@@ -5597,7 +4912,7 @@ const createDesignElement = (type, props, ...children) => {
             delete props.onClick;
         }
         if (type == runtime_1.ComponentPlaceHolder) {
-            type = design_component_placeholder_1.DesignComponentPlaceHolder;
+            type = components_1.DesignComponentPlaceHolder;
         }
         return React.createElement(type, props, ...children);
     }));
@@ -5663,36 +4978,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseDesigntimeComponentData = void 0;
+exports.createDesigntimeComponent = exports.parseDesigntimeComponentData = void 0;
 const errors_1 = __webpack_require__(/*! ../errors */ "./out/errors.js");
 const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const designer_1 = __webpack_require__(/*! ../designer */ "./out/designer.js");
 const utility_1 = __webpack_require__(/*! ../utility */ "./out/utility/index.js");
 const design_component_context_1 = __webpack_require__(/*! ./design-component-context */ "./out/design/design-component-context.js");
+const design_behavior_1 = __webpack_require__(/*! ./design-behavior */ "./out/design/design-behavior.js");
 function parseDesigntimeComponentData(componentData, componentTypes) {
-    return (0, runtime_1.parseComponentData)(componentData, componentTypes, createDesigntimeComponent);
+    return (0, runtime_1.parsePageData)(componentData, componentTypes, createDesigntimeComponent);
 }
 exports.parseDesigntimeComponentData = parseDesigntimeComponentData;
 function createDesigntimeComponent(type, props, children) {
     let p = props;
     if (!p.id)
         throw errors_1.errors.argumentFieldNull("id", "props");
-    return react_1.default.createElement(designer_1.DesignerContext.Consumer, null, args => {
+    return react_1.default.createElement(designer_1.DesignerContext.Consumer, { key: p.id }, args => {
         if (!args)
             throw errors_1.errors.contextArgumentNull();
-        let componentData = utility_1.PageDataTravel.findComponent(args.designer.pageData, p.id); //args.designer.pageData.children.filter(o => o.id == p.id)[0]
+        let componentData = utility_1.PageDataTravel.findComponent(args.designer.pageData, p.id);
         if (!componentData)
             throw new Error(`Can not find component data by '${p.id}' in the page data.`);
-        let componentConfig = args.designer.props.componentsConfig[componentData.type];
+        let componentConfig = args.designer.componentsConfig;
         if (!componentConfig)
-            return react_1.default.createElement(type, props, children);
+            throw new Error(`Component config is null for component type '${componentData.type}'`);
+        let componentTypes = args.designer.componentTypes;
         let value = {
-            componentData, componentConfig
+            componentData, componentConfig, designer: args.designer, componentTypes
         };
+        let designBehavior = typeof componentConfig.design == "number" ? componentConfig.design : design_behavior_1.DesignBehavior.default;
         return react_1.default.createElement(design_component_context_1.DesignComponentContext.Provider, { value: value }, react_1.default.createElement(type, props, children));
     });
 }
+exports.createDesigntimeComponent = createDesigntimeComponent;
 //# sourceMappingURL=parse-design-component-data.js.map
 
 /***/ }),
@@ -5734,10 +5053,11 @@ exports.PageDesigner = exports.DesignComponentContext = exports.DesignerContext 
 const React = __importStar(__webpack_require__(/*! react */ "react"));
 const runtime_1 = __webpack_require__(/*! ./runtime */ "./out/runtime/index.js");
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/errors.js");
-const guid_1 = __webpack_require__(/*! maishu-toolkit/out/guid */ "./node_modules/maishu-toolkit/out/guid.js");
 const components_1 = __webpack_require__(/*! ./design/components */ "./out/design/components/index.js");
 const utility_1 = __webpack_require__(/*! ./utility */ "./out/utility/index.js");
 const data_list_1 = __webpack_require__(/*! ./data/data-list */ "./out/data/data-list.js");
+const design_behavior_1 = __webpack_require__(/*! ./design/design-behavior */ "./out/design/design-behavior.js");
+const design_page_1 = __webpack_require__(/*! ./design/components/design-page */ "./out/design/components/design-page.js");
 exports.DesignerContext = React.createContext(null);
 exports.DesignComponentContext = React.createContext(null);
 /**
@@ -5746,59 +5066,20 @@ exports.DesignComponentContext = React.createContext(null);
 class PageDesigner extends React.Component {
     constructor(props) {
         super(props);
-        // private _elementFactory: ElementFactory = createDesignElement as any //React.createElement
         this._prePageData = null;
         this.componentDiagramElements = new data_list_1.DataList();
-        this.componentPanelElements = new data_list_1.DataList();
+        this.componentPanels = new data_list_1.DataList();
         if (!props)
             throw errors_1.errors.argumentNull("props");
         if (!props.componentsConfig)
             throw errors_1.errors.argumentFieldCanntNull("componentsConfig", "props");
         this.checkComponentsConfig(props.componentsConfig);
         let pageData = this.props.pageData;
-        // let componentTypes: ComponentTypes = {}
-        // this.initPageData(pageData, componentTypes);
         this.state = { pageData, componentTypes: {}, componentEditors: {} };
     }
     /** 检查组件配置 */
     checkComponentsConfig(componentsConfig) {
         // TODO: 检查组件配置
-    }
-    // private initPageData(pageData: PageData, componentTypes: ComponentTypes) {
-    //     if (pageData == null) throw errors.argumentNull("pageData")
-    //     console.assert(pageData.children != null, "PageData children is null.")
-    //     let travel = new PageDataTravel(pageData)
-    //     travel.each((c) => {
-    //         if (typeof c == "string" || !isCustomComponent(c) || componentTypes[c.type])
-    //             return
-    //         componentTypes[c.type] = createLoadingComponent()
-    //     })
-    // }
-    /**
-     * 对组件及其子控件进行命名
-     * @param componentData
-     */
-    initComponent(componentData, pageData) {
-        let namedComponents = {};
-        pageData.children.forEach(c => {
-            if (typeof c == "string")
-                return;
-            if (c.name) {
-                namedComponents[c.name] = c;
-            }
-        });
-        if (!componentData.name) {
-            let num = 0;
-            let name;
-            do {
-                num = num + 1;
-                name = `${componentData.type}${num}`;
-            } while (namedComponents[name]);
-            namedComponents[name] = componentData;
-            componentData.name = name;
-        }
-        if (!componentData.id)
-            componentData.id = (0, guid_1.guid)();
     }
     /** 页面数据 */
     get pageData() {
@@ -5825,8 +5106,12 @@ class PageDesigner extends React.Component {
     }
     /** 获取已选择了的组件 */
     get selectedComponents() {
-        let arr = this.pageData.children.filter(o => typeof o != "string" &&
-            ((o.status || runtime_1.ComponentStatus.default) & runtime_1.ComponentStatus.selected) == runtime_1.ComponentStatus.selected);
+        let arr = [];
+        utility_1.PageDataTravel.each(this.pageData, (o) => {
+            if (((o.status || runtime_1.ComponentStatus.default) & runtime_1.ComponentStatus.selected) == runtime_1.ComponentStatus.selected) {
+                arr.push(o);
+            }
+        });
         return arr;
     }
     get element() {
@@ -5860,18 +5145,20 @@ class PageDesigner extends React.Component {
      * @param componentData 控件数据
      * @param componentIndex 新添加组件在子组件中的次序
      */
-    appendComponent(componentData, componentIndex) {
-        // let parentId = componentData.parentId;
-        // if (!parentId) throw new Error('ParentId field of component data is null.');
+    appendComponent(componentData, parentId, componentIndex) {
         if (!componentData)
             throw errors_1.errors.argumentNull('childComponent');
-        let pageData = this.pageData;
-        this.initComponent(componentData, pageData);
+        if (!parentId)
+            throw errors_1.errors.argumentNull("parentId");
+        let parentComponentData = utility_1.PageDataTravel.findComponent(this.pageData, parentId);
+        if (!parentComponentData)
+            throw new Error(`Component data '${parentId}' is not exists`);
+        let children = parentComponentData.children;
         if (componentIndex == null) {
-            pageData.children.push(componentData);
+            children.push(componentData);
         }
         else {
-            pageData.children.splice(componentIndex, 0, componentData);
+            children.splice(componentIndex, 0, componentData);
         }
         this.selectComponents(componentData.id);
     }
@@ -5894,14 +5181,15 @@ class PageDesigner extends React.Component {
     selectComponents(componentIds) {
         if (typeof componentIds == 'string')
             componentIds = [componentIds];
-        let children = (this.pageData.children || []).filter(o => typeof o != "string");
-        children.forEach(c => {
-            // c.selected = false;
+        /** 取消选中 */
+        utility_1.PageDataTravel.each(this.pageData, (c) => {
             c.status = c.status || runtime_1.ComponentStatus.default;
             c.status = c.status & (~runtime_1.ComponentStatus.selected);
         });
-        children.filter(o => componentIds.indexOf(o.id) >= 0).forEach(c => {
-            // c.selected = true;
+        /** 设置选中 */
+        utility_1.PageDataTravel.each(this.pageData, (c) => {
+            if (componentIds.indexOf(c.id) < 0)
+                return;
             c.status = c.status || runtime_1.ComponentStatus.default;
             c.status = c.status | runtime_1.ComponentStatus.selected;
         });
@@ -5909,14 +5197,33 @@ class PageDesigner extends React.Component {
     }
     /** 移除控件 */
     removeComponent(...componentIds) {
-        this.removeComponents(componentIds);
+        for (let i = 0; i < componentIds.length; i++) {
+            let componentId = componentIds[i];
+            let { component, parent } = utility_1.PageDataTravel.findComponentAndParent(this.pageData, componentId); //componentChildren.filter(o => o.id == componentId)[0];
+            if (component == null)
+                throw new Error(`Component '${componentId}' is not exists.`);
+            if (parent == null)
+                throw new Error(`Component '${componentId}' is root element, can not remove.`);
+            parent.children = parent.children.filter(o => o.id != componentId);
+        }
+    }
+    removeComponentIfExists(...componentIds) {
+        for (let i = 0; i < componentIds.length; i++) {
+            let componentId = componentIds[i];
+            let { component, parent } = utility_1.PageDataTravel.findComponentAndParent(this.pageData, componentId); //componentChildren.filter(o => o.id == componentId)[0];
+            if (component == null)
+                continue;
+            if (parent == null)
+                throw new Error(`Component '${componentId}' is root element, can not remove.`);
+            parent.children = parent.children.filter(o => o.id != componentId);
+        }
     }
     removeComponents(componentIds) {
         let pageData = this.pageData;
         if (!pageData || !pageData.children || pageData.children.length == 0)
             return;
         for (let i = 0; i < componentIds.length; i++) {
-            this.removeComponentFrom(componentIds[i], pageData);
+            this.removeComponent(componentIds[i]);
         }
         this.setState({ pageData: pageData });
     }
@@ -5931,29 +5238,11 @@ class PageDesigner extends React.Component {
         if (component == null)
             throw new Error(`Cannt find component by id ${componentId}`);
         console.assert(component != null, `Cannt find component by id ${componentId}`);
-        component.parentId = parentId;
+        // component.parentId = parentId;
         let pageData = this.pageData;
         console.assert(pageData.children != null);
-        this.removeComponentFrom(componentId, pageData);
-        this.appendComponent(component, childComponentIndex);
-    }
-    removeComponentFrom(componentId, pageData) {
-        let componentChildren = (this.pageData.children || []).filter(o => typeof o != "string");
-        let child = componentChildren.filter(o => o.id == componentId)[0];
-        if (child == null)
-            throw new Error(`Component '${componentId}' is not exists.`);
-        let stack = [child];
-        let componentsToRemove = [componentId];
-        while (stack.length > 0) {
-            let item = stack.pop();
-            let childs = componentChildren.filter(o => o.parentId == item.id);
-            if (childs.length > 0) {
-                stack.push(...childs);
-                // status 为 ComponentStatus.asset 不要删除
-                componentsToRemove.push(...childs.filter(o => o.status == null || (o.status & runtime_1.ComponentStatus.asset) != runtime_1.ComponentStatus.asset).map(o => o.id));
-            }
-        }
-        pageData.children = pageData.children.filter(o => typeof o != "string" && componentsToRemove.indexOf(o.id) < 0);
+        this.removeComponent(componentId);
+        this.appendComponent(component, parentId, childComponentIndex);
     }
     /**
      * 通过组件编号获取组件的数据
@@ -5963,15 +5252,13 @@ class PageDesigner extends React.Component {
         let pageData = this.state.pageData;
         if (!pageData)
             throw errors_1.errors.pageDataIsNull();
-        let componentData = pageData.children.filter(o => typeof o != "string" && o.id == componentId)[0];
+        let componentData = utility_1.PageDataTravel.findComponent(pageData, componentId) || null;
         return componentData;
     }
     async loadEditorTypes(pageData) {
         let componentsToLoad = [];
         let travel = new utility_1.PageDataTravel(pageData);
         travel.each((c) => {
-            if (typeof c == "string" || !(0, utility_1.isCustomComponent)(c))
-                return;
             componentsToLoad.push(c.type);
         });
         let componentsConfig = this.props.componentsConfig;
@@ -5996,13 +5283,12 @@ class PageDesigner extends React.Component {
         let componentsToLoad = [];
         let travel = new utility_1.PageDataTravel(pageData);
         travel.each((c) => {
-            if (typeof c == "string" || componentsToLoad.indexOf(c.type) >= 0 || !(0, utility_1.isCustomComponent)(c) || componentTypes[c.type])
+            if ((0, utility_1.isHTMLComponent)(c))
                 return;
             componentsToLoad.push(c.type);
         });
         componentsToLoad.forEach(typeName => {
             componentTypes[typeName] = (0, components_1.createLoadingComponent)();
-            // this.setState({ componentTypes })
         });
         // const loadedComponentTypes = await PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig);
         PageDesigner.loadComponentTypes(componentsToLoad, componentsConfig).then(loadedComponentTypes => {
@@ -6011,19 +5297,27 @@ class PageDesigner extends React.Component {
         });
     }
     static async loadComponentTypes(componentsToLoad, componentsConfig) {
+        if (!componentsToLoad)
+            throw errors_1.errors.argumentNull("componentsToLoad");
+        if (!componentsConfig)
+            throw errors_1.errors.argumentNull("componentsConfig");
+        // 设置默认组件
+        for (let typeName in runtime_1.componentTypes) {
+            if (!componentsConfig[typeName]) {
+                let designBehavior = design_behavior_1.DesignBehavior.default;
+                componentsConfig[typeName] = {
+                    type: Promise.resolve({ default: runtime_1.componentTypes[typeName] }),
+                    hidden: true, design: designBehavior
+                };
+                if (typeName == runtime_1.componentTypeNames.page) {
+                    componentsConfig[typeName].design = Promise.resolve({ default: design_page_1.DesignPage });
+                }
+            }
+        }
         let promises = [];
         let componentTypes = {};
         for (let i = 0; i < componentsToLoad.length; i++) {
             let typeName = componentsToLoad[i];
-            if (!typeName) {
-                let errorText = `Component '${typeName}' has not a config.`;
-                componentTypes[typeName] = (0, components_1.createInfoComponent)(errorText);
-                continue;
-            }
-            if (runtime_1.componentTypes[typeName]) {
-                promises.push(Promise.resolve(runtime_1.componentTypes[typeName]));
-                continue;
-            }
             let p = new Promise(function (resolve, reject) {
                 if (!componentsConfig[typeName]) {
                     let errorText = `Component '${typeName}' is not exists.`;
@@ -6037,7 +5331,13 @@ class PageDesigner extends React.Component {
                     resolve({});
                     return;
                 }
-                let componentType = componentsConfig[typeName].type;
+                let componentType;
+                if (componentsConfig[typeName].design instanceof Promise) {
+                    componentType = componentsConfig[typeName].design;
+                }
+                else {
+                    componentType = componentsConfig[typeName].type;
+                }
                 if (!componentType) {
                     return resolve({});
                 }
@@ -6075,20 +5375,6 @@ class PageDesigner extends React.Component {
         return { pageData: props.pageData };
     }
     componentDidMount() {
-        // let groupBaseName = 'diagram'
-        // for (let i = 0; i < this.componentPanelElements.count; i++) {
-        //     let groupName = groupBaseName + i
-        //     new Sortable(this.componentPanelElements[i], {
-        //         group: groupName,
-        //         animation: 150
-        //     })
-        //     for (let j = 0; j < this.componentDiagramElements.length; j++) {
-        //         new Sortable(this.componentDiagramElements[j], {
-        //             group: groupName,
-        //             animation: 150
-        //         })
-        //     }
-        // }
     }
     render() {
         let pageData = this.state.pageData;
@@ -6555,29 +5841,6 @@ __webpack_require__(/*! ./design/create-design-element */ "./out/design/create-d
 
 /***/ }),
 
-/***/ "./out/runtime/components.js":
-/*!***********************************!*\
-  !*** ./out/runtime/components.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.componentTypes = void 0;
-const component_placeholder_1 = __webpack_require__(/*! ./components/component-placeholder */ "./out/runtime/components/component-placeholder.js");
-const component_type_names_1 = __webpack_require__(/*! ./components/component-type-names */ "./out/runtime/components/component-type-names.js");
-const page_1 = __webpack_require__(/*! ./components/page */ "./out/runtime/components/page.js");
-const text_1 = __webpack_require__(/*! ./components/text */ "./out/runtime/components/text.js");
-exports.componentTypes = {};
-exports.componentTypes[component_type_names_1.componentTypeNames.placeHolder] = component_placeholder_1.ComponentPlaceHolder;
-exports.componentTypes[component_type_names_1.componentTypeNames.page] = page_1.Page;
-exports.componentTypes[component_type_names_1.componentTypeNames.text] = text_1.Text;
-//# sourceMappingURL=components.js.map
-
-/***/ }),
-
 /***/ "./out/runtime/components/component-placeholder.js":
 /*!*********************************************************!*\
   !*** ./out/runtime/components/component-placeholder.js ***!
@@ -6643,6 +5906,37 @@ exports.componentTypeNames = {
     text: "Text",
 };
 //# sourceMappingURL=component-type-names.js.map
+
+/***/ }),
+
+/***/ "./out/runtime/components/index.js":
+/*!*****************************************!*\
+  !*** ./out/runtime/components/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.componentTypes = exports.componentTypeNames = exports.Text = exports.Page = exports.ComponentPlaceHolder = void 0;
+const component_placeholder_1 = __webpack_require__(/*! ./component-placeholder */ "./out/runtime/components/component-placeholder.js");
+const component_type_names_1 = __webpack_require__(/*! ./component-type-names */ "./out/runtime/components/component-type-names.js");
+const page_1 = __webpack_require__(/*! ./page */ "./out/runtime/components/page.js");
+const text_1 = __webpack_require__(/*! ./text */ "./out/runtime/components/text.js");
+var component_placeholder_2 = __webpack_require__(/*! ./component-placeholder */ "./out/runtime/components/component-placeholder.js");
+Object.defineProperty(exports, "ComponentPlaceHolder", { enumerable: true, get: function () { return component_placeholder_2.ComponentPlaceHolder; } });
+var page_2 = __webpack_require__(/*! ./page */ "./out/runtime/components/page.js");
+Object.defineProperty(exports, "Page", { enumerable: true, get: function () { return page_2.Page; } });
+var text_2 = __webpack_require__(/*! ./text */ "./out/runtime/components/text.js");
+Object.defineProperty(exports, "Text", { enumerable: true, get: function () { return text_2.Text; } });
+var component_type_names_2 = __webpack_require__(/*! ./component-type-names */ "./out/runtime/components/component-type-names.js");
+Object.defineProperty(exports, "componentTypeNames", { enumerable: true, get: function () { return component_type_names_2.componentTypeNames; } });
+exports.componentTypes = {};
+exports.componentTypes[component_type_names_1.componentTypeNames.placeHolder] = component_placeholder_1.ComponentPlaceHolder;
+exports.componentTypes[component_type_names_1.componentTypeNames.page] = page_1.Page;
+exports.componentTypes[component_type_names_1.componentTypeNames.text] = text_1.Text;
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -6803,15 +6097,15 @@ exports.errors = new MyErrors();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Page = exports.ComponentPlaceHolder = exports.componentTypeNames = exports.componentTypes = exports.ComponentStatus = exports.PageDataParserContext = exports.PageDataParser = exports.parseComponentData = void 0;
+exports.Page = exports.ComponentPlaceHolder = exports.componentTypeNames = exports.componentTypes = exports.ComponentStatus = exports.PageDataParserContext = exports.PageDataParser = exports.parsePageData = void 0;
 var parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./out/runtime/parse-component-data.js");
-Object.defineProperty(exports, "parseComponentData", { enumerable: true, get: function () { return parse_component_data_1.parseComponentData; } });
+Object.defineProperty(exports, "parsePageData", { enumerable: true, get: function () { return parse_component_data_1.parsePageData; } });
 var page_data_parser_1 = __webpack_require__(/*! ./page-data-parser */ "./out/runtime/page-data-parser.js");
 Object.defineProperty(exports, "PageDataParser", { enumerable: true, get: function () { return page_data_parser_1.PageDataParser; } });
 Object.defineProperty(exports, "PageDataParserContext", { enumerable: true, get: function () { return page_data_parser_1.PageDataParserContext; } });
 var types_1 = __webpack_require__(/*! ./types */ "./out/runtime/types.js");
 Object.defineProperty(exports, "ComponentStatus", { enumerable: true, get: function () { return types_1.ComponentStatus; } });
-var components_1 = __webpack_require__(/*! ./components */ "./out/runtime/components.js");
+var components_1 = __webpack_require__(/*! ./components */ "./out/runtime/components/index.js");
 Object.defineProperty(exports, "componentTypes", { enumerable: true, get: function () { return components_1.componentTypes; } });
 var component_type_names_1 = __webpack_require__(/*! ./components/component-type-names */ "./out/runtime/components/component-type-names.js");
 Object.defineProperty(exports, "componentTypeNames", { enumerable: true, get: function () { return component_type_names_1.componentTypeNames; } });
@@ -6859,7 +6153,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PageDataParser = exports.PageDataParserContext = void 0;
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/runtime/errors.js");
 const React = __importStar(__webpack_require__(/*! react */ "react"));
-const _1 = __webpack_require__(/*! . */ "./out/runtime/index.js");
+const parse_component_data_1 = __webpack_require__(/*! ./parse-component-data */ "./out/runtime/parse-component-data.js");
 exports.PageDataParserContext = React.createContext(null);
 class PageDataParser extends React.Component {
     constructor(props) {
@@ -6878,16 +6172,17 @@ class PageDataParser extends React.Component {
     render() {
         let { pageData } = this.state;
         let { elementFactory, componentTypes } = this.props;
-        let children = (pageData.children || []).filter(o => typeof o == "string" || !o.parentId);
-        let childComponents = children.map(o => {
-            if (typeof o == "string")
-                return o;
-            return (0, _1.parseComponentData)(o, componentTypes, elementFactory);
-        });
-        let pageType = componentTypes[pageData.type];
-        if (!pageType)
-            throw new Error(`Component type '${pageData.type}' is not exists.`);
-        let pageElement = React.createElement(pageType, pageData.props, childComponents);
+        // let children = (pageData.children || []).filter(o => typeof o == "string" || !o.parentId);
+        // let childComponents = children.map(o => {
+        //     if (typeof o == "string")
+        //         return o
+        //     return parseComponentData(o, componentTypes, elementFactory);
+        // });
+        // let pageType = componentTypes[pageData.type]
+        // if (!pageType)
+        //     throw new Error(`Component type '${pageData.type}' is not exists.`)
+        // let pageElement = React.createElement(pageType, pageData.props, childComponents)
+        let pageElement = (0, parse_component_data_1.parsePageData)(pageData, componentTypes, elementFactory);
         return React.createElement(exports.PageDataParserContext.Provider, { value: { pageData, elementFactory, componentTypes } }, pageElement);
     }
 }
@@ -6906,16 +6201,17 @@ exports.PageDataParser = PageDataParser;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseComponentData = void 0;
+exports.parsePageData = void 0;
 const errors_1 = __webpack_require__(/*! ./errors */ "./out/runtime/errors.js");
-const components_1 = __webpack_require__(/*! ./components */ "./out/runtime/components.js");
+const components_1 = __webpack_require__(/*! ./components */ "./out/runtime/components/index.js");
 function parseComponentData(componentData, componentTypes, createElement) {
     if (!componentData)
         throw errors_1.errors.argumentNull("componentData");
     if (!componentTypes)
         throw errors_1.errors.argumentNull("componentTypes");
-    if (!componentData.type)
+    if (!componentData.type) {
         throw errors_1.errors.argumentFieldNull("type", "componentData");
+    }
     let isHtmlComponent = componentData.type.toLowerCase() == componentData.type;
     let type = isHtmlComponent ? componentData.type : (componentTypes[componentData.type] || components_1.componentTypes[componentData.type]);
     if (type == null) {
@@ -6935,7 +6231,17 @@ function parseComponentData(componentData, componentTypes, createElement) {
     props.id = componentData.id;
     return createElement(type, props, children);
 }
-exports.parseComponentData = parseComponentData;
+function parsePageData(pageData, componentTypes, createElement) {
+    if (!pageData)
+        throw errors_1.errors.argumentNull("pageData");
+    if (!componentTypes)
+        throw errors_1.errors.argumentNull("componentTypes");
+    if (!pageData.type) {
+        throw errors_1.errors.argumentFieldNull("type", "pageData");
+    }
+    return parseComponentData(pageData, componentTypes, createElement);
+}
+exports.parsePageData = parsePageData;
 //# sourceMappingURL=parse-component-data.js.map
 
 /***/ }),
@@ -7006,7 +6312,9 @@ exports.classNames = {
     propertyEditor: "property-editor",
     propertyEditorControl: "property-editor-control",
     propertyEditorLabel: "property-editor-label",
-    componentPlaceHolder: "component-place-holder"
+    componentWrapper: "component-wrapper",
+    designComponentPlaceHolder: "design-component-place-holder",
+    designPage: "design-page",
 };
 // let templateDialog = {
 //     nameHeight: 40,
@@ -7065,9 +6373,25 @@ element.innerHTML = `
 .${exports.classNames.propertyEditor} {
     display: flex;
 }
-.${exports.classNames.componentPlaceHolder} {
+.${exports.classNames.designComponentPlaceHolder} {
     min-height: 50px;
     min-width: 50px;
+    padding: 0;
+    list-style: none;
+}
+.${exports.classNames.componentWrapper} {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.${exports.classNames.designPage} {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.${exports.classNames.empty} {
+    text-align: center;
+    padding-top: 15px;
 }
         `;
 if (document.head != null) {
@@ -7087,19 +6411,14 @@ if (document.head != null) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.elementFactoryName = exports.childrenNodeToArray = exports.isCustomComponent = exports.groupDisplayNames = exports.proptDisplayNames = void 0;
-const runtime_1 = __webpack_require__(/*! ../runtime */ "./out/runtime/index.js");
+exports.elementFactoryName = exports.childrenNodeToArray = exports.isHTMLComponent = exports.groupDisplayNames = exports.proptDisplayNames = void 0;
 exports.proptDisplayNames = {};
 exports.groupDisplayNames = {};
-function isCustomComponent(componentData) {
-    // 全小写为 HTML 元素，不需要加载
-    if (componentData.type.toLowerCase() == componentData.type)
-        return false;
-    if (runtime_1.componentTypes[componentData.type])
-        return false;
-    return true;
+function isHTMLComponent(componentData) {
+    // 全小写为 HTML 组件
+    return componentData.type.toLowerCase() == componentData.type;
 }
-exports.isCustomComponent = isCustomComponent;
+exports.isHTMLComponent = isHTMLComponent;
 function childrenNodeToArray(children) {
     if (!children)
         return [];
@@ -7202,10 +6521,10 @@ exports.ErrorBoundary = ErrorBoundary;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ErrorBoundary = exports.PageDataTravel = exports.deepEqual = exports.isCustomComponent = exports.childrenNodeToArray = void 0;
+exports.ErrorBoundary = exports.PageDataTravel = exports.deepEqual = exports.isHTMLComponent = exports.childrenNodeToArray = void 0;
 var common_1 = __webpack_require__(/*! ./common */ "./out/utility/common.js");
 Object.defineProperty(exports, "childrenNodeToArray", { enumerable: true, get: function () { return common_1.childrenNodeToArray; } });
-Object.defineProperty(exports, "isCustomComponent", { enumerable: true, get: function () { return common_1.isCustomComponent; } });
+Object.defineProperty(exports, "isHTMLComponent", { enumerable: true, get: function () { return common_1.isHTMLComponent; } });
 var deep_equal_1 = __webpack_require__(/*! ./deep-equal */ "./out/utility/deep-equal.js");
 Object.defineProperty(exports, "deepEqual", { enumerable: true, get: function () { return deep_equal_1.deepEqual; } });
 var page_data_travel_1 = __webpack_require__(/*! ./page-data-travel */ "./out/utility/page-data-travel.js");
@@ -7234,15 +6553,19 @@ class PageDataTravel {
         this.pageData = pageData;
     }
     each(callback) {
-        let stack = [...(this.pageData.children || [])];
-        let componentData = stack.pop();
-        while (componentData != null) {
-            callback(componentData);
-            if (typeof componentData != "string") {
-                let children = componentData.children || [];
-                stack.push(...children);
+        PageDataTravel.each(this.pageData, callback);
+    }
+    static each(componentData, callback) {
+        let stack = [{ component: componentData, parent: null }];
+        let item = stack.pop();
+        while (item != null) {
+            callback(item.component, item.parent);
+            // if (typeof item != "string") {
+            for (let i = 0; i < item.component.children.length; i++) {
+                let c = item.component.children[i];
+                stack.push({ component: c, parent: item.component });
             }
-            componentData = stack.pop();
+            item = stack.pop();
         }
     }
     static findComponent(pageData, componentId) {
@@ -7259,6 +6582,37 @@ class PageDataTravel {
                 r = c;
         });
         return r;
+    }
+    static findComponentAndParent(pageData, componentId) {
+        if (!pageData)
+            throw errors_1.errors.argumentNull("pageData");
+        if (!componentId)
+            throw errors_1.errors.argumentNull("componentId");
+        let travel = new PageDataTravel(pageData);
+        let component = null;
+        let parent = null;
+        travel.each(function (c, p) {
+            if (typeof c == "string" || component)
+                return;
+            if (componentId == c.id) {
+                component = c;
+                parent = p;
+            }
+        });
+        return { component, parent };
+    }
+    static generateId(pageData, typeName) {
+        let namedComponents = {};
+        PageDataTravel.each(pageData, (c, p) => {
+            namedComponents[c.id] = c;
+        });
+        let num = 0;
+        let name;
+        do {
+            num = num + 1;
+            name = `${typeName}${num}`;
+        } while (namedComponents[name]);
+        return name;
     }
 }
 exports.PageDataTravel = PageDataTravel;
