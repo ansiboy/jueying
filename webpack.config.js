@@ -20,7 +20,7 @@ module.exports = {
         filename: "index.js", //打包后输出文件的文件名
         library: "jueying",
         libraryTarget: "umd",
-
+        globalObject: 'typeof window === \'undefined\' ? global : window'
     },
     mode: 'development',
     devtool: 'source-map',

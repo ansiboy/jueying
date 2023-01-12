@@ -1,15 +1,18 @@
 import * as React from "react";
 import { DesignComponentContext, PageDesigner } from "../../designer";
 import { errors } from "../../errors";
-import { ComponentData, ComponentProps, PageData } from "../../runtime";
+import { ComponentData, ComponentProps, PageData, ComponentPlaceHolder } from "../../runtime";
 import { strings } from "../../strings";
 import { classNames } from "../../style";
 import { PageDataTravel } from "../../utility";
 import { parseDesigntimeComponentData } from "../parse-design-component-data";
 
-const CONTAINER_ID = "container_id"
-const DATA_ID = "data-id"
-export class DesignComponentPlaceHolder extends React.Component<ComponentProps> {
+const CONTAINER_ID = "container_id";
+const DATA_ID = "data-id";
+
+type Props = ComponentPlaceHolder["props"];
+
+export class DesignComponentPlaceHolder extends React.Component<Props> {
 
     private element: HTMLElement
 
@@ -57,8 +60,9 @@ export class DesignComponentPlaceHolder extends React.Component<ComponentProps> 
             {args => {
                 if (!args) throw errors.contextArgumentNull()
 
-                let childComponentDatas = args.componentData.children.filter(o => o.props[CONTAINER_ID] == this.props.id)
-                return <ul className={classNames.designComponentPlaceHolder}
+                let childComponentDatas = args.componentData.children.filter(o => o.props[CONTAINER_ID] == this.props.id);
+                let className = this.props.className || "";
+                return <ul style={this.props.style} className={`${classNames.designComponentPlaceHolder} ${className}`}
                     ref={e => this.enableDrop(e, args.designer, args.componentData.id)}>
                     {childComponentDatas.length > 0 ? childComponentDatas.map(c => <li key={c.id}
                         ref={e => {

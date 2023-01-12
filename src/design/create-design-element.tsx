@@ -12,7 +12,7 @@ const createDesignElement = (type: any, props: any, ...children: Array<any>) => 
         props1 = { key: props.id || props.key }
 
     return React.createElement(DesignComponentContext.Consumer, props1, ((args: DesignComponentContextValue) => {
-        let isDesigntime = args != null
+        let isDesigntime = args != null;
         if (!isDesigntime) {
             return React.createElement(type, props, ...children)
         }
@@ -23,16 +23,16 @@ const createDesignElement = (type: any, props: any, ...children: Array<any>) => 
             delete (props as React.DOMAttributes<any>).onClick
         }
 
-        if (type == ComponentPlaceHolder) {
-            type = DesignComponentPlaceHolder
+        if ((type as typeof ComponentPlaceHolder).typeName == ComponentPlaceHolder.typeName) {
+            type = DesignComponentPlaceHolder;
         }
 
-        return React.createElement(type, props, ...children)
+        return React.createElement(type, props, ...children);
     }) as any)
 }
 
-let g: any = typeof window === "undefined" ? global : window
+let g: any = typeof window === "undefined" ? global : window;
 if (g[constants.designComponentFactoryName])
-    throw errors.elementFactoryExists()
+    throw errors.elementFactoryExists();
 
-g[constants.designComponentFactoryName] = createDesignElement
+g[constants.designComponentFactoryName] = createDesignElement;

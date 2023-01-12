@@ -4,7 +4,7 @@ import { errors } from "../../errors"
 import { childrenNodeToArray, PageDataTravel } from "../../utility"
 import { Page } from "../../runtime/components"
 import { classNames } from "../../style"
-import { ComponentData } from "../../runtime"
+import { ComponentData, ComponentStatus } from "../../runtime"
 
 const DATA_ID = "data-id"
 type Props = Page["props"]
@@ -44,26 +44,38 @@ export class DesignPage extends React.Component<Props> {
             {args => {
                 if (!args) throw errors.contextArgumentNull()
 
-                return <ul key={args.designer.pageData.id} className={classNames.designPage} ref={e => this.ref(e, args.designer)}>
-                    {children.map(o => <li key={o.key}
-                        onClick={e => {
-                            let id = o.key
-                            if (typeof id == "string") {
-                                e.preventDefault();
-                                e.stopPropagation();
+                let p = this.props;
+                let className = p.className || "";
+                return <ul key={args.designer.pageData.id} className={`${classNames.designPage} ${className}`}
+                    style={p.style}
+                    ref={e => this.ref(e, args.designer)}>
+                    {children.map(o => {
+                        console.assert(o.key != null, "key is null");
+                        let componentData = PageDataTravel.findComponent(args.designer.pageData, o.key as string) as ComponentData;
+                        console.assert(componentData != null, `component data ${o.key} is not exists.`)
+                        let status = componentData.status || ComponentStatus.default;
+                        let isSelected = (status & ComponentStatus.selected) == ComponentStatus.selected;
+                        return <li key={o.key} className={isSelected ? classNames.selected : undefined}
+                            onClick={e => {
+                                let id = o.key
+                                if (typeof id == "string") {
+                                    e.preventDefault();
+                                    e.stopPropagation();
 
-                                args.designer.selectComponent(id);
-                            }
-                        }}
-                        ref={e => {
-                            if (!e) return
-                            e.setAttribute(DATA_ID, o.key as string)
-                        }}
-                    >
-                        {o}
-                    </li>)}
+                                    args.designer.selectComponent(id);
+                                }
+                            }}
+                            ref={e => {
+                                if (!e) return
+                                e.setAttribute(DATA_ID, o.key as string)
+                            }}
+                        >
+                            {o}
+                        </li>
+                    })}
                 </ul>
             }}
         </DesignerContext.Consumer >
     }
 }
+
