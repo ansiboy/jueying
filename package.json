@@ -51,7 +51,8 @@
     },
     "files": [
         "dist",
-        "out"
+        "out",
+        "src"
     ],
     "main": "dist/index.min.js",
     "name": "maishu-jueying",
@@ -61,5 +62,5 @@
         "temp": "jest page-designer.test.tsx"
     },
     "typings": "out/index.d.ts",
-    "version": "4.2.3"
+    "version": "4.2.11"
 }
