@@ -7,6 +7,7 @@ import type { ComponentsConfig } from "../components-config"
 import { ComponentData } from "../runtime"
 import Sortable from "sortablejs"
 import { PageDataTravel } from "../utility"
+import { Callback } from "maishu-toolkit"
 interface ComponentPanelProps {
     renderItem?: (typeName: string, compoenntConfig: ComponentsConfig[0]) => ReturnType<React.Component["render"]>
 }
@@ -19,8 +20,11 @@ type CompoenntDataFactory = (typeName: string | HTMLElement) => ComponentData
 /** 组件面板 */
 export class ComponentPanel extends React.Component<ComponentPanelProps> {
 
-    private _element: HTMLElement
-    private dropTargets: HTMLElement[] = []
+    private _element: HTMLElement;
+    private dropTargets: HTMLElement[] = [];
+    private sortables: Sortable[] = [];
+
+    sortable: Sortable;
 
     private static renderItem(typeName: string, componentConfig: ComponentsConfig[0]) {
         let displayName = componentConfig.displayName || typeName
@@ -59,7 +63,7 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
     }
 
     componentDidMount(): void {
-        new Sortable(this.element, {
+        this.sortable = new Sortable(this.element, {
             group: {
                 name: GROUP,
                 pull: "clone",
@@ -70,20 +74,15 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
         })
     }
 
-    async appendDropTarget(element: HTMLElement, designer: PageDesigner, parentId: string, componentDataFactory: CompoenntDataFactory) {
-        //==========================================
-        // jquery-ui 不用用于 jest 测试
-        if (typeof process != "undefined" && process.env["NODE_ENV"] == "test")
-            return
-        //==========================================
+    appendDropTarget(element: HTMLElement, designer: PageDesigner, parentId: string, componentDataFactory: CompoenntDataFactory) {
 
         if (!element) throw errors.argumentNull("element")
-        if (this.dropTargets.indexOf(element) >= 0)
-            return
 
-        this.dropTargets.push(element)
+        let elementIndex = this.dropTargets.indexOf(element);
+        if (elementIndex >= 0)
+            return this.sortables[elementIndex];
 
-        new Sortable(element, {
+        let sortable = new Sortable(element, {
             group: {
                 name: GROUP,
             },
@@ -118,7 +117,12 @@ export class ComponentPanel extends React.Component<ComponentPanelProps> {
                 // parent.children.splice(event.newIndex || 0, 0, componentData)
                 designer.moveComponent(componentData.id, parent.id, event.newIndex)
             },
-        })
+        });
+
+        this.dropTargets.push(element);
+        this.sortables.push(sortable);
+
+        return sortable;
 
     }
 

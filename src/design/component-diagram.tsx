@@ -31,14 +31,6 @@ export class ComponentDiagram extends React.Component<Props, State> {
         designer.selectComponent(componentId);
     }
 
-    private ref(e: HTMLElement | null, args: DesignerContextValue) {
-        if (!e) return
-
-        this._element = e
-        if (!args.designer.componentDiagramElements.contains(e)) {
-            args.designer.componentDiagramElements.add(e)
-        }
-    }
 
     get element() {
         return this._element
