@@ -40,7 +40,7 @@ export type PageData = ComponentData & {
 };//Omit<ComponentData, "children"> & { children: ComponentData[] };//{ id: string, children: ComponentData[] };
 
 
-export type ElementFactory = (type: React.ComponentClass<any> | React.FunctionComponent | string, props: any,
+export type ElementFactory = (type: React.ComponentClass<any> | React.FunctionComponent<any> | string, props: any,
     children: (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[]) => React.ReactElement;//typeof React.createElement;
 
-export type ComponentTypes = { [key: string]: React.ComponentClass<any> | React.FunctionComponent | string };
+export type ComponentTypes = { [key: string]: React.ComponentClass<any> | React.FunctionComponent<any> | string };
