@@ -13,6 +13,7 @@ const createDesignElement = (type: any, props: any, ...children: Array<any>) => 
 
     return React.createElement(DesignComponentContext.Consumer, props1, ((args: DesignComponentContextValue) => {
         let isDesigntime = args != null;
+        props = props || {};
         if (!isDesigntime) {
             return React.createElement(type, props, ...children)
         }
