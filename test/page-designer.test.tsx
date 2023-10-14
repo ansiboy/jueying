@@ -149,8 +149,13 @@ describe("PageDesigner 测试", function () {
             let c = PageDataTravel.findComponent(pageData, columnsComponentData.id)
             expect(c).not.toBeUndefined()
 
-            let imageComponentData = DesignComponentPlaceHolder.createComponentData("Image", columnsProps.firstContainerid)
-            imageComponentData.props.url = "abc"
+            let imageComponentData: ComponentData = {
+                id: "image1",
+                type: "Image",
+                props: { url: "abc" },
+                children: [],
+            };//DesignComponentPlaceHolder.createComponentData("Image", columnsProps.firstContainerid)
+            // imageComponentData.props.url = "abc"
 
             pageDesigner.appendComponent(imageComponentData, columnsComponentData.id)
 

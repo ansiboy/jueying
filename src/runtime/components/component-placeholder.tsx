@@ -10,7 +10,7 @@ interface Props extends ComponentProps {
 
 export class ComponentPlaceHolder extends React.Component<Props> {
 
-    static typeName = componentTypeNames.placeHolder;
+    static readonly typeName = componentTypeNames.placeHolder;
 
     constructor(props: ComponentProps) {
         super(props);

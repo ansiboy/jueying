@@ -2,10 +2,10 @@ import * as React from "react"
 import { ComponentPlaceHolder } from "maishu-jueying/out/runtime"
 import "./columns.scss"
 
-interface Props {
-    firstContainerid: string
-    secondContainerId: string
-    thirdContainerId: string
+export interface Props {
+    firstContainerid?: string
+    secondContainerId?: string
+    thirdContainerId?: string
     children?: React.ReactNode
 }
 export default class Columns extends React.Component<Props> {
