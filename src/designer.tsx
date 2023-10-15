@@ -9,6 +9,7 @@ import { DataList } from "./data/data-list";
 import { ComponentPanel } from "./design";
 import { DesignBehavior } from "./design/design-behavior";
 import { DesignPage } from "./design/components/design-page";
+import { designComponentTypes } from "./design/components/design-component-types";
 
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData;
@@ -373,6 +374,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                 let componentType: Promise<ComponentModule> | undefined
                 if (componentsConfig[typeName].design instanceof Promise) {
                     componentType = componentsConfig[typeName].design as Promise<ComponentModule>
+                }
+                else if (designComponentTypes[typeName]) {
+                    componentType = Promise.resolve({ default: designComponentTypes[typeName] });
                 }
                 else {
                     componentType = componentsConfig[typeName].type

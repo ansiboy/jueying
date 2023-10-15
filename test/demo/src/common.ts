@@ -1,6 +1,6 @@
 import { TextDecoder, TextEncoder } from "util"
-import { ComponentData, componentTypeNames } from "maishu-jueying/out/runtime";
-import { Text } from "maishu-jueying/out/runtime/components"
+import { ComponentData, componentTypeNames } from "maishu-jueying/src/runtime";
+import { Text } from "maishu-jueying/src/runtime/components"
 import { guid } from "maishu-toolkit/out/guid"
 
 export function text(text: string): ComponentData {

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ComponentPlaceHolder } from "maishu-jueying/out/runtime"
+import { ComponentPlaceHolder } from "maishu-jueying/src/runtime/index"
 import "./columns.scss"
 
 export interface Props {

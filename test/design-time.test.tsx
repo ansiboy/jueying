@@ -1,7 +1,8 @@
-import { Page, PageData } from "../out/runtime"
-import { parseDesigntimeComponentData } from "../out/design/parse-design-component-data"
-import { PageDesigner } from "../out"
+import { Page, PageData } from "../src/runtime"
+import { PageDesigner } from "../src"
 import { createComponentsConfig } from "./demo/src/components-config"
+import { DesignComponent } from "../src/design"
+import React from "react";
 
 describe("设计时测试", function () {
 
@@ -16,7 +17,7 @@ describe("设计时测试", function () {
 
         let componentsConfig = createComponentsConfig()
         let compoenntTypes = await PageDesigner.loadComponentTypes([], componentsConfig)
-        let element = parseDesigntimeComponentData(pageData1, compoenntTypes)
+        let element = DesignComponent.parse(pageData1, compoenntTypes)
     })
 
 })

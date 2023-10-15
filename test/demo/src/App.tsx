@@ -1,4 +1,4 @@
-import "maishu-jueying/out/style"
+import "maishu-jueying/src/style"
 import { Routes, Route } from "react-router-dom"
 
 function App() {

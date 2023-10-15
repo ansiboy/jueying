@@ -5,6 +5,6 @@ export let constants = {
     componentData: 'component-data',
     componentPosition: "component-position",
     /** 设计时组件工厂 */
-    designComponentFactoryName: "h"
-
+    designComponentFactoryName: "createDesignElement",
+    componentFactoryName: "h",
 }

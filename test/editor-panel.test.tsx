@@ -1,13 +1,12 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGroup, classNames, ComponentStatus, PageData } from "../src"
-import { Page } from "../out/runtime/components/page"
+import { Page } from "../src/runtime/components/page"
 import { designerUpdateFinish, JSDOM, text } from "./common"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import Image from "./demo/src/components/image"
 import { TextEditor } from "./demo/src/editors/common/text-editor"
 import imageEditors from "./demo/src/editors/image"
-
 
 test("editor panel 检查元素", async function () {
 

@@ -5,7 +5,7 @@ import { ComponentData, ComponentProps, PageData, ComponentPlaceHolder } from ".
 import { strings } from "../../strings";
 import { classNames } from "../../style";
 import { PageDataTravel } from "../../utility";
-import { parseDesigntimeComponentData } from "../parse-design-component-data";
+import { DesignComponent } from "../design-component";
 
 const CONTAINER_ID = "container_id";
 const DATA_ID = "data-id";
@@ -74,7 +74,7 @@ export class DesignComponentPlaceHolder extends React.Component<Props> {
                             e.stopPropagation()
                             args.designer.selectComponent(c.id)
                         }}>
-                        {parseDesigntimeComponentData(c, args.componentTypes)}
+                        {DesignComponent.parse(c, args.componentTypes)}
                     </li>) : <li className={classNames.empty}>{strings.emptyDiagram}</li>}
                 </ul>
             }}

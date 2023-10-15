@@ -1,9 +1,9 @@
 import React from "react"
-import { PageDesigner } from "../out"
-import { PageData, componentTypeNames, parsePageData, PageDataParser } from "../out/runtime"
-import { PageDataTravel } from "../out/utility"
+import { PageDesigner } from "../src"
+import { PageData, componentTypeNames, parsePageData, PageDataParser } from "../src/runtime"
+import { PageDataTravel } from "../src/utility"
 import { createComponentsConfig } from "./demo/src/components-config"
-import { DesignPage } from "../out/design/components"
+import { DesignPage } from "../src/design/components"
 
 describe("parse-page-data 函数测试", function () {
 

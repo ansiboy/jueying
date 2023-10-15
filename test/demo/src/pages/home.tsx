@@ -1,6 +1,6 @@
 import { PageDesigner, ComponentDiagram, ComponentPanel, EditorPanel, EditorGroup, PageData, componentTypeNames } from "maishu-jueying/out"
 import { createComponentsConfig } from "../components-config"
-import "maishu-jueying/out/style"
+import "maishu-jueying/src/style"
 import Image from "../components/image"
 import Button from "../components/button"
 import { text } from "../common"

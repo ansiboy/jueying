@@ -1,6 +1,7 @@
-import { PageData } from "../out"
-import { Page } from "../out/runtime/components/page"
-import { PageDataTravel } from "../out/utility"
+import React from "react";
+import { PageData } from "../src"
+import { Page } from "../src/runtime/components/page"
+import { PageDataTravel } from "../src/utility"
 
 test("ComponentDataTraver each 测试", async function () {
 

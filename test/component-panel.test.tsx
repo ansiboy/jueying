@@ -1,9 +1,9 @@
-import React from "react"
-import ReactDOM from "react-dom/client"
+import * as React from "react"
+import * as ReactDOM from "react-dom/client"
 import { PageDesigner, ComponentDiagram, ComponentPanel, PageData } from "../src"
 import { createComponentsConfig } from "./demo/src/components-config"
 import { JSDOM, text } from "./common"
-import { Page } from "../out/runtime/components/page"
+import { Page } from "../src/runtime/components/page"
 
 test("ComponentPanel 创建测试", async function () {
 

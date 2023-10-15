@@ -4,10 +4,12 @@ import { PageDesigner, ComponentDiagram, PageData } from "../src"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import { designerUpdateFinish, text } from "./common"
 import { JSDOM } from "jsdom"
-import type Image from "./demo/src/components/image"
-import type Button from "./demo/src/components/button"
+import Image from "./demo/src/components/image"
+import Button from "./demo/src/components/button"
 import renderer from "react-test-renderer"
 import { Page } from "../src/runtime/components/page"
+import { DesignComponent } from "../src/design/design-component"
+import DesignButton from "./demo/src/designtime/button";
 
 test("ComponentDiagram HTML 元素测试", async function () {
 
@@ -82,6 +84,8 @@ test("ComponentDiagram 自定义组件测试", async function () {
 })
 
 test("ComponentDiagram 按钮点击", async function () {
+
+    DesignComponent.register(DesignButton, typeNames.button);
 
     let ids = {
         button1: "button1",

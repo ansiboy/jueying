@@ -1,4 +1,4 @@
-import { PropertyEditorInfo } from "../../../../out";
+import { PropertyEditorInfo } from "../../../../src";
 import type Image from "../components/image"
 import { TextEditor } from "./common/text-editor";
 
