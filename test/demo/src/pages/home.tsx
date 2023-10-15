@@ -1,11 +1,13 @@
-import { PageDesigner, ComponentDiagram, ComponentPanel, EditorPanel, EditorGroup, PageData, componentTypeNames } from "maishu-jueying/out"
+import { PageDesigner, ComponentDiagram, ComponentPanel, EditorPanel, EditorGroup, PageData, Component } from "maishu-jueying/out"
 import { createComponentsConfig } from "../components-config"
-import "maishu-jueying/src/style"
-import Image from "../components/image"
+import "maishu-jueying/out/style"
+import { Props as ImageProps } from "../components/image"
 import Button from "../components/button"
 import { text } from "../common"
-import Columns from "../components/columns"
+import type { Props as ColumnsProps } from "../components/columns"
+import "../designtime/button";
 
+let componentTypeNames = Component.typeNames;
 export default function HomePage() {
     let ids = {
         image1: "image1",
@@ -16,9 +18,9 @@ export default function HomePage() {
         columns1: "columns1"
     }
 
-    let imageProps: Image["props"] = { url: "http://shop-image.gemwon.com/image?id=9f8bdf45-294d-41a6-4139-c4d4be98110b" }
+    let imageProps: ImageProps = { url: "http://shop-image.gemwon.com/image?id=9f8bdf45-294d-41a6-4139-c4d4be98110b" }
     let buttonProps: Button["props"] = { clickedText: "Hello World", text: "Button" }
-    let columnsPorps: Columns["props"] = { firstContainerid: "container-1", secondContainerId: "container-2", thirdContainerId: "container-3" }
+    let columnsPorps: ColumnsProps = { firstContainerid: "container-1", secondContainerId: "container-2", thirdContainerId: "container-3" }
     let hello = text("hello")
     let word = text("word")
     let pageData1: PageData = {

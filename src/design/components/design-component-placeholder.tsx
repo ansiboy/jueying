@@ -1,18 +1,19 @@
 import * as React from "react";
 import { DesignComponentContext, PageDesigner } from "../../designer";
 import { errors } from "../../errors";
-import { ComponentData, ComponentProps, PageData, ComponentPlaceHolder } from "../../runtime";
+import type { ComponentData, ComponentProps, PageData } from "../../runtime";
 import { strings } from "../../strings";
 import { classNames } from "../../style";
 import { PageDataTravel } from "../../utility";
 import { DesignComponent } from "../design-component";
+import type { Props } from "../../runtime/components/component-placeholder";
 
 const CONTAINER_ID = "container_id";
 const DATA_ID = "data-id";
 
-type Props = ComponentPlaceHolder["props"];
+DesignComponent.register(class extends React.Component<Props> {
 
-export class DesignComponentPlaceHolder extends React.Component<Props> {
+    static typeName = DesignComponent.typeNames.placeHolder;
 
     private element: HTMLElement
 
@@ -80,6 +81,5 @@ export class DesignComponentPlaceHolder extends React.Component<Props> {
             }}
         </DesignComponentContext.Consumer>
     }
-}
-
+});
 

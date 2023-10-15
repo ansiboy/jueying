@@ -1,4 +1,5 @@
 import React from "react";
+import { Component } from "maishu-jueying/out";
 
 export interface Props {
     id?: string
@@ -12,6 +13,9 @@ interface State {
 }
 
 export default class Button extends React.Component<Props, State> {
+
+    static typeName = Button.constructor.name;
+
 
     private EMPTY_TEXT = "NO NAME"
 
@@ -35,3 +39,5 @@ export default class Button extends React.Component<Props, State> {
         }}>{text}</button>
     }
 }
+
+Component.register(Button);

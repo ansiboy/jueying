@@ -1,16 +1,13 @@
-export {
-    PageDesigner, PageDesignerProps, PageDesignerState, DesignerContext, DesignerContextValue, DesignComponentContext
-} from "./designer";
+export { PageDesigner, DesignerContext, DesignComponentContext } from "./designer";
+export type { PageDesignerProps, PageDesignerState, DesignerContextValue, } from "./designer";
 export { classNames } from "./style";
-export { ComponentsConfig } from "./components-config";
+export type { ComponentsConfig } from "./components-config";
 export { ComponentDiagram, ComponentPanel, DesignComponent } from "./design";
 export { EditorGroup, EditorPanel, EditorPanelProps, PropertyEditorInfo, PropertyEditorProps, PropertyEditor } from "./editor";
-export {
-    PageData, ComponentStatus, componentTypeNames, ComponentData, ComponentPlaceHolder, Page,
-    PageDataParser, ComponentProps, ComponentTypes, parsePageData
-} from "./runtime";
+export { ComponentStatus, ComponentData, Component, PageDataParser, } from "./runtime";
+export type { PageData, ComponentProps, ComponentTypes, ComponentClass } from "./runtime";
 export { PageDataTravel, childrenNodeToArray } from "./utility";
-import "./factories";
+export { Factories } from "./factories";
 
 
 

@@ -1,7 +1,8 @@
 import React from "react";
-import { PageData } from "../src"
-import { Page } from "../src/runtime/components/page"
+import { Component, ComponentClass, PageData } from "../src"
 import { PageDataTravel } from "../src/utility"
+
+let Page = Component.types[Component.typeNames.page] as ComponentClass;
 
 test("ComponentDataTraver each 测试", async function () {
 

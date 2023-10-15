@@ -1,8 +1,9 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { ComponentData, ComponentDiagram, ComponentsConfig, componentTypeNames, PageDesigner } from "../src"
+import { ComponentData, ComponentDiagram, ComponentsConfig, PageDesigner, Component } from "../src"
 import { designerUpdateFinish, JSDOM } from "./common"
 
+let componentTypeNames = Component.typeNames;
 //TODO: 设计时测试
 describe("设计时行为测试", function () {
     test("去除点击事件", async function () {

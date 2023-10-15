@@ -1,6 +1,6 @@
 import * as React from "react"
-import { ComponentPlaceHolder } from "maishu-jueying/src/runtime/index"
 import "./columns.scss"
+import { Component } from "maishu-jueying/out"
 
 export interface Props {
     firstContainerid?: string
@@ -8,10 +8,15 @@ export interface Props {
     thirdContainerId?: string
     children?: React.ReactNode
 }
-export default class Columns extends React.Component<Props> {
+
+let ComponentPlaceHolder = Component.types[Component.typeNames.placeHolder];
+export default Component.register(class extends React.Component<Props> {
+
+    static typeName = "Columns";
+
     render(): React.ReactNode {
         return <div>
-            <div>多列</div>
+            <div>多列1</div>
             <div className="columns">
 
                 {this.props.firstContainerid ? <ComponentPlaceHolder id={this.props.firstContainerid}>
@@ -26,4 +31,4 @@ export default class Columns extends React.Component<Props> {
             </div>
         </div>
     }
-}
+})

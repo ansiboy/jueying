@@ -1,9 +1,11 @@
 import React from "react"
-import { PageDesigner } from "../src"
-import { PageData, componentTypeNames, parsePageData, PageDataParser } from "../src/runtime"
+import { PageDesigner, DesignComponent, Component } from "../src"
+import { PageData, parsePageData, PageDataParser } from "../src/runtime"
 import { PageDataTravel } from "../src/utility"
 import { createComponentsConfig } from "./demo/src/components-config"
-import { DesignPage } from "../src/design/components"
+
+let componentTypeNames = Component.typeNames;
+let DesignPage = DesignComponent.types[Component.typeNames.page];
 
 describe("parse-page-data 函数测试", function () {
 

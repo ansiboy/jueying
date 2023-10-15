@@ -1,10 +1,10 @@
-import { PropertyEditorInfo } from "../../../../src";
-import type Image from "../components/image"
+import type { PropertyEditorInfo } from "maishu-jueying/out";
+import type { Props as ImageProps } from "../components/image"
 import { TextEditor } from "./common/text-editor";
 
 
 
-let editors: PropertyEditorInfo<Image["props"]>[] = [
+let editors: PropertyEditorInfo<ImageProps>[] = [
     { propertyName: "url", editorType: TextEditor, displayName: "链接" }
 ]
 

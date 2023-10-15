@@ -1,7 +1,7 @@
 import { ComponentData, ComponentTypes, ElementFactory, PageData } from "./types";
 import * as React from "react";
 import { errors } from "./errors";
-import { componentTypes as defaultComponentTypes } from "./components"
+import { Component } from "./component"
 
 function parseComponentData(componentData: ComponentData, componentTypes: ComponentTypes, createElement: ElementFactory) {
     if (!componentData) throw errors.argumentNull("componentData");
@@ -11,7 +11,7 @@ function parseComponentData(componentData: ComponentData, componentTypes: Compon
     }
 
     let isHtmlComponent = componentData.type.toLowerCase() == componentData.type
-    let type = isHtmlComponent ? componentData.type : (componentTypes[componentData.type] || defaultComponentTypes[componentData.type]);
+    let type = isHtmlComponent ? componentData.type : (componentTypes[componentData.type] || Component.types[componentData.type]);
     if (type == null) {
         throw errors.componentTypeNotExists(componentData.type);
     }
@@ -29,6 +29,9 @@ function parseComponentData(componentData: ComponentData, componentTypes: Compon
     let props = Object.assign({}, componentData.props);
     props.key = props.key || componentData.id;
     props.id = componentData.id;
+    if (typeof type != "string")
+        props.h = createElement;
+
     return createElement(type, props, children);
 }
 

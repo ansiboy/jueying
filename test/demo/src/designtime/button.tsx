@@ -1,14 +1,15 @@
 import React from "react";
-import { DesignComponent } from "../../../../src";
 import Button, { Props } from "../components/button";
+import { DesignComponent } from "maishu-jueying/out";
 
-let _h = (global as any).h;
-(global as any).h = DesignComponent.createElement;
 
-export default class extends React.Component<Props> {
+
+export default DesignComponent.register(class extends React.Component<Props> {
+
+    static typeName = "Button";
+
     render(): React.ReactNode {
         return <Button {...this.props} isDesigntime={true} />
     }
 }
-
-(global as any).h = _h;
+)

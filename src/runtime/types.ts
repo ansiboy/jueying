@@ -39,8 +39,8 @@ export type PageData = ComponentData & {
     // componentChildren: { [key: string]: ComponentData[] }
 };//Omit<ComponentData, "children"> & { children: ComponentData[] };//{ id: string, children: ComponentData[] };
 
-
-export type ElementFactory = (type: React.ComponentClass<any> | React.FunctionComponent<any> | string, props: any,
+export type ComponentClass = (React.ComponentClass<any> | React.FunctionComponent<any>) & { typeName: string };
+export type ElementFactory = (type: ComponentClass | string, props: any,
     children: (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[]) => React.ReactElement;//typeof React.createElement;
 
-export type ComponentTypes = { [key: string]: React.ComponentClass<any> | React.FunctionComponent<any> | string };
+export type ComponentTypes = { [key: string]: ComponentClass | string };

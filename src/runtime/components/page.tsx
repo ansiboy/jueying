@@ -1,15 +1,15 @@
 import * as React from "react";
 import { ComponentProps } from "../types";
-import { componentTypeNames } from "./component-type-names";
+import { Component } from "../component";
 
-interface Props extends ComponentProps {
+export interface Props extends ComponentProps {
     className?: string;
     style?: React.CSSProperties,
 }
 
-export class Page extends React.Component<Props> {
+Component.register(class extends React.Component<Props> {
 
-    static typeName = componentTypeNames.page;
+    static typeName = Component.typeNames.page;
 
     constructor(props: ComponentProps) {
         super(props);
@@ -23,4 +23,4 @@ export class Page extends React.Component<Props> {
         </div>
     }
 }
-
+)

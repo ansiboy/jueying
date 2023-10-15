@@ -1,9 +1,10 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom/client"
-import { PageDesigner, ComponentDiagram, ComponentPanel, PageData } from "../src"
+import { PageDesigner, ComponentDiagram, ComponentPanel, PageData, Component, ComponentClass } from "../src"
 import { createComponentsConfig } from "./demo/src/components-config"
 import { JSDOM, text } from "./common"
-import { Page } from "../src/runtime/components/page"
+
+let Page = Component.types[Component.typeNames.page] as ComponentClass;
 
 test("ComponentPanel 创建测试", async function () {
 

@@ -1,15 +1,18 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { PageDesigner, ComponentDiagram, PageData } from "../src"
+import { PageDesigner, ComponentDiagram, PageData, Component } from "../src"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import { designerUpdateFinish, text } from "./common"
 import { JSDOM } from "jsdom"
 import Image from "./demo/src/components/image"
 import Button from "./demo/src/components/button"
 import renderer from "react-test-renderer"
-import { Page } from "../src/runtime/components/page"
-import { DesignComponent } from "../src/design/design-component"
+// import { Page } from "../src/runtime/components/page"
+import { DesignComponent } from "../src";
 import DesignButton from "./demo/src/designtime/button";
+import { ComponentClass } from "../src/runtime/types"
+
+// let Page = Component.types[Component.typeNames.page] as ComponentClass;
 
 test("ComponentDiagram HTML 元素测试", async function () {
 
@@ -21,7 +24,7 @@ test("ComponentDiagram HTML 元素测试", async function () {
 
     let helloWorld = text("hello world")
     let pageData1: PageData = {
-        id: "simple", type: Page.typeName, props: {},
+        id: "simple", type: Component.typeNames.page, props: {},
         children: [
             { id: ids.div1, type: "div", props: {}, children: [helloWorld] }
         ]
@@ -56,7 +59,7 @@ test("ComponentDiagram 自定义组件测试", async function () {
     let url = "imageUrl"
     let imageProps: Image["props"] = { url }
     let pageData1: PageData = {
-        id: "page-data1", type: Page.typeName, props: {},
+        id: "page-data1", type: Component.typeNames.page, props: {},
         children: [
             { id: ids.image1, type: typeNames.image, props: imageProps, children: [] }
         ]
@@ -85,7 +88,7 @@ test("ComponentDiagram 自定义组件测试", async function () {
 
 test("ComponentDiagram 按钮点击", async function () {
 
-    DesignComponent.register(DesignButton, typeNames.button);
+    DesignComponent.register(DesignButton);
 
     let ids = {
         button1: "button1",
@@ -95,7 +98,7 @@ test("ComponentDiagram 按钮点击", async function () {
     let buttonProps: Button["props"] = { clickedText, text: "button", isDesigntime: true }
     let pageData1: PageData = {
         id: "page-data1",
-        type: Page.typeName,
+        type: Component.typeNames.page,
         props: {},
         children: [
             { id: ids.button1, type: typeNames.button, props: buttonProps, children: [] }

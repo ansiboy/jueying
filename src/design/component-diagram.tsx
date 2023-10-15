@@ -1,7 +1,6 @@
 import { errors } from "../errors";
 import * as React from "react";
-import { DesignerContext, DesignerContextValue, PageDesigner } from "../designer";
-import { parsePageData } from "../runtime";
+import { DesignerContext, PageDesigner } from "../designer";
 import { DesignComponent } from "./design-component";
 
 interface Props {
@@ -43,7 +42,8 @@ export class ComponentDiagram extends React.Component<Props, State> {
                 let designer = args.designer
                 let componentTypes = args.designer.componentTypes
 
-                return parsePageData(designer.pageData, componentTypes, DesignComponent.createElement)
+                //return parsePageData(designer.pageData, componentTypes, DesignComponent.createElement)
+                return DesignComponent.parse(designer.pageData, componentTypes);
             }}
         </DesignerContext.Consumer>
 

@@ -2,15 +2,18 @@ import * as React from "react"
 import { DesignerContext, PageDesigner } from "../../designer"
 import { errors } from "../../errors"
 import { childrenNodeToArray, PageDataTravel } from "../../utility"
-import { Page } from "../../runtime/components"
 import { classNames } from "../../style"
 import { ComponentData, ComponentStatus } from "../../runtime"
+import { DesignComponent } from "../design-component"
+import type { Props } from "../../runtime/components/page";
 
 const DATA_ID = "data-id"
-type Props = Page["props"]
-export class DesignPage extends React.Component<Props> {
 
-    private element: HTMLElement
+
+DesignComponent.register(class extends React.Component<Props> {
+
+    private element: HTMLElement;
+    static typeName = DesignComponent.typeNames.page;
 
     private ref(element: HTMLElement | null, designer: PageDesigner) {
         if (!element || this.element)
@@ -77,5 +80,5 @@ export class DesignPage extends React.Component<Props> {
             }}
         </DesignerContext.Consumer >
     }
-}
+});
 

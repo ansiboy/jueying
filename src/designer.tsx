@@ -1,16 +1,16 @@
 import * as React from "react";
-import { ComponentData, PageData, ComponentStatus, componentTypes as defaultComponentTypes, ComponentTypes, componentTypeNames } from "./runtime";
+import { ComponentData, PageData, ComponentStatus, ComponentTypes, Component } from "./runtime";
 import { errors, errors as Errors } from "./errors";
 import type { ComponentModule, ComponentsConfig } from "./components-config";
 import { createInfoComponent, createLoadingComponent } from "./design/components";
 import { ComponentEditors } from "./types";
 import { PageDataTravel, deepEqual, isHTMLComponent } from "./utility";
 import { DataList } from "./data/data-list";
-import { ComponentPanel } from "./design";
+import { ComponentPanel, DesignComponent } from "./design";
 import { DesignBehavior } from "./design/design-behavior";
-import { DesignPage } from "./design/components/design-page";
-import { designComponentTypes } from "./design/components/design-component-types";
+import { ComponentClass } from "./runtime/types";
 
+let defaultComponentTypes = Component.types;
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData;
     className?: string;
@@ -36,6 +36,7 @@ export type DesignComponentContextValue = {
     componentConfig: ComponentsConfig[0];
     designer: PageDesigner;
     componentTypes: ComponentTypes;
+    parent: DesignComponentContextValue | null;
 };
 
 export let DesignComponentContext = React.createContext<DesignComponentContextValue | null>(null)
@@ -344,14 +345,14 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                     hidden: true, design: designBehavior
                 }
 
-                if (typeName == componentTypeNames.page) {
-                    componentsConfig[typeName].design = Promise.resolve({ default: DesignPage })
-                }
+                // if (typeName == Component.typeNames.page) {
+                //     componentsConfig[typeName].design = Promise.resolve({ default: DesignPage })
+                // }
             }
         }
 
         let promises: Promise<any>[] = []
-        let componentTypes: { [typeName: string]: React.ComponentClass | string | React.FC } = {}
+        let componentTypes: { [typeName: string]: ComponentClass | string } = {}
         for (let i = 0; i < componentsToLoad.length; i++) {
             let typeName = componentsToLoad[i]
 
@@ -359,14 +360,16 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
                 if (!componentsConfig[typeName]) {
                     let errorText = `Component '${typeName}' is not exists.`
-                    componentTypes[typeName] = createInfoComponent(errorText)
+                    // componentTypes[typeName] = createInfoComponent(errorText,typeName)
+                    createInfoComponent(errorText, typeName);
                     resolve({})
                     return
                 }
 
                 if (!(componentsConfig[typeName].type instanceof Promise)) {
                     let errorText = `Component '${typeName}' type is invalid.`
-                    componentTypes[typeName] = createInfoComponent(errorText)
+                    // componentTypes[typeName] = createInfoComponent(errorText)
+                    createInfoComponent(errorText, typeName);
                     resolve({})
                     return
                 }
@@ -375,8 +378,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                 if (componentsConfig[typeName].design instanceof Promise) {
                     componentType = componentsConfig[typeName].design as Promise<ComponentModule>
                 }
-                else if (designComponentTypes[typeName]) {
-                    componentType = Promise.resolve({ default: designComponentTypes[typeName] });
+                else if (DesignComponent.types[typeName]) {
+                    componentType = Promise.resolve({ default: DesignComponent.types[typeName] });
                 }
                 else {
                     componentType = componentsConfig[typeName].type
@@ -389,7 +392,8 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                 componentType.then(p => {
                     if (!p.default) {
                         let errorText = `Component '${typeName}' module has not export default member.`
-                        componentTypes[typeName] = createInfoComponent(errorText)
+                        // componentTypes[typeName] = createInfoComponent(errorText)
+                        createInfoComponent(errorText, typeName);
                     }
                     else {
                         componentTypes[typeName] = p.default

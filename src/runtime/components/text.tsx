@@ -1,11 +1,15 @@
 import * as React from "react"
+import { Component } from "../component"
 
-interface Props {
+export interface Props {
     value: string
 }
 
-export class Text extends React.Component<Props> {
+Component.register(class extends React.Component<Props> {
+
+    static typeName = Component.typeNames.text;
+
     render(): React.ReactNode {
         return this.props.value
     }
-}
+})

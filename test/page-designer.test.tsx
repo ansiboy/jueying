@@ -1,5 +1,4 @@
-import { ComponentData, ComponentDiagram, componentTypeNames, PageDesigner } from "../src"
-import { DesignComponentPlaceHolder, DesignPage } from "../src/design/components"
+import { Component, ComponentData, ComponentDiagram, DesignComponent, PageDesigner } from "../src"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import * as pageDatas from "./demo/page-datas"
 import React from "react"
@@ -7,8 +6,10 @@ import { designerUpdateFinish, JSDOM } from "./common"
 import ReactDOM from "react-dom/client"
 import Image from "./demo/src/components/image"
 import { PageDataTravel } from "../src/utility"
-import Columns from "./demo/src/components/columns"
+import type { Props as ColumnsProps } from "./demo/src/components/columns"
 
+let componentTypeNames = Component.typeNames;
+let DesignPage = DesignComponent.types[DesignComponent.typeNames.page];
 describe("PageDesigner 测试", function () {
 
     test("page-designer 测试 loadComponentTypes 方法", async function () {
@@ -137,7 +138,7 @@ describe("PageDesigner 测试", function () {
                 </PageDesigner>)
             })
 
-            let columnsProps: Columns["props"] = {
+            let columnsProps: ColumnsProps = {
                 firstContainerid: "first-container-id",
                 secondContainerId: "second-container-id"
             }

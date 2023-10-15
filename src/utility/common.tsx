@@ -1,4 +1,4 @@
-import { ComponentData, componentTypes as defaultComponentTypes } from "../runtime"
+import { ComponentData} from "../runtime"
 import * as React from "react"
 
 export let proptDisplayNames: { [prop: string]: string } = {
@@ -21,5 +21,3 @@ export function childrenNodeToArray(children: React.ReactNode | undefined): Reac
 
     return [children as React.ReactElement]
 }
-
-export const elementFactoryName = "h"

@@ -8,5 +8,6 @@
         "**/*.map": true,
         "**/src/*.js": true,
 
-    }
+    },
+    "svn.ignoreMissingSvnWarning": true
 }

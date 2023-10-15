@@ -1,4 +1,4 @@
-export { createInfoComponent } from "./create-info-component"
-export { createLoadingComponent } from "./create-loading-component"
-export { DesignPage } from "./design-page"
-export { DesignComponentPlaceHolder } from "./design-component-placeholder"
+export { createInfoComponent } from "./create-info-component";
+export { createLoadingComponent } from "./create-loading-component";
+import "./design-page";
+import "./design-component-placeholder";
