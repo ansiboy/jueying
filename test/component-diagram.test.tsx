@@ -4,7 +4,7 @@ import { PageDesigner, ComponentDiagram, PageData, Component } from "../src"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import { designerUpdateFinish, text } from "./common"
 import { JSDOM } from "jsdom"
-import Image from "./demo/src/components/image"
+import {Props as ImageProps} from "./demo/src/components/image"
 import Button from "./demo/src/components/button"
 import renderer from "react-test-renderer"
 // import { Page } from "../src/runtime/components/page"
@@ -57,7 +57,7 @@ test("ComponentDiagram 自定义组件测试", async function () {
     }
 
     let url = "imageUrl"
-    let imageProps: Image["props"] = { url }
+    let imageProps: ImageProps = { url }
     let pageData1: PageData = {
         id: "page-data1", type: Component.typeNames.page, props: {},
         children: [
@@ -87,8 +87,6 @@ test("ComponentDiagram 自定义组件测试", async function () {
 })
 
 test("ComponentDiagram 按钮点击", async function () {
-
-    DesignComponent.register(DesignButton);
 
     let ids = {
         button1: "button1",

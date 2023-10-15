@@ -78,6 +78,7 @@ export class DesignComponent {
             throw new Error(`Component type name is null or empty.`);
         }
         designComponentTypes[type.typeName] = type;
+        return type;
     }
 
     static parse(componentData: ComponentData, componentTypes: ComponentTypes) {
