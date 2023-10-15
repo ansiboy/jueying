@@ -1,9 +1,10 @@
 import React from "react";
 
-interface Props {
+export interface Props {
     id?: string
     clickedText: string
     text: string
+    isDesigntime?: boolean
 }
 
 interface State {
@@ -28,7 +29,7 @@ export default class Button extends React.Component<Props, State> {
         let { text } = this.state
         text = text || this.EMPTY_TEXT
 
-        return <button id={this.props.id} onClick={e => {
+        return <button id={this.props.id} onClick={this.props.isDesigntime ? undefined : e => {
             alert("click")
             this.setState({ text: this.props.clickedText })
         }}>{text}</button>

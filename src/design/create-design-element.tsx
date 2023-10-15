@@ -36,4 +36,5 @@ let g: any = typeof window === "undefined" ? global : window;
 if (g[constants.designComponentFactoryName])
     throw errors.elementFactoryExists();
 
-g[constants.designComponentFactoryName] = createDesignElement;
+// g[constants.designComponentFactoryName] = createDesignElement;
+g[constants.designComponentFactoryName] = React.createElement;
