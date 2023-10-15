@@ -1,12 +1,12 @@
-import { ComponentData, ComponentDiagram, componentTypeNames, PageDesigner } from "../out"
-import { DesignComponentPlaceHolder, DesignPage } from "../out/design/components"
+import { ComponentData, ComponentDiagram, componentTypeNames, PageDesigner } from "../src"
+import { DesignComponentPlaceHolder, DesignPage } from "../src/design/components"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import * as pageDatas from "./demo/page-datas"
 import React from "react"
 import { designerUpdateFinish, JSDOM } from "./common"
 import ReactDOM from "react-dom/client"
 import Image from "./demo/src/components/image"
-import { PageDataTravel } from "../out/utility"
+import { PageDataTravel } from "../src/utility"
 import Columns from "./demo/src/components/columns"
 
 describe("PageDesigner 测试", function () {

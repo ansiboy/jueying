@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGroup, classNames, ComponentStatus, PageData } from "../out"
+import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGroup, classNames, ComponentStatus, PageData } from "../src"
 import { Page } from "../out/runtime/components/page"
 import { designerUpdateFinish, JSDOM, text } from "./common"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"

@@ -1,6 +1,6 @@
 import { TextDecoder, TextEncoder } from "util"
-import { ComponentData, PageDesigner, componentTypeNames } from "../out";
-import { Text } from "../out/runtime/components"
+import { ComponentData, PageDesigner, componentTypeNames } from "../src";
+import { Text } from "../src/runtime/components"
 import { guid } from "maishu-toolkit/out/guid"
 
 export function designerUpdateFinish<P, S>(component: PageDesigner) {

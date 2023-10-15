@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { ComponentData, ComponentDiagram, ComponentsConfig, componentTypeNames, PageDesigner } from "../out"
+import { ComponentData, ComponentDiagram, ComponentsConfig, componentTypeNames, PageDesigner } from "../src"
 import { designerUpdateFinish, JSDOM } from "./common"
 
 //TODO: 设计时测试

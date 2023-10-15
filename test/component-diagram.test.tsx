@@ -1,13 +1,13 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { PageDesigner, ComponentDiagram, PageData } from "../out"
+import { PageDesigner, ComponentDiagram, PageData } from "../src"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import { designerUpdateFinish, text } from "./common"
 import { JSDOM } from "jsdom"
 import type Image from "./demo/src/components/image"
 import type Button from "./demo/src/components/button"
 import renderer from "react-test-renderer"
-import { Page } from "../out/runtime/components/page"
+import { Page } from "../src/runtime/components/page"
 
 test("ComponentDiagram HTML 元素测试", async function () {
 
@@ -88,7 +88,7 @@ test("ComponentDiagram 按钮点击", async function () {
     }
 
     let clickedText = "clicked"
-    let buttonProps: Button["props"] = { clickedText, text: "button" }
+    let buttonProps: Button["props"] = { clickedText, text: "button", isDesigntime: true }
     let pageData1: PageData = {
         id: "page-data1",
         type: Page.typeName,
