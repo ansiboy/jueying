@@ -7,6 +7,7 @@
         // "outFile": "../out/jueying.js",
         "outDir": "../out",
         "jsx": "react",
+        "jsxFactory": "h",
         "strict": true,
         "strictPropertyInitialization": false,
         "strictNullChecks": true,

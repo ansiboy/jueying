@@ -9,7 +9,7 @@ export interface Props {
     children?: React.ReactNode
 }
 
-let ComponentPlaceHolder = Component.types[Component.typeNames.placeHolder];
+let ComponentPlaceHolder = Component.types[Component.typeNames.container];
 export default Component.register(class extends React.Component<Props> {
 
     static typeName = "Columns";

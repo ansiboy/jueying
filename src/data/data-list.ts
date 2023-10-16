@@ -32,7 +32,7 @@ export class DataList<T> {
     }
 
     each(callback: (element: T, index?: number) => void) {
-        if (!callback) throw errors.argumentNull("element")
+        if (!callback) throw errors.argumentNull("callback")
 
         for (let i = 0; i < this.items.length; i++)
             callback(this.items[i], i)
