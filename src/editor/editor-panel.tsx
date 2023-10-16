@@ -65,7 +65,7 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
                     let selectedComponentEditors = designer.componentEditors[selectedComponent.type] || []
                     exists = selectedComponentEditors
                         .filter(o => o.propertyName == e.propertyName && o.editorType == e.editorType &&
-                            o.displayName == e.displayName && selectedComponent.props[o.propertyName] == firstComponent.props[e.propertyName]).length > 0
+                            o.displayName == e.displayName && selectedComponent.props[o.propertyName as string] == firstComponent.props[e.propertyName as string]).length > 0
 
                     if (!exists) {
                         break
@@ -82,7 +82,7 @@ export class EditorPanel extends React.Component<EditorPanelProps, EditorPanelSt
         for (let i = 0; i < validEditorInfos.length; i++) {
             let editorInfo = validEditorInfos[i]
             let editorProps: PropertyEditorProps<any> = {
-                value: firstComponent.props[editorInfo.propertyName],
+                value: firstComponent.props[editorInfo.propertyName as string],
                 editComponents: selectedComponents,
                 updateComponentProp(value) {
                     let componentProps = selectedComponents.map(o => ({

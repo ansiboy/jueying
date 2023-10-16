@@ -5,10 +5,11 @@ export interface ComponentProps {
     id: string;
     /** 组件的名称，在页面中唯一 */
     name?: string;
-    children?: React.ReactNode
+    children?: React.ReactNode;
+    dataSource?: any[] | string;
 }
 
-export interface ComponentData {
+export interface ComponentData<T extends ComponentProps = ComponentProps> {
     /** 
      * 组件类型名称
      * 自定义组件必须为驼峰规则（例如：ComponentPlaceHolder）
@@ -16,7 +17,7 @@ export interface ComponentData {
      * */
     type: string;
     /** 组件属性 */
-    props: any;
+    props: { [key: string]: any };
     id: string;
     // parentId?: string;
     // name?: string;

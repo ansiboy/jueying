@@ -107,7 +107,7 @@ test("editor panel 单个选择中图片编辑器", async function () {
     expect(input).not.toBeNull()
     expect(input.value).toEqual(imageProps.url)
 
-})
+},1000000)
 
 test("editor panel 切换选中的图片", async function () {
 

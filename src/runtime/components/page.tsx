@@ -5,6 +5,7 @@ import { Component } from "../component";
 export interface Props extends ComponentProps {
     className?: string;
     style?: React.CSSProperties,
+    // dataSource?: any[]
 }
 
 Component.register(class extends React.Component<Props> {

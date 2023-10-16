@@ -47,9 +47,9 @@ export class EditorGroup extends React.Component<EditorGroupProps> {
                 if (!args) throw errors.contextArgumentNull()
 
                 let propertyEditor = this.props.groupName ? args.editors.filter(o => o.group == this.props.groupName) : args.editors
-                return <>
+                return <React.Fragment>
                     {propertyEditor.map(o => renderItem(o))}
-                </>
+                </React.Fragment>
             }}
         </EditPanelContext.Consumer>
     }
