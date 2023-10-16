@@ -29,8 +29,8 @@ function parseComponentData(componentData: ComponentData, componentTypes: Compon
     let props = Object.assign({}, componentData.props);
     props.key = props.key || componentData.id;
     props.id = componentData.id;
-    if (typeof type != "string")
-        props.h = createElement;
+    // if (typeof type != "string")
+    //     props.h = createElement;
 
     return createElement(type, props, children);
 }

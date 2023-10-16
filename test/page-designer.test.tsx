@@ -1,11 +1,10 @@
-import { Component, ComponentData, ComponentDiagram, DesignComponent, PageDesigner } from "../src"
+import { Component, ComponentData, ComponentDiagram, DesignComponent, PageDesigner, PageDataHelper } from "../src"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
 import * as pageDatas from "./demo/page-datas"
 import React from "react"
-import { designerUpdateFinish, JSDOM } from "./common"
 import ReactDOM from "react-dom/client"
+import { designerUpdateFinish, JSDOM } from "./common"
 import Image from "./demo/src/components/image"
-import { PageDataTravel } from "../src/utility"
 import type { Props as ColumnsProps } from "./demo/src/components/columns"
 
 let componentTypeNames = Component.typeNames;
@@ -121,7 +120,7 @@ describe("PageDesigner 测试", function () {
             }
             pageDesigner.appendComponent(imageComponentData, pageData.id)
 
-            let c = PageDataTravel.findComponent(pageData, imageComponentData.id)
+            let c = PageDataHelper.findComponent(pageData, imageComponentData.id)
             expect(c).not.toBeUndefined()
         })
 
@@ -147,7 +146,7 @@ describe("PageDesigner 测试", function () {
                 id: "columns1", type: typeNames.columns, props: columnsProps, children: []
             }
             pageDesigner.appendComponent(columnsComponentData, pageData.id)
-            let c = PageDataTravel.findComponent(pageData, columnsComponentData.id)
+            let c = PageDataHelper.findComponent(pageData, columnsComponentData.id)
             expect(c).not.toBeUndefined()
 
             let imageComponentData: ComponentData = {
@@ -160,7 +159,7 @@ describe("PageDesigner 测试", function () {
 
             pageDesigner.appendComponent(imageComponentData, columnsComponentData.id)
 
-            c = PageDataTravel.findComponent(pageData, imageComponentData.id)
+            c = PageDataHelper.findComponent(pageData, imageComponentData.id)
             expect(c).not.toBeUndefined()
 
         })

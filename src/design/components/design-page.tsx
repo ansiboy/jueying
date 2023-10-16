@@ -1,7 +1,7 @@
 import * as React from "react"
 import { DesignerContext, PageDesigner } from "../../designer"
 import { errors } from "../../errors"
-import { childrenNodeToArray, PageDataTravel } from "../../utility"
+import { childrenNodeToArray, PageDataHelper as PageDataTravel } from "../../utility"
 import { classNames } from "../../style"
 import { ComponentData, ComponentStatus } from "../../runtime"
 import { DesignComponent } from "../design-component"

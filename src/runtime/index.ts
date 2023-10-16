@@ -4,6 +4,12 @@ export { PageData, ComponentData, ComponentStatus, ComponentTypes, ElementFactor
 export { Component } from "./component";
 export { ComponentClass } from "./types";
 
+import ReactDOM from "react-dom";
+import { constants } from "../common";
 import "./components/component-placeholder";
 import "./components/page";
 import "./components/text";
+import React from "react";
+
+let g: any = typeof window === "undefined" ? global : window;
+g[constants.componentFactoryName] = React.createElement;

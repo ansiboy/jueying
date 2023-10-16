@@ -4,7 +4,7 @@ import { errors, errors as Errors } from "./errors";
 import type { ComponentModule, ComponentsConfig } from "./components-config";
 import { createInfoComponent, createLoadingComponent } from "./design/components";
 import { ComponentEditors } from "./types";
-import { PageDataTravel, deepEqual, isHTMLComponent } from "./utility";
+import { PageDataHelper as PageDataTravel, deepEqual, isHTMLComponent } from "./utility";
 import { DataList } from "./data/data-list";
 import { ComponentPanel, DesignComponent } from "./design";
 import { DesignBehavior } from "./design/design-behavior";
@@ -279,40 +279,38 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
     }
 
     private async loadEditorTypes(pageData: PageData) {
-        let componentsToLoad: string[] = []
-        let travel = new PageDataTravel(pageData)
-        travel.each((c) => {
-            componentsToLoad.push(c.type)
+        let componentsToLoad: string[] = [];
+        PageDataTravel.each(pageData, (c) => {
+            componentsToLoad.push(c.type);
         })
 
-        let componentsConfig = this.props.componentsConfig
+        let componentsConfig = this.props.componentsConfig;
         let promises = componentsToLoad.map(typeName => ({ typeName, componentConfig: componentsConfig[typeName] }))
             .map(o => o.componentConfig.editor ?
-                o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })) : Promise.resolve(null))
+                o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })) : Promise.resolve(null));
 
-        let r = await Promise.all(promises)
+        let r = await Promise.all(promises);
 
-        let componentEditors = this.state.componentEditors
+        let componentEditors = this.state.componentEditors;
         r.forEach(m => {
             if (m == null)
                 return
 
-            let editors = m.module.default
+            let editors = m.module.default;
             if (!m.module.default)
-                throw errors.editorModuleNoneDefaultExport(m.typeName)
+                throw errors.editorModuleNoneDefaultExport(m.typeName);
 
-            componentEditors[m.typeName] = m.module.default
+            componentEditors[m.typeName] = m.module.default;
         })
 
         this.setState({ componentEditors: componentEditors })
     }
 
     private async loadComponentTypes(pageData: PageData) {
-        let componentTypes: ComponentTypes = this.state.componentTypes
-        let componentsConfig = this.props.componentsConfig
-        let componentsToLoad: string[] = []
-        let travel = new PageDataTravel(pageData)
-        travel.each((c) => {
+        let componentTypes: ComponentTypes = this.state.componentTypes;
+        let componentsConfig = this.props.componentsConfig;
+        let componentsToLoad: string[] = [];
+        PageDataTravel.each(pageData, (c) => {
             if (isHTMLComponent(c))
                 return
 

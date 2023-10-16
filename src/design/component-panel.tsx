@@ -6,8 +6,7 @@ import { strings } from "../strings"
 import type { ComponentsConfig } from "../components-config"
 import { ComponentData } from "../runtime"
 import Sortable from "sortablejs"
-import { PageDataTravel } from "../utility"
-import { Callback } from "maishu-toolkit"
+import { PageDataHelper as PageDataTravel } from "../utility"
 interface ComponentPanelProps {
     renderItem?: (typeName: string, compoenntConfig: ComponentsConfig[0]) => ReturnType<React.Component["render"]>
 }

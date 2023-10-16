@@ -4,7 +4,6 @@ export let constants = {
     componentTypeName: 'data-component-name',
     componentData: 'component-data',
     componentPosition: "component-position",
-    /** 设计时组件工厂 */
-    designComponentFactoryName: "createDesignElement",
+    /** 组件工厂 */
     componentFactoryName: "h",
 }

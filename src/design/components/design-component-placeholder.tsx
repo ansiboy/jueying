@@ -4,7 +4,7 @@ import { errors } from "../../errors";
 import type { ComponentData, ComponentProps, PageData } from "../../runtime";
 import { strings } from "../../strings";
 import { classNames } from "../../style";
-import { PageDataTravel } from "../../utility";
+import { PageDataHelper as PageDataTravel } from "../../utility";
 import { DesignComponent } from "../design-component";
 import type { Props } from "../../runtime/components/component-placeholder";
 
@@ -13,7 +13,7 @@ const DATA_ID = "data-id";
 
 DesignComponent.register(class extends React.Component<Props> {
 
-    static typeName = DesignComponent.typeNames.placeHolder;
+    static typeName = DesignComponent.typeNames.container;
 
     private element: HTMLElement
 

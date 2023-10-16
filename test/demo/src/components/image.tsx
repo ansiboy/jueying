@@ -1,5 +1,6 @@
 import React, { ComponentProps, ImgHTMLAttributes } from "react";
 import { Component } from "maishu-jueying/out";
+import { typeNames } from "../components-config";
 
 export interface Props {
     id?: string
@@ -11,7 +12,7 @@ interface State {
 
 export default Component.register(class extends React.Component<Props, State> {
 
-    static typeName = "Image";
+    static typeName = typeNames.image;
 
     constructor(props: Props) {
         super(props)

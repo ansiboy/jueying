@@ -2,15 +2,7 @@ import { errors } from "../errors";
 import { ComponentData, PageData } from "../runtime";
 
 /** 页面数据（PageData）遍历器，遍历 PageData 里的组件 */
-export class PageDataTravel {
-    private pageData: PageData
-    constructor(pageData: PageData) {
-        this.pageData = pageData
-    }
-
-    each(callback: (componentData: ComponentData, parent: ComponentData | null) => void) {
-        PageDataTravel.each(this.pageData, callback)
-    }
+export class PageDataHelper {
 
     static each(componentData: ComponentData, callback: (componentData: ComponentData, parent: ComponentData | null) => void) {
         let stack: { component: ComponentData, parent: ComponentData | null }[] = [{ component: componentData, parent: null }]
@@ -31,9 +23,8 @@ export class PageDataTravel {
         if (!pageData) throw errors.argumentNull("pageData")
         if (!componentId) throw errors.argumentNull("componentId")
 
-        let travel = new PageDataTravel(pageData)
         let r: ComponentData | undefined
-        travel.each(function (c) {
+        this.each(pageData, function (c) {
             if (typeof c == "string" || r)
                 return
 
@@ -48,10 +39,9 @@ export class PageDataTravel {
         if (!pageData) throw errors.argumentNull("pageData")
         if (!componentId) throw errors.argumentNull("componentId")
 
-        let travel = new PageDataTravel(pageData)
         let component: ComponentData | null = null
         let parent: ComponentData | null = null
-        travel.each(function (c, p) {
+        this.each(pageData, function (c, p) {
             if (typeof c == "string" || component)
                 return
 
@@ -66,7 +56,7 @@ export class PageDataTravel {
 
     static generateId(pageData: PageData, typeName: string) {
         let namedComponents: { [key: string]: ComponentData } = {};
-        PageDataTravel.each(pageData, (c, p) => {
+        PageDataHelper.each(pageData, (c, p) => {
             namedComponents[c.id] = c
         })
 

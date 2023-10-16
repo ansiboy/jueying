@@ -1,6 +1,4 @@
-import React from "react";
-import { Component, ComponentClass, PageData } from "../src"
-import { PageDataTravel } from "../src/utility"
+import { Component, ComponentClass, PageData, PageDataHelper as PageDataTravel } from "../src"
 
 let Page = Component.types[Component.typeNames.page] as ComponentClass;
 
@@ -18,9 +16,9 @@ test("ComponentDataTraver each 测试", async function () {
         ]
     }
 
-    let travel = new PageDataTravel(pageData1)
+    // let travel = new PageDataTravel(pageData1)
     let componentDataIds: string[] = []
-    travel.each((c) => {
+    PageDataTravel.each(pageData1, (c) => {
         if (typeof c != "string")
             componentDataIds.push(c.id)
     })
@@ -42,8 +40,7 @@ test("ComponentDataTraver each 测试", async function () {
     }
 
     componentDataIds = []
-    travel = new PageDataTravel(pageData2)
-    travel.each((c) => {
+    PageDataTravel.each(pageData2,(c) => {
         if (typeof c != "string")
             componentDataIds.push(c.id)
     })

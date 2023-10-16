@@ -5,3 +5,4 @@ out
 out-es5
 temp
 .DS_Store
+coverage

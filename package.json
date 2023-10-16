@@ -59,7 +59,8 @@
     "scripts": {
         "build": "grunt build",
         "test": "jest",
-        "temp": "jest page-designer.test.tsx"
+        "temp": "jest page-designer.test.tsx",
+        "coverage": "jest --coverage"
     },
     "typings": "out/index.d.ts",
     "version": "4.2.13"

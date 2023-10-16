@@ -12,6 +12,7 @@
         "strictNullChecks": true,
         "experimentalDecorators": true,
         // "baseUrl": "./",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true
     }
 }

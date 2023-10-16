@@ -4,9 +4,10 @@ import { ComponentDiagram, ComponentPanel, EditorPanel, PageDesigner, EditorGrou
 // import { Page } from "../src/runtime/components/page"
 import { designerUpdateFinish, JSDOM, text } from "./common"
 import { createComponentsConfig, typeNames } from "./demo/src/components-config"
-import Image from "./demo/src/components/image"
 import { TextEditor } from "./demo/src/editors/common/text-editor"
-import imageEditors from "./demo/src/editors/image"
+import imageEditors from "./demo/src/editors/image";
+import type { Props as ImageProps } from "./demo/src/components/image";
+import "./demo/src/components/image";
 
 let Page = Component.types[Component.typeNames.page] as ComponentClass;
 
@@ -18,7 +19,7 @@ test("editor panel 检查元素", async function () {
         div2: "div2"
     }
 
-    let imageProps: Image["props"] = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
+    let imageProps: ImageProps = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
 
     let helloWorld = text("hello world")
     let pageData1: PageData = {
@@ -64,7 +65,7 @@ test("editor panel 单个选择中图片编辑器", async function () {
         div2: "div2"
     }
 
-    let imageProps: Image["props"] = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
+    let imageProps: ImageProps = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
 
     let helloWorld = text("hello world")
     let pageData1: PageData = {
@@ -117,8 +118,8 @@ test("editor panel 切换选中的图片", async function () {
         div2: "div2"
     }
 
-    let image1Props: Image["props"] = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
-    let image2Props: Image["props"] = {} as Image["props"]
+    let image1Props: ImageProps = { url: "https://cbu01.alicdn.com/img/ibank/O1CN01ot1TmW2Cl0MZzHhIL_!!2838728513-0-cib.jpg" }
+    let image2Props: ImageProps = {} as ImageProps
     let helloWorld = text("hello world")
     let pageData1: PageData = {
         id: "simple", type: Page.typeName, props: {},

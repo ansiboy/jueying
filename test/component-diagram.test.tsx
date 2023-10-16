@@ -1,18 +1,13 @@
-import React from "react"
-import ReactDOM from "react-dom/client"
-import { PageDesigner, ComponentDiagram, PageData, Component } from "../src"
-import { createComponentsConfig, typeNames } from "./demo/src/components-config"
-import { designerUpdateFinish, text } from "./common"
-import { JSDOM } from "jsdom"
-import {Props as ImageProps} from "./demo/src/components/image"
-import Button from "./demo/src/components/button"
-import renderer from "react-test-renderer"
-// import { Page } from "../src/runtime/components/page"
-import { DesignComponent } from "../src";
-import DesignButton from "./demo/src/designtime/button";
-import { ComponentClass } from "../src/runtime/types"
-
-// let Page = Component.types[Component.typeNames.page] as ComponentClass;
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { JSDOM } from "./common";
+import { PageDesigner, ComponentDiagram, PageData, Component } from "../src";
+import { createComponentsConfig, typeNames } from "./demo/src/components-config";
+import { designerUpdateFinish, text } from "./common";
+import type { Props as ImageProps } from "./demo/src/components/image";
+import "./demo/src/components/image";
+import Button from "./demo/src/components/button";
+import renderer from "react-test-renderer";
 
 test("ComponentDiagram HTML 元素测试", async function () {
 

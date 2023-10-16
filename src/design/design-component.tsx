@@ -3,7 +3,7 @@ import { DesignComponentContext, DesignComponentContextValue } from "./design-co
 import { errors } from "../errors";
 import { Component, ComponentData, ComponentTypes, parsePageData } from "../runtime";
 import { DesignerContext } from "../designer";
-import { PageDataTravel } from "../utility";
+import { PageDataHelper as PageDataTravel } from "../utility";
 import { ComponentClass } from "../runtime/types";
 
 let designComponentTypes: ComponentTypes = {};

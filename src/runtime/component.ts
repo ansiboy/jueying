@@ -4,7 +4,7 @@ import { ComponentClass, ComponentData, ComponentTypes } from "./types";
 
 let componentTypeNames = {
     page: "Page",
-    placeHolder: "PlaceHolder",
+    container: "Container",
     text: "Text",
 }
 let componentTypes: ComponentTypes = {};
