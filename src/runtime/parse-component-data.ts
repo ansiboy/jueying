@@ -25,9 +25,9 @@ function parseComponentData(componentData: ComponentData, componentTypes: Compon
     if (childComponentInfos.length > 0) {
         children = childComponentInfos.map((c, i) => {
             let props = c.props as ComponentProps;
-            if (i > 0) {
-                props.key = (props.key || props.id) + "-" + i;
-            }
+            // if (i > 0) {
+            //     props.key = (props.key || c.id) + "-" + i;
+            // }
 
             if (props.dataSource == null && dataSource != null && !Array.isArray(dataSource))
                 props.dataSource = dataSource;
@@ -44,8 +44,9 @@ function parseComponentData(componentData: ComponentData, componentTypes: Compon
     // 数据绑定
     // let dataSource = props.dataSource;
     if (dataSource != null && Array.isArray(dataSource)) {
-        let components = dataSource.map(c => {
+        let components = dataSource.map((c, i) => {
             let newProps = Object.assign({}, props);
+            newProps.key = props.key + "-" + i;
             evalComponentDataProps(newProps, c);
             return createElement(type, newProps, children);
         })

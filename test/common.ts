@@ -12,8 +12,8 @@ export function designerUpdateFinish<P, S>(component: PageDesigner) {
         component.render = function () {
             let r = render.apply(component, [])
 
-            // if (timeoutId != null)
-            //     window.clearTimeout(timeoutId)
+            if (timeoutId != null)
+                window.clearTimeout(timeoutId)
 
             timeoutId = window.setTimeout(() => {
                 resolve({})
