@@ -1,9 +1,7 @@
 import "./common";
-import { createRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { Component, PageData } from "../src/runtime";
 import { guid } from "maishu-toolkit/out/guid";
-import React from "react";
 
 test("dataSource databinding 1", function () {
 
@@ -11,7 +9,8 @@ test("dataSource databinding 1", function () {
         text: "hello"
     };
     let pageData1: PageData = {
-        id: "simple", type: Component.typeNames.page, props: { dataSource },
+        id: "simple", type: Component.typeNames.page, props: {},
+        dataSource,
         children: [
             { id: guid(), type: Component.typeNames.text, props: { value: "${text}" }, children: [] }
         ]
@@ -32,7 +31,7 @@ test("dataSource databinding 2", function () {
         id: "simple", type: Component.typeNames.page,
         props: {},
         children: [
-            { id: guid(), type: Component.typeNames.text, props: { dataSource, value: '${name}' }, children: [] }
+            { id: guid(), type: Component.typeNames.text, props: { value: '${name}' }, dataSource, children: [] }
         ]
     }
 
@@ -56,12 +55,12 @@ test("dataSource databinding 3", function () {
         ]
     };
     let pageData1: PageData = {
-        id: "simple", type: Component.typeNames.page,
-        props: { dataSource },
+        id: "simple", type: Component.typeNames.page, props: {},
+        dataSource,
         children: [
-            { id: guid(), type: Component.typeNames.text, props: { dataSource: '${products}', value: '${name}' }, children: [] }
+            { id: guid(), type: Component.typeNames.text, props: { value: '${name}' }, dataSource: '${products}', children: [] }
         ]
-    }
+    };
 
     let c = Component.parse(pageData1, Component.types);
     let html = renderToString(c);
@@ -69,5 +68,49 @@ test("dataSource databinding 3", function () {
 
     expect(html.indexOf(dataSource.products[0].name)).toBeGreaterThan(0);
     expect(html.indexOf(dataSource.products[1].name)).toBeGreaterThan(0);
+
+})
+
+test("dataSource databinding 4", function () {
+
+    let dataSource = [
+        {
+            name: "c1",
+            products: [
+                { name: "pc1" },
+                { name: "pc2" }
+            ]
+        },
+        {
+            name: "c2",
+            products: [
+                { name: "pc3" },
+                { name: "pc4" }
+            ]
+        },
+    ];
+    let pageData1: PageData = {
+        id: "simple", type: Component.typeNames.page,
+        props: {},
+        children: [
+            {
+                id: guid(), type: Component.typeNames.container,
+                props: {}, dataSource,
+                children: [
+                    { id: guid(), type: Component.typeNames.text, props: { value: '${name}' }, dataSource: '${products}', children: [] }
+                ]
+            }
+        ]
+    }
+
+    let c = Component.parse(pageData1, Component.types);
+    let html = renderToString(c);
+    console.log(html);
+
+    expect(html.indexOf(dataSource[0].products[0].name)).toBeGreaterThan(0);
+    expect(html.indexOf(dataSource[0].products[1].name)).toBeGreaterThan(0);
+
+    expect(html.indexOf(dataSource[1].products[0].name)).toBeGreaterThan(0);
+    expect(html.indexOf(dataSource[1].products[1].name)).toBeGreaterThan(0);
 
 })

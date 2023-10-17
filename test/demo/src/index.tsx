@@ -1,10 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import "maishu-jueying/out/design/create-design-element"
 import HomePage from './pages/home';
-import TempPage from './pages/temp';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

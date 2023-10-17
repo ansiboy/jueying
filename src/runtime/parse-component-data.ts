@@ -3,70 +3,77 @@ import * as React from "react";
 import { errors } from "./errors";
 import { Component } from "./component"
 
-function parseComponentData(componentData: ComponentData, componentTypes: ComponentTypes, createElement: ElementFactory) {
+function parseComponentDataWithArray(componentData: ComponentData, componentTypes: ComponentTypes, createElement: ElementFactory, dataItems: any[] | null) {
+    if (dataItems == null) {
+        return parseComponentDataWithDataItem(componentData, componentTypes, createElement, null);
+    }
+
+    if (!Array.isArray(dataItems))
+        throw new Error(`Argument dataItems is not an array.`);
+
+    let props = componentData.props as ComponentProps;
+    props.key = props.key || componentData.id;
+    let c = dataItems.map((d, i) => {
+        let newProps = Object.assign({}, props);
+        componentData.props = newProps;
+        if (i > 1) {
+            componentData.props.key = props.key + "-" + i;
+        }
+
+        return parseComponentDataWithDataItem(componentData, componentTypes, createElement, d);
+    });
+    return React.createElement(React.Fragment, {}, ...c);
+}
+
+function parseComponentDataWithDataItem(componentData: ComponentData, componentTypes: ComponentTypes, createElement: ElementFactory, dataItem: any | null) {
     if (!componentData) throw errors.argumentNull("componentData");
     if (!componentTypes) throw errors.argumentNull("componentTypes");
     if (!componentData.type) {
         throw errors.argumentFieldNull("type", "componentData")
     }
 
+    componentData = JSON.parse(JSON.stringify(componentData));
     let isHtmlComponent = componentData.type.toLowerCase() == componentData.type
     let type = isHtmlComponent ? componentData.type : (componentTypes[componentData.type] || Component.types[componentData.type]);
     if (type == null) {
         throw errors.componentTypeNotExists(componentData.type);
     }
 
-    let dataSource = (componentData.props as ComponentProps).dataSource;
-    if (dataSource && !Array.isArray(dataSource))
-        evalComponentDataProps(componentData.props, dataSource);
+    if (dataItem)
+        evalComponentDataProps(componentData.props, dataItem);
 
     let children: (string | React.ReactElement<any>)[] = [];
     let childComponentInfos = componentData.children || [];
     if (childComponentInfos.length > 0) {
         children = childComponentInfos.map((c, i) => {
-            let props = c.props as ComponentProps;
-            // if (i > 0) {
-            //     props.key = (props.key || c.id) + "-" + i;
-            // }
 
-            if (props.dataSource == null && dataSource != null && !Array.isArray(dataSource)) {
-                props.dataSource = dataSource;
-            }
-            else if (typeof props.dataSource == "string") {
-                if (!props.dataSource.startsWith(BINDING_EXPR_BEGIN) || !props.dataSource.endsWith(BINDING_EXPR_END)) {
-                    throw new Error(`Data source expression '${props.dataSource}' is invalid.`);
+            let dataSource: any;
+            if (typeof c.dataSource == "string" && dataItem != null) {
+                if (!c.dataSource.startsWith(BINDING_EXPR_BEGIN) || !c.dataSource.endsWith(BINDING_EXPR_END)) {
+                    throw new Error(`Data source expression '${c.dataSource}' is invalid.`);
                 }
 
-                props.dataSource = evalExpression(props.dataSource, dataSource);
-
+                dataSource = evalExpression(c.dataSource, dataItem);
+            }
+            else {
+                dataSource = c.dataSource;
             }
 
-            return parseComponentData(c, componentTypes, createElement);
+            if (Array.isArray(dataSource)) {
+                return parseComponentDataWithArray(c, componentTypes, createElement, dataSource);
+            }
+
+            return parseComponentDataWithDataItem(c, componentTypes, createElement, dataItem);
         });
     }
 
-    let props = Object.assign({}, componentData.props) as ComponentProps;
+    let props = componentData.props as ComponentProps;
     props.key = props.key || componentData.id;
     props.id = componentData.id;
 
-    //=============================================================================
-    // 数据绑定
-    // let dataSource = props.dataSource;
-    if (dataSource != null && Array.isArray(dataSource)) {
-        let components = dataSource.map((c, i) => {
-            let newProps = Object.assign({}, props);
-            newProps.key = props.key + "-" + i;
-            evalComponentDataProps(newProps, c);
-            return createElement(type, newProps, children);
-        })
-        return React.createElement(React.Fragment, {}, ...components);
-    }
-    //=============================================================================
-    if (typeof type == "string")
-        delete props.dataSource;
-
     return createElement(type, props, children);
 }
+
 
 const BINDING_EXPR_BEGIN = '${';
 const BINDING_EXPR_END = '}';
@@ -112,11 +119,11 @@ export function parsePageData(pageData: PageData, componentTypes: ComponentTypes
         throw errors.argumentFieldNull("type", "pageData")
     }
 
-    let dataSource: any[] = pageData.props.dataSource;
+    let dataSource = pageData.dataSource;
     if (dataSource != null && Array.isArray(dataSource))
         throw new Error("Page data source should be an object.");
 
-    return parseComponentData(pageData, componentTypes, createElement);
+    return parseComponentDataWithDataItem(pageData, componentTypes, createElement, dataSource);
 
 }
 

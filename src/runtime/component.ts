@@ -23,7 +23,6 @@ export class Component {
     }
 
     static parse(componentData: ComponentData, componentTypes: ComponentTypes) {
-        componentTypes = Object.assign({}, componentTypes, componentTypes);
         return parsePageData(componentData, componentTypes, React.createElement);
     }
 

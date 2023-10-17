@@ -6,7 +6,7 @@ export interface ComponentProps {
     /** 组件的名称，在页面中唯一 */
     name?: string;
     children?: React.ReactNode;
-    dataSource?: any[] | string;
+    // dataSource?: any[] | string;
 }
 
 export interface ComponentData<T extends ComponentProps = ComponentProps> {
@@ -22,7 +22,8 @@ export interface ComponentData<T extends ComponentProps = ComponentProps> {
     // parentId?: string;
     // name?: string;
     status?: ComponentStatus,
-    children: ComponentData[]
+    children: ComponentData[],
+    dataSource?: any;
 }
 
 export enum ComponentStatus {
