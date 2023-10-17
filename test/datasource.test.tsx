@@ -7,7 +7,6 @@ import React from "react";
 
 test("dataSource databinding 1", function () {
 
-    let childTag = "span";
     let dataSource = {
         text: "hello"
     };
@@ -44,5 +43,31 @@ test("dataSource databinding 2", function () {
     // for (let d of dataSource)
     expect(html.indexOf(dataSource[0].name)).toBeGreaterThan(0);
     expect(html.indexOf(dataSource[1].name)).toBeGreaterThan(0);
+
+})
+
+test("dataSource databinding 3", function () {
+
+    let dataSource = {
+        name: "pc",
+        products: [
+            { name: "pc1" },
+            { name: "pc2" }
+        ]
+    };
+    let pageData1: PageData = {
+        id: "simple", type: Component.typeNames.page,
+        props: { dataSource },
+        children: [
+            { id: guid(), type: Component.typeNames.text, props: { dataSource: '${products}', value: '${name}' }, children: [] }
+        ]
+    }
+
+    let c = Component.parse(pageData1, Component.types);
+    let html = renderToString(c);
+    console.log(html);
+
+    expect(html.indexOf(dataSource.products[0].name)).toBeGreaterThan(0);
+    expect(html.indexOf(dataSource.products[1].name)).toBeGreaterThan(0);
 
 })

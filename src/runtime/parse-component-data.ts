@@ -29,8 +29,17 @@ function parseComponentData(componentData: ComponentData, componentTypes: Compon
             //     props.key = (props.key || c.id) + "-" + i;
             // }
 
-            if (props.dataSource == null && dataSource != null && !Array.isArray(dataSource))
+            if (props.dataSource == null && dataSource != null && !Array.isArray(dataSource)) {
                 props.dataSource = dataSource;
+            }
+            else if (typeof props.dataSource == "string") {
+                if (!props.dataSource.startsWith(BINDING_EXPR_BEGIN) || !props.dataSource.endsWith(BINDING_EXPR_END)) {
+                    throw new Error(`Data source expression '${props.dataSource}' is invalid.`);
+                }
+
+                props.dataSource = evalExpression(props.dataSource, dataSource);
+
+            }
 
             return parseComponentData(c, componentTypes, createElement);
         });
