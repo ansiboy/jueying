@@ -1,6 +1,6 @@
-import { Component, ComponentClass, PageData, PageDataHelper as PageDataTravel } from "../src"
+import { Component, ComponentClass, defaultTypes, PageData, PageDataHelper as PageDataTravel } from "../src"
 
-let Page = Component.types[Component.typeNames.page] as ComponentClass;
+let Page = defaultTypes.runtime.Page;
 
 test("ComponentDataTraver each 测试", async function () {
 
@@ -10,7 +10,7 @@ test("ComponentDataTraver each 测试", async function () {
         div2: "div2"
     }
     let pageData1: PageData = {
-        id: "simple", type: Page.typeName, props: {},
+        id: "simple", type: defaultTypes.names.Page, props: {},
         children: [
             { id: ids.image1, type: "Image", props: { url: "abc" }, children: [] }
         ]
@@ -27,7 +27,7 @@ test("ComponentDataTraver each 测试", async function () {
 
 
     let pageData2: PageData = {
-        id: "pageData2", type: Page.typeName, props: {},
+        id: "pageData2", type: defaultTypes.names.Page, props: {},
         children: [
             { id: ids.image1, type: "Image", props: { url: "abc" }, children: [] },
             {
@@ -40,7 +40,7 @@ test("ComponentDataTraver each 测试", async function () {
     }
 
     componentDataIds = []
-    PageDataTravel.each(pageData2,(c) => {
+    PageDataTravel.each(pageData2, (c) => {
         if (typeof c != "string")
             componentDataIds.push(c.id)
     })

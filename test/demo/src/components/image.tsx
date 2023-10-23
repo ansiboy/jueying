@@ -1,4 +1,4 @@
-import React, { ComponentProps, ImgHTMLAttributes } from "react";
+import React from "react";
 import { Component } from "maishu-jueying/out";
 import { typeNames } from "../components-config";
 

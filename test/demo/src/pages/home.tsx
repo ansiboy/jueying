@@ -32,7 +32,7 @@ export default function HomePage() {
             { id: ids.div2, type: "div", props: {}, children: [word] },
             {
                 id: ids.columns1, type: "Columns", props: {
-                    firstContainerid: "container-1",
+                    firstContainerid: "container-5",
                 }, children: []
             },
             { id: ids.button, type: "Button", props: buttonProps, children: [word] }

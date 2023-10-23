@@ -1,12 +1,10 @@
 import React from "react"
-import { PageDesigner, DesignComponent, Component, PageData, PageDataHelper as PageDataTravel, ComponentDiagram, classNames } from "../src";
+import { PageDesigner, DesignComponent, Component, PageData, PageDataHelper as PageDataTravel, ComponentDiagram, classNames, defaultTypes } from "../src";
 import { createComponentsConfig } from "./demo/src/components-config";
-import ReactDOM from "react-dom";
 import { JSDOM, designerUpdateFinish } from "./common";
 import { createRoot } from "react-dom/client";
 
 let componentTypeNames = Component.typeNames;
-let DesignPage = DesignComponent.types[Component.typeNames.page];
 
 describe("parse-page-data 函数测试", function () {
 

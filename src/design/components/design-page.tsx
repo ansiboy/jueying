@@ -6,14 +6,15 @@ import { classNames } from "../../style"
 import { ComponentData, ComponentStatus } from "../../runtime"
 import { DesignComponent } from "../design-component"
 import type { Props } from "../../runtime/components/page";
+import { defaultTypeNames } from "../../runtime/default-types"
 
 const DATA_ID = "data-id"
 
 
-DesignComponent.register(class extends React.Component<Props> {
+export default class DesignPage extends React.Component<Props> {
 
     private element: HTMLElement;
-    static typeName = DesignComponent.typeNames.page;
+    static typeName = defaultTypeNames.Page;
 
     private ref(element: HTMLElement | null, designer: PageDesigner) {
         if (!element || this.element)
@@ -80,5 +81,5 @@ DesignComponent.register(class extends React.Component<Props> {
             }}
         </DesignerContext.Consumer >
     }
-});
+}
 

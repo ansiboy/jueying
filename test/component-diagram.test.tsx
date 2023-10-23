@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { JSDOM } from "./common";
-import { PageDesigner, ComponentDiagram, PageData, Component } from "../src";
+import { PageDesigner, ComponentDiagram, PageData, Component, defaultTypes } from "../src";
 import { createComponentsConfig, typeNames } from "./demo/src/components-config";
 import { designerUpdateFinish, text } from "./common";
 import type { Props as ImageProps } from "./demo/src/components/image";
@@ -17,9 +17,10 @@ test("ComponentDiagram HTML 元素测试", async function () {
         div2: "div2"
     }
 
-    let helloWorld = text("hello world")
+    let helloWorld = text("hello world");
+    console.log(defaultTypes);
     let pageData1: PageData = {
-        id: "simple", type: Component.typeNames.page, props: {},
+        id: "simple", type: defaultTypes.names.Page, props: {},
         children: [
             { id: ids.div1, type: "div", props: {}, children: [helloWorld] }
         ]
@@ -40,7 +41,10 @@ test("ComponentDiagram HTML 元素测试", async function () {
     })
 
     await designerUpdateFinish(pageDesigner)
-    let div1 = container.querySelector(`#${ids.div1}`) as HTMLElement
+    console.log(container.outerHTML);
+    debugger
+    let div1 = container.querySelector(`#${ids.div1}`) as HTMLElement;
+
     expect(div1).not.toBeNull()
     expect(div1.innerHTML).toEqual(helloWorld.props.value)
 })
@@ -54,7 +58,7 @@ test("ComponentDiagram 自定义组件测试", async function () {
     let url = "imageUrl"
     let imageProps: ImageProps = { url }
     let pageData1: PageData = {
-        id: "page-data1", type: Component.typeNames.page, props: {},
+        id: "page-data1", type: defaultTypes.names.Page, props: {},
         children: [
             { id: ids.image1, type: typeNames.image, props: imageProps, children: [] }
         ]
@@ -91,7 +95,7 @@ test("ComponentDiagram 按钮点击", async function () {
     let buttonProps: Button["props"] = { clickedText, text: "button", isDesigntime: true }
     let pageData1: PageData = {
         id: "page-data1",
-        type: Component.typeNames.page,
+        type: defaultTypes.names.Page,
         props: {},
         children: [
             { id: ids.button1, type: typeNames.button, props: buttonProps, children: [] }

@@ -22,7 +22,7 @@ export interface ComponentData<T extends ComponentProps = ComponentProps> {
     // parentId?: string;
     // name?: string;
     status?: ComponentStatus,
-    children: ComponentData[],
+    children?: ComponentData[],
     dataSource?: any;
 }
 
@@ -43,6 +43,13 @@ export type PageData = ComponentData & {
 
 export type ComponentClass = (React.ComponentClass<any> | React.FunctionComponent<any>) & { typeName: string };
 export type ElementFactory = (type: ComponentClass | string, props: any,
-    children: (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[]) => React.ReactElement;//typeof React.createElement;
+    children?: (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[]) => React.ReactElement;//typeof React.createElement;
 
 export type ComponentTypes = { [key: string]: ComponentClass | string };
+
+export type DefaultTypes = {
+    Page: React.ComponentClass<any> | React.FunctionComponent<any>,
+    Container: React.ComponentClass<any> | React.FunctionComponent<any>,
+    Text: React.ComponentClass<any> | React.FunctionComponent<any>,
+}
+

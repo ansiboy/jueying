@@ -16,7 +16,7 @@ test("dataSource databinding 1", function () {
         ]
     }
 
-    let c = Component.parse(pageData1, Component.types);
+    let c = Component.parse(pageData1, Component.defaultComponentTypes);
     let html = renderToString(c);
     console.log(html);
 
@@ -35,7 +35,7 @@ test("dataSource databinding 2", function () {
         ]
     }
 
-    let c = Component.parse(pageData1, Component.types);
+    let c = Component.parse(pageData1, Component.defaultComponentTypes);
     let html = renderToString(c);
     console.log(html);
 

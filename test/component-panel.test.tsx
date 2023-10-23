@@ -1,10 +1,10 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom/client"
-import { PageDesigner, ComponentDiagram, ComponentPanel, PageData, Component, ComponentClass } from "../src"
+import { PageDesigner, ComponentDiagram, ComponentPanel, PageData, Component, ComponentClass, defaultTypes } from "../src"
 import { createComponentsConfig } from "./demo/src/components-config"
 import { JSDOM, text } from "./common"
 
-let Page = Component.types[Component.typeNames.page] as ComponentClass;
+let Page = defaultTypes.runtime.Page;
 
 test("ComponentPanel 创建测试", async function () {
 
@@ -16,7 +16,7 @@ test("ComponentPanel 创建测试", async function () {
 
     let helloWorld = text("hello world")
     let pageData1: PageData = {
-        id: "simple", type: Page.typeName, props: {},
+        id: "simple", type: defaultTypes.names.Page, props: {},
         children: [
             { id: ids.div1, type: "div", props: {}, children: [helloWorld] }
         ]

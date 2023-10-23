@@ -1,5 +1,8 @@
 import { constants } from "./common";
 import { DesignComponent } from "./design";
+import DesignContainer from "./design/components/design-component-placeholder";
+import DesignPage from "./design/components/design-page";
+import { defaultComponentTypes } from "./runtime/default-types";
 
 export { PageDesigner, DesignerContext, DesignComponentContext } from "./designer";
 export type { PageDesignerProps, PageDesignerState, DesignerContextValue, } from "./designer";
@@ -11,9 +14,11 @@ export type { EditorPanelProps, PropertyEditorInfo, PropertyEditorProps, Propert
 export { ComponentStatus, ComponentData, Component, PageDataParser, } from "./runtime";
 export type { PageData, ComponentProps, ComponentTypes, ComponentClass } from "./runtime";
 export { PageDataHelper, childrenNodeToArray } from "./utility";
+export { defaultTypes } from "./defaultTypes";
 
 let g: any = typeof window === "undefined" ? global : window;
 g[constants.componentFactoryName] = DesignComponent.createElement;
+
 
 
 

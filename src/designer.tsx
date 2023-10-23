@@ -9,8 +9,11 @@ import { DataList } from "./data/data-list";
 import { ComponentPanel, DesignComponent } from "./design";
 import { DesignBehavior } from "./design/design-behavior";
 import { ComponentClass } from "./runtime/types";
+import { defaultTypes } from "./defaultTypes";
 
-let defaultComponentTypes = Component.types;
+
+
+let defaultComponentTypes = Object.assign(defaultTypes.runtime, defaultTypes.design);
 export interface PageDesignerProps extends React.ComponentProps<any> {
     pageData: PageData;
     className?: string;
@@ -154,7 +157,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (!parentComponentData)
             throw new Error(`Component data '${parentId}' is not exists`)
 
-        let children: ComponentData[] = parentComponentData.children;
+        let children: ComponentData[] = parentComponentData.children || [];
         if (componentIndex == null) {
             children.push(componentData);
         }
@@ -215,7 +218,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             if (parent == null)
                 throw new Error(`Component '${componentId}' is root element, can not remove.`)
 
-            parent.children = parent.children.filter(o => o.id != componentId)
+            parent.children = (parent.children || []).filter(o => o.id != componentId)
         }
     }
 
@@ -229,7 +232,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
             if (parent == null)
                 throw new Error(`Component '${componentId}' is root element, can not remove.`)
 
-            parent.children = parent.children.filter(o => o.id != componentId)
+            parent.children = (parent.children || []).filter(o => o.id != componentId)
         }
     }
 
@@ -286,7 +289,7 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
 
         let componentsConfig = this.props.componentsConfig;
         let promises = componentsToLoad.map(typeName => ({ typeName, componentConfig: componentsConfig[typeName] }))
-            .map(o => o.componentConfig.editor ?
+            .map(o => o.componentConfig?.editor ?
                 o.componentConfig.editor.then(a => ({ typeName: o.typeName, componentConfig: o, module: a })) : Promise.resolve(null));
 
         let r = await Promise.all(promises);
@@ -333,14 +336,16 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
         if (!componentsConfig) throw errors.argumentNull("componentsConfig")
 
         // 设置默认组件
-        for (let typeName in defaultComponentTypes) {
+        for (let typeName in defaultTypes.runtime) {
             if (!componentsConfig[typeName]) {
                 let designBehavior = DesignBehavior.default
 
 
+
+
                 componentsConfig[typeName] = {
-                    type: Promise.resolve({ default: defaultComponentTypes[typeName] }),
-                    hidden: true, design: designBehavior
+                    type: Promise.resolve({ default: (defaultTypes.runtime as any)[typeName] }),
+                    hidden: true, design: Promise.resolve({ default: (defaultTypes.design as any)[typeName] })
                 }
 
                 // if (typeName == Component.typeNames.page) {
@@ -376,9 +381,9 @@ export class PageDesigner extends React.Component<PageDesignerProps, PageDesigne
                 if (componentsConfig[typeName].design instanceof Promise) {
                     componentType = componentsConfig[typeName].design as Promise<ComponentModule>
                 }
-                else if (DesignComponent.types[typeName]) {
-                    componentType = Promise.resolve({ default: DesignComponent.types[typeName] });
-                }
+                // else if (DesignComponent.types[typeName]) {
+                //     componentType = Promise.resolve({ default: DesignComponent.types[typeName] });
+                // }
                 else {
                     componentType = componentsConfig[typeName].type
                 }

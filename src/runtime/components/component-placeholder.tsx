@@ -1,16 +1,15 @@
 import * as React from "react";
 import { childrenNodeToArray } from "../../utility";
 import { ComponentProps } from "../types";
-import { Component } from "../component";
 
 export interface Props extends ComponentProps {
     style?: React.CSSProperties;
     className?: string;
 }
 
-Component.register(class extends React.Component<Props> {
+export default class Container extends React.Component<Props> {
 
-    static readonly typeName = Component.typeNames.container;
+    // static readonly typeName = defaultTypeNames.Container;
 
     constructor(props: ComponentProps) {
         super(props);
@@ -18,7 +17,7 @@ Component.register(class extends React.Component<Props> {
 
     render() {
         let arr = childrenNodeToArray(this.props.children)
-        return <ul className={this.props.className} style={this.props.style}>{arr.map(o => <li>{o}</li>)}</ul>
+        return <ul className={this.props.className} style={this.props.style}>{arr.map(o => <li key={o.props.id}>{o}</li>)}</ul>
     }
-})
+}
 

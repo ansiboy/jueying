@@ -1,12 +1,10 @@
 import React from "react";
 import { parsePageData } from "./parse-component-data";
 import { ComponentClass, ComponentData, ComponentTypes } from "./types";
+import { defaultComponentTypes } from "./default-types";
+import { defaultTypeNames } from "./default-types";
 
-let componentTypeNames = {
-    page: "Page",
-    container: "Container",
-    text: "Text",
-}
+// let componentTypeNames = defaultTypeNames;
 let componentTypes: ComponentTypes = {};
 export class Component {
     static register(type: ComponentClass) {
@@ -18,8 +16,10 @@ export class Component {
         return type;
     }
 
+    static defaultComponentTypes = defaultComponentTypes;
+
     static get types() {
-        return componentTypes;
+        return this.defaultComponentTypes;
     }
 
     static parse(componentData: ComponentData, componentTypes: ComponentTypes) {
@@ -27,7 +27,7 @@ export class Component {
     }
 
     static get typeNames() {
-        return componentTypeNames;
+        return defaultTypeNames;
     }
 
 }

@@ -4,7 +4,6 @@ export { PageData, ComponentData, ComponentStatus, ComponentTypes, ElementFactor
 export { Component } from "./component";
 export { ComponentClass } from "./types";
 
-import ReactDOM from "react-dom";
 import { constants } from "../common";
 import "./components/component-placeholder";
 import "./components/page";

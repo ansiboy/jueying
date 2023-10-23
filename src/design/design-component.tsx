@@ -1,23 +1,20 @@
 import * as React from "react";
 import { DesignComponentContext, DesignComponentContextValue } from "./design-component-context";
 import { errors } from "../errors";
-import { Component, ComponentData, ComponentTypes, parsePageData } from "../runtime";
+import type { ComponentData, ComponentTypes } from "../runtime";
+import { parsePageData } from "../runtime";
 import { DesignerContext } from "../designer";
 import { PageDataHelper as PageDataTravel } from "../utility";
-import { ComponentClass } from "../runtime/types";
-
-let designComponentTypes: ComponentTypes = {};
-// designComponentTypes[componentTypeNames.page] = DesignPage;
-// designComponentTypes[componentTypeNames.placeHolder] = DesignComponentPlaceHolder;
+import { defaultTypes } from "./default-types";
 
 export class DesignComponent {
-    static get types() {
-        return designComponentTypes;
-    }
+    // static get types() {
+    //     return defaultTypes;
+    // }
 
-    static get typeNames() {
-        return Component.typeNames;
-    }
+    // static get typeNames() {
+    //     return Object.keys(defaultTypes);
+    // }
 
     /** 创建设计时元素 */
     static createElement(type: ComponentTypes[0], props: any | null, ...children: Array<any>) {
@@ -26,13 +23,14 @@ export class DesignComponent {
             return React.createElement(type, props, ...children);
         }
 
-        let id = props?.id;
+        props = props || {};
+        let id = props.id;
         if (!id) {
             throw errors.argumentFieldNull("id", "props")
         }
 
         let typeName = type.typeName;
-        type = DesignComponent.types[typeName] || type;
+
 
         return <DesignerContext.Consumer key={id}>
             {designerArgs => {
@@ -40,14 +38,17 @@ export class DesignComponent {
                     throw errors.contextArgumentNull();
                 }
 
+                type = designerArgs.designer.componentTypes[typeName] || type;
+
                 return <DesignComponentContext.Consumer>
                     {parentArgs => {
                         let componentData = PageDataTravel.findComponent(designerArgs.designer.pageData, id);
                         if (!componentData) {
                             componentData = { id, children: [], props: { id }, type: typeName };
                             console.assert(parentArgs != null, 'design component parent context is null.');
-                            console.assert(parentArgs?.componentData != null, 'parent component data is null.');
-                            let parentComponentData = parentArgs?.componentData as ComponentData;
+                            console.assert((parentArgs || {}).componentData != null, 'parent component data is null.');
+                            let parentComponentData = (parentArgs || {}).componentData as ComponentData;
+                            parentComponentData.children = parentComponentData.children || [];
                             parentComponentData.children.push(componentData);
                         }
 
@@ -73,16 +74,16 @@ export class DesignComponent {
         </DesignerContext.Consumer>
     }
 
-    static register(type: ComponentClass) {
-        if (!type.typeName) {
-            throw new Error(`Component type name is null or empty.`);
-        }
-        designComponentTypes[type.typeName] = type;
-        return type;
-    }
+    // static register(type: ComponentClass) {
+    //     if (!type.typeName) {
+    //         throw new Error(`Component type name is null or empty.`);
+    //     }
+    //     designComponentTypes[type.typeName] = type;
+    //     return type;
+    // }
 
     static parse(componentData: ComponentData, componentTypes: ComponentTypes) {
-        componentTypes = Object.assign({}, componentTypes, designComponentTypes);
+        componentTypes = Object.assign({}, componentTypes, defaultTypes);
         return parsePageData(componentData, componentTypes, DesignComponent.createElement)
     }
 

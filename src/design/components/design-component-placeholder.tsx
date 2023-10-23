@@ -7,13 +7,14 @@ import { classNames } from "../../style";
 import { PageDataHelper as PageDataTravel } from "../../utility";
 import { DesignComponent } from "../design-component";
 import type { Props } from "../../runtime/components/component-placeholder";
+import { defaultTypeNames } from "../../runtime/default-types";
 
 const CONTAINER_ID = "container_id";
 const DATA_ID = "data-id";
 
-DesignComponent.register(class extends React.Component<Props> {
+export default class DesignContainer extends React.Component<Props> {
 
-    static typeName = DesignComponent.typeNames.container;
+    static typeName = defaultTypeNames.Container;
 
     private element: HTMLElement
 
@@ -61,7 +62,8 @@ DesignComponent.register(class extends React.Component<Props> {
             {args => {
                 if (!args) throw errors.contextArgumentNull()
 
-                let childComponentDatas = args.componentData.children.filter(o => o.props[CONTAINER_ID] == this.props.id);
+                let children = args.componentData.children || [];
+                let childComponentDatas = children.filter(o => o.props[CONTAINER_ID] == this.props.id);
                 let className = this.props.className || "";
                 return <ul style={this.props.style} className={`${classNames.designComponentPlaceHolder} ${className}`}
                     ref={e => this.enableDrop(e, args.designer, args.componentData.id)}>
@@ -81,5 +83,5 @@ DesignComponent.register(class extends React.Component<Props> {
             }}
         </DesignComponentContext.Consumer>
     }
-});
+}
 

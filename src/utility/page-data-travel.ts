@@ -11,8 +11,9 @@ export class PageDataHelper {
 
             callback(item.component, item.parent)
             // if (typeof item != "string") {
-            for (let i = 0; i < item.component.children.length; i++) {
-                let c = item.component.children[i]
+            let children = item.component.children || [];
+            for (let i = 0; i < children.length; i++) {
+                let c = children[i]
                 stack.push({ component: c, parent: item.component })
             }
             item = stack.pop()

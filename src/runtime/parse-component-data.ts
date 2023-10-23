@@ -34,7 +34,7 @@ function parseComponentDataWithDataItem(componentData: ComponentData, componentT
 
     componentData = JSON.parse(JSON.stringify(componentData));
     let isHtmlComponent = componentData.type.toLowerCase() == componentData.type
-    let type = isHtmlComponent ? componentData.type : (componentTypes[componentData.type] || Component.types[componentData.type]);
+    let type = isHtmlComponent ? componentData.type : componentTypes[componentData.type];
     if (type == null) {
         throw errors.componentTypeNotExists(componentData.type);
     }
@@ -71,6 +71,10 @@ function parseComponentDataWithDataItem(componentData: ComponentData, componentT
     props.key = props.key || componentData.id;
     props.id = componentData.id;
 
+    console.assert(props.key != null, "key is null.");
+    if (children.length == 0) {
+        return createElement(type, props);
+    }
     return createElement(type, props, children);
 }
 
@@ -78,7 +82,7 @@ function parseComponentDataWithDataItem(componentData: ComponentData, componentT
 const BINDING_EXPR_BEGIN = '${';
 const BINDING_EXPR_END = '}';
 
-function evalComponentDataProps(props: { [key: string]: any }, dataItem: any) {
+function evalComponentDataProps(props: { [key: string]: any } | undefined, dataItem: any) {
     props = props || {};
 
     for (let key in props) {
